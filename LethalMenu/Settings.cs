@@ -219,7 +219,6 @@ namespace LethalMenu
         public static float f_espDistance = 5000;
         public static float f_chamDistance = 15;
         public static float f_enemyKillDistance = 15;
-        public static bool b_crosshairPlus = false;
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
 

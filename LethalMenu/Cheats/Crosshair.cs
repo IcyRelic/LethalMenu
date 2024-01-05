@@ -32,7 +32,7 @@ namespace LethalMenu.Cheats
                     new Vector2((float)Screen.width / 2f, (float)Screen.height / 2f + Settings.f_crosshairScale)
                 };
 
-            Vector2[] points = Settings.b_crosshairPlus ? pointsPlus : pointsX;
+            Vector2[] points = Settings.ct_crosshairType == CrosshairType.Plus ? pointsPlus : pointsX;
 
             VisualUtil.DrawLine(points[0], points[1], Settings.c_crosshair, Settings.f_crosshairThickness);
             VisualUtil.DrawLine(points[2], points[3], Settings.c_crosshair, Settings.f_crosshairThickness);
