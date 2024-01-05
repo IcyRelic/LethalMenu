@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS8625: Cannot convert null literal to non-nullable reference type.
+dotnet_diagnostic.CS8632.severity = none

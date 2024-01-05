@@ -1,0 +1,82 @@
+v1.2.2
+- Added CHAMS w/ settings
+- Added Create Mimics From Masks (Must pickup mask first)
+- Added Lure Enemies to Player
+- Added Lure All Enemies to Player
+- Added Control Enemy (Use SpeedHack for movement Speed) <- Buggy and not completely tested
+- Added Instant Interact
+- Added No Cooldowns
+- Added KeyBind for Kill Nearby Enemies
+- Added Mouse Binds (Left, Right, Middle, Forward, Backward)
+- Added ESP Enemy Filter Settings
+- Added a host requirement label if not host for spawning enemies in the Enemy Manager
+- Fixed No Carry Weight
+- Removed SpawnRandomValueable (Use Item Manager)
+- Major code changes to UI and hack executors to make it neat and tidy
+
+v1.2.1
+- Added Kill Nearby Enemies w/ Setting
+- Added Scrap Loot Tiers w/ Settings and toggle
+- Added Light to FreeCam (uses night vision settings)
+- Fixed issue that may have caused issues with ESP and other hacks that use game objects
+
+v1.2.0
+- Added Spectate other players
+- Added Mini Spectate Cameras
+- Added Free Cameras
+- Added Enemy Manager (Kill/Despawn/Spawn Enemies)
+- Added Unloackables Manager
+- Added Night Vision Settings
+- Added Toggle cursor key bind
+- Added Toggle for Factory Lights (Host Only)
+- Added Flicker Lights (Host Only)
+- Added Breaker Box ESP 
+- Added Kill Everyone (Including yourself)
+- Added Kill Everyone (Except yourself)
+- Added Unlimited Shotgun Ammo
+- Added Ghost Mode (Credit @Ugleh for the idea/code)
+- Added option to enable/disable the rendering of player models while spectating/minicam
+- Added Togglable Cheats to config. Values will be saved and loaded
+- Changed Players Tab to not be as cluttered
+- Changed ESP to now display while dead and Spectating
+- Changed Key Binds to no longer work while in pause menu, in chat, or using the terminal
+- Renamed Doors Through Walls to Interact Through Walls since its more than doors. (valves, terminal, ladder, ect)
+- Fixed Night Vision making everything super dark while inside (Credit @Ugleh for pointing this out)
+- Fixed Toggle Ship Horn not working
+- Fixed Not being able to interact when Mouth Dog attempts to kill you while in god mode
+- Fixed issue where you could not teleport to players anymore
+- Removed Spawn All Suits Button (Use Unlockables Manager)
+
+v1.1.0
+- Added Settings Tab
+- Added Gui Size to settings
+- Added config file
+- Added key bind settings
+- Added Crosshair Visuals
+- Added Breadcrumbs
+- Added Death Notification Tooltips
+- Added No Fog
+- Added No Clip
+- Added Numerous Settings
+- Added ESP Distance Setting
+- Added Toggle All ESP to ESP Menu
+- Added Locked Doors to ESP
+- Added Build Anywhere
+- Added No Carrying Weight
+- Overhaled code to be more efficient and support config files and key binds
+- Fixed ESP Labels showing off center of objects
+- Fixed Loot/Doors Through Walls (Note, you cannot pick up loot while only doors through walls is on and vice versa)
+- Fixed Teleport All Items to be instant and not travel back and forth between positions.
+
+v1.0.1
+- Added changelog to general tab
+- Added Force Company Monster Tentacle Attack
+- Added Movement Speed Hack
+- Added Strike players with lightening (must be host, and stormy)    
+- Changed Dead bodies to show player names and cause of death on ESP
+- Changed players tab to show if the player is dead and their cause of death
+- Changed the xp, quota, and credits textboxes to be bigger
+- Changed the speed modifier sliders to only show 1 decimal place in the label
+- Fixed God mode now prevents snare flea from attaching to you
+- Fixed unlimited stamina bug while unlimited battery is on
+- Fixed Dead enemies no longer show on ESP
