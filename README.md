@@ -143,7 +143,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
 | Unlock Door Action  | <kbd>F1</kbd> | Unlock the door you're looking at|
 | NoClip Controls  | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Space</kbd><kbd>LCTRL</kbd> | Movement Controls while using NoClip |
 
-### Latest Changelog | v1.2.2
+## Latest Changelog | v1.2.2
 ```
 - Added CHAMS w/ settings
 - Added Create Mimics From Masks (Must pickup mask first)
