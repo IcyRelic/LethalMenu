@@ -70,7 +70,7 @@ namespace LethalMenu
         private void DoPatching()
         {
             harmony = new Harmony("LethalMenu");
-            Harmony.DEBUG = true;
+            Harmony.DEBUG = false;
             harmony.PatchAll(Assembly.GetExecutingAssembly());
         }
 

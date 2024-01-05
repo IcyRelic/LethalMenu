@@ -19,8 +19,8 @@ namespace LethalMenu
             Loader.Load = new GameObject();
             Load.AddComponent<LethalMenu>();
             Object.DontDestroyOnLoad(Loader.Load);
-            
-            
+
+           
         }
 
         public static void LoadHarmony()

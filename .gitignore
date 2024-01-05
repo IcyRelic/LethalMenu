@@ -361,33 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/LethalMenu/Resources/BaseGame/Assembly-CSharp.dll
-/LethalMenu/Resources/BaseGame/Facepunch.Steamworks.Win64.dll
-/LethalMenu/Resources/BaseGame/Unity.InputSystem.dll
-/LethalMenu/Resources/BaseGame/Unity.Netcode.Runtime.dll
-/LethalMenu/Resources/BaseGame/Unity.TextMeshPro.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.AnimationModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.AudioModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.CoreModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.IMGUIModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.PhysicsModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.TextRenderingModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.UI.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.UIModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.UnityWebRequestWWWModule.dll
-/LethalMenu/Resources/0Harmony.dll
-/LethalMenu/Resources/Newtonsoft.Json.dll
-/LethalMenu/Resources/BaseGame/Assembly-CSharp.dll
-/LethalMenu/Resources/BaseGame/Facepunch.Steamworks.Win64.dll
-/LethalMenu/Resources/BaseGame/Unity.InputSystem.dll
-/LethalMenu/Resources/BaseGame/Unity.Netcode.Runtime.dll
-/LethalMenu/Resources/BaseGame/Unity.TextMeshPro.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.AnimationModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.AudioModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.CoreModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.IMGUIModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.PhysicsModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.TextRenderingModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.UI.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.UIModule.dll
-/LethalMenu/Resources/BaseGame/UnityEngine.UnityWebRequestWWWModule.dll
+
+*.dll
