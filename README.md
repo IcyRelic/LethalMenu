@@ -143,10 +143,10 @@ Thank you for contributing to the development of this mod by sharing your feedba
 | Unlock Door Action  | <kbd>F1</kbd> | Unlock the door you're looking at|
 | NoClip Controls  | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Space</kbd><kbd>LCTRL</kbd> | Movement Controls while using NoClip |
 
-## Latest Changelog | v1.2.2
+## Latest Changelog | v1.3.0
 ```
 - Added CHAMS w/ settings
-- Added Create Mimics From Masks (Must pickup mask first)
+- Added Support for 8 character hex codes for colors with alpha
 - Added Lure Enemies to Player
 - Added Lure All Enemies to Player
 - Added Control Enemy (Use SpeedHack for movement Speed) <- Buggy and not completely tested
@@ -167,3 +167,6 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - [winstxnhdw](https://www.unknowncheats.me/forum/members/5891304.html) - Extreamly Talented Individual, Learned a lot from his [project](https://github.com/winstxnhdw/lc-hax/), Lure monsters was derrived from it.
     - Additionally adopted several style/techniques from him
   - [Project Apparatus](https://github.com/KaylinOwO/Project-Apparatus/) - Inspiration/code style
+
+## Helpful Links
+  - [HTML Color Wheel (With Alpha Support)](https://rgbacolorpicker.com/color-wheel-picker)
