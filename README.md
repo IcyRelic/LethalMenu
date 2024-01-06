@@ -53,6 +53,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Interact Through Walls:** Perform actions through barriers and surfaces.
   - **Ghost Mode (Credit @Ugleh):** Incorporate ghostly attributes for unique gameplay.
   - **Free Camera:** Detach the camera for unrestricted viewing.
+  - **Super Shovel (x1000 Damage):** Instantly kill anything with a shovel/sign.
 
   #### Troll
   - **Toggle Ship Lights:** Turn the ship lights on/off from anywhere
