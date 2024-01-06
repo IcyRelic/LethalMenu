@@ -4,7 +4,7 @@ v1.3.0
 - Added Create Mimics From Masks (Must pickup mask first)
 - Added Lure Enemies to Player
 - Added Lure All Enemies to Player
-- Added Control Enemy (Use SpeedHack for movement Speed) <- Buggy and not completely tested
+- Added Control Enemy (Use SpeedHack for movement Speed)
 - Added Instant Interact
 - Added No Cooldowns
 - Added KeyBind for Kill Nearby Enemies

@@ -85,7 +85,7 @@ namespace LethalMenu.Menu.Tab
                 new UIButton("Save Settings", () => Settings.Config.SaveConfig()),
                 new UIButton("Reload Settings", () => Settings.Config.LoadConfig())
             );
-            UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
+            //UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
 
             UI.Select("Gui Size", ref i_selectedSizeIndex,
                 new UIOption("XSmall", () => Settings.GUISize = GuiSize.XSmall),

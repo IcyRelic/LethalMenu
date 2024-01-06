@@ -38,7 +38,7 @@ namespace LethalMenu.Cheats
                 enemy.updatePositionThreshold = 1f;
 
                 enemy.GetComponentsInChildren<Collider>().ToList().ForEach(c => c.enabled = true);
-                LethalMenu.localPlayer.GetComponent<CharacterController>().enabled = false;
+                LethalMenu.localPlayer.GetComponent<CharacterController>().enabled = true;
 
                 enemy = null;
 
