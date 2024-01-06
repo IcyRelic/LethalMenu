@@ -7,6 +7,7 @@ namespace LethalMenu.Util
     {
         public float r, g, b, a;
 
+
         [JsonConstructor]
         public RGBAColor(float r, float g, float b, float a)
         {
@@ -33,11 +34,12 @@ namespace LethalMenu.Util
 
                 int rgb = int.Parse(hexCode, System.Globalization.NumberStyles.HexNumber);
 
-                r = ((rgb >> 16) & 0xFF) / 255f;
-                g = ((rgb >> 8) & 0xFF) / 255f;
-                b = (rgb & 0xFF) / 255f;
-                a = alpha;
-            } 
+                r = ((rgb >> 24) & 0xFF) / 255f;
+                g = ((rgb >> 16) & 0xFF) / 255f;
+                b = ((rgb >> 8) & 0xFF) / 255f;
+                
+                a = hexCode.Length == 8 ? (rgb & 0xFF) / 255f : alpha;
+            }
             catch
             {
                 r = 1f;
@@ -54,6 +56,8 @@ namespace LethalMenu.Util
 
         public string GetHexCode()
         {
+            if(a < 1f) return GetHexCodeAlpha();
+
             int red = Mathf.Clamp((int)(r * 255), 0, 255);
             int green = Mathf.Clamp((int)(g * 255), 0, 255);
             int blue = Mathf.Clamp((int)(b * 255), 0, 255);
@@ -61,6 +65,20 @@ namespace LethalMenu.Util
             int rgb = (red << 16) | (green << 8) | blue;
 
             string hexCode = rgb.ToString("X6");
+
+            return hexCode;
+        }
+
+        public string GetHexCodeAlpha()
+        {
+            int red = Mathf.Clamp((int)(r * 255), 0, 255);
+            int green = Mathf.Clamp((int)(g * 255), 0, 255);
+            int blue = Mathf.Clamp((int)(b * 255), 0, 255);
+            int alpha = Mathf.Clamp((int)(a * 255), 0, 255);
+
+            int rgb = (red << 24) | (green << 16) | (blue << 8) | alpha;
+
+            string hexCode = rgb.ToString("X8");
 
             return hexCode;
         }

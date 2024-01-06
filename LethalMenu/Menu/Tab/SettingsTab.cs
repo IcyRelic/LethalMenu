@@ -167,51 +167,52 @@ namespace LethalMenu.Menu.Tab
         {
             UI.Header("Colors (HTML Color Codes)");
 
-            UI.TextboxAction("Menu BG", ref s_bgColor, @"[^0-9A-Za-z]", 6, 
+            UI.TextboxAction("Menu BG", ref s_bgColor, @"[^0-9A-Za-z]", 8, 
                 new UIButton("Set", () => SetColor(ref Settings.c_background, s_bgColor))
             );
-            UI.TextboxAction("Menu Text", ref s_menuText, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Menu Text", ref s_menuText, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_menuText, s_menuText))
             );
-            UI.TextboxAction("Primary", ref s_primaryColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Primary", ref s_primaryColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_primary, s_primaryColor))
             );
-            UI.TextboxAction("Crosshair", ref s_crosshairColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Crosshair", ref s_crosshairColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_crosshair, s_crosshairColor))
             );
 
             UI.Header("ESP Colors", true);
-            UI.TextboxAction("Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_chams, s_chamsColor))
             );
-            UI.TextboxAction("Objects", ref s_objectESPColor, @"[^0-9A-Za-z]", 6,
+
+            UI.TextboxAction("Objects", ref s_objectESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_objectESP, s_objectESPColor))
             );
-            UI.TextboxAction("Enemies", ref s_enemyESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Enemies", ref s_enemyESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_enemyESP, s_enemyESPColor))
             );
-            UI.TextboxAction("Players", ref s_playerESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Players", ref s_playerESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_playerESP, s_playerESPColor))
             );
-            UI.TextboxAction("Entrance/Exit Doors", ref s_doorESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Entrance/Exit Doors", ref s_doorESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_entranceExitESP, s_doorESPColor))
             );
-            UI.TextboxAction("Landmines", ref s_landmineESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Landmines", ref s_landmineESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_landmineESP, s_landmineESPColor))
             );
-            UI.TextboxAction("Turrets", ref s_turretESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Turrets", ref s_turretESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_turretESP, s_turretESPColor))
             );
-            UI.TextboxAction("Ship", ref s_shipESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Ship", ref s_shipESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_shipESP, s_shipESPColor))
             );
-            UI.TextboxAction("Steam Valves", ref s_valveESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Steam Valves", ref s_valveESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_steamHazardESP, s_valveESPColor))
             );
-            UI.TextboxAction("Big Doors", ref s_bigDoorESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Big Doors", ref s_bigDoorESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_bigDoorESP, s_bigDoorESPColor))
             );
-            UI.TextboxAction("Locked Doors", ref s_doorLockESPColor, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Locked Doors", ref s_doorLockESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_doorLockESP, s_doorLockESPColor))
             );
 
@@ -225,7 +226,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("Other Colors", true);
 
-            UI.TextboxAction("Cause of Death", ref s_causeOfDeath, @"[^0-9A-Za-z]", 6,
+            UI.TextboxAction("Cause of Death", ref s_causeOfDeath, @"[^0-9A-Za-z]", 8,
                 new UIButton("Set", () => SetColor(ref Settings.c_causeOfDeath, s_causeOfDeath))
             );   
         }

@@ -15,10 +15,13 @@ namespace LethalMenu.Cheats
     internal class ESP : Cheat
     {
 
-        private Dictionary<int, Material> materials = new Dictionary<int, Material>();
+        private Dictionary<int, Material[]> materials = new Dictionary<int, Material[]>();
         private int _color;
 
-        private Material chamsMaterial = new Material(Shader.Find("Hidden/Internal-Colored"))
+        private static ESP _instance;
+        public static ESP Instance { get { return _instance; } set { _instance = value; } }
+
+        public Material chamsMaterial = new Material(Shader.Find("Hidden/Internal-Colored"))
         {
             hideFlags = HideFlags.DontSaveInEditor | HideFlags.HideInHierarchy
         };
@@ -26,25 +29,33 @@ namespace LethalMenu.Cheats
 
         public void ApplyChams(MonoBehaviour obj)
         {
-            if(obj == null) return;
+            if (obj == null) return;
 
             List<Renderer> renderers = obj.GetComponentsInChildren<Renderer>().ToList();
+            renderers.AddRange(obj.GetComponentsInParent<Renderer>());
 
-            
-            if(obj.GetType() == typeof(DoorLock))
-                renderers.AddRange(obj.GetComponentsInParent<Renderer>());
+    
 
 
             renderers.ForEach(r =>
             {
-                if (!materials.ContainsKey(r.GetInstanceID()))
-                {
-                    materials.Add(r.GetInstanceID(), r.material);
-                    chamsMaterial.SetColor("_Color", Settings.c_chams.GetColor());
-                    r.material = chamsMaterial;
-                }
+                if(!materials.ContainsKey(r.GetInstanceID())) ApplyChams(r);
+
+                UpdateChamColor(r);
             });
         }
+
+        public void ApplyChams(Renderer r)
+        {
+            if (r == null || materials.ContainsKey(r.GetInstanceID())) return;
+
+            materials.Add(r.GetInstanceID(), r.materials);
+            chamsMaterial.SetColor(_color, Settings.c_chams.GetColor());
+            r.SetMaterials(Enumerable.Repeat(chamsMaterial, r.materials.Length).ToList());
+            
+        }
+
+        public void UpdateChamColor(Renderer r) => r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
 
         public void RemoveChams(MonoBehaviour obj)
         {
@@ -52,9 +63,9 @@ namespace LethalMenu.Cheats
 
             obj.GetComponentsInChildren<Renderer>().ToList().ForEach(r =>
             {
-                if(materials.TryGetValue(r.GetInstanceID(), out Material material))
+                if(materials.TryGetValue(r.GetInstanceID(), out Material[] mats))
                 {
-                    r.material = material;
+                    r.SetMaterials(mats.ToList());
                     materials.Remove(r.GetInstanceID());
                 }
             });
@@ -67,39 +78,24 @@ namespace LethalMenu.Cheats
                 yield return new WaitForSeconds(15f);
 
                 List<int> keep = new List<int>();
-
-                LethalMenu.items.ForEach(i => i.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.landmines.ForEach(l => l.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.turrets.ForEach(t => t.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.doors.ForEach(d => d.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.players.ForEach(p => p.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.enemies.ForEach(e => e.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.steamValves.ForEach(s => s.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.bigDoors.ForEach(b => b.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                LethalMenu.doorLocks.ForEach(d => d.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID())));
-                
-                if(LethalMenu.shipDoor != null)
-                    LethalMenu.shipDoor.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
-                
-                if(LethalMenu.breaker != null)
-                    LethalMenu.breaker.GetComponentsInChildren<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
+                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
 
                 materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => materials.Remove(k));
-
             }
         }
 
         public ESP()
         {
-            
+            _instance = this;
             chamsMaterial.SetInt("_SrcBlend", 5);
             chamsMaterial.SetInt("_DstBlend", 10);
             chamsMaterial.SetInt("_Cull", 0);
             chamsMaterial.SetInt("_ZTest", 8); // Render through walls
             chamsMaterial.SetInt("_ZWrite", 0);
             chamsMaterial.SetColor("_Color", Settings.c_chams.GetColor());
-            
+            _color = Shader.PropertyToID("_Color");
             LethalMenu.Instance.StartCoroutine(CleanUpMaterials());
+            
         }
 
         public override void OnGui()
@@ -318,7 +314,7 @@ namespace LethalMenu.Cheats
                 if (item.itemProperties != null)
                 {
                     if(item.itemProperties.itemName != null) text = item.itemProperties.itemName;
-                    text += $" ({item.scrapValue}) " + item.itemProperties.weight;
+                    text += $" ({item.scrapValue}) ";
                 }
 
                 if (Settings.b_chamsObject && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(item);

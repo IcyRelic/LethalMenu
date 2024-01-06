@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace LethalMenu.Util
@@ -141,7 +138,11 @@ namespace LethalMenu.Util
             GUILayout.BeginHorizontal();
             GUILayout.Label(header + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
-            value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.GUISize.GetSliderWidth()));
+
+            GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.GUISize.GetSliderWidth() };
+            
+
+            value = GUILayout.HorizontalSlider(value, min, max, slider, GUI.skin.horizontalSliderThumb);
             if (hack.Button()) hack.Execute();
             GUILayout.EndHorizontal();
         }

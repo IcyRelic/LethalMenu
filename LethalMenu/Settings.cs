@@ -193,7 +193,7 @@ namespace LethalMenu
         public static RGBAColor c_steamHazardESP = new RGBAColor(255, 0, 255, 1f);
         public static RGBAColor c_causeOfDeath = new RGBAColor(1f, 47f / 51f, 0.0156862754f, 1f);
         public static RGBAColor c_breakerESP = new RGBAColor(255,0,116, 1f);
-        public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 1f);
+        public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
 
 
 

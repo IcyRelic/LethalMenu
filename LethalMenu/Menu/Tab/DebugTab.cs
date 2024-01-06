@@ -65,11 +65,36 @@ namespace LethalMenu.Menu.Tab
                 {
                     LethalMenu.debugMessage += c.GetType().Name + "\n";
                 });
-
+                LethalMenu.debugMessage += "-------------------\n";
                 turret.GetComponentsInChildren<Component>().ToList().ForEach(c =>
                 {
-                    LethalMenu.debugMessage2 += c.GetType().Name + "\n";
+                    LethalMenu.debugMessage += c.GetType().Name + "\n";
+
+                    if(c.GetType() == typeof(MeshRenderer))
+                    {
+                        LethalMenu.debugMessage2 +=  "Materials Found: \n" +((MeshRenderer) c).materials.Length;
+                        MeshRenderer r = (MeshRenderer)c;
+
+
+
+                        ESP.Instance.ApplyChams(r);
+
+                        Material[] mats = new Material[r.sharedMaterials.Length];
+
+                        for (int i = 0; i < mats.Length; i++)
+                        {
+                            mats[i] = ESP.Instance.chamsMaterial;
+                        }
+
+                        r.SetSharedMaterials(mats.ToList());
+
+                    }
                 });
+
+                
+
+
+                
             }
 
 
@@ -111,6 +136,21 @@ namespace LethalMenu.Menu.Tab
                     t.randomChancePercentage = 100;
                     t.Interact(LethalMenu.localPlayer.transform);
 
+                });
+            }
+
+
+
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Force Cham Every Renderer");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r =>
+                {
+                    ESP.Instance.ApplyChams(r);
                 });
             }
 

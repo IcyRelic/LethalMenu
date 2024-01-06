@@ -1,4 +1,6 @@
-﻿using LethalMenu.Menu.Core;
+﻿using LethalMenu.Cheats;
+using LethalMenu.Menu.Core;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Unity.Netcode;
 using UnityEngine;
@@ -84,6 +86,13 @@ namespace LethalMenu.Menu.Popup
             gameObject.GetComponent<GrabbableObject>().SetScrapValue(value);
             gameObject.GetComponent<GrabbableObject>().fallTime = 0.0f;
             gameObject.GetComponent<NetworkObject>().Spawn();
+
+            //get a print every possible component in the object and its children and so on to the console
+            gameObject.GetComponentsInParent<Component>().ToList().ForEach(c =>
+            {
+                LethalMenu.debugMessage += c.GetType().Name + "\n";
+            });
+
         }
     }
 }

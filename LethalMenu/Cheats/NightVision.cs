@@ -28,9 +28,9 @@ namespace LethalMenu.Cheats
         public static void PlayerLateUpdate(PlayerControllerB __instance)
         {
 
-            __instance.nightVision.enabled = Hack.NightVision.IsEnabled() || __instance.isInsideFactory;
-            __instance.nightVision.intensity = Hack.NightVision.IsEnabled() ? Settings.f_nvIntensity : Settings.f_defaultNightVisionIntensity;
-            __instance.nightVision.range = Hack.NightVision.IsEnabled() ? Settings.f_nvRange : Settings.f_defaultNightVisionRange;
+            //__instance.nightVision.enabled = Hack.NightVision.IsEnabled() || __instance.isInsideFactory;
+            //__instance.nightVision.intensity = Hack.NightVision.IsEnabled() ? Settings.f_nvIntensity : Settings.f_defaultNightVisionIntensity;
+            //__instance.nightVision.range = Hack.NightVision.IsEnabled() ? Settings.f_nvRange : Settings.f_defaultNightVisionRange;
         }
     }
 }
