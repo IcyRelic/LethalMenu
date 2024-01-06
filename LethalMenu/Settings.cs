@@ -148,7 +148,7 @@ namespace LethalMenu
     internal class Settings
     {
 
-        public static string version = "v1.2.2";
+        public static string version = "v1.3.0";
         public static bool isDebugMode = true;
 
         public static bool isMenuOpen

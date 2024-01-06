@@ -1,5 +1,6 @@
-v1.2.2
+v1.3.0
 - Added CHAMS w/ settings
+- Added Support for 8 character hex codes for colors with alpha
 - Added Create Mimics From Masks (Must pickup mask first)
 - Added Lure Enemies to Player
 - Added Lure All Enemies to Player
