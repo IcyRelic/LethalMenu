@@ -15,10 +15,7 @@ namespace LethalMenu.Cheats
 {
     internal class ESP : Cheat
     {
-        public void ApplyChams(MonoBehaviour obj) => obj.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().ApplyCham());
-        public void RemoveChams(MonoBehaviour obj) => obj.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().RemoveCham());
-
-        public ESP() => RenderHandler.SetupChamMaterial();
+        public ESP() => ChamHandler.SetupChamMaterial();
         public override void OnGui()
         {
             if (!(bool)StartOfRound.Instance) return;
@@ -26,7 +23,7 @@ namespace LethalMenu.Cheats
             PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
 
             if (player == null) return;
-
+            
             try
             {
                 if (Hack.ObjectESP.IsEnabled()) this.DisplayObjects();
@@ -63,6 +60,7 @@ namespace LethalMenu.Cheats
                     Vector3 screen;
 
                     
+                    
 
                     if (!WorldToScreen(turret.transform.position, out screen)) continue;
 
@@ -71,10 +69,8 @@ namespace LethalMenu.Cheats
                     text += " [ " + termObj.objectCode + " ]";
                     GameObject parent = turret.gameObject.transform.parent.gameObject;
 
-                    if (Settings.b_chamsTurret && distanceToPlayer >= Settings.f_chamDistance)
-                        parent.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().ApplyCham());
-                    else
-                        parent.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().RemoveCham());
+                    if (Settings.b_chamsTurret && distanceToPlayer >= Settings.f_chamDistance) parent.GetChamHandler().ApplyCham();
+                    else parent.GetChamHandler().RemoveCham();
 
                     VisualUtil.DrawDistanceString(screen, text, Settings.c_turretESP, distanceToPlayer);
                 }
@@ -88,8 +84,8 @@ namespace LethalMenu.Cheats
             float distanceToPlayer = this.GetDistanceToPlayer(LethalMenu.shipDoor.transform.position);
             if (distanceToPlayer > Settings.f_espDistance || !WorldToScreen(LethalMenu.shipDoor.transform.position, out screen)) return;
 
-            if (Settings.b_chamsShip && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(LethalMenu.shipDoor);
-            else RemoveChams(LethalMenu.shipDoor);
+            if (Settings.b_chamsShip && distanceToPlayer >= Settings.f_chamDistance) LethalMenu.shipDoor.GetChamHandler().ApplyCham();
+            else LethalMenu.shipDoor.GetChamHandler().RemoveCham();
             
             VisualUtil.DrawDistanceString(screen, "Ship", Settings.c_shipESP, distanceToPlayer);
 
@@ -104,8 +100,8 @@ namespace LethalMenu.Cheats
             float distanceToPlayer = this.GetDistanceToPlayer(LethalMenu.breaker.transform.position);
             if (distanceToPlayer > Settings.f_espDistance || !WorldToScreen(LethalMenu.breaker.transform.position, out screen)) return;
 
-            if (Settings.b_chamsBreaker && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(LethalMenu.breaker);
-            else RemoveChams(LethalMenu.breaker);
+            if (Settings.b_chamsBreaker && distanceToPlayer >= Settings.f_chamDistance) LethalMenu.breaker.GetChamHandler().ApplyCham();
+            else LethalMenu.breaker.GetChamHandler().RemoveCham();
             
             VisualUtil.DrawDistanceString(screen, "Breaker Box", Settings.c_breakerESP, distanceToPlayer);
 
@@ -122,8 +118,8 @@ namespace LethalMenu.Cheats
                 if (distanceToPlayer > Settings.f_espDistance || !WorldToScreen(door.transform.position, out screen)) continue;
 
 
-                if (Settings.b_chamsEntranceExit && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(door);
-                else RemoveChams(door);
+                if (Settings.b_chamsEntranceExit && distanceToPlayer >= Settings.f_chamDistance) door.GetChamHandler().ApplyCham();
+                else door.GetChamHandler().RemoveCham();
                 
                 VisualUtil.DrawDistanceString(screen, text, Settings.c_entranceExitESP, distanceToPlayer); 
                
@@ -147,8 +143,8 @@ namespace LethalMenu.Cheats
 
                 text += " [ " + termObj.objectCode + " ]";
 
-                if (Settings.b_chamsLandmine && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(landmine);
-                else RemoveChams(landmine);
+                if (Settings.b_chamsLandmine && distanceToPlayer >= Settings.f_chamDistance) landmine.GetChamHandler().ApplyCham();
+                else landmine.GetChamHandler().RemoveCham();
 
                 VisualUtil.DrawDistanceString(screen, text, Settings.c_landmineESP, distanceToPlayer);
             }
@@ -167,8 +163,8 @@ namespace LethalMenu.Cheats
                 float distanceToPlayer = this.GetDistanceToPlayer(player.playerEye.transform.position);
                 if (distanceToPlayer > Settings.f_espDistance) continue;
 
-                if (Settings.b_chamsPlayer && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(player);
-                else RemoveChams(player);
+                if (Settings.b_chamsPlayer && distanceToPlayer >= Settings.f_chamDistance) player.GetChamHandler().ApplyCham();
+                else player.GetChamHandler().RemoveCham();
 
                 VisualUtil.DrawDistanceString(screen, playerUsername, Settings.c_playerESP, distanceToPlayer);
             }
@@ -190,8 +186,8 @@ namespace LethalMenu.Cheats
                 float distanceToPlayer = this.GetDistanceToPlayer(enemyAi.transform.position);
                 if (distanceToPlayer > Settings.f_espDistance) continue;
 
-                if (Settings.b_chamsEnemy && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(enemyAi);
-                else RemoveChams(enemyAi);
+                if (Settings.b_chamsEnemy && distanceToPlayer >= Settings.f_chamDistance) enemyAi.Handle().ApplyCham();
+                else enemyAi.Handle().RemoveCham();
 
                 VisualUtil.DrawDistanceString(screen, enemyName, Settings.c_enemyESP, distanceToPlayer);
             }
@@ -203,8 +199,8 @@ namespace LethalMenu.Cheats
             RGBAColor color = Settings.c_playerESP;
             string text = player.playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
 
-            if(Settings.b_chamsPlayer && distance >= Settings.f_chamDistance) ApplyChams(body);
-            else RemoveChams(body);
+            if(Settings.b_chamsPlayer && distance >= Settings.f_chamDistance) body.GetChamHandler().ApplyCham();    
+            else body.GetChamHandler().RemoveCham();
 
             VisualUtil.DrawDistanceString(screen, text, color, distance);
         }
@@ -241,8 +237,9 @@ namespace LethalMenu.Cheats
                     text += $" ({item.scrapValue}) ";
                 }
 
-                if (Settings.b_chamsObject && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(item);
-                else RemoveChams(item);
+                if (Settings.b_chamsObject && distanceToPlayer >= Settings.f_chamDistance) item.GetChamHandler().ApplyCham();
+                else item.GetChamHandler().RemoveCham();
+
 
                 VisualUtil.DrawDistanceString(screen, text, color, distanceToPlayer);
             }
@@ -258,8 +255,8 @@ namespace LethalMenu.Cheats
                 string text = "Steam Valve";
                 float distanceToPlayer = this.GetDistanceToPlayer(valve.transform.position);
 
-                if (Settings.b_chamsSteamHazard && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(valve);
-                else RemoveChams(valve);
+                if (Settings.b_chamsSteamHazard && distanceToPlayer >= Settings.f_chamDistance) valve.GetChamHandler().ApplyCham();
+                else valve.GetChamHandler().ApplyCham();
 
                 VisualUtil.DrawDistanceString(screen, text, Settings.c_steamHazardESP, distanceToPlayer);
 
@@ -283,8 +280,8 @@ namespace LethalMenu.Cheats
 
                 text += " [ " + door.objectCode + " ]";
 
-                if(Settings.b_chamsBigDoor && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(door);
-                else RemoveChams(door);
+                if(Settings.b_chamsBigDoor && distanceToPlayer >= Settings.f_chamDistance) door.GetChamHandler().ApplyCham();
+                else door.GetChamHandler().RemoveCham();
 
                 
                 VisualUtil.DrawDistanceString(screen, text, Settings.c_bigDoorESP, distanceToPlayer);
@@ -303,8 +300,8 @@ namespace LethalMenu.Cheats
                 float distanceToPlayer = this.GetDistanceToPlayer(door.transform.position);
                 if (distanceToPlayer > Settings.f_espDistance) continue;
 
-                if (Settings.b_chamsDoorLock && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(door);
-                else RemoveChams(door);
+                if (Settings.b_chamsDoorLock && distanceToPlayer >= Settings.f_chamDistance) door.GetChamHandler().ApplyCham();
+                else door.GetChamHandler().RemoveCham();
 
                 
                 if(door.isLocked)

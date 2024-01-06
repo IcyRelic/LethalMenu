@@ -52,16 +52,26 @@ namespace LethalMenu.Menu.Tab
 
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Get Turret");
+            GUILayout.Label("Get Object");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-        
+                GrabbableObject grabbableObject = Object.FindAnyObjectByType<GrabbableObject>();
+                Transform parentTransform = grabbableObject.transform.parent;
 
-               
+                if (parentTransform != null)
+                {
+                    GameObject parentGameObject = parentTransform.gameObject;
+                    Debug.LogError("Parent GameObject: " + parentGameObject.name);
+                }
+                else
+                {
+                    Debug.LogError("This GameObject has no parent.");
+                }
 
 
-                
+
+
             }
 
 
@@ -128,7 +138,7 @@ namespace LethalMenu.Menu.Tab
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => r.Handle().ApplyCham());
+                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => r.GetChamHandler().ApplyCham());
             }
 
 
