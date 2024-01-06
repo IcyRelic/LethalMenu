@@ -122,7 +122,6 @@ namespace LethalMenu.Menu.Tab
             UI.Checkbox("Objects", ref Settings.b_chamsObject);
             UI.Checkbox("Enemies", ref Settings.b_chamsEnemy);
             UI.Checkbox("Players", ref Settings.b_chamsPlayer);
-            UI.Checkbox("Entrance/Exit", ref Settings.b_chamsEntranceExit);
             UI.Checkbox("Landmines", ref Settings.b_chamsLandmine);
             UI.Checkbox("Breaker Box", ref Settings.b_chamsBreaker);
             GUILayout.EndVertical();

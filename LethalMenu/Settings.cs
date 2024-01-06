@@ -231,7 +231,6 @@ namespace LethalMenu
         public static bool b_chamsTurret = false;
         public static bool b_chamsBigDoor = false;
         public static bool b_chamsDoorLock = false;
-        public static bool b_chamsEntranceExit = false;
         public static bool b_chamsSteamHazard = false;
         public static bool b_chamsBreaker = false;
         public static bool b_chamsShip = false;
@@ -364,7 +363,6 @@ namespace LethalMenu
                 chams["Turret"] = b_chamsTurret.ToString();
                 chams["BigDoor"] = b_chamsBigDoor.ToString();
                 chams["DoorLock"] = b_chamsDoorLock.ToString();
-                chams["EntranceExit"] = b_chamsEntranceExit.ToString();
                 chams["SteamHazard"] = b_chamsSteamHazard.ToString();
                 chams["Breaker"] = b_chamsBreaker.ToString();
                 chams["Ship"] = b_chamsShip.ToString();
@@ -489,8 +487,6 @@ namespace LethalMenu
                             b_chamsBigDoor = bool.Parse(bigDoorToken.ToString());
                         if (chams.TryGetValue("DoorLock", out JToken doorLockToken))
                             b_chamsDoorLock = bool.Parse(doorLockToken.ToString());
-                        if (chams.TryGetValue("EntranceExit", out JToken entranceExitToken))
-                            b_chamsEntranceExit = bool.Parse(entranceExitToken.ToString());
                         if (chams.TryGetValue("SteamHazard", out JToken steamHazardToken))
                             b_chamsSteamHazard = bool.Parse(steamHazardToken.ToString());
                         if (chams.TryGetValue("Breaker", out JToken breakerToken))

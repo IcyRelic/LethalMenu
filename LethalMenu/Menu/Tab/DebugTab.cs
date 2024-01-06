@@ -1,4 +1,5 @@
-﻿using LethalMenu.Handler;
+﻿using DunGen;
+using LethalMenu.Handler;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
@@ -16,12 +17,6 @@ namespace LethalMenu.Menu.Tab
         public DebugTab() : base("Debug") { }
 
         private Vector2 scrollPos = Vector2.zero;
-        private Vector2 scrollPos2 = Vector2.zero;
-        private string s_amount = "";
-        private bool b_outside = false;
-
-
-        private int selectedItem = 65;
 
         public override void Draw()
         {
@@ -51,34 +46,6 @@ namespace LethalMenu.Menu.Tab
 
 
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Get Object");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                GrabbableObject grabbableObject = Object.FindAnyObjectByType<GrabbableObject>();
-                Transform parentTransform = grabbableObject.transform.parent;
-
-                if (parentTransform != null)
-                {
-                    GameObject parentGameObject = parentTransform.gameObject;
-                    Debug.LogError("Parent GameObject: " + parentGameObject.name);
-                }
-                else
-                {
-                    Debug.LogError("This GameObject has no parent.");
-                }
-
-
-
-
-            }
-
-
-
-            GUILayout.EndHorizontal();
-
-
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Spawnable Map Objects");
@@ -87,13 +54,7 @@ namespace LethalMenu.Menu.Tab
             {
                 StartOfRound.Instance.currentLevel.spawnableMapObjects.ToList().ForEach(o =>
                 {
-                    LethalMenu.debugMessage += o.prefabToSpawn.name + " => " + o.prefabToSpawn.GetType() + " => " + o.prefabToSpawn.tag + "\n";
-                    foreach (var item in o.prefabToSpawn.GetComponentsInChildren<MeshRenderer>())
-                    {
-                        LethalMenu.debugMessage += item.name + " => " + item.GetType() + "\n";
-                    }
-
-                    
+                    LethalMenu.debugMessage += o.prefabToSpawn.name + " => " + o.prefabToSpawn.GetType() + " => " + o.prefabToSpawn.tag + "\n";       
                 });
             }
             GUILayout.EndHorizontal();

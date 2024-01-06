@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 using Object = UnityEngine.Object;
 
 
@@ -117,9 +118,6 @@ namespace LethalMenu.Cheats
                 float distanceToPlayer = this.GetDistanceToPlayer(door.transform.position);
                 if (distanceToPlayer > Settings.f_espDistance || !WorldToScreen(door.transform.position, out screen)) continue;
 
-
-                if (Settings.b_chamsEntranceExit && distanceToPlayer >= Settings.f_chamDistance) door.GetChamHandler().ApplyCham();
-                else door.GetChamHandler().RemoveCham();
                 
                 VisualUtil.DrawDistanceString(screen, text, Settings.c_entranceExitESP, distanceToPlayer); 
                
@@ -186,8 +184,8 @@ namespace LethalMenu.Cheats
                 float distanceToPlayer = this.GetDistanceToPlayer(enemyAi.transform.position);
                 if (distanceToPlayer > Settings.f_espDistance) continue;
 
-                if (Settings.b_chamsEnemy && distanceToPlayer >= Settings.f_chamDistance) enemyAi.Handle().ApplyCham();
-                else enemyAi.Handle().RemoveCham();
+                if (Settings.b_chamsEnemy && distanceToPlayer >= Settings.f_chamDistance) enemyAi.GetChamHandler().ApplyCham();
+                else enemyAi.GetChamHandler().RemoveCham();
 
                 VisualUtil.DrawDistanceString(screen, enemyName, Settings.c_enemyESP, distanceToPlayer);
             }
