@@ -34,10 +34,9 @@ namespace LethalMenu.Util
 
                 int rgb = int.Parse(hexCode, System.Globalization.NumberStyles.HexNumber);
 
-                r = ((rgb >> 24) & 0xFF) / 255f;
-                g = ((rgb >> 16) & 0xFF) / 255f;
-                b = ((rgb >> 8) & 0xFF) / 255f;
-                
+                r = hexCode.Length == 8 ? ((rgb >> 24) & 0xFF) / 255f : ((rgb >> 16) & 0xFF) / 255f;
+                g = hexCode.Length == 8 ? ((rgb >> 16) & 0xFF) / 255f : ((rgb >> 8) & 0xFF) / 255f;
+                b = hexCode.Length == 8 ? ((rgb >> 8) & 0xFF) / 255f : (rgb & 0xFF) / 255f;
                 a = hexCode.Length == 8 ? (rgb & 0xFF) / 255f : alpha;
             }
             catch

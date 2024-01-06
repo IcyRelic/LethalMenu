@@ -1,12 +1,9 @@
-﻿using Dissonance.Integrations.Unity_NFGO;
-using LethalMenu.Cheats;
+﻿using LethalMenu.Handler;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System.Linq;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Vector2 = UnityEngine.Vector2;
 
@@ -59,39 +56,9 @@ namespace LethalMenu.Menu.Tab
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                Turret turret = Object.FindAnyObjectByType<Turret>();
+        
 
-                turret.GetComponentsInParent<Component>().ToList().ForEach(c =>
-                {
-                    LethalMenu.debugMessage += c.GetType().Name + "\n";
-                });
-                LethalMenu.debugMessage += "-------------------\n";
-                turret.GetComponentsInChildren<Component>().ToList().ForEach(c =>
-                {
-                    LethalMenu.debugMessage += c.GetType().Name + "\n";
-
-                    if(c.GetType() == typeof(MeshRenderer))
-                    {
-                        LethalMenu.debugMessage2 +=  "Materials Found: \n" +((MeshRenderer) c).materials.Length;
-                        MeshRenderer r = (MeshRenderer)c;
-
-
-
-                        ESP.Instance.ApplyChams(r);
-
-                        Material[] mats = new Material[r.sharedMaterials.Length];
-
-                        for (int i = 0; i < mats.Length; i++)
-                        {
-                            mats[i] = ESP.Instance.chamsMaterial;
-                        }
-
-                        r.SetSharedMaterials(mats.ToList());
-
-                    }
-                });
-
-                
+               
 
 
                 
@@ -101,9 +68,25 @@ namespace LethalMenu.Menu.Tab
 
             GUILayout.EndHorizontal();
 
-   
 
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Spawnable Map Objects");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                StartOfRound.Instance.currentLevel.spawnableMapObjects.ToList().ForEach(o =>
+                {
+                    LethalMenu.debugMessage += o.prefabToSpawn.name + " => " + o.prefabToSpawn.GetType() + " => " + o.prefabToSpawn.tag + "\n";
+                    foreach (var item in o.prefabToSpawn.GetComponentsInChildren<MeshRenderer>())
+                    {
+                        LethalMenu.debugMessage += item.name + " => " + item.GetType() + "\n";
+                    }
+
+                    
+                });
+            }
+            GUILayout.EndHorizontal();
 
 
 
@@ -119,9 +102,6 @@ namespace LethalMenu.Menu.Tab
                     LethalMenu.debugMessage += "Hit: " + collider.name + " =>" + collider.gameObject.name + "\n";
                 }
             }
-
-
-
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -148,10 +128,7 @@ namespace LethalMenu.Menu.Tab
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r =>
-                {
-                    ESP.Instance.ApplyChams(r);
-                });
+                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => r.Handle().ApplyCham());
             }
 
 

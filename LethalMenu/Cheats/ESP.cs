@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Handler;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using System;
@@ -14,90 +15,10 @@ namespace LethalMenu.Cheats
 {
     internal class ESP : Cheat
     {
+        public void ApplyChams(MonoBehaviour obj) => obj.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().ApplyCham());
+        public void RemoveChams(MonoBehaviour obj) => obj.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().RemoveCham());
 
-        private Dictionary<int, Material[]> materials = new Dictionary<int, Material[]>();
-        private int _color;
-
-        private static ESP _instance;
-        public static ESP Instance { get { return _instance; } set { _instance = value; } }
-
-        public Material chamsMaterial = new Material(Shader.Find("Hidden/Internal-Colored"))
-        {
-            hideFlags = HideFlags.DontSaveInEditor | HideFlags.HideInHierarchy
-        };
-
-
-        public void ApplyChams(MonoBehaviour obj)
-        {
-            if (obj == null) return;
-
-            List<Renderer> renderers = obj.GetComponentsInChildren<Renderer>().ToList();
-            renderers.AddRange(obj.GetComponentsInParent<Renderer>());
-
-    
-
-
-            renderers.ForEach(r =>
-            {
-                if(!materials.ContainsKey(r.GetInstanceID())) ApplyChams(r);
-
-                UpdateChamColor(r);
-            });
-        }
-
-        public void ApplyChams(Renderer r)
-        {
-            if (r == null || materials.ContainsKey(r.GetInstanceID())) return;
-
-            materials.Add(r.GetInstanceID(), r.materials);
-            chamsMaterial.SetColor(_color, Settings.c_chams.GetColor());
-            r.SetMaterials(Enumerable.Repeat(chamsMaterial, r.materials.Length).ToList());
-            
-        }
-
-        public void UpdateChamColor(Renderer r) => r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
-
-        public void RemoveChams(MonoBehaviour obj)
-        {
-            if(obj == null) return;
-
-            obj.GetComponentsInChildren<Renderer>().ToList().ForEach(r =>
-            {
-                if(materials.TryGetValue(r.GetInstanceID(), out Material[] mats))
-                {
-                    r.SetMaterials(mats.ToList());
-                    materials.Remove(r.GetInstanceID());
-                }
-            });
-        }
-
-        private IEnumerator CleanUpMaterials()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(15f);
-
-                List<int> keep = new List<int>();
-                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
-
-                materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => materials.Remove(k));
-            }
-        }
-
-        public ESP()
-        {
-            _instance = this;
-            chamsMaterial.SetInt("_SrcBlend", 5);
-            chamsMaterial.SetInt("_DstBlend", 10);
-            chamsMaterial.SetInt("_Cull", 0);
-            chamsMaterial.SetInt("_ZTest", 8); // Render through walls
-            chamsMaterial.SetInt("_ZWrite", 0);
-            chamsMaterial.SetColor("_Color", Settings.c_chams.GetColor());
-            _color = Shader.PropertyToID("_Color");
-            LethalMenu.Instance.StartCoroutine(CleanUpMaterials());
-            
-        }
-
+        public ESP() => RenderHandler.SetupChamMaterial();
         public override void OnGui()
         {
             if (!(bool)StartOfRound.Instance) return;
@@ -148,9 +69,12 @@ namespace LethalMenu.Cheats
                     TerminalAccessibleObject termObj = turret.GetComponent<TerminalAccessibleObject>();
 
                     text += " [ " + termObj.objectCode + " ]";
+                    GameObject parent = turret.gameObject.transform.parent.gameObject;
 
-                    if (Settings.b_chamsTurret && distanceToPlayer >= Settings.f_chamDistance) ApplyChams(turret);
-                    else RemoveChams(turret);
+                    if (Settings.b_chamsTurret && distanceToPlayer >= Settings.f_chamDistance)
+                        parent.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().ApplyCham());
+                    else
+                        parent.GetComponentsInChildren<Renderer>().ToList().ForEach(r => r.Handle().RemoveCham());
 
                     VisualUtil.DrawDistanceString(screen, text, Settings.c_turretESP, distanceToPlayer);
                 }
