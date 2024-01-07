@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
+using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -72,23 +74,64 @@ namespace LethalMenu.Handler
             });
         }
 
+        public void ProcessCham(float distance)
+        {
+            if(@object == null) return;
+
+            bool e = false;
+
+            if (@object is GrabbableObject) e = Settings.b_chamsObject;
+            if (@object is Landmine) e = Settings.b_chamsLandmine;
+            if (@object is GameObject && @object.name == "TurretContainer") e = Settings.b_chamsTurret;
+            if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
+            if (@object is EnemyAI) e = Settings.b_chamsEnemy;
+            if (@object is SteamValveHazard) e = Settings.b_chamsSteamHazard;
+            if (@object is TerminalAccessibleObject && ((TerminalAccessibleObject)@object).isBigDoor) e = Settings.b_chamsBigDoor;
+            if (@object is DoorLock) e = Settings.b_chamsDoorLock;
+            if (@object is HangarShipDoor) e = Settings.b_chamsShip;
+            if (@object is BreakerBox) e = Settings.b_chamsBreaker;
+
+
+            if(e && distance >= Settings.f_chamDistance) ApplyCham();
+            else RemoveCham();
+
+            if (   (@object is GrabbableObject && ((GrabbableObject)@object).isHeld)
+                || (@object is SteamValveHazard && !((SteamValveHazard)@object).triggerScript.interactable)
+                
+            ) RemoveCham();
+
+        }
         public void ApplyCham()
         {
             if (@object == null) return;
 
             GetRenderers().ForEach(r =>
             {
+                if(r == null) return;
+
                 if (!materials.ContainsKey(r.GetInstanceID()))
                 {
+                    if(r.materials == null) return;
+
                     materials.Add(r.GetInstanceID(), r.materials);
                     r.SetMaterials(Enumerable.Repeat(m_chamMaterial, r.materials.Length).ToList());
                 }
 
-                UpdateChamColor(r);
             }); 
         }
-        private void UpdateChamColor(Renderer r) => r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
 
+        public static void UpdateChamColors()
+        {
+            renderers.Values.ToList().ForEach(list =>
+            {
+                list.ForEach(r =>
+                {
+                    if(r == null || r.materials == null) return;
+                    r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
+                });
+            });
+        }
+        
         public static ChamHandler GetHandler(Object obj)
         {
             return new ChamHandler(obj);

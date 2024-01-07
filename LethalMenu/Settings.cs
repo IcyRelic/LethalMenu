@@ -157,7 +157,7 @@ namespace LethalMenu
             set { Hack.OpenMenu.SetToggle(value);  }
         }
 
-        /* *
+        /* *    
          * Menu Settings
          * */
         private static GuiSize _guiSize = GuiSize.Medium;

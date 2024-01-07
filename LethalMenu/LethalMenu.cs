@@ -89,6 +89,19 @@ namespace LethalMenu
             Settings.Config.LoadConfig();
         }
 
+        public void FixedUpdate()
+        {
+
+            try
+            {
+                if (!(bool)StartOfRound.Instance) return;
+                cheats.ForEach(cheat => cheat.FixedUpdate());
+            }
+            catch (Exception e)
+            {
+                debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+            }
+        }
         public void Update()
         {
             if (!(bool)StartOfRound.Instance || StartOfRound.Instance.inShipPhase) Settings.v_savedLocation = Vector3.zero;

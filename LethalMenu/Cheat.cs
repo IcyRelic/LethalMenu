@@ -41,7 +41,7 @@ namespace LethalMenu
 
         protected float GetDistanceToPlayer(Vector3 position)
         {
-            return (float)Math.Round((double)Vector3.Distance(GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.position, position));
+            return (float)Math.Round((double)Vector3.Distance(CameraManager.ActiveCamera.transform.position, position));
         }
 
         public virtual void OnGui() { }

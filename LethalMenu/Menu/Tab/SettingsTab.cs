@@ -1,5 +1,6 @@
 ﻿using DunGen;
 using LethalMenu.Cheats;
+using LethalMenu.Handler;
 using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
@@ -181,7 +182,11 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("ESP Colors", true);
             UI.TextboxAction("Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
-                new UIButton("Set", () => SetColor(ref Settings.c_chams, s_chamsColor))
+                new UIButton("Set", () =>
+                {
+                    SetColor(ref Settings.c_chams, s_chamsColor);
+                    ChamHandler.UpdateChamColors();
+                })
             );
 
             UI.TextboxAction("Objects", ref s_objectESPColor, @"[^0-9A-Za-z]", 8,

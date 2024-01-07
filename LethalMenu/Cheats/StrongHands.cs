@@ -9,7 +9,7 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            if (LethalMenu.localPlayer.currentlyHeldObjectServer == null) return;
+            if (LethalMenu.localPlayer == null || LethalMenu.localPlayer.currentlyHeldObjectServer == null) return;
 
             LethalMenu.localPlayer.twoHanded = Hack.StrongHands.IsEnabled() ? false : LethalMenu.localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
         }
