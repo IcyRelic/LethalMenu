@@ -48,6 +48,7 @@ namespace LethalMenu
         NoCooldown,
         InstantInteract,
         SuperShovel,
+        StrongHands,
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -198,6 +199,7 @@ namespace LethalMenu
             {Hack.NoCooldown, false},
             {Hack.InstantInteract, false},
             {Hack.SuperShovel, false},
+            {Hack.StrongHands, false},
 
         };
 

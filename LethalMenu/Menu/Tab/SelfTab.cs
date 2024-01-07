@@ -54,6 +54,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.NoCooldown, "No Cooldowns");
             UI.Hack(Hack.InstantInteract, "Instant Interact");
             UI.Hack(Hack.SuperShovel, "Super Shovel");
+            UI.Hack(Hack.StrongHands, "Strong Hands");
 
             GUILayout.EndScrollView();
         }
