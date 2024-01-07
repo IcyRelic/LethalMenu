@@ -2,6 +2,11 @@
 <sup>A Lethal Company Cheat By [IcyRelic](https://github.com/icyrelic) | [UnkownCheats Thread](https://www.unknowncheats.me/forum/lethal-company/615575-lethal-menu-lethal-company-cheat.html)</sup>
 
 #### Screenshots
+<p>
+  <img src="https://i.imgur.com/H5FEQMr.png" width="445" height="255" />
+  <img src="https://i.imgur.com/D7srqbi.png" width="445" height="255" />
+</p>
+
 
 ## Issue Tracking
 
@@ -53,13 +58,14 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Interact Through Walls:** Perform actions through barriers and surfaces.
   - **Ghost Mode (Credit @Ugleh):** Incorporate ghostly attributes for unique gameplay.
   - **Free Camera:** Detach the camera for unrestricted viewing.
+  - **Super Shovel (x1000 Damage):** Instantly kill anything with a shovel/sign.
 
   #### Troll
   - **Toggle Ship Lights:** Turn the ship lights on/off from anywhere
   - **Toggle Ship Horn:** Toggle the ship horn on/off form anywhere
   - **Blow Up All Landmines:** Trigger detonation for all placed landmines.
-  - **Toggle All Landmines:** Activate/Deactive all landmines
-  - **Toggle All Turrets:** Activate/Deactive all turrets
+  - **Toggle All Landmines:** Activate/Deactivate all landmines
+  - **Toggle All Turrets:** Activate/Deactivate all turrets
   - **Kill All Enemies:** Annihilate all enemy entities in the game.
   - **Stun All Enemies:** Stun all enemies in the game temporarily.
   - **Teleport All Items (Client Only):** Teleports all items currently outside the ship to your location
@@ -163,8 +169,8 @@ Thank you for contributing to the development of this mod by sharing your feedba
 
 ## Credit
   - [UrbanaJoker](https://www.unknowncheats.me/forum/members/2470892.html) - Learned a lot from him. ESP began from his [project](https://www.unknowncheats.me/forum/lethal-company/613770-infinite-company-lethal-company-cheat.html) and has since been further developed/advanced.
-  - [Ugleh](https://www.unknowncheats.me/forum/members/1305791.html) - Ghost Mode was derrived from code provided in his [post](https://www.unknowncheats.me/forum/3949378-post150.html)
-  - [winstxnhdw](https://www.unknowncheats.me/forum/members/5891304.html) - Extreamly Talented Individual, Learned a lot from his [project](https://github.com/winstxnhdw/lc-hax/), Lure monsters was derrived from it.
+  - [Ugleh](https://www.unknowncheats.me/forum/members/1305791.html) - Ghost Mode was derived from code provided in his [post](https://www.unknowncheats.me/forum/3949378-post150.html)
+  - [winstxnhdw](https://www.unknowncheats.me/forum/members/5891304.html) - Extreamly Talented Individual, Learned a lot from his [project](https://github.com/winstxnhdw/lc-hax/), Lure monsters was derived from it.
     - Additionally adopted several style/techniques from him
   - [Project Apparatus](https://github.com/KaylinOwO/Project-Apparatus/) - Inspiration/code style
 
