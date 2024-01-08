@@ -49,6 +49,7 @@ namespace LethalMenu
         InstantInteract,
         SuperShovel,
         StrongHands,
+        Invisibility,
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -82,6 +83,9 @@ namespace LethalMenu
         ModifyScrap,
         SpawnMaskedEnemy,
         BreakAllWebs,
+        SpawnLandmine,
+        SpawnTurret,
+        SpawnMapObjects,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -113,7 +117,7 @@ namespace LethalMenu
         TeleportEnemy,
         SpiderWebPlayer,
         LureAllEnemies,
-
+        ExplodeClosestMine,
 
         EnemyControl
     }
@@ -125,7 +129,7 @@ namespace LethalMenu
             Hack.ModifyQuota,
             Hack.ModifyCredits,
             Hack.KillPlayer,
-            
+
             Hack.HealPlayer,
             Hack.LightningStrikePlayer,
             Hack.Experience,
@@ -138,7 +142,9 @@ namespace LethalMenu
             Hack.SpiderWebPlayer,
             Hack.TeleportEnemy,
             Hack.EnemyControl,
-            Hack.LureAllEnemies
+            Hack.LureAllEnemies,
+            Hack.ExplodeClosestMine,
+            Hack.SpawnMapObjects
         };
 
         private static List<Hack> Waiting = new List<Hack>();
@@ -148,7 +154,6 @@ namespace LethalMenu
         {
             {Hack.OpenMenu, false},
             {Hack.ToggleCursor, false},
-
             {Hack.GodMode, false},
             {Hack.SuperJump, false},
             {Hack.FastClimb, false},
@@ -200,6 +205,8 @@ namespace LethalMenu
             {Hack.InstantInteract, false},
             {Hack.SuperShovel, false},
             {Hack.StrongHands, false},
+            {Hack.Invisibility, false},
+
 
         };
 
@@ -248,6 +255,10 @@ namespace LethalMenu
             {Hack.SpiderWebPlayer, (Action<PlayerControllerB>) HackExecutor.SpiderWebPlayer},
             {Hack.BreakAllWebs, (Action) HackExecutor.BreakAllWebs},
             {Hack.LureAllEnemies, (Action<PlayerControllerB>) HackExecutor.LureAllEnemies},
+            {Hack.SpawnMapObjects, (Action<MapObject>) HackExecutor.SpawnMapObjects},
+            {Hack.SpawnLandmine, (Action) HackExecutor.SpawnLandmine},
+            {Hack.SpawnTurret, (Action) HackExecutor.SpawnTurret},
+            {Hack.ExplodeClosestMine, (Action<PlayerControllerB>) HackExecutor.ExplodeClosestMine},
 
         };
 
@@ -369,6 +380,11 @@ namespace LethalMenu
             return Waiting.Contains(hack);
         }
 
+        public static bool IsAnyHackWaiting(this Hack hack)
+        {
+            return Waiting.Count > 0;
+        }
+
         public static void SetWaiting(this Hack hack, bool b)
         {
             if(b && !Waiting.Contains(hack)) Waiting.Add(hack);
@@ -411,7 +427,7 @@ namespace LethalMenu
             if (player == null) return;
 
             RaycastHit hitInfo;
-            if (Physics.Raycast(new Ray(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward), out hitInfo, 5f, LayerMask.GetMask("InteractableObject")))
+            if (Physics.Raycast(new Ray(CameraManager.ActiveCamera.transform.position, CameraManager.ActiveCamera.transform.forward), out hitInfo, 5f, LayerMask.GetMask("InteractableObject")))
             {
                 DoorLock doorLock = hitInfo.transform.GetComponent<DoorLock>();
                 if (doorLock != null && doorLock.isLocked && !doorLock.isPickingLock)
@@ -495,8 +511,12 @@ namespace LethalMenu
         public static void StartGame() => RoundHandler.StartGame();
         public static void ModQuota(int amt) => RoundHandler.SetQuota(amt);
         public static void ModCredits(int amt, ActionType type) => RoundHandler.ModCredits(amt, type);
-        public static void BreakAllWebs() => RoundHandler.BreakAllWebs();   
+        public static void BreakAllWebs() => RoundHandler.BreakAllWebs();
+        public static void SpawnLandmine() => RoundHandler.SpawnMapObject(MapObject.Landmine);
+        public static void SpawnTurret() => RoundHandler.SpawnMapObject(MapObject.TurretContainer);
+        public static void SpawnMapObjects(MapObject type) => RoundHandler.SpawnMapObjects(type);
 
+        public static void ExplodeClosestMine(PlayerControllerB player) => player.Handle().ExplodeClosestLandmine();
         public static void LureAllEnemies(PlayerControllerB player) => player.Handle().LureAllEnemies();
         public static void SpiderWebPlayer(PlayerControllerB player) => player.Handle().SpawnSpiderWebs(6);
         public static void TeleportAllItems() => LethalMenu.localPlayer.Handle().TeleportAllItems();

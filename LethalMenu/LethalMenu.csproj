@@ -43,6 +43,9 @@
     <Reference Include="Unity.TextMeshPro">
       <HintPath>Resources\BaseGame\Unity.TextMeshPro.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>Resources\BaseGame\UnityEngine.AIModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>Resources\BaseGame\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>

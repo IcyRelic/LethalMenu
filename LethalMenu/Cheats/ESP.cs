@@ -6,8 +6,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Device;
+using UnityEngine.Diagnostics;
 using static UnityEngine.GraphicsBuffer;
 using Object = UnityEngine.Object;
 
@@ -27,7 +30,7 @@ namespace LethalMenu.Cheats
             
             try
             {
-                if (Hack.ObjectESP.IsEnabled()) this.DisplayObjects();
+                if (Hack.ObjectESP.IsEnabled()) this.DisplayScrap();
                 if (Hack.EnemyESP.IsEnabled()) this.DisplayEnemyAI();
                 if (Hack.PlayerESP.IsEnabled()) this.DisplayPlayers();
                 if (Hack.DoorESP.IsEnabled()) this.DisplayEntranceExitDoors();
@@ -38,7 +41,6 @@ namespace LethalMenu.Cheats
                 if (Hack.SteamHazardESP.IsEnabled()) this.DisplaySteamHazards();
                 if (Hack.DoorLockESP.IsEnabled()) this.DisplayDoorLocks();
                 if (Hack.BreakerESP.IsEnabled()) this.DisplayBreaker();
-                //this.DisplayChams();
             }
             catch (Exception e)
             {
@@ -50,243 +52,169 @@ namespace LethalMenu.Cheats
         }
 
         public override void Update() => this.DisplayChams();
-        //public override void FixedUpdate() => this.DisplayChams();
 
-        private void DisplayChams()
+        private void DisplayChams<T>(IEnumerable<T> objects, Func<T, RGBAColor> colorSelector) where T : Object
         {
-            List<MonoBehaviour> list = new List<MonoBehaviour>();
-
-            list.AddRange(LethalMenu.items);
-            list.AddRange(LethalMenu.landmines);
-            list.AddRange(LethalMenu.turrets);
-            list.AddRange(LethalMenu.players);
-            list.AddRange(LethalMenu.enemies);
-            list.AddRange(LethalMenu.steamValves);
-            list.AddRange(LethalMenu.bigDoors);
-            list.AddRange(LethalMenu.doorLocks);
-            list.Add(LethalMenu.shipDoor);
-            list.Add(LethalMenu.breaker);
-
-            list.ForEach(o =>
+            objects.ToList().ForEach(o =>
             {
-                if(o == null) return;
-                float distance = GetDistanceToPlayer(o.transform.position);
+                Transform transform;
+
+                if (o is Component component) transform = component.transform;
+                else if (o is GameObject gameObject) transform = gameObject.transform;
+                else return;
+
+                if (o == null) return;
+                float distance = GetDistanceToPlayer(transform.position);
                 o.GetChamHandler().ProcessCham(distance);
             });
         }
-            
-        private void DisplayTurrets()
+
+        private void DisplayChams()
         {
-            foreach (Turret turret in LethalMenu.turrets)
+            DisplayChams(LethalMenu.items, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.landmines, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.turrets.ConvertAll(t => t.transform.parent.gameObject), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.players, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.enemies, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.steamValves, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.bigDoors, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.doorLocks, _ => Settings.c_chams);
+            DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
+            DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
+        }
+
+        
+
+        private void DisplayObjects<T>(IEnumerable<T> objects, Func<T, string> labelSelector, Func<T, RGBAColor> colorSelector) where T : Component
+        {
+            foreach (T obj in objects)
             {
-                if (turret != null && turret.IsSpawned)
+                if (obj != null && obj.gameObject.activeSelf)
                 {
-                    string text = "Turret";
-                    float distanceToPlayer = this.GetDistanceToPlayer(turret.transform.position);
-                    if (distanceToPlayer > Settings.f_espDistance) continue;
+                    float distance = GetDistanceToPlayer(obj.transform.position);
 
-                    Vector3 screen;
+                    if(distance > Settings.f_espDistance || !WorldToScreen(obj.transform.position, out Vector3 screen)) continue;
 
-                    
-                    
-
-                    if (!WorldToScreen(turret.transform.position, out screen)) continue;
-
-                    TerminalAccessibleObject termObj = turret.GetComponent<TerminalAccessibleObject>();
-
-                    text += " [ " + termObj.objectCode + " ]";
-                    
-
-                    VisualUtil.DrawDistanceString(screen, text, Settings.c_turretESP, distanceToPlayer);
+                    VisualUtil.DrawDistanceString(screen, labelSelector(obj), colorSelector(obj), distance);
                 }
             }
+        }
+
+        private void DisplayTurrets()
+        {
+            DisplayObjects(
+                LethalMenu.turrets.Where(t => t != null && t.IsSpawned), 
+                turret => "Turret [ " + turret.GetComponent<TerminalAccessibleObject>().objectCode + " ]",
+                turret => Settings.c_turretESP
+            );
         }
 
         private void DisplayShip()
         {
-            if (LethalMenu.shipDoor == null) return;
-            Vector3 screen;
-            float distanceToPlayer = this.GetDistanceToPlayer(LethalMenu.shipDoor.transform.position);
-            if (distanceToPlayer > Settings.f_espDistance || !WorldToScreen(LethalMenu.shipDoor.transform.position, out screen)) return;
-            
-            VisualUtil.DrawDistanceString(screen, "Ship", Settings.c_shipESP, distanceToPlayer);
+            DisplayObjects(
+                new[] { LethalMenu.shipDoor },
+                ship => "Ship",
+                ship => Settings.c_shipESP
+            );
         }
 
         private void DisplayBreaker()
         {
-            if (LethalMenu.breaker == null) return;
-            Vector3 screen;
-            float distanceToPlayer = this.GetDistanceToPlayer(LethalMenu.breaker.transform.position);
-            if (distanceToPlayer > Settings.f_espDistance || !WorldToScreen(LethalMenu.breaker.transform.position, out screen)) return;
-
-            VisualUtil.DrawDistanceString(screen, "Breaker Box", Settings.c_breakerESP, distanceToPlayer);
+            DisplayObjects(
+                new[] { LethalMenu.breaker },
+                breaker => "Breaker Box",
+                breaker => Settings.c_breakerESP
+            );
         }
 
         private void DisplayEntranceExitDoors()
         {
-            foreach (EntranceTeleport door in LethalMenu.doors)
-            {
-                if (door == null) continue;
-                Vector3 screen;
-                string text = door.isEntranceToBuilding ? "Entrance" : "Exit";
-                float distanceToPlayer = this.GetDistanceToPlayer(door.transform.position);
-                if (distanceToPlayer > Settings.f_espDistance || !WorldToScreen(door.transform.position, out screen)) continue;
-
-                
-                VisualUtil.DrawDistanceString(screen, text, Settings.c_entranceExitESP, distanceToPlayer); 
-            }
+            DisplayObjects(
+                LethalMenu.doors,
+                door => door.isEntranceToBuilding ? "Entrance" : "Exit",
+                door => Settings.c_entranceExitESP
+            );
         }
 
         private void DisplayLandmines()
         {
-            foreach (Landmine landmine in LethalMenu.landmines)
-            {
-                if (landmine == null || !landmine.IsSpawned || landmine.hasExploded) continue;
-                string text = "Landmine";
-                float distanceToPlayer = this.GetDistanceToPlayer(landmine.transform.position);
-                if (distanceToPlayer > Settings.f_espDistance) continue;
-
-                Vector3 screen;
-                if (!WorldToScreen(landmine.transform.position, out screen)) continue;
-
-                TerminalAccessibleObject termObj = landmine.GetComponent<TerminalAccessibleObject>();
-
-                text += " [ " + termObj.objectCode + " ]";
-
-                VisualUtil.DrawDistanceString(screen, text, Settings.c_landmineESP, distanceToPlayer);
-            }
+            DisplayObjects(
+                LethalMenu.landmines.Where(m => m != null && m.IsSpawned && !m.hasExploded),
+                mine => "Landmine [ " + mine.GetComponent<TerminalAccessibleObject>().objectCode + " ]",
+                mine => Settings.c_landmineESP
+            );
         }
 
         private void DisplayPlayers()
         {
-            foreach (PlayerControllerB player in LethalMenu.players)
-            {
-                
-                Vector3 screen;
-                if (player == null || player.isPlayerDead || player.IsLocalPlayer || player.disconnectedMidGame || !WorldToScreen(player.playerEye.transform.position, out screen) || player.playerClientId == GameNetworkManager.Instance.localPlayerController.playerClientId) continue;
-
-                
-                string playerUsername = player.playerUsername;
-                float distanceToPlayer = this.GetDistanceToPlayer(player.playerEye.transform.position);
-                if (distanceToPlayer > Settings.f_espDistance) continue;
-
-                VisualUtil.DrawDistanceString(screen, playerUsername, Settings.c_playerESP, distanceToPlayer);
-            }
+            DisplayObjects(
+                LethalMenu.players.Where(p => p != null && !p.isPlayerDead && !p.IsLocalPlayer && !p.disconnectedMidGame && p.playerClientId != LethalMenu.localPlayer.playerClientId),
+                player => player.playerUsername,
+                player => Settings.c_playerESP
+            );
         }
 
         private void DisplayEnemyAI()
         {
-
-            foreach (EnemyAI enemyAi in LethalMenu.enemies)
-            {
-                if(!enemyAi.GetEnemyAIType().IsESPEnabled()) continue;
-
-                Vector3 screen;
-
-                if(enemyAi == null) continue;
-
-                if (!WorldToScreen(enemyAi.transform.position, out screen) || enemyAi.isEnemyDead) continue;
-                string enemyName = enemyAi.enemyType.enemyName;
-                float distanceToPlayer = this.GetDistanceToPlayer(enemyAi.transform.position);
-                if (distanceToPlayer > Settings.f_espDistance) continue;
-
-                VisualUtil.DrawDistanceString(screen, enemyName, Settings.c_enemyESP, distanceToPlayer);
-            }
+            DisplayObjects(
+                LethalMenu.enemies.Where(e => e != null && !e.isEnemyDead),
+                enemy => enemy.enemyType.enemyName,
+                enemy => Settings.c_enemyESP
+            );
         }
 
-        private void DisplayDeadBody(Vector3 screen, float distance, RagdollGrabbableObject body)
+        private void DisplayDeadBody()
         {
-            PlayerControllerB player = StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId];
-            RGBAColor color = Settings.c_playerESP;
-            string text = player.playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
-
-            VisualUtil.DrawDistanceString(screen, text, color, distance);
+            DisplayObjects(
+                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.IsSpawned && i.itemProperties != null && i is RagdollGrabbableObject),
+                item =>
+                {
+                    RagdollGrabbableObject body = item as RagdollGrabbableObject;
+                    PlayerControllerB player = StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId];
+                    return player.playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
+                },
+                _ => Settings.c_playerESP
+            );
         }
-        private void DisplayObjects()
+        private void DisplayScrap()
         {
-            foreach (GrabbableObject item in LethalMenu.items)
-            {
-                
-                RGBAColor color = Settings.c_objectESP;
-                Vector3 screen;
-                if (item == null || item.isHeld || item.isPocketed || !item.IsSpawned || !WorldToScreen(item.transform.position, out screen)) continue;
-
-                string text = "Object";
-                float distanceToPlayer = this.GetDistanceToPlayer(item.transform.position);
-                if (distanceToPlayer > Settings.f_espDistance) continue;
-
-                if (item.GetType() == typeof(RagdollGrabbableObject))
+            DisplayObjects(
+                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && i is not RagdollGrabbableObject),
+                item => item.itemProperties.itemName + $" ({item.scrapValue}) ",
+                item =>
                 {
-                    DisplayDeadBody(screen, distanceToPlayer, (RagdollGrabbableObject)item);
-                    continue;
-                }
-                
-                if(Settings.b_useScrapTiers)
-                {
+                    if(!Settings.b_useScrapTiers) return Settings.c_objectESP;
                     int index = Array.FindLastIndex<int>(Settings.i_scrapValueThresholds, x => x <= item.scrapValue);
-                    if(index > -1) color = Settings.c_scrapValueColors[index];
+                    return index > -1 ? Settings.c_scrapValueColors[index] : Settings.c_objectESP;
                 }
-
-
-
-                if (item.itemProperties != null)
-                {
-                    if(item.itemProperties.itemName != null) text = item.itemProperties.itemName;
-                    text += $" ({item.scrapValue}) ";
-                }
-
-                VisualUtil.DrawDistanceString(screen, text, color, distanceToPlayer);
-            }
+            );
         }
 
         public void DisplaySteamHazards()
         {
-            foreach (SteamValveHazard valve in LethalMenu.steamValves)
-            {
-                Vector3 screen;
-                if (valve == null || !valve.triggerScript.interactable || !WorldToScreen(valve.transform.position, out screen)) continue;
-
-                string text = "Steam Valve";
-                float distanceToPlayer = this.GetDistanceToPlayer(valve.transform.position);
-
-                VisualUtil.DrawDistanceString(screen, text, Settings.c_steamHazardESP, distanceToPlayer);
-            }
+            DisplayObjects(
+                LethalMenu.steamValves.Where(v => v != null && v.triggerScript.interactable),
+                valve => "Steam Valve",
+                valve => Settings.c_steamHazardESP
+            );
         }
 
         public void DisplayBigDoors()
         {
-            foreach (TerminalAccessibleObject door in LethalMenu.bigDoors)
-            {
-                Vector3 screen;
-
-                if (door == null || !WorldToScreen(door.transform.position, out screen)) continue;
-
-
-                string text = "Big Door";
-                float distanceToPlayer = this.GetDistanceToPlayer(door.transform.position);
-                if (distanceToPlayer > Settings.f_espDistance) continue;
-
-                text += " [ " + door.objectCode + " ]";
-
-                VisualUtil.DrawDistanceString(screen, text, Settings.c_bigDoorESP, distanceToPlayer);
-            }
+            DisplayObjects(
+                LethalMenu.bigDoors,
+                door => "Big Door [ " + door.objectCode + " ]",
+                door => Settings.c_bigDoorESP
+            );
         }
 
         public void DisplayDoorLocks()
         {
-            foreach (DoorLock door in LethalMenu.doorLocks)
-            {
-                if(!door.isLocked) continue;
-                Vector3 screen;
-
-                if (door == null || !WorldToScreen(door.transform.position, out screen)) continue;
-
-                string text = "Locked Door";
-                float distanceToPlayer = this.GetDistanceToPlayer(door.transform.position);
-                if (distanceToPlayer > Settings.f_espDistance) continue;
-
-                VisualUtil.DrawDistanceString(screen, text, Settings.c_doorLockESP, distanceToPlayer);
-            }
+            DisplayObjects(
+                LethalMenu.doorLocks.Where(d => d != null && d.isLocked),
+                door => "Locked Door",
+                door => Settings.c_doorLockESP
+            );
         }
 
     }

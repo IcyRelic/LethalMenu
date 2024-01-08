@@ -7,6 +7,8 @@ using System;
 using Object = UnityEngine.Object;
 using LethalMenu.Handler;
 using UnityEngine.Experimental.Rendering;
+using Unity.Netcode;
+using Random = UnityEngine.Random;
 
 
 namespace LethalMenu.Manager
@@ -169,7 +171,37 @@ namespace LethalMenu.Manager
             }
         }
 
+        public static void SpawnMapObject(MapObject type)
+        {
+            Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
+
+            SpawnableMapObject spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
+            GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
+            gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
+            gameObject.GetComponent<NetworkObject>().Spawn(true);
+        }
         
+        public static void SpawnMapObjects(MapObject type)
+        {
+            RandomMapObject[] randomObjects = Object.FindObjectsOfType<RandomMapObject>();
+
+            SpawnableMapObject spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
+
+            int num = Random.Range(5, 15);
+
+            Debug.LogError("Spawning " + num + " " + spawnable.prefabToSpawn.name);
+
+
+            for (int i = 0; i < num; i++)
+            {
+                var node = RoundManager.Instance.insideAINodes[Random.Range(0, RoundManager.Instance.insideAINodes.Length)];
+
+                Vector3 pos = RoundManager.Instance.GetRandomNavMeshPositionInRadius(node.transform.position, 30);
+                GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
+                gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
+                gameObject.GetComponent<NetworkObject>().Spawn(true);
+            }
+        }
 
         public static void BreakAllWebs()
         {

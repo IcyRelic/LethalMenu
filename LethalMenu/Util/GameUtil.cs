@@ -26,6 +26,28 @@ namespace LethalMenu.Util
             return types;
         }
 
+        public static List<SpawnableMapObject> GetSpawnableMapObjects()
+        {
+            List<SpawnableMapObject> types = new List<SpawnableMapObject>();
+
+            if (!(bool)StartOfRound.Instance) return types;
+
+            foreach (var level in StartOfRound.Instance.levels)
+            {
+                level.spawnableMapObjects.ToList().ForEach(o => { if (!types.Any(x => x.prefabToSpawn.name == o.prefabToSpawn.name)) types.Add(o); });
+            }
+
+            return types;
+        }
+
+        public static void InitializeMapObjects()
+        {
+            if (!(bool)StartOfRound.Instance) return;
+
+            LethalMenu.turrets.ForEach(t => t.GetComponent<TerminalAccessibleObject>().InitializeValues());
+            LethalMenu.landmines.ForEach(l => l.GetComponent<TerminalAccessibleObject>().InitializeValues());
+        }
+
         public static float GetDistanceToPlayer(Vector3 position)
         {
             return (float)Mathf.Round(Vector3.Distance(GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.position, position));

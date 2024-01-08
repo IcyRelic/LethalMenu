@@ -19,8 +19,7 @@ namespace LethalMenu
 
             SpectatePlayer.Reset();
         }
-        
-        
+
 
     }
 }

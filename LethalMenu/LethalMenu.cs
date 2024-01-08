@@ -113,7 +113,9 @@ namespace LethalMenu
                 {
                     if ((bool) StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
 
-                    if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsWaiting()) hack.Execute();
+                    
+
+                    if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsAnyHackWaiting()) hack.Execute();
                 }
 
                 if (!(bool)StartOfRound.Instance) return;
@@ -134,16 +136,22 @@ namespace LethalMenu
         {
             try
             {
-                VisualUtil.DrawString(new Vector2(10f, 5f), "Lethal Menu " + Settings.version + " By IcyRelic", Settings.c_primary, false, false, false, 22);
+                
 
-                if (Settings.isDebugMode)
+                if (Event.current.type == EventType.Repaint)
                 {
-                    VisualUtil.DrawString(new Vector2(10f, 35f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, 14);
-                    VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage), false, false, false, 22);
-                    VisualUtil.DrawString(new Vector2(10f, 125f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage2), false, false, false, 22);
+                    VisualUtil.DrawString(new Vector2(10f, 5f), "Lethal Menu " + Settings.version + " By IcyRelic", Settings.c_primary, false, false, false, 22);
+
+                    if (Settings.isDebugMode)
+                    {
+                        VisualUtil.DrawString(new Vector2(10f, 35f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, 14);
+                        VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage), false, false, false, 22);
+                        VisualUtil.DrawString(new Vector2(10f, 125f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage2), false, false, false, 22);
+                    }
+
+                    if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.OnGui());
                 }
 
-                if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.OnGui());
 
                 menu.Draw();
             }             
@@ -175,7 +183,7 @@ namespace LethalMenu
                 breaker = Object.FindObjectOfType<BreakerBox>();
                 localPlayer = GameNetworkManager.Instance?.localPlayerController;
 
-                yield return (object)new WaitForSeconds(0.2f);
+                yield return (object)new WaitForSeconds(1f);
             }
         }
 

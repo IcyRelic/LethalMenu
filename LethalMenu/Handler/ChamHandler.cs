@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMenu.Util;
+using Steamworks.Ugc;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace LethalMenu.Handler
 {
     public class ChamHandler
     {
-        private static Dictionary<int, List<Renderer>> renderers = new Dictionary<int, List<Renderer>>();
+        //private static Dictionary<int, List<Renderer>> renderers = new Dictionary<int, List<Renderer>>();
         private static Dictionary<int, Material[]> materials = new Dictionary<int, Material[]>();
         private static Material m_chamMaterial;
         private static int _color;
@@ -44,22 +45,16 @@ namespace LethalMenu.Handler
 
         private List<Renderer> GetRenderers()
         {
-            if (renderers.TryGetValue(@object.GetInstanceID(), out List<Renderer> r)) return r;
+            List<Renderer> renderers = new List<Renderer>();
 
-            List<Renderer> newRenderers = new List<Renderer>();
-
-            if(@object == null) return newRenderers;
+            if(@object == null) return renderers;
 
             
-            if (@object is GameObject) newRenderers.AddRange(((GameObject)@object).GetComponentsInChildren<Renderer>());
-            if (@object is Component) newRenderers.AddRange(((Component)@object).GetComponentsInChildren<Renderer>());
-            if (@object is DoorLock) newRenderers.AddRange(((DoorLock)@object).GetComponentsInParent<Renderer>());
+            if (@object is GameObject) renderers.AddRange(((GameObject)@object).GetComponentsInChildren<Renderer>());
+            if (@object is Component) renderers.AddRange(((Component)@object).GetComponentsInChildren<Renderer>());
+            if (@object is DoorLock) renderers.AddRange(((DoorLock)@object).GetComponentsInParent<Renderer>());
 
-
-
-            renderers.Add(@object.GetInstanceID(), newRenderers);
-
-            return newRenderers;
+            return renderers;
         }
 
         public void RemoveCham()
@@ -101,6 +96,7 @@ namespace LethalMenu.Handler
             ) RemoveCham();
 
         }
+
         public void ApplyCham()
         {
             if (@object == null) return;
@@ -115,23 +111,20 @@ namespace LethalMenu.Handler
 
                     materials.Add(r.GetInstanceID(), r.materials);
                     r.SetMaterials(Enumerable.Repeat(m_chamMaterial, r.materials.Length).ToList());
+                    UpdateChamColor(r);
                 }
 
             }); 
         }
 
-        public static void UpdateChamColors()
+        private void UpdateChamColor(Renderer r)
         {
-            renderers.Values.ToList().ForEach(list =>
-            {
-                list.ForEach(r =>
-                {
-                    if(r == null || r.materials == null) return;
-                    r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
-                });
-            });
+            if(r == null || r.materials == null) return;
+            r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
+
         }
-        
+
+
         public static ChamHandler GetHandler(Object obj)
         {
             return new ChamHandler(obj);
@@ -142,17 +135,15 @@ namespace LethalMenu.Handler
             while (true)
             {
                 yield return new WaitForSeconds(15f);
-
+                int cnt = 0;
                 List<int> keep = new List<int>();
                 Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
 
-                materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => materials.Remove(k));
-            }
-        }
+                materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => { materials.Remove(k); cnt++; }) ;
 
-        public static explicit operator ChamHandler(PlayerHandler v)
-        {
-            throw new NotImplementedException();
+                Debug.LogError("Cleaned up " + cnt + " materials");
+
+            }
         }
     }
 

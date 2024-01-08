@@ -3,6 +3,7 @@ using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using UnityEngine;
 using LethalMenu.Util;
+using LethalMenu.Types;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -63,6 +64,10 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.StartGame, "Force Ship Land");
             UI.Hack(Hack.EndGame, "Force Ship Leave");
             UI.Hack(Hack.SpawnMoreScrap, "Spawn More Scrap (Host Only)");
+            UI.Hack(Hack.SpawnMapObjects, "Spawn Random Mines (Host Only)", MapObject.Landmine);
+            UI.Hack(Hack.SpawnMapObjects, "Spawn Random Turrets (Host Only)", MapObject.TurretContainer);
+            UI.Hack(Hack.SpawnLandmine, "Spawn Landmine (Host Only)");
+            UI.Hack(Hack.SpawnTurret, "Spawn Turret (Host Only)");
 
         }
 

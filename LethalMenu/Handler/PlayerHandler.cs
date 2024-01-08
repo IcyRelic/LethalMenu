@@ -89,6 +89,12 @@ namespace LethalMenu.Handler
 
         }
 
+        public void ExplodeClosestLandmine()
+        {
+            Landmine mine = LethalMenu.landmines.OrderBy(m => Vector3.Distance(m.transform.position, player.transform.position)).FirstOrDefault();
+            mine.ExplodeMineServerRpc();
+        }
+
         public void LureAllEnemies() => LethalMenu.enemies.FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().TargetPlayer(player));
 
         public PlayerHandler GetHandler(PlayerControllerB player) => new PlayerHandler(player);

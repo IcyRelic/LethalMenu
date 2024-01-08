@@ -4,6 +4,7 @@ using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Vector2 = UnityEngine.Vector2;
@@ -44,7 +45,48 @@ namespace LethalMenu.Menu.Tab
 
             GUILayout.Label("Debug Menu");
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Goto Not Spawned");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                LethalMenu.localPlayer.TeleportPlayer(StartOfRound.Instance.notSpawnedPosition.position);
+            }
+            GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Spawn Turret");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                SpawnableMapObject spawnable = StartOfRound.Instance.currentLevel.spawnableMapObjects.FirstOrDefault(o => o.prefabToSpawn.name == "TurretContainer");
+
+                //get a position in front of the LethalMenu.localPlayer
+                Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
+
+                GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
+                gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
+                gameObject.GetComponent<NetworkObject>().Spawn(true);
+
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Spawn Landmine");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                SpawnableMapObject spawnable = StartOfRound.Instance.currentLevel.spawnableMapObjects.FirstOrDefault(o => o.prefabToSpawn.name == "Landmine");
+
+                //get a position in front of the LethalMenu.localPlayer
+                Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
+
+                GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
+                gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
+                gameObject.GetComponent<NetworkObject>().Spawn(true);
+
+            }
+            GUILayout.EndHorizontal();
 
 
             GUILayout.BeginHorizontal();
@@ -52,7 +94,7 @@ namespace LethalMenu.Menu.Tab
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                StartOfRound.Instance.currentLevel.spawnableMapObjects.ToList().ForEach(o =>
+                GameUtil.GetSpawnableMapObjects().ForEach(o =>
                 {
                     LethalMenu.debugMessage += o.prefabToSpawn.name + " => " + o.prefabToSpawn.GetType() + " => " + o.prefabToSpawn.tag + "\n";       
                 });

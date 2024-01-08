@@ -86,7 +86,7 @@ namespace LethalMenu.Menu.Tab
                 new UIButton("Save Settings", () => Settings.Config.SaveConfig()),
                 new UIButton("Reload Settings", () => Settings.Config.LoadConfig())
             );
-            //UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
+            UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
 
             UI.Select("Gui Size", ref i_selectedSizeIndex,
                 new UIOption("XSmall", () => Settings.GUISize = GuiSize.XSmall),
@@ -182,11 +182,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("ESP Colors", true);
             UI.TextboxAction("Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
-                new UIButton("Set", () =>
-                {
-                    SetColor(ref Settings.c_chams, s_chamsColor);
-                    ChamHandler.UpdateChamColors();
-                })
+                new UIButton("Set", () => SetColor(ref Settings.c_chams, s_chamsColor))
             );
 
             UI.TextboxAction("Objects", ref s_objectESPColor, @"[^0-9A-Za-z]", 8,
@@ -298,8 +294,9 @@ namespace LethalMenu.Menu.Tab
 
                     if (pressed != null)
                     {
-                        if (!HackExtensions.KeyBindInUse(pressed)) btn = pressed;
-                        else kbError = "Keybind already in use!";
+                        //if (!HackExtensions.KeyBindInUse(pressed)) 
+                            btn = pressed;
+                        //else kbError = "Keybind already in use!";
                     }
 
                     if (Time.time - startTime > 15f) break;

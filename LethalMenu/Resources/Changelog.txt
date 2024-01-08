@@ -1,5 +1,10 @@
 v1.3.1
-- Added Strong Hands (Carry any item with 1 hand)
+- Added Strong Hands (Carry any item with 1 hand) 
+- Added Invisibility
+- Added Spawn Landmine (Host Only)
+- Added Spawn Turret (Host Only)
+- Added Spawn Random Landmines/Turrets  (Spawns a random number of mines/turrets in the factory, Host Only)
+- Possible fixes for ESP/Chams causing crashes/instability with frames
 
 v1.3.0
 - Added CHAMS w/ settings

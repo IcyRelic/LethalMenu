@@ -50,6 +50,18 @@ namespace LethalMenu.Menu.Popup
 
             if ((bool)StartOfRound.Instance)
             {
+                if(StartOfRound.Instance.allItemsList == null)
+                {
+                    Debug.LogError("allItemsList is null!");
+                    return;
+                }
+
+                if(StartOfRound.Instance.allItemsList.itemsList == null)
+                {
+                    Debug.LogError("allItemsList.itemsList is null!");
+                    return;
+                }
+
                 var items = StartOfRound.Instance.allItemsList.itemsList;
                 int itemsPerRow = 3;
                 int rows = Mathf.CeilToInt(items.Count / (float)itemsPerRow);

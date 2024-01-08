@@ -94,6 +94,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SpiderWebPlayer, "Spider Web (Requires Spider)", player);
             UI.Hack(Hack.TeleportEnemy, "Teleport All Enemies", player, LethalMenu.enemies.ToArray());
             UI.Hack(Hack.LureAllEnemies, "Lure All Enemies", player);
+            UI.Hack(Hack.ExplodeClosestMine, "Explode Closest Landmine", player);
 
 
             if (player.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
