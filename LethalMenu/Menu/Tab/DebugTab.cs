@@ -85,6 +85,16 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Drop Items");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                LethalMenu.localPlayer.DropAllHeldItems();
+            }
+            GUILayout.EndHorizontal();
+
+
 
             GUILayout.EndScrollView();
         }

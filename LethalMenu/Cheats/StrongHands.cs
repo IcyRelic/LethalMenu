@@ -9,18 +9,21 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            if (LethalMenu.localPlayer == null || LethalMenu.localPlayer.currentlyHeldObjectServer == null) return;
+            if (LethalMenu.localPlayer == null) return;
 
-            LethalMenu.localPlayer.twoHanded = Hack.StrongHands.IsEnabled() ? false : LethalMenu.localPlayer.currentlyHeldObjectServer.itemProperties.twoHanded;
+            var heldObject = LethalMenu.localPlayer.currentlyHeldObjectServer;
+
+            LethalMenu.localPlayer.twoHanded = heldObject == null ? false : Hack.StrongHands.IsEnabled() ? false : heldObject.itemProperties.twoHanded;
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
         public static void PlayerLateUpdate(PlayerControllerB __instance)
         {
-            if (__instance.currentlyHeldObjectServer == null) return;
+            if(LethalMenu.localPlayer == null || __instance.playerClientId != LethalMenu.localPlayer.playerClientId) return;
 
-            __instance.twoHanded = Hack.StrongHands.IsEnabled() ? false : __instance.currentlyHeldObjectServer.itemProperties.twoHanded;
+            var heldObject = __instance.currentlyHeldObjectServer;
+            __instance.twoHanded = heldObject == null ? false : Hack.StrongHands.IsEnabled() ? false : heldObject.itemProperties.twoHanded;
         }
     }
 }

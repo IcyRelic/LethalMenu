@@ -94,8 +94,7 @@ namespace LethalMenu
 
             try
             {
-                if (!(bool)StartOfRound.Instance) return;
-                cheats.ForEach(cheat => cheat.FixedUpdate());
+                if ((bool) StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
             }
             catch (Exception e)
             {
@@ -137,7 +136,7 @@ namespace LethalMenu
             try
             {
                 
-
+                
                 if (Event.current.type == EventType.Repaint)
                 {
                     VisualUtil.DrawString(new Vector2(10f, 5f), "Lethal Menu " + Settings.version + " By IcyRelic", Settings.c_primary, false, false, false, 22);
@@ -172,7 +171,7 @@ namespace LethalMenu
                 CollectObjects(doors);
                 CollectObjects(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame);
                 CollectObjects(enemies);
-                CollectObjects(steamValves);
+                CollectObjects(steamValves);        
                 CollectObjects(allTerminalObjects);
                 CollectObjects(teleporters);
                 CollectObjects(interactTriggers);
