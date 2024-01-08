@@ -55,51 +55,28 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Spawn Turret");
+            GUILayout.Label("Get Turret Parent");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                SpawnableMapObject spawnable = StartOfRound.Instance.currentLevel.spawnableMapObjects.FirstOrDefault(o => o.prefabToSpawn.name == "TurretContainer");
+  
 
-                //get a position in front of the LethalMenu.localPlayer
-                Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
+                Transform parentTransform = Object.FindAnyObjectByType<Turret>().gameObject.transform.parent;
 
-                GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
-                gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
-                gameObject.GetComponent<NetworkObject>().Spawn(true);
-
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Spawn Landmine");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                SpawnableMapObject spawnable = StartOfRound.Instance.currentLevel.spawnableMapObjects.FirstOrDefault(o => o.prefabToSpawn.name == "Landmine");
-
-                //get a position in front of the LethalMenu.localPlayer
-                Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
-
-                GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
-                gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
-                gameObject.GetComponent<NetworkObject>().Spawn(true);
-
-            }
-            GUILayout.EndHorizontal();
-
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Spawnable Map Objects");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                GameUtil.GetSpawnableMapObjects().ForEach(o =>
+                if (parentTransform != null)
                 {
-                    LethalMenu.debugMessage += o.prefabToSpawn.name + " => " + o.prefabToSpawn.GetType() + " => " + o.prefabToSpawn.tag + "\n";       
-                });
+                    GameObject parentGameObject = parentTransform.gameObject;
+                    Debug.LogError("Parent GameObject: " + parentGameObject.name);
+                }
+                else
+                {
+                    Debug.LogError("This GameObject has no parent.");
+                }
             }
             GUILayout.EndHorizontal();
+
+
+
 
 
 

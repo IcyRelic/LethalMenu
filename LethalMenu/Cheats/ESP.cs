@@ -73,8 +73,8 @@ namespace LethalMenu.Cheats
         {
             DisplayChams(LethalMenu.items, _ => Settings.c_chams);
             DisplayChams(LethalMenu.landmines, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.turrets.ConvertAll(t => t.transform.parent.gameObject), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.players, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.turrets.ConvertAll(t => t.gameObject.transform.parent.gameObject), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.players.Where(p => p.playerClientId != LethalMenu.localPlayer.playerClientId), _ => Settings.c_chams);
             DisplayChams(LethalMenu.enemies, _ => Settings.c_chams);
             DisplayChams(LethalMenu.steamValves, _ => Settings.c_chams);
             DisplayChams(LethalMenu.bigDoors, _ => Settings.c_chams);

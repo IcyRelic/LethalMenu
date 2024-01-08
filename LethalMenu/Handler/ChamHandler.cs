@@ -77,7 +77,7 @@ namespace LethalMenu.Handler
 
             if (@object is GrabbableObject) e = Settings.b_chamsObject;
             if (@object is Landmine) e = Settings.b_chamsLandmine;
-            if (@object is GameObject && @object.name == "TurretContainer") e = Settings.b_chamsTurret;
+            if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
             if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
             if (@object is EnemyAI) e = Settings.b_chamsEnemy;
             if (@object is SteamValveHazard) e = Settings.b_chamsSteamHazard;
