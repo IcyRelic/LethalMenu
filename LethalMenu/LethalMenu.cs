@@ -170,7 +170,7 @@ namespace LethalMenu
                 CollectObjects(landmines);
                 CollectObjects(turrets);
                 CollectObjects(doors);
-                CollectObjects(players, obj => !obj.playerUsername.StartsWith("Player #"));
+                CollectObjects(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame);
                 CollectObjects(enemies);
                 CollectObjects(steamValves);
                 CollectObjects(allTerminalObjects);

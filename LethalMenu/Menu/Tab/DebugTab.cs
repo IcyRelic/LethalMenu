@@ -55,32 +55,6 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Get Turret Parent");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-  
-
-                Transform parentTransform = Object.FindAnyObjectByType<Turret>().gameObject.transform.parent;
-
-                if (parentTransform != null)
-                {
-                    GameObject parentGameObject = parentTransform.gameObject;
-                    Debug.LogError("Parent GameObject: " + parentGameObject.name);
-                }
-                else
-                {
-                    Debug.LogError("This GameObject has no parent.");
-                }
-            }
-            GUILayout.EndHorizontal();
-
-
-
-
-
-
-            GUILayout.BeginHorizontal();
             GUILayout.Label("Raycast Colliders");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
@@ -108,22 +82,8 @@ namespace LethalMenu.Menu.Tab
 
                 });
             }
-
-
-
             GUILayout.EndHorizontal();
 
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Force Cham Every Renderer");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => r.GetChamHandler().ApplyCham());
-            }
-
-
-
-            GUILayout.EndHorizontal();
 
 
             GUILayout.EndScrollView();
