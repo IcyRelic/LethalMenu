@@ -4,6 +4,7 @@ v1.3.1
 - Added Spawn Landmine (Host Only)
 - Added Spawn Turret (Host Only)
 - Added Spawn Random Landmines/Turrets  (Spawns a random number of mines/turrets in the factory, Host Only)
+- Added Ability to force HoarderBugs to steal all items
 - Possible fixes for ESP/Chams causing crashes/instability with frames
 
 v1.3.0
