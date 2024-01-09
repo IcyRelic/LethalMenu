@@ -55,6 +55,9 @@ namespace LethalMenu.Menu.Popup
 
                 GUILayout.FlexibleSpace();
                 //if (GUILayout.Button("Despawn")) GameUtil.KillEnemy(enemy, true);
+                if(enemy is HoarderBugAI bug)
+                    if (GUILayout.Button("Steal Items")) bug.StealAllItems();
+
                 if (GUILayout.Button("Kill")) enemy.Handle().Kill();
                 if (GUILayout.Button("Target"))
                 {

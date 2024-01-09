@@ -1,5 +1,8 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Util;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
@@ -226,7 +229,7 @@ namespace LethalMenu.Handler
                         || enemy.GetType() == typeof(SandWormAI)
                         || enemy.GetType() == typeof(BlobAI)
                         || enemy.GetType() == typeof(DressGirlAI)
-                        //|| enemy.GetType() == typeof(PufferAI)
+                        || enemy.GetType() == typeof(PufferAI)
                         || enemy.GetType() == typeof(SpringManAI)
                         || enemy.GetType() == typeof(DocileLocustBeesAI)
                         || enemy.GetType() == typeof(DoublewingAI)
@@ -236,6 +239,7 @@ namespace LethalMenu.Handler
                         ) forceDespawn = true;
 
             enemy.KillEnemyServerRpc(forceDespawn ? forceDespawn : despawn);
+            
         }
 
         public void Stun()
@@ -262,12 +266,38 @@ namespace LethalMenu.Handler
             HandleLureEnemyByType();
         }
 
+
+
         public static EnemyHandler GetHandler(EnemyAI enemy) => new(enemy);
     }
 
     public static class EnemyAIExtensions
     {
         public static EnemyHandler Handle(this EnemyAI enemy) => EnemyHandler.GetHandler(enemy);
+    }
+
+    public static class HoarderBugAIExtensions
+    {
+        public static void StealAllItems(this HoarderBugAI bug)
+        {
+            bug.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+
+            LethalMenu.Instance.StartCoroutine(StealItems(bug));
+
+            
+        }
+
+        private static IEnumerator StealItems(HoarderBugAI bug)
+        {
+            List<NetworkObject> items = LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom && i.isInFactory).ConvertAll(i => i.NetworkObject);
+
+            foreach (var obj in items)
+            {
+                yield return new WaitForSeconds(0.2f);
+                bug.GrabItemServerRpc(obj);
+                bug.DropItemServerRpc(obj, bug.nestPosition, true);
+            }
+        }
     }
 
     public static class SandSpiderAIExtensions
