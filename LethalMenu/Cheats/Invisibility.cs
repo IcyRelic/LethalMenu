@@ -12,7 +12,7 @@ namespace LethalMenu.Cheats
 
             Vector3 pos = StartOfRound.Instance.shipHasLanded ? StartOfRound.Instance.notSpawnedPosition.position : Vector3.zero;
 
-            LethalMenu.localPlayer.Reflect().Invoke("UpdatePlayerPositionServerRpc", pos, true, false, true);
+            LethalMenu.localPlayer.Reflect().Invoke("UpdatePlayerPositionServerRpc", pos, true, false, false, true);
         }
 
     }
