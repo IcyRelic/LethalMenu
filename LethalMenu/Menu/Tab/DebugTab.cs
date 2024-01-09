@@ -1,8 +1,10 @@
 ﻿using DunGen;
+using GameNetcodeStuff;
 using LethalMenu.Handler;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
+using System.Collections;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
@@ -81,16 +83,6 @@ namespace LethalMenu.Menu.Tab
                     t.Interact(LethalMenu.localPlayer.transform);
 
                 });
-            }
-            GUILayout.EndHorizontal();
-
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Drop Items");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                LethalMenu.localPlayer.DropAllHeldItems();
             }
             GUILayout.EndHorizontal();
 

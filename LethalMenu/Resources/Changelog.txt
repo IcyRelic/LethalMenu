@@ -5,7 +5,9 @@ v1.3.1
 - Added Spawn Turret (Host Only)
 - Added Spawn Random Landmines/Turrets  (Spawns a random number of mines/turrets in the factory, Host Only)
 - Added Ability to force HoarderBugs to steal all items
-- Possible fixes for ESP/Chams causing crashes/instability with frames
+- Fixed ESP/Chams causing crashes/instability with frames
+- Fixed Issue with strong hands not allowing you to pick up items
+- Fixed Issue where NoCooldown would make the shovel rapid fire constantly
 
 v1.3.0
 - Added CHAMS w/ settings

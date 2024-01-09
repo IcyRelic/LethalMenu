@@ -9,6 +9,9 @@ using Newtonsoft.Json.Bson;
 using System.Reflection.Emit;
 using Mono.Cecil.Cil;
 using System;
+using System.Reflection;
+using static UnityEngine.UI.Image;
+using static IngamePlayerSettings;
 
 
 namespace LethalMenu.Cheats
@@ -124,23 +127,17 @@ namespace LethalMenu.Cheats
             if (Hack.InstantInteract.IsEnabled())
                 __instance.triggerScript.timeToHold = 0.0f;
         }
-
-
-
-
-        [HarmonyTranspiler]
-        [HarmonyPatch(typeof(Shovel), "reelUpShovel", MethodType.Enumerator)]
-        public static IEnumerable<CodeInstruction> ReelShovel(IEnumerable<CodeInstruction> instructions)
+        
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(Shovel), "reelUpShovel")]
+        public static IEnumerator reelUpShovelPostfix(IEnumerator reelUpShovel)
         {
-                foreach (CodeInstruction instruction in instructions)
-                {
-                    if (instruction.opcode == OpCodes.Ldc_R4)
-                    {
-                        instruction.operand = 0.0f;
-                    }
+            while (reelUpShovel.MoveNext())
+            {
+                if (reelUpShovel.Current is WaitForSeconds && Hack.NoCooldown.IsEnabled()) continue;
 
-                    yield return instruction;
-                }
+                yield return reelUpShovel.Current;
+            }
         }
     }
 }
