@@ -29,14 +29,10 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.BlowUpAllLandmines, "Blow Up All Landmines");
             UI.Hack(Hack.ToggleAllLandmines, "Toggle All Landmines");
             UI.Hack(Hack.ToggleAllTurrets, "Toggle All Turrets");
-            UI.Hack(Hack.KillAllEnemies, "Kill All Enemies");
-            UI.HackSlider(Hack.KillNearbyEnemies, "Kill Nearby", Settings.f_enemyKillDistance.ToString() + "m", ref Settings.f_enemyKillDistance, 5, 50);
-            UI.Hack(Hack.StunAllEnemies, "Stun All Enemies");
             UI.Hack(Hack.TeleportAllItems, "Teleport All Items (Client Only)");
             UI.Hack(Hack.ForceTentacleAttack, "Force Tentacle Attack");
             UI.Hack(Hack.FixAllValves, "Fix All Steam Valves");
             UI.Hack(Hack.SpawnMaskedEnemy, "Turn All Masks Into Mimics");
-            UI.Hack(Hack.BreakAllWebs, "Break All Spider Web");
 
             GUILayout.EndScrollView();
 

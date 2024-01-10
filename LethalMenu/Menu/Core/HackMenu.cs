@@ -10,7 +10,6 @@ namespace LethalMenu.Menu.Core
     {
         public Rect windowRect = new Rect(50f, 50f, 700f, 450f);
 
-        public PopupMenu enemyManagerWindow = new EnemyManagerWindow(1);
         public PopupMenu unlockableManagerWindow = new UnlockableManagerWindow(2);
         public PopupMenu itemManagerWindow = new ItemManagerWindow(3);
 
@@ -49,6 +48,7 @@ namespace LethalMenu.Menu.Core
             menuTabs.Add(new VisualsTab());
             menuTabs.Add(new TrollTab());
             menuTabs.Add(new PlayersTab());
+            menuTabs.Add(new EnemyTab());
             menuTabs.Add(new ServerTab());
 
 
@@ -92,7 +92,6 @@ namespace LethalMenu.Menu.Core
             GUI.skin.window.margin = new RectOffset(10, 10, 0, 0);
 
             windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
-            enemyManagerWindow.Draw();
             unlockableManagerWindow.Draw();
             itemManagerWindow.Draw();
         }

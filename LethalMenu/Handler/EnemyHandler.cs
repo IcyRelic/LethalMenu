@@ -157,7 +157,6 @@ namespace LethalMenu.Handler
             SandWormAI worm = enemy as SandWormAI;
             worm.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
-
         private void HandleLureEnemyByType()
         {
 
@@ -214,6 +213,57 @@ namespace LethalMenu.Handler
             }
         }
 
+        private void HandleSandWormKillPlayer()
+        {
+            SandWormAI worm = enemy as SandWormAI;
+            Teleport(target);
+
+            float num = RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(worm.transform.position + Vector3.up * 1.5f, 30f) + Random.Range(-45f, 45f);
+
+            num += 60f;
+            worm.transform.eulerAngles = new Vector3(0.0f, num, 0.0f);
+            worm.EmergeServerRpc((int)num);
+        }
+
+        private void HandleKillPlayerByType()
+        {
+
+            switch (enemy)
+            {
+                case MouthDogAI dog:
+                    dog.KillPlayerServerRpc((int)target.playerClientId);
+                    break;
+                case ForestGiantAI giant:
+                    giant.GrabPlayerServerRpc((int)target.playerClientId);
+                    break;
+                case FlowermanAI flowerman:
+                    flowerman.KillPlayerAnimationServerRpc((int)target.playerClientId);
+                    break;
+                case RedLocustBees bees:
+                    bees.BeeKillPlayerServerRpc((int)target.playerClientId);
+                    break;
+                case NutcrackerEnemyAI nutcracker:
+                    nutcracker.LegKickPlayerServerRpc((int)target.playerClientId);
+                    break;
+                case MaskedPlayerEnemy masked:
+                    masked.KillPlayerAnimationServerRpc((int)target.playerClientId);
+                    break;
+                case JesterAI jester:
+                    jester.KillPlayerServerRpc((int)target.playerClientId);
+                    break;
+                case SandWormAI worm:
+                    HandleSandWormKillPlayer();
+                    break;
+                case BlobAI blob:
+                    blob.SlimeKillPlayerEffectServerRpc((int) target.playerClientId);
+                    break;
+                default:
+                    HandleLureEnemyByType();
+                    break;
+            }
+        }
+        
+
         public void Control()
         {
             if (enemy.isEnemyDead) return;
@@ -257,6 +307,7 @@ namespace LethalMenu.Handler
             enemy.SyncPositionToClients();
         }
 
+
         public void TargetPlayer(PlayerControllerB player)
         {
             target = player;
@@ -266,6 +317,13 @@ namespace LethalMenu.Handler
             HandleLureEnemyByType();
         }
 
+        public void KillPlayer(PlayerControllerB player)
+        {
+            target = player;
+            enemy.targetPlayer = player;
+            enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            HandleKillPlayerByType();
+        }
 
 
         public static EnemyHandler GetHandler(EnemyAI enemy) => new(enemy);

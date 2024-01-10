@@ -1,3 +1,9 @@
+v1.3.2
+- Added Enemy Tab in place of Enemy Manager
+- Moved all enemy related hacks to the Enemy Tab
+- Removed Enemy Manager
+- Fixed FPS Issues with NoClip
+
 v1.3.1
 - Added Strong Hands (Carry any item with 1 hand) 
 - Added Invisibility

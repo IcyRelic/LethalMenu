@@ -50,6 +50,7 @@ namespace LethalMenu
         SuperShovel,
         StrongHands,
         Invisibility,
+        AntiKick,
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -206,6 +207,7 @@ namespace LethalMenu
             {Hack.SuperShovel, false},
             {Hack.StrongHands, false},
             {Hack.Invisibility, false},
+            {Hack.AntiKick, false},
 
 
         };

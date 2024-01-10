@@ -1,14 +1,10 @@
-﻿using DunGen;
-using LethalMenu.Cheats;
-using LethalMenu.Handler;
+﻿using LethalMenu.Cheats;
 using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;

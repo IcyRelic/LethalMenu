@@ -9,7 +9,7 @@ namespace LethalMenu.Menu.Tab
 {
     internal class PlayersTab : MenuTab
     {
-        public static int selectedPlayer = -1;
+        public static int selectedPlayer = 0;
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
         public PlayersTab() : base("Players") { }

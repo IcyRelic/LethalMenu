@@ -148,7 +148,7 @@ namespace LethalMenu
     internal class Settings
     {
 
-        public static string version = "v1.3.1";
+        public static string version = "v1.3.2";
         public static bool isDebugMode = false;
 
         public static bool isMenuOpen
@@ -195,6 +195,9 @@ namespace LethalMenu
         public static RGBAColor c_breakerESP = new RGBAColor(255,0,116, 1f);
         public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
 
+     
+        //Other Colors
+        public static RGBAColor c_error = new RGBAColor(221, 11, 11, 1f);
 
 
         /* *
