@@ -10,6 +10,7 @@ namespace LethalMenu.Menu.Core
     {
         public Rect windowRect = new Rect(50f, 50f, 700f, 450f);
 
+        public PopupMenu moonManagerWindow = new MoonManagerWindow(1);
         public PopupMenu unlockableManagerWindow = new UnlockableManagerWindow(2);
         public PopupMenu itemManagerWindow = new ItemManagerWindow(3);
 
@@ -94,6 +95,7 @@ namespace LethalMenu.Menu.Core
             windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
             unlockableManagerWindow.Draw();
             itemManagerWindow.Draw();
+            moonManagerWindow.Draw();
         }
 
         private void DrawContent(int windowID)

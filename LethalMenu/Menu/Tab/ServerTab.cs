@@ -74,7 +74,8 @@ namespace LethalMenu.Menu.Tab
         private void ManagersContent()
         {
             UI.Header("Managers");
-            UI.Toggle("Unlockables Manager", ref HackMenu.Instance.unlockableManagerWindow.isOpen, "Close", "Open"); ;
+            UI.Toggle("Moon Manager", ref HackMenu.Instance.moonManagerWindow.isOpen, "Close", "Open");
+            UI.Toggle("Unlockables Manager", ref HackMenu.Instance.unlockableManagerWindow.isOpen, "Close", "Open");
             UI.Toggle("Item Manager", ref HackMenu.Instance.itemManagerWindow.isOpen, "Close", "Open");
 
         }

@@ -1,13 +1,12 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Handler;
 using LethalMenu.Types;
-using System.Linq;
-using UnityEngine;
 using LethalMenu.Util;
 using System;
-using Object = UnityEngine.Object;
-using LethalMenu.Handler;
-using UnityEngine.Experimental.Rendering;
+using System.Linq;
 using Unity.Netcode;
+using UnityEngine;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
@@ -166,7 +165,7 @@ namespace LethalMenu.Manager
 
             for (int i = 0; i < num; i++)
             {
-                var node = nodes[UnityEngine.Random.Range(0, nodes.Length)];
+                var node = nodes[Random.Range(0, nodes.Length)];
                 RoundManager.Instance.SpawnEnemyGameObject(node.transform.position, 0.0f, -1, type);
             }
         }
@@ -218,6 +217,11 @@ namespace LethalMenu.Manager
             LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(false));
         }
 
+        public static void ChangeMoon(int levelID)
+        {
+            if(!(bool) StartOfRound.Instance) return;
+            StartOfRound.Instance.ChangeLevelServerRpc(levelID, GetTerminal().groupCredits);
+        }
         public static void FixAllValves() => LethalMenu.steamValves.ForEach(v => v.FixValveServerRpc());
         public static void ToggleAllLandmines() => LethalMenu.landmines.ForEach(mine => mine.ToggleMine(!Hack.ToggleAllLandmines.IsEnabled()));
         public static void ToggleAllTurrets() => LethalMenu.turrets.ForEach(turret => turret.turretActive = !Hack.ToggleAllTurrets.IsEnabled());
