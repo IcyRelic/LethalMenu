@@ -97,6 +97,19 @@ namespace LethalMenu.Handler
 
         public void LureAllEnemies() => LethalMenu.enemies.FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().TargetPlayer(player));
 
+        public void PlaceEverythingOnDesk()
+        {
+            DepositItemsDesk desk = Object.FindObjectOfType<DepositItemsDesk>();
+            if (desk == null) return;
+
+            player.DropAllHeldItems();
+            LethalMenu.items.FindAll(i => i.itemProperties.isScrap && !i.isHeld && !i.isPocketed).ForEach(i =>
+            {
+                player.currentlyHeldObjectServer = i;
+                desk.PlaceItemOnCounter(player);
+            });
+        }
+
         public PlayerHandler GetHandler(PlayerControllerB player) => new PlayerHandler(player);
     }
 

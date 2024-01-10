@@ -217,12 +217,7 @@ namespace LethalMenu.Handler
         {
             SandWormAI worm = enemy as SandWormAI;
             Teleport(target);
-
-            float num = RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(worm.transform.position + Vector3.up * 1.5f, 30f) + Random.Range(-45f, 45f);
-
-            num += 60f;
-            worm.transform.eulerAngles = new Vector3(0.0f, num, 0.0f);
-            worm.EmergeServerRpc((int)num);
+            worm.StartEmergeAnimation();
         }
 
         private void HandleKillPlayerByType()
@@ -257,12 +252,26 @@ namespace LethalMenu.Handler
                 case BlobAI blob:
                     blob.SlimeKillPlayerEffectServerRpc((int) target.playerClientId);
                     break;
-                default:
-                    HandleLureEnemyByType();
-                    break;
             }
         }
-        
+         
+        public bool HasInstaKill()
+        {
+            List<System.Type> types = new()
+            {
+                typeof(MouthDogAI),
+                typeof(ForestGiantAI),
+                typeof(FlowermanAI),
+                typeof(RedLocustBees),
+                typeof(NutcrackerEnemyAI),
+                typeof(MaskedPlayerEnemy),
+                typeof(JesterAI),
+                typeof(SandWormAI),
+                typeof(BlobAI)
+            };
+                
+            return types.Contains(enemy.GetType());
+        }
 
         public void Control()
         {

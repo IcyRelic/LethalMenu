@@ -87,6 +87,7 @@ namespace LethalMenu
         SpawnLandmine,
         SpawnTurret,
         SpawnMapObjects,
+        SellEverything,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -261,6 +262,7 @@ namespace LethalMenu
             {Hack.SpawnLandmine, (Action) HackExecutor.SpawnLandmine},
             {Hack.SpawnTurret, (Action) HackExecutor.SpawnTurret},
             {Hack.ExplodeClosestMine, (Action<PlayerControllerB>) HackExecutor.ExplodeClosestMine},
+            {Hack.SellEverything, (Action) HackExecutor.SellEverything},
 
         };
 
@@ -518,6 +520,7 @@ namespace LethalMenu
         public static void SpawnTurret() => RoundHandler.SpawnMapObject(MapObject.TurretContainer);
         public static void SpawnMapObjects(MapObject type) => RoundHandler.SpawnMapObjects(type);
 
+        public static void SellEverything() => LethalMenu.localPlayer.Handle().PlaceEverythingOnDesk();
         public static void ExplodeClosestMine(PlayerControllerB player) => player.Handle().ExplodeClosestLandmine();
         public static void LureAllEnemies(PlayerControllerB player) => player.Handle().LureAllEnemies();
         public static void SpiderWebPlayer(PlayerControllerB player) => player.Handle().SpawnSpiderWebs(6);

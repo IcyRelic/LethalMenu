@@ -86,6 +86,16 @@ namespace LethalMenu.Menu.Tab
             }
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Sell All");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                
+
+            }
+            GUILayout.EndHorizontal();
+
 
 
             GUILayout.EndScrollView();

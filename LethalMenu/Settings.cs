@@ -149,7 +149,7 @@ namespace LethalMenu
     {
 
         public static string version = "v1.3.2";
-        public static bool isDebugMode = false;
+        public static bool isDebugMode = true;
 
         public static bool isMenuOpen
         {
@@ -239,9 +239,9 @@ namespace LethalMenu
         public static bool b_chamsShip = false;
 
         public static float f_defaultGrabDistance = -1f;
-        public static float f_defaultClimbSpeed = -1f;
-        public static float f_defaultJumpForce = -1f;
-        public static float f_defaultMovementSpeed = -1f;
+        public static float f_defaultClimbSpeed = 3f;
+        public static float f_defaultJumpForce = 13f;
+        public static float f_defaultMovementSpeed = 4.6f;
         public static float f_defaultNightVisionIntensity = 360f;
         public static float f_defaultNightVisionRange = 12f;
 

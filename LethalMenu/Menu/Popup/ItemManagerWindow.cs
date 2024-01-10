@@ -50,17 +50,7 @@ namespace LethalMenu.Menu.Popup
 
             if ((bool)StartOfRound.Instance)
             {
-                if(StartOfRound.Instance.allItemsList == null)
-                {
-                    Debug.LogError("allItemsList is null!");
-                    return;
-                }
-
-                if(StartOfRound.Instance.allItemsList.itemsList == null)
-                {
-                    Debug.LogError("allItemsList.itemsList is null!");
-                    return;
-                }
+                if(StartOfRound.Instance.allItemsList == null || StartOfRound.Instance.allItemsList.itemsList == null) return;
 
                 var items = StartOfRound.Instance.allItemsList.itemsList;
                 int itemsPerRow = 3;
@@ -98,13 +88,6 @@ namespace LethalMenu.Menu.Popup
             gameObject.GetComponent<GrabbableObject>().SetScrapValue(value);
             gameObject.GetComponent<GrabbableObject>().fallTime = 0.0f;
             gameObject.GetComponent<NetworkObject>().Spawn();
-
-            //get a print every possible component in the object and its children and so on to the console
-            gameObject.GetComponentsInParent<Component>().ToList().ForEach(c =>
-            {
-                LethalMenu.debugMessage += c.GetType().Name + "\n";
-            });
-
         }
     }
 }

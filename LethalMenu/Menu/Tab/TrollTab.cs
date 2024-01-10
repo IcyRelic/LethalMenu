@@ -33,6 +33,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.ForceTentacleAttack, "Force Tentacle Attack");
             UI.Hack(Hack.FixAllValves, "Fix All Steam Valves");
             UI.Hack(Hack.SpawnMaskedEnemy, "Turn All Masks Into Mimics");
+            UI.Hack(Hack.SellEverything, "Place All Scrap on Company Desk");
 
             GUILayout.EndScrollView();
 
