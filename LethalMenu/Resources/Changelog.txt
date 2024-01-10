@@ -1,4 +1,6 @@
 v1.3.2
+- Added Place All Scrap on Company Desk
+- Added Ability to sell more than 12 items at a time
 - Added Enemy Tab in place of Enemy Manager
 - Moved all enemy related hacks to the Enemy Tab
 - Removed Enemy Manager
