@@ -149,7 +149,7 @@ namespace LethalMenu
     {
 
         public static string version = "v1.3.2";
-        public static bool isDebugMode = true;
+        public static bool isDebugMode = false;
 
         public static bool isMenuOpen
         {
