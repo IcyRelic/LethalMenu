@@ -91,7 +91,7 @@ namespace LethalMenu.Util
 
             catch (NullReferenceException)
             {
-                return [];
+                return null;
             }
         }
 
