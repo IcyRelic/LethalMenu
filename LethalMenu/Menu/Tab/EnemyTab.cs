@@ -4,6 +4,7 @@ using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -127,7 +128,7 @@ namespace LethalMenu.Menu.Tab
 
         private void EnemyActions()
         {
-            UI.Header("Enemy Actions");
+            UI.Header("Enemy Status", true);
 
             if (selectedEnemy == -1) { UI.Label(Settings.c_error.AsString("No Enemy Selected")); return; }
 
@@ -137,6 +138,8 @@ namespace LethalMenu.Menu.Tab
 
             string s_target = selectedPlayer == null ? "None" : selectedPlayer.playerUsername;
 
+            if(Enum.TryParse(enemy.currentBehaviourStateIndex.ToString(), out Handler.Behaviour behavior))
+                UI.Label("Behaviour: ", behavior.ToString());
 
             UI.Label("Selected Player: ", Settings.c_playerESP.AsString(s_target));
 
@@ -144,6 +147,8 @@ namespace LethalMenu.Menu.Tab
 
             if(enemy is DressGirlAI girl)
                 UI.Label("Haunting: ", (girl.hauntingPlayer == null ? "None" : girl.hauntingPlayer.playerUsername));
+
+            UI.Header("Enemy Actions", true);
 
             if (enemy is HoarderBugAI bug) UI.Button("Steal Items", () => { bug.StealAllItems(); });
             if (enemy is SandSpiderAI spider) UI.Button("Spawn Web", () => { spider.SpawnWeb(spider.abdomen.position); });
