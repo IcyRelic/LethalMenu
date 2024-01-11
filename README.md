@@ -59,20 +59,23 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Ghost Mode (Credit @Ugleh):** Incorporate ghostly attributes for unique gameplay.
   - **Free Camera:** Detach the camera for unrestricted viewing.
   - **Super Shovel (x1000 Damage):** Instantly kill anything with a shovel/sign.
-
+  - **Strong Hands:** Carry any item with 1 hand.
+  - **Invisibility:** Constantly teleports your player to an unseen location for others.
+    
   #### Troll
   - **Toggle Ship Lights:** Turn the ship lights on/off from anywhere
   - **Toggle Ship Horn:** Toggle the ship horn on/off form anywhere
   - **Blow Up All Landmines:** Trigger detonation for all placed landmines.
   - **Toggle All Landmines:** Activate/Deactivate all landmines
-  - **Toggle All Turrets:** Activate/Deactivate all turrets
-  - **Kill All Enemies:** Annihilate all enemy entities in the game.
-  - **Stun All Enemies:** Stun all enemies in the game temporarily.
+  - **Toggle All Turrets:** Activate/Deactivate all turret.
   - **Teleport All Items (Client Only):** Teleports all items currently outside the ship to your location
   - **Force Tentacle Attack:** Make the company attack at the sales desk
   - **Make Bridge Fall (Host Only, Vow):** Host-exclusive ability to make the bridge collapse.
   - **Toggle Factory Lights (Host Only):** Host-exclusive ability to control factory lights.
   - **Flicker Factory Lights (Host Only):** Host-exclusive ability to make factory lights flicker.
+  - **Spawn Landmine (Host Only):** Spawn a landmine in front of you.
+  - **Spawn Turret (Host Only):** Spawn a turret in front of you.
+  - **Spawn Random Landmines/Turrets (Host Only):** Spawns a random number of turrets/landmines in the factory.
 
   #### Server
   - **Info Status - Body Count:** Display the count of bodies in the game.
@@ -87,12 +90,25 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Edit Quota (Host Only):** Modify the current quota
   - **Scrap Amount Multiplier (Host Only):** Modify the amount of scrap that spawns on the map by default.
   - **Scrap Value Multiplier (Host Only):** Modify the value of scrap that spawns on the map.
-  - **Enemy Manager:** Kill, Teleport, Lure, and Spawn any enemy on any map
-    - Spawning enemies requires host
-    - Lure, Teleport require a selected player in the players tab
+  - **Moon Manager:** Travel to any moon for free.
   - **Unlockables Manager:** Spawn any ship unlockables for free
     - Host can spawn an infinate amount of each object
   - **Item Manager (Host Only):** Spawn any item in the game with a custom scrap value
+
+  #### Enemy
+  - **Kill All Enemies:** Annihilate all enemy entities in the game.
+  - **Kill Neaby Enemies:** Annihilates all near by enemies.
+  - **Stun All Enemies:** Stun all enemies in the game temporarily.
+  - **Break All Spider Web:** Breaks all spider webs in the factory.
+  - **Enemy Controller:** Control any enemy in the game.
+  - **Lure Enemy:** Lure a single/all enemies to a selected player.
+  - **Kill:** Kill a single enemy.
+  - **Teleport:** Teleport a single/all enemies to a selected player.
+  - **Kill Player:** Force an enemy to instantly kill a selected player.
+  - **Spawn Enemy (Host Only):** Spawn any enemy on any map.
+  - **HoarderBug Steal Items:** Force's a hoarder bug to instantly steal all items in the factory.
+  - **Spider Spawn Web:** Attempts to create a web at the spiders location.
+  - **Statuses:** Informational statuses about each enemys target/state/location 
 
   #### Visuals
   - **Always show clock:** Display the in-game clock consistently.
@@ -138,6 +154,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Color Settings:** Customize the colors used for nearly everything.
   - **Togglable Hacks save with settings:** Enable or disable hacks with settings that persist.
   - **Toggle Cursor:** Turn the in-game cursor on or off.
+  - **Sell Unlimited Scrap:** Allows you to place an unlimited amount of scrap on the company deposit desk.
 </details>
 
 ### Default Keybinds
@@ -149,22 +166,14 @@ Thank you for contributing to the development of this mod by sharing your feedba
 | Unlock Door Action  | <kbd>F1</kbd> | Unlock the door you're looking at|
 | NoClip Controls  | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Space</kbd><kbd>LCTRL</kbd> | Movement Controls while using NoClip |
 
-## Latest Changelog | v1.3.0
+## Latest Changelog | v1.3.2
 ```
-- Added CHAMS w/ settings
-- Added Support for 8 character hex codes for colors with alpha
-- Added Lure Enemies to Player
-- Added Lure All Enemies to Player
-- Added Control Enemy (Use SpeedHack for movement Speed) <- Buggy and not completely tested
-- Added Instant Interact
-- Added No Cooldowns
-- Added KeyBind for Kill Nearby Enemies
-- Added Mouse Binds (Left, Right, Middle, Forward, Backward)
-- Added ESP Enemy Filter Settings
-- Added a host requirement label if not host for spawning enemies in the Enemy Manager
-- Fixed No Carry Weight
-- Removed SpawnRandomValueable (Use Item Manager)
-- Major code changes to UI and hack executors to make it neat and tidy
+- Added Place All Scrap on Company Desk
+- Added Ability to sell more than 12 items at a time
+- Added Enemy Tab in place of Enemy Manager
+- Moved all enemy related hacks to the Enemy Tab
+- Removed Enemy Manager
+- Fixed FPS Issues with NoClip
 ```
 
 ## Credit
