@@ -1,3 +1,6 @@
+v1.3.3
+- Nothing Yet
+
 v1.3.2
 - Added Place All Scrap on Company Desk
 - Added Ability to sell more than 12 items at a time
