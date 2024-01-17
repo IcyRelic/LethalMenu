@@ -6,11 +6,11 @@ namespace LethalMenu.Cheats
     [HarmonyPatch(typeof(PlayerControllerB), "PlayerHitGroundEffects")]
     internal class NoFallDamage : Cheat
     {
-        public static bool Prefix(PlayerControllerB __instance)
+        public static bool Prefix(PlayerControllerB instance)
         {
             if (Hack.NoFallDamage.IsEnabled())
             {
-                __instance.takingFallDamage = false;
+                instance.takingFallDamage = false;
             }
 
             return true;
