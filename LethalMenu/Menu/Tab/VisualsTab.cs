@@ -28,6 +28,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Hack(Hack.ToggleAllESP, "Toggle All");
             UI.Toggle("Use Scrap Tiers", ref Settings.b_useScrapTiers);
+            UI.Toggle("VC Display", ref Settings.b_VCDisplay);
             UI.Hack(Hack.ObjectESP, "Object ESP");
             UI.Hack(Hack.EnemyESP, "Enemy ESP");
             UI.Hack(Hack.PlayerESP, "Player ESP");
