@@ -1,5 +1,5 @@
 # Lethal Menu
-<sup>A Lethal Company Cheat By [IcyRelic](https://github.com/icyrelic) | [UnkownCheats Thread](https://www.unknowncheats.me/forum/lethal-company/615575-lethal-menu-lethal-company-cheat.html)</sup>
+<sup>A Lethal Company Cheat By [IcyRelic](https://github.com/icyrelic) | [UnkownCheats Thread](https://www.unknowncheats.me/forum/lethal-company/615575-lethal-menu-lethal-company-cheat.html) | [Discord Server](https://discord.gg/gSkGTnqzQF)</sup>
 
 #### Screenshots
 <p>
