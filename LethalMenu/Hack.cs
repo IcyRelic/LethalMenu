@@ -50,7 +50,7 @@ namespace LethalMenu
         SuperShovel,
         StrongHands,
         Invisibility,
-        AntiKick,
+        NoFallDamage,
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -77,7 +77,6 @@ namespace LethalMenu
         KillAllEnemies,
         KillNearbyEnemies,
         StunAllEnemies,
-        TeleportAllItems,
         ForceTentacleAttack,
         FlickerLights,
         FixAllValves,
@@ -88,6 +87,8 @@ namespace LethalMenu
         SpawnTurret,
         SpawnMapObjects,
         SellEverything,
+        TeleportAllItems,
+        TeleportOneItem,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -208,7 +209,7 @@ namespace LethalMenu
             {Hack.SuperShovel, false},
             {Hack.StrongHands, false},
             {Hack.Invisibility, false},
-            {Hack.AntiKick, false},
+            {Hack.NoFallDamage, false},
 
 
         };
@@ -236,7 +237,6 @@ namespace LethalMenu
             {Hack.KillAllEnemies, (Action) HackExecutor.KillAllEnemies},
             {Hack.KillNearbyEnemies, (Action<int>) HackExecutor.KillNearbyEnemies},
             {Hack.StunAllEnemies, (Action) HackExecutor.StunAllEnemies},
-            {Hack.TeleportAllItems, (Action) HackExecutor.TeleportAllItems},
             {Hack.ForceTentacleAttack, (Action) HackExecutor.ForceTentacleAttack},
             {Hack.ToggleAllLandmines, (Action) HackExecutor.ToggleAllLandmines},
             {Hack.ToggleAllTurrets, (Action) HackExecutor.ToggleAllTurrets},
@@ -263,6 +263,8 @@ namespace LethalMenu
             {Hack.SpawnTurret, (Action) HackExecutor.SpawnTurret},
             {Hack.ExplodeClosestMine, (Action<PlayerControllerB>) HackExecutor.ExplodeClosestMine},
             {Hack.SellEverything, (Action) HackExecutor.SellEverything},
+            {Hack.TeleportAllItems, (Action) HackExecutor.TeleportAllItems},
+            {Hack.TeleportOneItem, (Action) HackExecutor.TeleportOneItem},
 
         };
 
@@ -524,7 +526,6 @@ namespace LethalMenu
         public static void ExplodeClosestMine(PlayerControllerB player) => player.Handle().ExplodeClosestLandmine();
         public static void LureAllEnemies(PlayerControllerB player) => player.Handle().LureAllEnemies();
         public static void SpiderWebPlayer(PlayerControllerB player) => player.Handle().SpawnSpiderWebs(6);
-        public static void TeleportAllItems() => LethalMenu.localPlayer.Handle().TeleportAllItems();
         public static void SpectatePlayer(PlayerControllerB player) => player.Handle().Spectate();
         public static void MiniCam(PlayerControllerB player) => player.Handle().MiniCam();
         public static void SaveTeleportPosition() => LethalMenu.localPlayer.Handle().SavePosition();
@@ -542,6 +543,8 @@ namespace LethalMenu
         public static void KillNearbyEnemies(int distance = -1) => LethalMenu.enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance).ForEach(enemy => enemy.Handle().Kill());
         public static void ToggleShipLights() => RoundHandler.ToggleShipLights();
         public static void ToggleFactoryLights() => RoundHandler.ToggleFactoryLights();
+        public static void TeleportAllItems() => RoundHandler.TeleportAllItems();
+        public static void TeleportOneItem() => RoundHandler.TeleportOneItem();
 
     }
 }

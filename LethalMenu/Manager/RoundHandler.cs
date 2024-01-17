@@ -130,6 +130,37 @@ namespace LethalMenu.Manager
             trigger.BridgeFallServerRpc();
         }
 
+        public static void TeleportAllItems()
+        {
+            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
+
+            LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).ForEach(i =>
+            {
+                Vector3 point = new Ray(localPlayer.gameplayCamera.transform.position, localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
+
+                i.gameObject.transform.position = point;
+                i.startFallingPosition = point;
+                i.targetFloorPosition = point;
+            });
+        }
+
+        public static void TeleportOneItem()
+        {
+            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
+
+            GrabbableObject itemToTeleport = LethalMenu.items
+                .FirstOrDefault(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom);
+
+            if (itemToTeleport != null)
+            {
+                Vector3 point = new Ray(localPlayer.gameplayCamera.transform.position, localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
+
+                itemToTeleport.gameObject.transform.position = point;
+                itemToTeleport.startFallingPosition = point;
+                itemToTeleport.targetFloorPosition = point;
+            }
+        }
+
         public static void ToggleShipHorn()
         {
             if (Hack.ToggleShipHorn.IsEnabled()) Object.FindObjectOfType<ShipAlarmCord>().PullCordServerRpc(-1);

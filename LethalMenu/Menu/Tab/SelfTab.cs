@@ -56,6 +56,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SuperShovel, "Super Shovel");
             UI.Hack(Hack.StrongHands, "Strong Hands");
             UI.Hack(Hack.Invisibility, "Invisibility");
+            UI.Hack(Hack.NoFallDamage, "No Fall Damage");
 
             GUILayout.EndScrollView();
         }

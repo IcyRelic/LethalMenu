@@ -224,7 +224,8 @@ namespace LethalMenu
         public static float f_enemyKillDistance = 15;
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
-
+        public static bool b_VCDisplay = false;
+        
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
 
         public static bool b_chamsObject = false;
