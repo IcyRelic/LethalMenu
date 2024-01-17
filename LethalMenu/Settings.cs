@@ -359,6 +359,7 @@ namespace LethalMenu
                 hackSettings["ESPDistance"] = f_espDistance.ToString();
                 hackSettings["DisableSpectatorModels"] = b_disableSpectatorModels.ToString();
                 hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
+                hackSettings["VCDisplay"] = b_VCDisplay.ToString();
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
                 chams["Enemy"] = b_chamsEnemy.ToString();
@@ -452,6 +453,8 @@ namespace LethalMenu
                         f_espDistance = int.Parse(espDistanceToken.ToString());
                     if (hackSettings.TryGetValue("DisableSpectatorModels", out JToken disableSpectatorModelsToken))
                         b_disableSpectatorModels = bool.Parse(disableSpectatorModelsToken.ToString());
+                    if (hackSettings.TryGetValue("VCDisplay", out JToken vcDisplayToken))
+                        b_VCDisplay = bool.Parse(vcDisplayToken.ToString());
 
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
