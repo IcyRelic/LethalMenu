@@ -15,8 +15,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Language\english.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="Resources\0Harmony.dll" />
     <EmbeddedResource Include="Resources\Changelog.txt" />
+    <EmbeddedResource Include="Resources\Language\english.json" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\Planned.txt" />
   </ItemGroup>
@@ -27,6 +32,9 @@
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>Resources\BaseGame\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="DissonanceVoip">
+      <HintPath>Resources\BaseGame\DissonanceVoip.dll</HintPath>
     </Reference>
     <Reference Include="Facepunch.Steamworks.Win64">
       <HintPath>Resources\BaseGame\Facepunch.Steamworks.Win64.dll</HintPath>
