@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Handler;
+using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
@@ -13,7 +14,7 @@ namespace LethalMenu.Menu.Tab
 {
     internal class EnemyTab : MenuTab
     {
-        private string[] tabs = new string[] { "Enemy List", "Spawn Enemies" };
+        private string[] tabs = new string[] { Localization.Localize("EnemyTab.EnemyList"), Localization.Localize("EnemyTab.SpawnEnemies") };
 
         public static int selectedEnemy = -1;
         public static int selectedEnemyType = -1;
@@ -25,7 +26,7 @@ namespace LethalMenu.Menu.Tab
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
         private Vector2 scrollPos3 = Vector2.zero;
-        public EnemyTab() : base("Enemy") { }
+        public EnemyTab() : base(Localization.Localize("EnemyTab.Title")) { }
 
         public override void Draw()
         {

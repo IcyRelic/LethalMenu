@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using LethalMenu.Util;
+using LethalMenu.Language;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -12,7 +13,7 @@ namespace LethalMenu.Menu.Tab
         public static int selectedPlayer = 0;
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
-        public PlayersTab() : base("Players") { }
+        public PlayersTab() : base(Localization.Localize("PlayerTab.Title")) { }
 
         public override void Draw()
         {

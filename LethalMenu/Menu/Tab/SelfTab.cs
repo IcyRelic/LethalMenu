@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Language;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
@@ -14,7 +15,7 @@ namespace LethalMenu.Menu.Tab
         private Vector2 tpScrollPos = Vector2.zero;
         private Vector2 scrollPos = Vector2.zero;
 
-        public SelfTab() : base("Self Cheats") { }
+        public SelfTab() : base(Localization.Localize("SelfTab.Title")) { }
 
         public override void Draw()
         {

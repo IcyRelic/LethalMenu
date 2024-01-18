@@ -1,4 +1,5 @@
-﻿using LethalMenu.Menu.Core;
+﻿using LethalMenu.Language;
+using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace LethalMenu.Menu.Tab
     {
         private Vector2 scrollPos = Vector2.zero;
 
-        public VisualsTab() : base("Visuals") { }
+        public VisualsTab() : base(Localization.Localize("VisualsTab.Title")) { }
 
         public override void Draw()
         {

@@ -4,6 +4,7 @@ using LethalMenu.Menu.Core;
 using UnityEngine;
 using LethalMenu.Util;
 using LethalMenu.Types;
+using LethalMenu.Language;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -14,7 +15,7 @@ namespace LethalMenu.Menu.Tab
         private string s_scrapAmount = "1";
         private string s_scrapValue = "1";
 
-        public ServerTab() : base("Server") { }
+        public ServerTab() : base(Localization.Localize("ServerTab.Title")) { }
 
         public override void Draw()
         {

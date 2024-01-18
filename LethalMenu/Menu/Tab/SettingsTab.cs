@@ -1,4 +1,5 @@
 ﻿using LethalMenu.Cheats;
+using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
@@ -45,7 +46,7 @@ namespace LethalMenu.Menu.Tab
         private int i_selectedSizeIndex = -1;
         private int i_selectedCrosshairIndex = -1;
 
-        public SettingsTab() : base("Settings") { }
+        public SettingsTab() : base(Localization.Localize("SettingsTab.Title")) { }
 
         private float f_leftWidth;
 
@@ -82,7 +83,7 @@ namespace LethalMenu.Menu.Tab
                 new UIButton("Save Settings", () => Settings.Config.SaveConfig()),
                 new UIButton("Reload Settings", () => Settings.Config.LoadConfig())
             );
-            //UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
+            UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
 
             UI.Select("Gui Size", ref i_selectedSizeIndex,
                 new UIOption("XSmall", () => Settings.GUISize = GuiSize.XSmall),

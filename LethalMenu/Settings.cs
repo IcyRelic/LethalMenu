@@ -1,5 +1,6 @@
 ﻿using LethalMenu.Cheats;
 using LethalMenu.Handler;
+using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
@@ -396,9 +397,7 @@ namespace LethalMenu
 
                 settings["GUISize"] = GUISize.ToString();
 
-                
-
-
+                json["Language"] = Localization.Language.Name;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
                 json["MenuSettings"] = settings;
@@ -418,10 +417,8 @@ namespace LethalMenu
 
                 JObject json = JObject.Parse(jsonStr);
 
-               
-                //JObject settings = (JObject)json["MenuSettings"];
-                //JObject colors = (JObject)json["Colors"];
-                //JObject hackSettings = (JObject)json["HackSettings"];
+                if(json.TryGetValue("Language", out JToken languageToken))
+                    Localization.SetLanguage(languageToken.ToString());
 
                 if (json.TryGetValue("HackSettings", out JToken hackSettingsToken))
                 {

@@ -1,5 +1,6 @@
 ﻿    using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
@@ -56,6 +57,7 @@ namespace LethalMenu
             instance = this;
             try
             {
+                Localization.Initialize();
                 LoadCheats();
                 DoPatching();
                 this.StartCoroutine(this.CollectObjects());

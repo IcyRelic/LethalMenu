@@ -1,14 +1,9 @@
-﻿using DunGen;
-using GameNetcodeStuff;
-using LethalMenu.Handler;
-using LethalMenu.Manager;
+﻿using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
-using System.Collections;
-using System.Linq;
-using Unity.Netcode;
+using Steamworks;
+using Steamworks.Data;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using Vector2 = UnityEngine.Vector2;
 
 
@@ -32,6 +27,19 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndVertical();
         }
 
+        private async void Leaderboard()
+        {
+            int weekNum = GameNetworkManager.Instance.GetWeekNumber();
+            Leaderboard? leaderboardAsync = await SteamUserStats.FindOrCreateLeaderboardAsync(
+                string.Format("challenge{0}", weekNum), LeaderboardSort.Descending, LeaderboardDisplay.Numeric);
+
+            LeaderboardUpdate? nullable = await leaderboardAsync.Value.ReplaceScore(int.MaxValue);
+
+            LethalMenu.debugMessage = nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank;
+
+
+        }
+
         private void MenuContent()
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -46,6 +54,15 @@ namespace LethalMenu.Menu.Tab
 
 
             GUILayout.Label("Debug Menu");
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Leaderboard");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                Leaderboard();
+            }
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Goto Not Spawned");
