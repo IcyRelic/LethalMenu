@@ -42,7 +42,7 @@ namespace LethalMenu
         BuildAnywhere,
         Weight,
         GhostMode,
-        //UnlimitedPresents,
+        KeepPresents,
         UnlimitedAmmo,
         FreeCam,
         NoCooldown,
@@ -51,6 +51,8 @@ namespace LethalMenu
         StrongHands,
         Invisibility,
         NoFallDamage,
+        HearEveryone,
+        
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -89,6 +91,8 @@ namespace LethalMenu
         SellEverything,
         TeleportAllItems,
         TeleportOneItem,
+        UnlimitedStunGrenades,
+        
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -121,8 +125,7 @@ namespace LethalMenu
         SpiderWebPlayer,
         LureAllEnemies,
         ExplodeClosestMine,
-
-        EnemyControl
+        EnemyControl,
     }
 
     public static class HackExtensions
@@ -198,7 +201,7 @@ namespace LethalMenu
             {Hack.BuildAnywhere, false},
             {Hack.Weight, false},
             {Hack.GhostMode, false},
-            //{Hack.UnlimitedPresents, false},
+            {Hack.KeepPresents, false},
             {Hack.UnlimitedAmmo, false},
             {Hack.FreeCam, false},
             {Hack.SpectatePlayer, false},
@@ -210,6 +213,8 @@ namespace LethalMenu
             {Hack.StrongHands, false},
             {Hack.Invisibility, false},
             {Hack.NoFallDamage, false},
+            {Hack.HearEveryone, false},
+            {Hack.UnlimitedStunGrenades, false},
 
 
         };
