@@ -37,6 +37,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportAllItems, $"Teleport All Items ({LethalMenu.items.Count(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom)})");
             UI.Hack(Hack.TeleportOneItem, $"Teleport One Item ({LethalMenu.items.Count(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom)})");
             UI.Hack(Hack.UnlimitedStunGrenades, "Unlimited Stun Grenades");
+             UI.Hack(Hack.UnlimitedStunGrenades, "Unlimited Flashbangs");
 
             GUILayout.EndScrollView();
 
