@@ -92,6 +92,7 @@ namespace LethalMenu
         TeleportAllItems,
         TeleportOneItem,
         UnlimitedStunGrenades,
+        UnlimitedFlashbangs,
         
 
         /** Visuals Tab **/
@@ -215,6 +216,7 @@ namespace LethalMenu
             {Hack.NoFallDamage, false},
             {Hack.HearEveryone, false},
             {Hack.UnlimitedStunGrenades, false},
+            {Hack.UnlimitedFlashbangs, false},
 
 
         };
