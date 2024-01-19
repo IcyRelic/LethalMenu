@@ -44,7 +44,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.UnlimitedStamina, "Unlimited Stamina");
             UI.Hack(Hack.UnlimitedBattery, "Unlimited Battery");
             UI.Hack(Hack.UnlimitedAmmo, "Unlimited Ammo");
-            //UI.Hack(Hack.UnlimitedPresents, "Unlimited Presents");
+            UI.Hack(Hack.KeepPresents, "Keep Presents");
             UI.Hack(Hack.LootThroughWalls, "Loot Through Walls");
             UI.Hack(Hack.InteractThroughWalls, "Interact Through Walls");
             UI.Hack(Hack.Reach, "Reach");
@@ -58,6 +58,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.StrongHands, "Strong Hands");
             UI.Hack(Hack.Invisibility, "Invisibility");
             UI.Hack(Hack.NoFallDamage, "No Fall Damage");
+            UI.Hack(Hack.HearEveryone, "Hear Everyone");
 
             GUILayout.EndScrollView();
         }
