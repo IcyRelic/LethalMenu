@@ -4,14 +4,14 @@ using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
-    internal class UnlimitedStunGrenades : Cheat
+    internal class UnlimitedFlashbangs : Cheat
     {
         [HarmonyPatch(typeof(StunGrenadeItem), "ItemActivate")]
         public class StunGrenadeItem_ItemActivate_Patch
         {
             public static bool Prefix(StunGrenadeItem __instance)
             {
-                if (!Hack.UnlimitedStunGrenades.IsEnabled())
+                if (!Hack.UnlimitedFlashbangs.IsEnabled())
                 {
                     __instance.itemUsedUp = false;
                     __instance.pinPulled = false;
