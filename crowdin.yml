@@ -1,0 +1,3 @@
+files:
+  - source: /LethalMenu/Resources/Language/*.json
+    translation: LethalMenu/Resources/Language/%language%.json
