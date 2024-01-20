@@ -8,6 +8,7 @@
       "HostRequired": "This feature requires host!",
       "HostTag": "(Host Only)",
       "HostStormyTag": "(Host/Stormy)",
+      "HostVowTag": "(Host/Vow)",
       "GeneralActions": "General Actions",
       "None": "None",
       "Stop": "Stop",
@@ -19,7 +20,10 @@
       "Close": "Close",
       "Enable": "Enable",
       "Disable": "Disable",
-      "Execute": "Execute"
+      "Execute": "Execute",
+      "Save": "Save",
+      "Waiting": "Waiting",
+      "Search": "Search:"
     },
     "SelfTab": {
       "Title": "Self Cheats",
@@ -37,7 +41,7 @@
       "LootThroughWalls": "Loot Through Walls",
       "InteractThroughWalls": "Interact Through Walls",
       "Reach": "Reach",
-      "Weight": "Weight",
+      "Weight": "No Weight",
       "UnlockDoors": "Unlock Doors",
       "BuildAnywhere": "Build Anywhere",
       "FreeCam": "Free Cam",
@@ -46,7 +50,18 @@
       "SuperShovel": "Super Shovel",
       "StrongHands": "Strong Hands",
       "Invisibility": "Invisibility",
-      "NoFallDamage": "No Fall Damage"
+      "NoFallDamage": "No Fall Damage",
+      "Experience": "Experience",
+      "Level": "Current Level:",
+      "XP": "Current XP:",
+      "AddXP": "Add XP",
+      "TeleportTitle": "Teleportation",
+      "Teleport": "Teleport",
+      "TeleportShip": "Teleport To Ship",
+      "TeleportSaved": "Teleport To Saved Location",
+      "SavePosition": "Save Position",
+      "TeleportEntrance": "Teleport To Entrance",
+      "TeleportExit": "Teleport To Exit"
     },
     "EnemyTab": {
       "Title": "Enemy",
@@ -92,6 +107,7 @@
       "Heal": "Heal Player",
       "Strike": "Lightning Strike",
       "SpiderWeb": "Spider Web (Requires Spider)",
+      "TeleportAllEnemies": "Teleport All Enemies",
       "Lure": "Lure All Enemies",
       "ExplodeMine": "Explode Closest Landmine",
       "Spectate": "Spectate",
@@ -196,6 +212,7 @@
       "SteamValves": "Steam Valves",
       "BigDoors": "Big Doors",
       "LockedDoors": "Locked Doors",
+      "Breaker": "Breaker Box",
       "TieredLootHeader": "Tiered Loot Colors",
       "TieredLoot": "Tiered Loot",
       "Tiers": "Tiers",
@@ -206,6 +223,33 @@
       "Keybinds": "Keybinds",
       "TierColorError": "Thresholds and Colors must be the same length!",
       "BindInUseError": "Keybind is already in use!"
+    },
+    "MoonManager": {
+      "Title": "Moon Manager",
+      "CurrentMoon": "Current Moon",
+      "Moon": "Moon:",
+      "Weather": "Weather:",
+      "Risk": "Risk Level:",
+      "ChangeMoon": "Change Moon",
+      "Visit": "Visit"
+    },
+    "ItemManager": {
+      "Title": "Item Manager",
+      "ScrapValue": "Scrap Value:",
+    },
+    "UnlockableManager": {
+      "Title": "Unlockable Manager",
+      "UnlockAll": "Unlock All"
+    },
+    "Cheats": {
+      "Info.BodyCount": "Dead Body Count:",
+      "Info.EnemyCount": "Enemy Count:",
+      "Info.ObjectCount": "Object Count:",
+      "Info.ObjectValue": "Object Value:",
+      "Info.ShipValue": "Ship Value:",
+      "Info.Quota": "Quota:",
+      "Info.DaysLeft": "Days Left:",
+      "Info.BuyingRate": "Company Buying Rate:"
     }
   }
   
