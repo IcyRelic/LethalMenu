@@ -1,9 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
+using UnityEngine;
+using System.Linq;
+using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace LethalMenu.Language
 {
@@ -41,8 +42,8 @@ namespace LethalMenu.Language
             } 
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError($"Failed to initialize localization: {e.Message}");
-                UnityEngine.Debug.LogException(e);
+                Debug.LogError($"Failed to initialize localization: {e.Message}");
+                Debug.LogException(e);
             }
         }
 
@@ -54,40 +55,33 @@ namespace LethalMenu.Language
 
                 JObject json = JObject.Parse(jsonStr);
 
-                if (!json.TryGetValue("DETAILS", out JToken detailsToken)) return;
-                if (!json.TryGetValue("LANGUAGE", out JToken langToken)) return;
-
- 
-                var details = detailsToken.ToObject<Dictionary<string, string>>();
-                var lang = JObject.Parse(langToken.ToString());
-
-                if(!details.ContainsKey("LANGUAGE") || !details.ContainsKey("TRANSLATOR")) return;
-
                 Dictionary<string, string> localization = new Dictionary<string, string>();
 
+                string language = json["LANGUAGE"].ToString();
+                string translator = json["TRANSLATOR"].ToString();
 
-                lang.Properties().ToList().ForEach(sectionProperty =>
+                json.Properties().ToList().ForEach(p =>
                 {
-                    
-                    var section = JObject.Parse(sectionProperty.Value.ToString());
-                    
-                    //foreach y key value pair
-                    foreach (var prop in section.Properties())
-                    {
-                        var key = $"{sectionProperty.Name}.{prop.Name}";
-                        localization.Add(key, prop.Value.ToString());
-                        UnityEngine.Debug.Log($"Loaded localization {key} = {prop.Value}");
-                    }
+                    var name = p.Name;
+                    var value = p.Value.ToString();
+
+                    localization.Add(name, value);
+
+                    Debug.Log($"Loaded localization {name} = {value}");
                 });
 
-                _languages.Add(details["LANGUAGE"], new Language(details["LANGUAGE"], details["TRANSLATOR"], localization));
-                UnityEngine.Debug.Log($"Loaded Language {details["LANGUAGE"]} by {details["TRANSLATOR"]}");
+
+
+                _languages.Add(language, new Language(language, translator, localization));
+                Debug.Log($"Loaded Language {language} by {translator}");
             });
         }
 
         public static void SetLanguage(string name) => Language = LanguageExists(name) ? _languages[name] : _languages["English"];
         public static bool LanguageExists(string name) => _languages.ContainsKey(name);
         public static string Localize(string key) => Language.Has(key) ? Language.Localize(key) : LocalizeEnglish(key);
+        public static string[] LocalizeArray(string[] keys) => keys.Select(key => Localize(key)).ToArray();
+        public static string Localize(string[] keys) => keys.Aggregate("", (current, key) => current + " " + Localize(key));
         private static string LocalizeEnglish(string key) => _languages["English"].Localize(key);
     }
 }
