@@ -1,5 +1,7 @@
 v1.3.3
-- Nothing Yet
+- Added LANGUAGE SUPPORT! (English, German, Chinese, Russian, Polish)
+- Added Missing breaker esp color to settings
+- Added Search feature to the item manager
 
 v1.3.2
 - Added Place All Scrap on Company Desk

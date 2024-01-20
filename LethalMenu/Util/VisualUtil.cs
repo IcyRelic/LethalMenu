@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using LethalMenu.Language;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace LethalMenu.Util
@@ -84,7 +85,7 @@ namespace LethalMenu.Util
 
         public string AsString(string text)
         {
-            return $"<color=#{GetHexCode()}>{text}</color>";
+            return $"<color=#{GetHexCode()}>{Localization.Localize(text)}</color>";
         }
 
     }

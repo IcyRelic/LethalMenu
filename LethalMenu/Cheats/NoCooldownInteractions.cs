@@ -30,7 +30,9 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            if(Hack.NoCooldown.IsEnabled())
+            LethalMenu.debugMessage = FindObjectOfType<StartMatchLever>().triggerScript.timeToHold + "";
+
+            if (Hack.NoCooldown.IsEnabled())
                 LethalMenu.teleporters.FindAll(t => t != null).ForEach(t =>
                 {
                     t.Reflect().SetValue("cooldownTime", 0.0f);
@@ -48,7 +50,13 @@ namespace LethalMenu.Cheats
                 yield return new WaitForSeconds(2f);
                 LethalMenu.interactTriggers.FindAll(t => t != null).ForEach(t =>
                 {
-                    if (!triggers.ContainsKey(t.GetInstanceID())) triggers.Add(t.GetInstanceID(), t.timeToHold);
+                    
+
+                    if (!triggers.ContainsKey(t.GetInstanceID()))
+                    {
+                        triggers.Add(t.GetInstanceID(), t.timeToHold);
+                        Debug.Log($"Added {t.name} to triggers with => {t.timeToHold}");
+                    }
 
                     float original = triggers.TryGetValue(t.GetInstanceID(), out float value) ? value : 0.5f;
 

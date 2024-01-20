@@ -15,13 +15,27 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Language\Chinese Simplified.json" />
     <None Remove="Resources\Language\english.json" />
+    <None Remove="Resources\Language\French.json" />
+    <None Remove="Resources\Language\German.json" />
+    <None Remove="Resources\Language\Japanese.json" />
+    <None Remove="Resources\Language\Korean.json" />
+    <None Remove="Resources\Language\Polish.json" />
+    <None Remove="Resources\Language\Russian.json" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\0Harmony.dll" />
     <EmbeddedResource Include="Resources\Changelog.txt" />
-    <EmbeddedResource Include="Resources\Language\english.json" />
+    <EmbeddedResource Include="Resources\Language\Chinese Simplified.json" />
+    <EmbeddedResource Include="Resources\Language\French.json" />
+    <EmbeddedResource Include="Resources\Language\German.json" />
+    <EmbeddedResource Include="Resources\Language\Japanese.json" />
+    <EmbeddedResource Include="Resources\Language\Korean.json" />
+    <EmbeddedResource Include="Resources\Language\Polish.json" />
+    <EmbeddedResource Include="Resources\Language\Russian.json" />
+    <EmbeddedResource Include="Resources\Language\Source\english.json" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\Planned.txt" />
   </ItemGroup>

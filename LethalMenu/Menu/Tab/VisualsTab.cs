@@ -9,7 +9,7 @@ namespace LethalMenu.Menu.Tab
     {
         private Vector2 scrollPos = Vector2.zero;
 
-        public VisualsTab() : base(Localization.Localize("VisualsTab.Title")) { }
+        public VisualsTab() : base("VisualsTab.Title") { }
 
         public override void Draw()
         {
@@ -27,32 +27,32 @@ namespace LethalMenu.Menu.Tab
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            UI.Hack(Hack.ToggleAllESP, "Toggle All");
-            UI.Toggle("Use Scrap Tiers", ref Settings.b_useScrapTiers);
-            UI.Toggle("VC Display", ref Settings.b_VCDisplay);
-            UI.Hack(Hack.ObjectESP, "Object ESP");
-            UI.Hack(Hack.EnemyESP, "Enemy ESP");
-            UI.Hack(Hack.PlayerESP, "Player ESP");
-            UI.Hack(Hack.DoorESP, "Enterance/Exit ESP");
-            UI.Hack(Hack.LandmineESP, "Landmine ESP");
-            UI.Hack(Hack.TurretESP, "Turret ESP");
-            UI.Hack(Hack.ShipESP, "Ship ESP");
-            UI.Hack(Hack.SteamHazardESP, "Steam Hazard ESP");
-            UI.Hack(Hack.BigDoorESP, "Big Door ESP");
-            UI.Hack(Hack.DoorLockESP, "Locked Door ESP");
-            UI.Hack(Hack.BreakerESP, "Breaker Box ESP");
+            UI.Hack(Hack.ToggleAllESP, "VisualsTab.ToggleAll");
+            UI.Toggle("VisualsTab.UseScrapTiers", ref Settings.b_useScrapTiers);
+            UI.Toggle("VisualsTab.VCDisplay", ref Settings.b_VCDisplay);
+            UI.Hack(Hack.ObjectESP, "VisualsTab.ObjectESP");
+            UI.Hack(Hack.EnemyESP, "VisualsTab.EnemyESP");
+            UI.Hack(Hack.PlayerESP, "VisualsTab.PlayerESP");
+            UI.Hack(Hack.DoorESP, "VisualsTab.EntExtDoorsESP");
+            UI.Hack(Hack.LandmineESP, "VisualsTab.LandmineESP");
+            UI.Hack(Hack.TurretESP, "VisualsTab.TurretESP");
+            UI.Hack(Hack.ShipESP, "VisualsTab.ShipESP");
+            UI.Hack(Hack.SteamHazardESP, "VisualsTab.SteamHazardESP");
+            UI.Hack(Hack.BigDoorESP, "VisualsTab.BigDoorESP");
+            UI.Hack(Hack.DoorLockESP, "VisualsTab.LockedDoorESP");
+            UI.Hack(Hack.BreakerESP, "VisualsTab.BreakerESP");
 
             GUILayout.EndScrollView();
         }
 
         private void OtherVisualsContent()
         {
-            UI.Header("Other Visuals");
-            UI.Hack(Hack.AlwaysShowClock, "Always Show Clock");
-            UI.Hack(Hack.SimpleClock, "Simple Clock");
-            UI.Hack(Hack.Crosshair, "Crosshair");
-            UI.Hack(Hack.Breadcrumbs, "Breadcrumbs");
-            UI.Hack(Hack.NoFog, "No Fog");
+            UI.Header("VisualsTab.OtherVisuals");
+            UI.Hack(Hack.AlwaysShowClock, "VisualsTab.ShowClock");
+            UI.Hack(Hack.SimpleClock, "VisualsTab.SimpleClock");
+            UI.Hack(Hack.Crosshair, "VisualsTab.Crosshair");
+            UI.Hack(Hack.Breadcrumbs, "VisualsTab.Breadcrumbs");
+            UI.Hack(Hack.NoFog, "VisualsTab.NoFog");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace LethalMenu.Menu.Tab
         public static int selectedPlayer = 0;
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
-        public PlayersTab() : base(Localization.Localize("PlayerTab.Title")) { }
+        public PlayersTab() : base("PlayerTab.Title") { }
 
         public override void Draw()
         {
@@ -59,18 +59,18 @@ namespace LethalMenu.Menu.Tab
 
         private void GeneralActions()
         {
-            UI.Header("General Actions");
-            UI.Hack(Hack.DeathNotifications, "Death Notifications");
-            UI.Hack(Hack.FreeCam, "Free Camera Mode");
+            UI.Header("General.GeneralActions");
+            UI.Hack(Hack.DeathNotifications, "PlayerTab.DeathNotifications");
+            UI.Hack(Hack.FreeCam, "PlayerTab.FreeCam");
 
             if(Hack.SpectatePlayer.IsEnabled())
-                UI.Button("Stop Spectating", () => Hack.SpectatePlayer.SetToggle(false), "Stop");
+                UI.Button("PlayerTab.StopSpectating", () => Hack.SpectatePlayer.SetToggle(false), "General.Stop");
 
             if (Hack.MiniCam.IsEnabled())
-                UI.Button("Stop Mini Cam", () => Hack.MiniCam.SetToggle(false), "Stop");
+                UI.Button("PlayerTab.StopMiniCam", () => Hack.MiniCam.SetToggle(false), "General.Stop");
 
-            UI.Button("Kill Everyone", () => LethalMenu.players.ForEach(p => Hack.KillPlayer.Execute(p)));
-            UI.Button("Kill Everyone Except You", () => LethalMenu.players.FindAll(p => p.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId).ForEach(p => Hack.KillPlayer.Execute(p)));
+            UI.Button("PlayerTab.KillEveryone", () => LethalMenu.players.ForEach(p => Hack.KillPlayer.Execute(p)));
+            UI.Button("PlayerTab.KillEveryoneElse", () => LethalMenu.players.FindAll(p => p.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId).ForEach(p => Hack.KillPlayer.Execute(p)));
            
         }
 
@@ -84,23 +84,26 @@ namespace LethalMenu.Menu.Tab
 
             string name = player.playerUsername;
 
-            if (player.isPlayerDead && player.deadBody != null) name = "<color=red>[Dead]</color> " + name + Settings.c_causeOfDeath.AsString("(" + player.deadBody.causeOfDeath + ")");
+            if (player.isPlayerDead && player.deadBody != null)
+                name = $"{Settings.c_deadPlayer.AsString("PlayerTab.DeadPrefix")} {name} ({Settings.c_causeOfDeath.AsString(player.deadBody.causeOfDeath.ToString())})";
+                
+                //name = "<color=red>[Dead]</color> " + name + Settings.c_causeOfDeath.AsString("(" + player.deadBody.causeOfDeath + ")");
 
 
             UI.Header(name);
-            UI.Hack(Hack.Teleport, "Teleport To Them", player.transform.position, player.isInElevator, player.isInHangarShipRoom, player.isInsideFactory);
-            UI.Hack(Hack.KillPlayer, "Kill Player", player);
-            UI.Hack(Hack.HealPlayer, "Heal Player", player);
-            UI.Hack(Hack.LightningStrikePlayer, "Lightning Strike (Host/Stormy)", player);
-            UI.Hack(Hack.SpiderWebPlayer, "Spider Web (Requires Spider)", player);
-            UI.Hack(Hack.TeleportEnemy, "Teleport All Enemies", player, LethalMenu.enemies.ToArray());
-            UI.Hack(Hack.LureAllEnemies, "Lure All Enemies", player);
-            UI.Hack(Hack.ExplodeClosestMine, "Explode Closest Landmine", player);
+            UI.Hack(Hack.Teleport, "PlayerTab.TeleportTo", player.transform.position, player.isInElevator, player.isInHangarShipRoom, player.isInsideFactory);
+            UI.Hack(Hack.KillPlayer, "PlayerTab.Kill", player);
+            UI.Hack(Hack.HealPlayer, "PlayerTab.Heal", player);
+            UI.Hack(Hack.LightningStrikePlayer, ["PlayerTab.Strike", "General.HostStormyTag"], player);
+            UI.Hack(Hack.SpiderWebPlayer, "PlayerTab.SpiderWeb", player);
+            UI.Hack(Hack.TeleportEnemy, "PlayerTab.TeleportAllEnemies", player, LethalMenu.enemies.ToArray());
+            UI.Hack(Hack.LureAllEnemies, "PlayerTab.Lure", player);
+            UI.Hack(Hack.ExplodeClosestMine, "PlayerTab.ExplodeMine", player);
 
 
             if (player.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
             {
-                string btnText = Cheats.SpectatePlayer.isSpectatingPlayer(player) ? "Stop" : "Spectate";
+                string btnText = Cheats.SpectatePlayer.isSpectatingPlayer(player) ? "General.Stop" : "PlayerTab.Spectate";
 
                 Action startAction = () =>
                 {
@@ -114,10 +117,10 @@ namespace LethalMenu.Menu.Tab
 
                 Action action = Cheats.SpectatePlayer.isSpectatingPlayer(player) ? stopAction : startAction;
 
-                UI.Button("Spectate", action, btnText);
+                UI.Button("PlayerTab.Spectate", action, btnText);
 
 
-                btnText = (int)player.playerClientId == Cheats.SpectatePlayer.camPlayer ? "Stop" : "View";
+                btnText = (int)player.playerClientId == Cheats.SpectatePlayer.camPlayer ? "General.Stop" : "General.View";
 
                 startAction = () =>
                 {
@@ -131,7 +134,7 @@ namespace LethalMenu.Menu.Tab
 
                 action = Cheats.SpectatePlayer.isCamPlayer(player) ? stopAction : startAction;
 
-                UI.Button("Mini Cam", action, btnText);
+                UI.Button("PlayerTab.MiniCam", action, btnText);
             }
 
         }

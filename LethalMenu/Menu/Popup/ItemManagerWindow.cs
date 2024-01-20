@@ -1,5 +1,6 @@
 ﻿using LethalMenu.Cheats;
 using LethalMenu.Menu.Core;
+using LethalMenu.Util;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Unity.Netcode;
@@ -13,7 +14,7 @@ namespace LethalMenu.Menu.Popup
         private Vector2 scrollPos = Vector2.zero;
 
         private string s_scrapValue = "1000";
-
+        private string s_search = "";
 
         public ItemManagerWindow(int id) : base("Item Manager", new Rect(50f, 50f, 577f, 300f), id)
         {
@@ -29,49 +30,25 @@ namespace LethalMenu.Menu.Popup
 
         private void ItemContent()
         {
+            if(!(bool)StartOfRound.Instance) return;
+
             if (!LethalMenu.localPlayer.IsHost)
             {
-                GUILayout.Label("<color=#DD0B0B>This feature requires host!</color>");
+                UI.Label("General.HostRequired", Settings.c_error);
                 return;
             }
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Scrap Value: ");
+            UI.Textbox("General.Search", ref s_search);
             GUILayout.FlexibleSpace();
-
-            s_scrapValue = GUILayout.TextField(s_scrapValue, GUILayout.Width(Settings.GUISize.GetTextboxWidth()));
-            s_scrapValue = Regex.Replace(s_scrapValue, @"[^0-9]", "");
-
+            UI.Textbox("ItemManager.ScrapValue", ref s_scrapValue, @"[^0-9]");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(20);
 
-            if ((bool)StartOfRound.Instance)
-            {
-                if(StartOfRound.Instance.allItemsList == null || StartOfRound.Instance.allItemsList.itemsList == null) return;
-
-                var items = StartOfRound.Instance.allItemsList.itemsList;
-                int itemsPerRow = 3;
-                int rows = Mathf.CeilToInt(items.Count / (float)itemsPerRow);
-
-                for (int i = 0; i < rows; i++)
-                {
-                    GUILayout.BeginHorizontal();
-                    for (int j = 0; j < itemsPerRow; j++)
-                    {
-                        int index = i * itemsPerRow + j;
-                        if (index >= items.Count) break;
-                        var item = items[index];
-
-                        if (GUILayout.Button(item.name, GUILayout.Width(175))) SpawnItem(item);
-                    }
-                    GUILayout.EndHorizontal();
-                }
-
-            }
-
+            UI.ButtonGrid(StartOfRound.Instance.allItemsList.itemsList, (i) => i.name, s_search, (i) => SpawnItem(i), 3);
 
             GUILayout.EndScrollView();
         }
@@ -80,10 +57,7 @@ namespace LethalMenu.Menu.Popup
         {
             Vector3 position = GameNetworkManager.Instance.localPlayerController.playerEye.transform.position;
             GameObject gameObject = Object.Instantiate(item.spawnPrefab, position, Quaternion.identity, StartOfRound.Instance.propsContainer);
-
-
-            int value = int.TryParse(s_scrapValue, out value) ? value : 1000;
-
+            int value = int.TryParse(s_scrapValue, out value) ? value : Random.Range(15, 100);
 
             gameObject.GetComponent<GrabbableObject>().SetScrapValue(value);
             gameObject.GetComponent<GrabbableObject>().fallTime = 0.0f;

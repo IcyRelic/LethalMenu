@@ -14,7 +14,7 @@ namespace LethalMenu.Menu.Tab
 {
     internal class EnemyTab : MenuTab
     {
-        private string[] tabs = new string[] { Localization.Localize("EnemyTab.EnemyList"), Localization.Localize("EnemyTab.SpawnEnemies") };
+        private string[] tabs = new string[] { "EnemyTab.EnemyList", "EnemyTab.SpawnEnemies" };
 
         public static int selectedEnemy = -1;
         public static int selectedEnemyType = -1;
@@ -26,12 +26,12 @@ namespace LethalMenu.Menu.Tab
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
         private Vector2 scrollPos3 = Vector2.zero;
-        public EnemyTab() : base(Localization.Localize("EnemyTab.Title")) { }
+        public EnemyTab() : base("EnemyTab.Title") { }
 
         public override void Draw()
         {
             GUILayout.BeginVertical(GUILayout.Width(HackMenu.Instance.contentWidth - HackMenu.Instance.spaceFromLeft));
-            selectedTab = GUILayout.Toolbar(selectedTab, tabs);
+            selectedTab = GUILayout.Toolbar(selectedTab, Localization.LocalizeArray(tabs));
 
 
             GUILayout.BeginHorizontal();
@@ -113,25 +113,25 @@ namespace LethalMenu.Menu.Tab
 
         private void GeneralActions()
         {
-            UI.Header("General Actions");
-            UI.Hack(Hack.KillAllEnemies, "Kill All Enemies");
-            UI.HackSlider(Hack.KillNearbyEnemies, "Kill Nearby Enemies", Settings.f_enemyKillDistance.ToString() + "m", ref Settings.f_enemyKillDistance, 5, 50);
-            UI.Hack(Hack.StunAllEnemies, "Stun All Enemies");
+            UI.Header("General.GeneralActions");
+            UI.Hack(Hack.KillAllEnemies, "EnemyTab.KillAllEnemies");
+            UI.HackSlider(Hack.KillNearbyEnemies, "EnemyTab.KillNearbyEnemies", Settings.f_enemyKillDistance.ToString() + "m", ref Settings.f_enemyKillDistance, 5, 50);
+            UI.Hack(Hack.StunAllEnemies, "EnemyTab.StunAllEnemies");
 
             if(LethalMenu.enemies.Exists(e => e is SandSpiderAI))
-                UI.Hack(Hack.BreakAllWebs, "Break All Spider Web");
+                UI.Hack(Hack.BreakAllWebs, "EnemyTab.BreakAllSpiderWeb");
 
             if (Hack.EnemyControl.IsEnabled())
-                UI.Button("Stop Controlling Enemy", () => { Hack.EnemyControl.SetToggle(false); });
+                UI.Button("EnemyTab.StopEnemyControl", () => { Hack.EnemyControl.SetToggle(false); });
 
 
         }
 
         private void EnemyActions()
         {
-            UI.Header("Enemy Status", true);
+            UI.Header("EnemyTab.EnemyStatus", true);
 
-            if (selectedEnemy == -1) { UI.Label(Settings.c_error.AsString("No Enemy Selected")); return; }
+            if (selectedEnemy == -1) { UI.Label(Settings.c_error.AsString("EnemyTab.NoEnemy")); return; }
 
 
             PlayerControllerB selectedPlayer = LethalMenu.players.Find(p => (int)p.playerClientId == PlayersTab.selectedPlayer);
@@ -140,30 +140,30 @@ namespace LethalMenu.Menu.Tab
             string s_target = selectedPlayer == null ? "None" : selectedPlayer.playerUsername;
 
             if(Enum.TryParse(enemy.currentBehaviourStateIndex.ToString(), out Handler.Behaviour behavior))
-                UI.Label("Behaviour: ", behavior.ToString());
+                UI.Label("EnemyTab.Behaviour", behavior.ToString());
 
-            UI.Label("Selected Player: ", Settings.c_playerESP.AsString(s_target));
+            UI.Label("EnemyTab.SelectedPlayer", Settings.c_playerESP.AsString(s_target));
 
-            UI.Label("Targeting: ", (enemy.targetPlayer == null ? "None" : enemy.targetPlayer.playerUsername));
+            UI.Label("EnemyTab.Tergeting", (enemy.targetPlayer == null ? "None" : enemy.targetPlayer.playerUsername));
 
             if(enemy is DressGirlAI girl)
-                UI.Label("Haunting: ", (girl.hauntingPlayer == null ? "None" : girl.hauntingPlayer.playerUsername));
+                UI.Label("EnemyTab.Haunting", (girl.hauntingPlayer == null ? "None" : girl.hauntingPlayer.playerUsername));
 
-            UI.Header("Enemy Actions", true);
+            UI.Header("EnemyTab.EnemyActions", true);
 
-            if (enemy is HoarderBugAI bug) UI.Button("Steal Items", () => { bug.StealAllItems(); });
-            if (enemy is SandSpiderAI spider) UI.Button("Spawn Web", () => { spider.SpawnWeb(spider.abdomen.position); });
+            if (enemy is HoarderBugAI bug) UI.Button("EnemyTab.StealItems", () => { bug.StealAllItems(); });
+            if (enemy is SandSpiderAI spider) UI.Button("EnemyTab.SpawnWeb", () => { spider.SpawnWeb(spider.abdomen.position); });
 
 
-            UI.Button("Kill", () => { enemy.Handle().Kill(); });
-            UI.Button("Target Selected Player", () => { enemy.Handle().TargetPlayer(selectedPlayer); });
+            UI.Button("EnemyTab.Kill", () => { enemy.Handle().Kill(); });
+            UI.Button("EnemyTab.TargetSelectedPlayer", () => { enemy.Handle().TargetPlayer(selectedPlayer); });
             
             if(enemy.Handle().HasInstaKill())
-                UI.Button("Kill Selected Player", () => { enemy.Handle().KillPlayer(selectedPlayer); });
+                UI.Button("EnemyTab.KillSelectedPlayer", () => { enemy.Handle().KillPlayer(selectedPlayer); });
 
-            UI.Hack(Hack.TeleportEnemy, "Teleport To Selected Player", selectedPlayer, enemy);
-            UI.Hack(Hack.EnemyControl, "Control Enemy", enemy);
-            UI.Button("Control", () => { Hack.EnemyControl.Execute(enemy); });
+            UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayerr", selectedPlayer, enemy);
+            UI.Hack(Hack.EnemyControl, "EnemyTab.ControlEnemy", enemy);
+            UI.Button("EnemyTab.Control", () => { Hack.EnemyControl.Execute(enemy); });
 
 
         }
@@ -172,16 +172,16 @@ namespace LethalMenu.Menu.Tab
         {
             if (!(bool)StartOfRound.Instance || LethalMenu.localPlayer == null) return;
 
-            if (!LethalMenu.localPlayer.IsHost) { UI.Label(Settings.c_error.AsString("This feature requires host!")); return; }
-            if(selectedEnemyType == -1) { UI.Label(Settings.c_error.AsString("No Enemy Type Selected")); return; }
+            if (!LethalMenu.localPlayer.IsHost) { UI.Label("General.HostRequired", Settings.c_error); return; }
+            if(selectedEnemyType == -1) { UI.Label("EnemyTab.NoEnemyType", Settings.c_error); return; }
 
             EnemyType type = GameUtil.GetEnemyTypes().Find(x => x.GetInstanceID() == selectedEnemyType);
 
-            UI.Label("Selected Enemy: ", Settings.c_enemyESP.AsString(type.name));
-            UI.Textbox("Spawn Amount", ref s_spawnAmount, @"[^0-9]");
+            UI.Label("EnemyTab.SelectedType", type.name, Settings.c_enemyESP);
+            UI.Textbox("EnemyTab.SpawnAmount", ref s_spawnAmount, @"[^0-9]");
 
-            UI.Checkbox("Spawn Outside", ref b_spawnOutside);
-            UI.Button("Spawn", () => HackExecutor.SpawnEnemy(type, int.Parse(s_spawnAmount), b_spawnOutside));
+            UI.Checkbox("EnemyTab.SpawnOutside", ref b_spawnOutside);
+            UI.Button("EnemyTab.Spawn", () => HackExecutor.SpawnEnemy(type, int.Parse(s_spawnAmount), b_spawnOutside));
         }
 
         private EnemyAI GetSelectedEnemy()

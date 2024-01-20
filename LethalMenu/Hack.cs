@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Handler;
+using LethalMenu.Language;
 using LethalMenu.Manager;
 using LethalMenu.Types;
 using LethalMenu.Util;
@@ -338,32 +339,17 @@ namespace LethalMenu
 
         public static bool Button(this Hack hack, string text)
         {
-            return GUILayout.Button(text);
+            return GUILayout.Button(Localization.Localize(text));
         }
 
         public static bool Button(this Hack hack)
         {
-            return GUILayout.Button(hack.ToBtnText());
-        }
-
-        public static bool Button(this Hack hack, bool b)
-        {
-            return GUILayout.Button(hack.ToBtnText(b));
+            return GUILayout.Button(Localization.Localize(hack.ToBtnText()));
         }
 
         public static string ToBtnText(this Hack hack)
         {
-            return hack.CanBeToggled() ? ToggleFlags[hack] ? "Disable" : "Enable" : "Execute";
-        }
-
-        public static string ToBtnText(this Hack hack, bool b)
-        {
-            return b ? "Disable" : "Enable";
-        }
-
-        public static string ToStatus(this Hack hack)
-        {
-            return hack.CanBeToggled() ? ToggleFlags[hack] ? "Enabled" : "Disabled" : "No Status";
+            return hack.CanBeToggled() ? ToggleFlags[hack] ? "General.Disable" : "General.Enable" : "General.Execute";
         }
 
         public static ButtonControl GetKeyBind(this Hack hack)

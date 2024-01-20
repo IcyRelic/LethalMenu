@@ -199,7 +199,7 @@ namespace LethalMenu
      
         //Other Colors
         public static RGBAColor c_error = new RGBAColor(221, 11, 11, 1f);
-
+        public static RGBAColor c_deadPlayer = new RGBAColor(255, 0, 0, 1);
 
         /* *
          * Vectors

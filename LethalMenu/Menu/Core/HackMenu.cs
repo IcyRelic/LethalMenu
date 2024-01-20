@@ -133,6 +133,7 @@ namespace LethalMenu.Menu.Core
             for (int i = 0; i < menuTabs.Count; i++)
             {
                 if (menuTabs[i].name == "Debug" && !Settings.isDebugMode) continue;
+                menuTabs[i].LocalizeName();
                 if (GUILayout.Button(menuTabs[i].name, style)) selectedTab = i;
             }
 

@@ -15,7 +15,7 @@ namespace LethalMenu.Menu.Tab
         private string s_scrapAmount = "1";
         private string s_scrapValue = "1";
 
-        public ServerTab() : base(Localization.Localize("ServerTab.Title")) { }
+        public ServerTab() : base("ServerTab.Title") { }
 
         public override void Draw()
         {
@@ -31,53 +31,53 @@ namespace LethalMenu.Menu.Tab
 
         private void InfoMenuContent()
         {
-            UI.Header("Info Display");
-            UI.Hack(Hack.DisplayBodyCount, "Dead Body Count");
-            UI.Hack(Hack.DisplayEnemyCount, "Enemy Count");
-            UI.Hack(Hack.DisplayObjectScan, "Object Value Scan");
-            UI.Hack(Hack.DisplayShipScan, "Ship Value Scan");
-            UI.Hack(Hack.DisplayQuota, "Display Quota");
-            UI.Hack(Hack.DisplayBuyingRate, "Display Buying Rate");
+            UI.Header("ServerTab.InfoDisplay");
+            UI.Hack(Hack.DisplayBodyCount, "ServerTab.BodyCount");
+            UI.Hack(Hack.DisplayEnemyCount, "ServerTab.EnemyCount");
+            UI.Hack(Hack.DisplayObjectScan, "ServerTab.ObjectScan");
+            UI.Hack(Hack.DisplayShipScan, "ServerTab.ShipScan");
+            UI.Hack(Hack.DisplayQuota, "ServerTab.Quota");
+            UI.Hack(Hack.DisplayBuyingRate, "ServerTab.BuyingRate");
         }
 
         private void ServerMenuContent()
         {
-            UI.Header("Server Cheats");
+            UI.Header("ServerTab.ServerCheats");
 
-            UI.TextboxAction("Edit Credits", ref s_credits, @"[^0-9]", 50, 
-                new UIButton("Remove", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Remove)),
-                new UIButton("Add", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Add)),
-                new UIButton("Set", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Set))
+            UI.TextboxAction("ServerTab.EditCredits", ref s_credits, @"[^0-9]", 50, 
+                new UIButton("General.Remove", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Remove)),
+                new UIButton("General.Add", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Add)),
+                new UIButton("General.Set", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Set))
             );
 
-            UI.TextboxAction("Edit Quota (Host)", ref s_quota, @"[^0-9]", 50,
-                new UIButton("Set", () => Hack.ModifyQuota.Execute(int.Parse(s_quota)))
+            UI.TextboxAction(["ServerTab.EditQuota", "General.HostTag"], ref s_quota, @"[^0-9]", 50,
+                new UIButton("General.Set", () => Hack.ModifyQuota.Execute(int.Parse(s_quota)))
             );
 
-            UI.TextboxAction("Scrap Amount Multiplier (Host)", ref s_scrapAmount, @"[^0-9]", 3,
-                new UIButton("Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapAmount), 0))
+            UI.TextboxAction(["ServerTab.ScrapAmount", "General.HostTag"], ref s_scrapAmount, @"[^0-9]", 3,
+                new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapAmount), 0))
             );
 
-            UI.TextboxAction("Scrap Value Multiplier (Host)", ref s_scrapValue, @"[^0-9]", 3,
-                new UIButton("Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapValue), 1))
+            UI.TextboxAction(["ServerTab.ScrapValue", "General.HostTag"], ref s_scrapValue, @"[^0-9]", 3,
+                new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapValue), 1))
             );
 
-            UI.Hack(Hack.StartGame, "Force Ship Land");
-            UI.Hack(Hack.EndGame, "Force Ship Leave");
-            UI.Hack(Hack.SpawnMoreScrap, "Spawn More Scrap (Host Only)");
-            UI.Hack(Hack.SpawnMapObjects, "Spawn Random Mines (Host Only)", MapObject.Landmine);
-            UI.Hack(Hack.SpawnMapObjects, "Spawn Random Turrets (Host Only)", MapObject.TurretContainer);
-            UI.Hack(Hack.SpawnLandmine, "Spawn Landmine (Host Only)");
-            UI.Hack(Hack.SpawnTurret, "Spawn Turret (Host Only)");
+            UI.Hack(Hack.StartGame, "ServerTab.ForceLand");
+            UI.Hack(Hack.EndGame, "ServerTab.ForceLeave");
+            UI.Hack(Hack.SpawnMoreScrap, ["ServerTab.SpawnScrap", "General.HostTag"]);
+            UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandMines", "General.HostTag"], MapObject.Landmine);
+            UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandTurrets", "General.HostTag"], MapObject.TurretContainer);
+            UI.Hack(Hack.SpawnLandmine, ["ServerTab.SpawnLandmine", "General.HostTag"]);
+            UI.Hack(Hack.SpawnTurret, ["ServerTab.SpawnTurret", "General.HostTag"]);
 
         }
 
         private void ManagersContent()
         {
-            UI.Header("Managers");
-            UI.Toggle("Moon Manager", ref HackMenu.Instance.moonManagerWindow.isOpen, "Close", "Open");
-            UI.Toggle("Unlockables Manager", ref HackMenu.Instance.unlockableManagerWindow.isOpen, "Close", "Open");
-            UI.Toggle("Item Manager", ref HackMenu.Instance.itemManagerWindow.isOpen, "Close", "Open");
+            UI.Header("ServerTab.Managers");
+            UI.Toggle("Moon Manager", ref HackMenu.Instance.moonManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("Unlockables Manager", ref HackMenu.Instance.unlockableManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("Item Manager", ref HackMenu.Instance.itemManagerWindow.isOpen, "General.Close", "General.Open");
 
         }
     }

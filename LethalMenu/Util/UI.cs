@@ -1,5 +1,9 @@
-﻿using System;
+﻿using LethalMenu.Language;
+using LethalMenu.Types;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -21,7 +25,7 @@ namespace LethalMenu.Util
 
         public UIButton(string label, Action action)
         {
-            this.label = label;
+            this.label = Localization.Localize(label);
             this.action = action;
         }
 
@@ -67,35 +71,44 @@ namespace LethalMenu.Util
         public static void Header(string header, bool space = false)
         {
             if (space) GUILayout.Space(20);
-            GUILayout.Label(header, new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold });
+            GUILayout.Label(Localization.Localize(header), new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold });
         }
 
         public static void SubHeader(string header, bool space = false)
         {
             if (space) GUILayout.Space(20);
-            GUILayout.Label(header, new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold });
+            GUILayout.Label(Localization.Localize(header), new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold });
         }
 
-        public static void Label(string header, string label)
+        public static void Label(string header, string label, RGBAColor color = null)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
-            GUILayout.Label(label);
+            GUILayout.Label(color is null ? Localization.Localize(label) : color.AsString(label));
             GUILayout.EndHorizontal();
         }
 
-        public static void Label(string label)
+        public static void Label(string label, RGBAColor color = null)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
+            GUILayout.Label(color is null ? Localization.Localize(label) : color.AsString(label));
             GUILayout.EndHorizontal();
         }
 
         public static void Hack(Hack hack, string header, params object[] param)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+            if (hack.Button()) hack.Execute(param);
+            GUILayout.EndHorizontal();
+        }
+
+        public static void Hack(Hack hack, string[] header, params object[] param)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
             if (hack.Button()) hack.Execute(param);
             GUILayout.EndHorizontal();
@@ -104,20 +117,30 @@ namespace LethalMenu.Util
         public static void Hack(Hack hack, string header, string buttonText, params object[] param)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button(buttonText)) hack.Execute(param);
+            if (GUILayout.Button(Localization.Localize(buttonText))) hack.Execute(param);
             GUILayout.EndHorizontal();
         }
 
-        public static void Button(string header, Action action, string btnText = "Execute")
+        public static void Button(string header, Action action, string btnText = "General.Execute")
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button(btnText)) action();
+            if (GUILayout.Button(Localization.Localize(btnText))) action();
             GUILayout.EndHorizontal();
         }
+
+        public static void Button(string[] header, Action action, string btnText = "General.Execute")
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button(Localization.Localize(btnText))) action();
+            GUILayout.EndHorizontal();
+        }
+
         public static void Toggle(string header, ref bool value)
         {
             Toggle(header, ref value, "Disable", "Enable");
@@ -126,9 +149,9 @@ namespace LethalMenu.Util
         public static void Toggle(string header, ref bool value, string enabled, string disabled)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button(value ? enabled : disabled)) value = !value;
+            if (GUILayout.Button(Localization.Localize(value ? enabled : disabled))) value = !value;
             GUILayout.EndHorizontal();
         }
 
@@ -136,7 +159,7 @@ namespace LethalMenu.Util
         public static void HackSlider(Hack hack, string header, string displayValue, ref float value, float min, float max)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header + " ( " + displayValue + " )");
+            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
 
             GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.GUISize.GetSliderWidth() };
@@ -147,20 +170,30 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Textbox(string label, ref string value, string regex)
+        public static void Textbox(string label, ref string value, string regex = "")
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
+            GUILayout.Label(Localization.Localize(label));
             GUILayout.FlexibleSpace();
             value = GUILayout.TextField(value, GUILayout.Width(Settings.GUISize.GetTextboxWidth() * 3));
             value = Regex.Replace(value, regex, "");
             GUILayout.EndHorizontal();
         }
 
+        public static void TextboxAction(string[] label, ref string value, string regex, int length, params UIButton[] buttons)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(label));
+            GUILayout.FlexibleSpace();
+            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.GUISize.GetTextboxWidth()));
+            value = Regex.Replace(value, regex, "");
+            buttons.ToList().ForEach(btn => btn.Draw());
+            GUILayout.EndHorizontal();
+        }
         public static void TextboxAction(string label, ref string value, string regex, int length, params UIButton[] buttons)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(label);
+            GUILayout.Label(Localization.Localize(label));
             GUILayout.FlexibleSpace();
             value = GUILayout.TextField(value, length, GUILayout.Width(Settings.GUISize.GetTextboxWidth()));
             value = Regex.Replace(value, regex, "");
@@ -178,7 +211,7 @@ namespace LethalMenu.Util
         public static void Slider(string header, string displayValue, ref float value, float min, float max)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header + " ( " + displayValue + " )");
+            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
             value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.GUISize.GetSliderWidth()));
             GUILayout.EndHorizontal();
@@ -187,7 +220,7 @@ namespace LethalMenu.Util
         public static void Checkbox(string header, ref bool value)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
             value = GUILayout.Toggle(value, "");
             GUILayout.EndHorizontal();
@@ -196,7 +229,7 @@ namespace LethalMenu.Util
         public static void Checkbox(string header, bool isChecked, Action onChanged)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
             bool modifiedValue = GUILayout.Toggle(isChecked, "");
             
@@ -207,7 +240,7 @@ namespace LethalMenu.Util
         public static void Select(string header, ref object value, ref int index, params UIOption[] options)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
 
             options[index].Draw(ref value);
@@ -222,7 +255,7 @@ namespace LethalMenu.Util
         public static void Select(string header, ref int index, params UIOption[] options)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(header);
+            GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
 
             options[index].Draw();
@@ -232,6 +265,27 @@ namespace LethalMenu.Util
 
 
             GUILayout.EndHorizontal();
+        }
+
+        public static void ButtonGrid<T>(List<T> objects, Func<T, string> textSelector, string search, Action<T> action, int numPerRow, int btnWidth = 175)
+        {
+            List<T> filtered = objects.FindAll(x => textSelector(x).ToLower().Contains(search.ToLower()));
+
+            int rows = Mathf.CeilToInt(filtered.Count / (float) numPerRow);
+
+            for (int i = 0; i < rows; i++)
+            {
+                GUILayout.BeginHorizontal();
+                for (int j = 0; j < numPerRow; j++)
+                {
+                    int index = i * numPerRow + j;
+                    if (index >= filtered.Count) break;
+                    var obj = filtered[index];
+
+                    if (GUILayout.Button(textSelector((T)obj), GUILayout.Width(btnWidth))) action((T)obj);
+                }
+                GUILayout.EndHorizontal();
+            }   
         }
     }
 }

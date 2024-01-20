@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LethalMenu.Language;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace LethalMenu.Menu.Core
 
         public PopupMenu(string name, Rect size, int id)
         {
-            this.name = name;
+            this.name = Localization.Localize(name);
             this.windowRect = size;
             this.id = id;
         }

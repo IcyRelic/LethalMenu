@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 using Newtonsoft.Json.Linq;
+using LethalMenu.Util;
 
 namespace LethalMenu.Language
 {
@@ -39,6 +40,8 @@ namespace LethalMenu.Language
                 LoadLanguage();
                 SetLanguage("English");
                 _initialized = true;
+
+                GetLanguages().ToList().ForEach(x => Debug.Log($"Loaded Language {x}"));
             } 
             catch (Exception e)
             {
@@ -51,11 +54,18 @@ namespace LethalMenu.Language
         {
             Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(x => x.StartsWith("LethalMenu.Resources.Language.") && x.EndsWith(".json")).ToList().ForEach(x =>
             {
+                Debug.Log($"Loading localization file => {x}");
                 var jsonStr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(x)).ReadToEnd();
 
                 JObject json = JObject.Parse(jsonStr);
 
                 Dictionary<string, string> localization = new Dictionary<string, string>();
+
+                if(!json.ContainsKey("LANGUAGE") || !json.ContainsKey("TRANSLATOR"))
+                {
+                    Debug.LogError($"Failed to load localization file => {x}");
+                    return;
+                }
 
                 string language = json["LANGUAGE"].ToString();
                 string translator = json["TRANSLATOR"].ToString();
@@ -67,7 +77,7 @@ namespace LethalMenu.Language
 
                     localization.Add(name, value);
 
-                    Debug.Log($"Loaded localization {name} = {value}");
+                    //Debug.Log($"Loaded localization {name} = {value}");
                 });
 
 
@@ -77,6 +87,7 @@ namespace LethalMenu.Language
             });
         }
 
+        public static string[] GetLanguages() => _languages.Keys.ToArray();
         public static void SetLanguage(string name) => Language = LanguageExists(name) ? _languages[name] : _languages["English"];
         public static bool LanguageExists(string name) => _languages.ContainsKey(name);
         public static string Localize(string key) => Language.Has(key) ? Language.Localize(key) : LocalizeEnglish(key);

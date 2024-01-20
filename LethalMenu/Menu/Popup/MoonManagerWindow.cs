@@ -24,12 +24,12 @@ namespace LethalMenu.Menu.Popup
 
             if((bool) StartOfRound.Instance)
             {
-                UI.Header("Current Moon");
-                UI.Label("Moon:", StartOfRound.Instance.currentLevel.PlanetName);
-                UI.Label("Weather:", StartOfRound.Instance.currentLevel.currentWeather.ToString());
-                UI.Label("Risk Level:", StartOfRound.Instance.currentLevel.riskLevel);
+                UI.Header("MoonManager.CurrentMoon");
+                UI.Label("MoonManager.Moon", StartOfRound.Instance.currentLevel.PlanetName);
+                UI.Label("MoonManager.Weather", StartOfRound.Instance.currentLevel.currentWeather.ToString());
+                UI.Label("MoonManager.Risk", StartOfRound.Instance.currentLevel.riskLevel);
 
-                UI.Header("Change Moon", true);
+                UI.Header("MoonManager.ChangeMoon", true);
 
                 int[] levelOrder = { 3, 0, 1, 2, 7, 4, 5, 6, 8 };
 
@@ -45,7 +45,7 @@ namespace LethalMenu.Menu.Popup
 
                     string weather = x.currentWeather == LevelWeatherType.None ? "" : $" ({x.currentWeather})";
 
-                    UI.Button($"{x.PlanetName}{weather}", () => RoundHandler.ChangeMoon(x.levelID), "Visit");
+                    UI.Button($"{x.PlanetName}{weather}", () => RoundHandler.ChangeMoon(x.levelID), "MoonManager.Visit");
                 }
             }
 

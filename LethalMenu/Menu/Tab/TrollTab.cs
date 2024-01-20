@@ -9,7 +9,7 @@ namespace LethalMenu.Menu.Tab
     {
 
         private Vector2 scrollPos = Vector2.zero;
-        public TrollTab() : base("Troll") { }
+        public TrollTab() : base("TrollTab.Title") { }
 
         public override void Draw()
         {
@@ -22,20 +22,20 @@ namespace LethalMenu.Menu.Tab
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             
-            UI.Hack(Hack.ToggleShipHorn, "Toggle Ship Horn");
-            UI.Hack(Hack.ToggleShipLights, "Toggle Ship Lights");
-            UI.Hack(Hack.ToggleFactoryLights, "Toggle Factory Lights (Host)");
-            UI.Hack(Hack.FlickerLights, "Flicker Factory Lights (Host)");
-            UI.Hack(Hack.ForceBridgeFall, "Make Bridge Fall (Host, Vow)");
-            UI.Hack(Hack.BlowUpAllLandmines, "Blow Up All Landmines");
-            UI.Hack(Hack.ToggleAllLandmines, "Toggle All Landmines");
-            UI.Hack(Hack.ToggleAllTurrets, "Toggle All Turrets");
-            UI.Hack(Hack.ForceTentacleAttack, "Force Tentacle Attack");
-            UI.Hack(Hack.FixAllValves, "Fix All Steam Valves");
-            UI.Hack(Hack.SpawnMaskedEnemy, "Turn All Masks Into Mimics");
-            UI.Hack(Hack.SellEverything, "Place All Scrap on Company Desk");
-            UI.Hack(Hack.TeleportAllItems, $"Teleport All Items ({LethalMenu.items.Count(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom)})");
-            UI.Hack(Hack.TeleportOneItem, $"Teleport One Item ({LethalMenu.items.Count(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom)})");
+            UI.Hack(Hack.ToggleShipHorn, "TrollTab.ShipHorn");
+            UI.Hack(Hack.ToggleShipLights, "TrollTab.ShipLights");
+            UI.Hack(Hack.ToggleFactoryLights, ["TrollTab.FactoryLights","General.HostTag"]);
+            UI.Hack(Hack.FlickerLights, ["TrollTab.FlickerFactoryLights", "General.HostTag"]);
+            UI.Hack(Hack.ForceBridgeFall, ["TrollTab.BridgeFall", "General.HostVowTag"]);
+            UI.Hack(Hack.BlowUpAllLandmines, "TrollTab.BlowAllMines");
+            UI.Hack(Hack.ToggleAllLandmines, "TrollTab.ToggleMines");
+            UI.Hack(Hack.ToggleAllTurrets, "TrollTab.ToggleTurrets");
+            UI.Hack(Hack.ForceTentacleAttack, "TrollTab.TentacleAttack");
+            UI.Hack(Hack.FixAllValves, "TrollTab.FixValves");
+            UI.Hack(Hack.SpawnMaskedEnemy, "TrollTab.SpawnMasks");
+            UI.Hack(Hack.SellEverything, "TrollTab.SellEverything");
+            UI.Hack(Hack.TeleportAllItems, "TrollTab.TeleportAllItems");
+            UI.Hack(Hack.TeleportOneItem, "TrollTab.TeleportOneItem");
 
             GUILayout.EndScrollView();
 
