@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <None Remove="Resources\Language\Chinese Simplified.json" />
-    <None Remove="Resources\Language\english.json" />
     <None Remove="Resources\Language\French.json" />
     <None Remove="Resources\Language\German.json" />
     <None Remove="Resources\Language\Japanese.json" />
@@ -35,7 +34,7 @@
     <EmbeddedResource Include="Resources\Language\Korean.json" />
     <EmbeddedResource Include="Resources\Language\Polish.json" />
     <EmbeddedResource Include="Resources\Language\Russian.json" />
-    <EmbeddedResource Include="Resources\Language\Source\english.json" />
+    <EmbeddedResource Include="Resources\Language\English.json" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\Planned.txt" />
   </ItemGroup>
@@ -95,5 +94,9 @@
     <Reference Include="UnityEngine.UnityWebRequestWWWModule">
       <HintPath>Resources\BaseGame\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\Language\Source\" />
   </ItemGroup>
 </Project>
