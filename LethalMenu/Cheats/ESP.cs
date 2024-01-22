@@ -3,15 +3,9 @@ using LethalMenu.Handler;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
-using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Device;
-using UnityEngine.Diagnostics;
-using static UnityEngine.GraphicsBuffer;
 using Object = UnityEngine.Object;
 
 
@@ -158,7 +152,7 @@ namespace LethalMenu.Cheats
         private void DisplayEnemyAI()
         {
             DisplayObjects(
-                LethalMenu.enemies.Where(e => e != null && !e.isEnemyDead),
+                LethalMenu.enemies.Where(e => e != null && !e.isEnemyDead && e.GetEnemyAIType().IsESPEnabled()),
                 enemy => enemy.enemyType.enemyName,
                 enemy => Settings.c_enemyESP
             );

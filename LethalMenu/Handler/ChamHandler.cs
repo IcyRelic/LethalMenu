@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using LethalMenu.Types;
 using LethalMenu.Util;
 using Steamworks.Ugc;
 using System;
@@ -79,7 +80,7 @@ namespace LethalMenu.Handler
             if (@object is Landmine) e = Settings.b_chamsLandmine;
             if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
             if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
-            if (@object is EnemyAI) e = Settings.b_chamsEnemy;
+            if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
             if (@object is SteamValveHazard) e = Settings.b_chamsSteamHazard;
             if (@object is TerminalAccessibleObject && ((TerminalAccessibleObject)@object).isBigDoor) e = Settings.b_chamsBigDoor;
             if (@object is DoorLock) e = Settings.b_chamsDoorLock;

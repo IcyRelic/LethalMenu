@@ -6,6 +6,7 @@ v1.4.0
 - Added Search feature to the item manager
 - Added Search feature to keybind list
 - Fixed Kill Nearby Enemies
+- Fixed EnemyFilter not working on esp/chams
 - Removed Basic GUISize
 
 v1.3.2
