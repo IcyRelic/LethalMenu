@@ -180,6 +180,7 @@
 	"SettingsTab.ColorsHeader": "颜色 (HTML颜色代码)",
 	"SettingsTab.MenuBG": "菜单背景图",
 	"SettingsTab.MenuText": "菜单文本",
+	"SettingsTab.Primary": "水印颜色",
 	"SettingsTab.Crosshair": "显示准星",
 	"SettingsTab.ESPColors": "透视指示线颜色",
 	"SettingsTab.Chams": "渲染",
