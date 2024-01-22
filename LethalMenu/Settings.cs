@@ -1,7 +1,5 @@
 ﻿using LethalMenu.Cheats;
-using LethalMenu.Handler;
 using LethalMenu.Language;
-using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using Newtonsoft.Json;
@@ -17,141 +15,12 @@ using UnityEngine.InputSystem.Controls;
 
 namespace LethalMenu
 {
-    internal enum GuiSize
-    {
-        XSmall = 0,
-        Small = 1,
-        Medium = 2,
-        Large = 3
-    }
-
-    internal static class GuiSizeExtensions
-    {
-        public static int GetFontSize(this GuiSize guiSize)
-        {
-            switch (guiSize)
-            {
-                case GuiSize.XSmall:
-                    return 10;
-                case GuiSize.Small:
-                    return 12;
-                case GuiSize.Medium:
-                    return 14;
-                case GuiSize.Large:
-                    return 16;
-                default:
-                    return 14;
-            }
-        }
-
-        public static float GetMenuTabWidth(this GuiSize guiSize)
-        {
-            switch (guiSize)
-            {
-                case GuiSize.XSmall:
-                    return 0.15f;
-                case GuiSize.Small:
-                    return 0.15f;
-                case GuiSize.Medium:
-                    return 0.15f;
-                case GuiSize.Large:
-                    return 0.15f;
-                default:
-                    return 0.15f;
-            }
-        }
-        public static int GetMenuWidth(this GuiSize guiSize)
-        {
-            switch (guiSize)
-            {
-                case GuiSize.XSmall:
-                    return 600;
-                case GuiSize.Small:
-                    return 700;
-                case GuiSize.Medium:
-                    return 810;
-                case GuiSize.Large:
-                    return 900;
-                default:
-                    return 800;
-            }
-        }
-
-        public static int GetMenuHeight(this GuiSize guiSize)
-        {
-            switch (guiSize)
-            {
-                case GuiSize.XSmall:
-                    return 305;
-                case GuiSize.Small:
-                    return 400;
-                case GuiSize.Medium:
-                    return 410;
-                case GuiSize.Large:
-                    return 450;
-                default:
-                    return 400;
-            }
-        }
-
-        public static int GetMenuTabPadding(this GuiSize guiSize)
-        {
-            switch (guiSize)
-            {
-                case GuiSize.XSmall:
-                    return 5;
-                case GuiSize.Small:
-                    return 7;
-                case GuiSize.Medium:
-                    return 10;
-                case GuiSize.Large:
-                    return 10;
-                default:
-                    return 10;
-            }
-        }
-
-        public static int GetSliderWidth(this GuiSize guiSize)
-        {
-            switch (guiSize)
-            {
-                case GuiSize.XSmall:
-                    return 75;
-                case GuiSize.Small:
-                    return 85;
-                case GuiSize.Medium:
-                    return 100;
-                case GuiSize.Large:
-                    return 120;
-                default:
-                    return 100;
-            }
-        }
-
-        public static int GetTextboxWidth(this GuiSize guiSize)
-        {
-            switch (guiSize)
-            {
-                case GuiSize.XSmall:
-                    return 50;
-                case GuiSize.Small:
-                    return 75;
-                case GuiSize.Medium:
-                    return 85;
-                case GuiSize.Large:
-                    return 100;
-                default:
-                    return 85;
-            }
-        }
-    }
-
     internal class Settings
     {
 
-        public static string version = "v1.3.2";
+        public static string version = "v1.4.0";
         public static bool isDebugMode = false;
-
+        public static bool isFirstLaunch = true;
         public static bool isMenuOpen
         {
             get { return Hack.OpenMenu.IsEnabled(); }
@@ -161,16 +30,13 @@ namespace LethalMenu
         /* *    
          * Menu Settings
          * */
-        private static GuiSize _guiSize = GuiSize.Medium;
-        public static GuiSize GUISize
-        {
-            get { return _guiSize; }
-            set
-            {
-                _guiSize = value;
-                HackMenu.Instance.Resize();
-            }
-        }
+        public static int i_menuFontSize = 14;
+        public static int i_menuWidth = 810;
+        public static int  i_menuHeight = 410;
+        public static int i_tabPadding = 10;
+        public static int i_sliderWidth = 100;
+        public static int i_textboxWidth = 85;
+        public static float f_tabWidth = 0.15f;
 
         /* *
          * Color Settings
@@ -394,8 +260,15 @@ namespace LethalMenu
                 colors["SteamHazardESP"] = JsonConvert.SerializeObject(c_steamHazardESP);
                 colors["CauseOfDeath"] = JsonConvert.SerializeObject(c_causeOfDeath);
 
+                settings["FirstLaunch"] = isFirstLaunch.ToString();
+                settings["MenuFontSize"] = i_menuFontSize.ToString();
+                settings["MenuWidth"] = i_menuWidth.ToString();
+                settings["MenuHeight"] = i_menuHeight.ToString();
+                settings["TabPadding"] = i_tabPadding.ToString();
+                settings["TabWidth"] = f_tabWidth.ToString();
+                settings["SliderWidth"] = i_sliderWidth.ToString();
+                settings["TextboxWidth"] = i_textboxWidth.ToString();
 
-                settings["GUISize"] = GUISize.ToString();
 
                 json["Language"] = Localization.Language.Name;
                 json["Colors"] = colors;
@@ -547,8 +420,23 @@ namespace LethalMenu
                 {
                     JObject settings = settingsToken.ToObject<JObject>();
 
-                    if (settings.TryGetValue("GUISize", out JToken guiSizeToken))
-                        GUISize = (GuiSize) Enum.Parse(typeof(GuiSize), guiSizeToken.ToString());
+                    if (settings.TryGetValue("FirstLaunch", out JToken firstLaunchToken))
+                        isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
+                    if (settings.TryGetValue("MenuFontSize", out JToken menuFontSizeToken))
+                        i_menuFontSize = int.Parse(menuFontSizeToken.ToString());
+                    if (settings.TryGetValue("MenuWidth", out JToken menuWidthToken))
+                        i_menuWidth = int.Parse(menuWidthToken.ToString());
+                    if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
+                        i_menuHeight = int.Parse(menuHeightToken.ToString());
+                    if (settings.TryGetValue("TabPadding", out JToken tabPaddingToken))
+                        i_tabPadding = int.Parse(tabPaddingToken.ToString());
+                    if (settings.TryGetValue("TabWidth", out JToken tabWidthToken))
+                        f_tabWidth = float.Parse(tabWidthToken.ToString());
+                    if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
+                        i_sliderWidth = int.Parse(sliderWidthToken.ToString());
+                    if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
+                        i_textboxWidth = int.Parse(textboxWidthToken.ToString());
+
                 }
 
 

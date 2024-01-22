@@ -13,6 +13,7 @@ namespace LethalMenu.Menu.Core
         public PopupMenu moonManagerWindow = new MoonManagerWindow(1);
         public PopupMenu unlockableManagerWindow = new UnlockableManagerWindow(2);
         public PopupMenu itemManagerWindow = new ItemManagerWindow(3);
+        public PopupMenu firstSetupManagerWindow = new FirstSetupManagerWindow(4);
 
         private List<MenuTab> menuTabs = new List<MenuTab>();
         private int selectedTab = 0;
@@ -62,10 +63,10 @@ namespace LethalMenu.Menu.Core
         
         public void Resize()
         {
-            windowRect.width = Settings.GUISize.GetMenuWidth();
-            windowRect.height = Settings.GUISize.GetMenuHeight();
-            tabPercent = Settings.GUISize.GetMenuTabWidth();
-            btnPadding = Settings.GUISize.GetMenuTabPadding();
+            windowRect.width = Settings.i_menuWidth;
+            windowRect.height = Settings.i_menuHeight;
+            tabPercent = Settings.f_tabWidth;
+            btnPadding = Settings.i_tabPadding;
 
             tabWidth = windowRect.width * tabPercent;
             tabHeight = windowRect.height - spaceFromTop;
@@ -73,35 +74,56 @@ namespace LethalMenu.Menu.Core
             contentHeight = windowRect.height - spaceFromTop;
         }
 
-        public void Draw()
+        public void ResetMenuSize()
         {
-            if (!Settings.isMenuOpen) return;
+            Settings.i_menuFontSize = 14;
+            Settings.i_menuWidth = 810;
+            Settings.i_menuHeight = 410;
+            Settings.i_tabPadding = 10;
+            Settings.i_sliderWidth = 100;
+            Settings.i_textboxWidth = 85;
+            Settings.f_tabWidth = 0.15f;
+            Settings.Config.SaveConfig();
+        }
+
+        public void Stylize()
+        {
             GUI.backgroundColor = Settings.c_background.GetColor();
 
             GUI.color = Color.white;
 
-            GUI.skin.label.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.button.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.toggle.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.window.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.box.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.textField.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.horizontalSlider.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.horizontalSliderThumb.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.verticalSlider.fontSize = Settings.GUISize.GetFontSize();
-            GUI.skin.verticalSliderThumb.fontSize = Settings.GUISize.GetFontSize();
+            GUI.skin.label.fontSize = Settings.i_menuFontSize;
+            GUI.skin.button.fontSize = Settings.i_menuFontSize;
+            GUI.skin.toggle.fontSize = Settings.i_menuFontSize;
+            GUI.skin.window.fontSize = Settings.i_menuFontSize;
+            GUI.skin.box.fontSize = Settings.i_menuFontSize;
+            GUI.skin.textField.fontSize = Settings.i_menuFontSize;
+            GUI.skin.horizontalSlider.fontSize = Settings.i_menuFontSize;
+            GUI.skin.horizontalSliderThumb.fontSize = Settings.i_menuFontSize;
+            GUI.skin.verticalSlider.fontSize = Settings.i_menuFontSize;
+            GUI.skin.verticalSliderThumb.fontSize = Settings.i_menuFontSize;
             GUI.skin.window.margin = new RectOffset(10, 10, 0, 0);
 
-            windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
-            unlockableManagerWindow.Draw();
-            itemManagerWindow.Draw();
-            moonManagerWindow.Draw();
+            Resize();
+        }
+
+        public void Draw()
+        {
+            if (Settings.isFirstLaunch || Settings.isMenuOpen) Stylize();
+            else return;
+
+            if(Settings.isFirstLaunch) firstSetupManagerWindow.Draw();
+            else
+            {
+                windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
+                unlockableManagerWindow.Draw();
+                itemManagerWindow.Draw();
+                moonManagerWindow.Draw();
+            }            
         }
 
         private void DrawContent(int windowID)
         {
-            //set avatar as a transparent watermark behind the tabContent and make it square
-    
 
             GUI.color = new Color(1f, 1f, 1f, 0.1f);
             GUIStyle watermark = new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold };
@@ -127,7 +149,7 @@ namespace LethalMenu.Menu.Core
             style.normal.textColor = Settings.c_menuText.GetColor();
             style.hover.textColor = Settings.c_menuText.GetColor();
             style.active.textColor = Settings.c_menuText.GetColor();
-            style.fontSize = Settings.GUISize.GetFontSize();
+            style.fontSize = Settings.i_menuFontSize;
 
 
             for (int i = 0; i < menuTabs.Count; i++)

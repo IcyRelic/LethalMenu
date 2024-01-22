@@ -138,7 +138,7 @@ namespace LethalMenu.Util
         {
             var content = new GUIContent(label);
 
-            StringStyle.fontSize = fontSize < 0 ? Settings.GUISize.GetFontSize() : fontSize;
+            StringStyle.fontSize = fontSize < 0 ? Settings.i_menuFontSize : fontSize;
             StringStyle.fontStyle = bold ? FontStyle.Bold : FontStyle.Normal;
             
 

@@ -52,6 +52,7 @@ namespace LethalMenu.Menu.Tab
             GUILayout.TextArea(LethalMenu.debugMessage, GUILayout.Height(50));
             GUILayout.TextArea(LethalMenu.debugMessage2, GUILayout.Height(50));
 
+            
 
             GUILayout.Label("Debug Menu");
 
@@ -63,6 +64,18 @@ namespace LethalMenu.Menu.Tab
                 Leaderboard();
             }
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("New Credits Sync");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                int levelID = StartOfRound.Instance.currentLevel.levelID;
+                StartOfRound.Instance.ChangeLevelServerRpc(levelID, 9999999);
+            }
+            GUILayout.EndHorizontal();
+
+            
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Goto Not Spawned");

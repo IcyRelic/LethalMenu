@@ -257,6 +257,6 @@ namespace LethalMenu.Manager
         public static void ToggleAllLandmines() => LethalMenu.landmines.ForEach(mine => mine.ToggleMine(!Hack.ToggleAllLandmines.IsEnabled()));
         public static void ToggleAllTurrets() => LethalMenu.turrets.ForEach(turret => turret.turretActive = !Hack.ToggleAllTurrets.IsEnabled());
         public static void BlowUpAllLandmines() => LethalMenu.landmines.ForEach(mine => mine.ExplodeMineServerRpc());
-        private static Terminal GetTerminal() => Object.FindObjectOfType(typeof(Terminal)) as Terminal;
+        public static Terminal GetTerminal() => Object.FindObjectOfType(typeof(Terminal)) as Terminal;
     }
 }

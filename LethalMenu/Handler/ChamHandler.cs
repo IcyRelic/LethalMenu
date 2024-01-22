@@ -141,8 +141,6 @@ namespace LethalMenu.Handler
 
                 materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => { materials.Remove(k); cnt++; }) ;
 
-                Debug.LogError("Cleaned up " + cnt + " materials");
-
             }
         }
     }

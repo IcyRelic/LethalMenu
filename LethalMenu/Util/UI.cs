@@ -9,29 +9,24 @@ using UnityEngine;
 
 namespace LethalMenu.Util
 {
-    public enum UIElementType
-    {
-        Button,
-        Toggle,
-        Slider,
-        Label,
-        Textbox,
-    }
 
     public class UIButton
     {
         public string label;
         public Action action;
+        private GUIStyle style = null;
 
-        public UIButton(string label, Action action)
+        public UIButton(string label, Action action, GUIStyle style = null)
         {
             this.label = Localization.Localize(label);
             this.action = action;
+
+            this.style = style ;
         }
 
         public void Draw()
         {
-            if (GUILayout.Button(label)) action.Invoke();
+            if(style != null ? GUILayout.Button(label, style) : GUILayout.Button(label)) action.Invoke();
         }
     }
 
@@ -64,7 +59,6 @@ namespace LethalMenu.Util
             if (GUILayout.Button(label)) action.Invoke();
         }
     }
-
 
     public class UI
     {
@@ -162,7 +156,7 @@ namespace LethalMenu.Util
             GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
 
-            GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.GUISize.GetSliderWidth() };
+            GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.i_sliderWidth };
             
 
             value = GUILayout.HorizontalSlider(value, min, max, slider, GUI.skin.horizontalSliderThumb);
@@ -170,12 +164,12 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Textbox(string label, ref string value, string regex = "")
+        public static void Textbox(string label, ref string value, string regex = "", bool big = true)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(label));
             GUILayout.FlexibleSpace();
-            value = GUILayout.TextField(value, GUILayout.Width(Settings.GUISize.GetTextboxWidth() * 3));
+            value = GUILayout.TextField(value, GUILayout.Width(big ? Settings.i_textboxWidth * 3 : Settings.i_textboxWidth));
             value = Regex.Replace(value, regex, "");
             GUILayout.EndHorizontal();
         }
@@ -185,7 +179,7 @@ namespace LethalMenu.Util
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(label));
             GUILayout.FlexibleSpace();
-            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.GUISize.GetTextboxWidth()));
+            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.i_textboxWidth));
             value = Regex.Replace(value, regex, "");
             buttons.ToList().ForEach(btn => btn.Draw());
             GUILayout.EndHorizontal();
@@ -195,7 +189,7 @@ namespace LethalMenu.Util
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(label));
             GUILayout.FlexibleSpace();
-            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.GUISize.GetTextboxWidth()));
+            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.i_textboxWidth));
             value = Regex.Replace(value, regex, "");
             buttons.ToList().ForEach(btn => btn.Draw());
             GUILayout.EndHorizontal();
@@ -213,7 +207,29 @@ namespace LethalMenu.Util
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
-            value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.GUISize.GetSliderWidth()));
+            value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth));
+            GUILayout.EndHorizontal();
+        }
+
+        public static void NumSelect(string header, ref int value, int min, int max)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(value.ToString());
+            if (GUILayout.Button("-")) value = Mathf.Clamp(value - 1, min, max);
+            if (GUILayout.Button("+")) value = Mathf.Clamp(value + 1, min, max);
+            GUILayout.EndHorizontal();
+        }
+
+        public static void PercentSelect(string header, ref float value, float min = 0.1f)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+            GUILayout.Label(value.ToString());
+            if (GUILayout.Button("-")) value = Mathf.Clamp(value - 0.01f, min, 1);
+            if (GUILayout.Button("+")) value = Mathf.Clamp(value + 0.01f, min, 1);
             GUILayout.EndHorizontal();
         }
 

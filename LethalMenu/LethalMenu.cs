@@ -79,16 +79,24 @@ namespace LethalMenu
         private void LoadCheats()
         {
             
-            Settings.Changelog.ReadChanges();
-            cheats = new List<Cheat>();
-            menu = new HackMenu();
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(t => String.Equals(t.Namespace, "LethalMenu.Cheats", StringComparison.Ordinal) && t.IsSubclassOf(typeof(Cheat))))
+            try
             {
-                cheats.Add((Cheat)Activator.CreateInstance(type));
-            }
+                Settings.Changelog.ReadChanges();
+                cheats = new List<Cheat>();
+                menu = new HackMenu();
+                foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(t => String.Equals(t.Namespace, "LethalMenu.Cheats", StringComparison.Ordinal) && t.IsSubclassOf(typeof(Cheat))))
+                {
+                    cheats.Add((Cheat)Activator.CreateInstance(type));
+                }
 
-            Settings.Config.SaveDefaultConfig();
-            Settings.Config.LoadConfig();
+                Settings.Config.SaveDefaultConfig();
+                Settings.Config.LoadConfig();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e.Message);
+                Debug.LogException(e);
+            }
         }
 
         public void FixedUpdate()
@@ -142,6 +150,17 @@ namespace LethalMenu
                 if (Event.current.type == EventType.Repaint)
                 {
                     VisualUtil.DrawString(new Vector2(10f, 5f), "Lethal Menu " + Settings.version + " By IcyRelic", Settings.c_primary, false, false, false, 22);
+
+                   if(MenuUtil.resizing)
+                    {
+                        string rTitle = "SettingsTab.ResizeTitle";
+                        string rConfirm = "SettingsTab.ResizeConfirm";
+                        string rSize = $"{HackMenu.Instance.windowRect.width}x{HackMenu.Instance.windowRect.height}";
+
+                        VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f), Localization.Localize([rTitle, rConfirm, rSize], true), Settings.c_playerESP, true, true, true, 22);
+                        MenuUtil.ResizeMenu();
+                    }
+
 
                     if (Settings.isDebugMode)
                     {

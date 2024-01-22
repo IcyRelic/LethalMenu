@@ -13,6 +13,7 @@ namespace LethalMenu.Menu.Core
         public Rect windowRect;
         public bool isOpen = false;
         public string name;
+        private string localization;
         public int id;
 
         protected List<MenuTab> menuTabs = new List<MenuTab>();
@@ -20,11 +21,13 @@ namespace LethalMenu.Menu.Core
 
         public PopupMenu(string name, Rect size, int id)
         {
-            this.name = Localization.Localize(name);
+            this.localization = name;
             this.windowRect = size;
             this.id = id;
+            LocalizeName();
         }
 
+        public void LocalizeName() => name = Localization.Localize(localization);
         public void Draw()
         {
             if (!isOpen) return;
