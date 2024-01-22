@@ -68,5 +68,20 @@ namespace LethalMenu.Util
             Settings.i_menuHeight = (int) Mathf.Clamp(MouseY - HackMenu.Instance.windowRect.y, 250, maxHeight);
             HackMenu.Instance.Resize();
         }
+    
+        public static void ShowCursor()
+        {
+            LethalMenu.localPlayer.playerActions.Disable();
+            Cursor.visible = true;
+            Settings.clm_lastCursorState = Cursor.lockState;
+            Cursor.lockState = CursorLockMode.Confined;
+        }
+
+        public static void HideCursor()
+        {
+            LethalMenu.localPlayer.playerActions.Enable();
+            Cursor.visible = false;
+            Cursor.lockState = Settings.clm_lastCursorState;
+        }
     }
 }

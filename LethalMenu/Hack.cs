@@ -218,6 +218,7 @@ namespace LethalMenu
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
         {
             {Hack.ToggleCursor, (Action) HackExecutor.ToggleCursor},
+            {Hack.OpenMenu, (Action) HackExecutor.OpenMenu},
             {Hack.UnloadMenu, (Action) HackExecutor.UnloadMenu},
 
             {Hack.Experience, (Action<int, ActionType>) HackExecutor.ModExperience},
@@ -467,20 +468,16 @@ namespace LethalMenu
         }
         public static void ToggleCursor()
         {
-            if(Hack.ToggleCursor.IsEnabled() && (bool)StartOfRound.Instance)
-            {
-                GameNetworkManager.Instance.localPlayerController.playerActions.Disable();
-                Cursor.visible = true;
-                Settings.clm_lastCursorState = Cursor.lockState;
-                Cursor.lockState = CursorLockMode.Confined;
-            }
-            else
-            {
+            if(!(bool)StartOfRound.Instance) return;
 
-                GameNetworkManager.Instance.localPlayerController.playerActions.Enable();
-                Cursor.visible = false;
-                Cursor.lockState = Settings.clm_lastCursorState;
-            }
+            if(Cursor.visible) MenuUtil.HideCursor();
+            else MenuUtil.ShowCursor();
+        }
+
+        public static void OpenMenu()
+        {
+            if (Hack.OpenMenu.IsEnabled()) MenuUtil.ShowCursor();
+            else MenuUtil.HideCursor();
         }
 
         public static void UnloadMenu() => LethalMenu.Instance.Unload();
