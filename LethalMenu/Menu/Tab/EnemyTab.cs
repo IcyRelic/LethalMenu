@@ -115,7 +115,7 @@ namespace LethalMenu.Menu.Tab
         {
             UI.Header("General.GeneralActions");
             UI.Hack(Hack.KillAllEnemies, "EnemyTab.KillAllEnemies");
-            UI.HackSlider(Hack.KillNearbyEnemies, "EnemyTab.KillNearbyEnemies", Settings.f_enemyKillDistance.ToString() + "m", ref Settings.f_enemyKillDistance, 5, 50);
+            UI.HackSlider(Hack.KillNearbyEnemies, "EnemyTab.KillNearbyEnemies", Settings.f_enemyKillDistance.ToString("0") + "m", ref Settings.f_enemyKillDistance, 5, 50, (int) Settings.f_enemyKillDistance);
             UI.Hack(Hack.StunAllEnemies, "EnemyTab.StunAllEnemies");
 
             if(LethalMenu.enemies.Exists(e => e is SandSpiderAI))

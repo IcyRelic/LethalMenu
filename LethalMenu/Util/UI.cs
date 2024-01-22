@@ -150,7 +150,7 @@ namespace LethalMenu.Util
         }
 
 
-        public static void HackSlider(Hack hack, string header, string displayValue, ref float value, float min, float max)
+        public static void HackSlider(Hack hack, string header, string displayValue, ref float value, float min, float max, params object[] param)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
@@ -160,7 +160,8 @@ namespace LethalMenu.Util
             
 
             value = GUILayout.HorizontalSlider(value, min, max, slider, GUI.skin.horizontalSliderThumb);
-            if (hack.Button()) hack.Execute();
+
+            if (hack.Button()) hack.Execute(param);
             GUILayout.EndHorizontal();
         }
 

@@ -5,6 +5,7 @@ v1.4.0
 - Added Missing breaker esp color to settings
 - Added Search feature to the item manager
 - Added Search feature to keybind list
+- Fixed Kill Nearby Enemies
 - Removed Basic GUISize
 
 v1.3.2
