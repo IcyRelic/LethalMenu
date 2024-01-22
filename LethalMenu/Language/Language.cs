@@ -11,9 +11,12 @@ namespace LethalMenu.Language
 {
     public class Language
     {
+        public int Rank { get; set; }
         public string Name { get; private set; }
         public string Translator { get; private set; }
+        
         private Dictionary<string, string> _language;
+
         
         public Language(string name, string translator, Dictionary<string, string> language)
         {
@@ -33,28 +36,17 @@ namespace LethalMenu.Language
         private static bool _initialized = false;
         public static void Initialize()
         {
-            try
-            {
-                if (_initialized) return;
+            if (_initialized) return;
 
-                LoadLanguage();
-                SetLanguage("English");
-                _initialized = true;
-
-                GetLanguages().ToList().ForEach(x => Debug.Log($"Loaded Language {x}"));
-            } 
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to initialize localization: {e.Message}");
-                Debug.LogException(e);
-            }
+            LoadLanguage();
+            SetLanguage("English");
+            _initialized = true;
         }
 
         private static void LoadLanguage()
         {
             Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(x => x.StartsWith("LethalMenu.Resources.Language.") && x.EndsWith(".json")).ToList().ForEach(x =>
             {
-                Debug.Log($"Loading localization file => {x}");
                 var jsonStr = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(x)).ReadToEnd();
 
                 JObject json = JObject.Parse(jsonStr);
@@ -76,8 +68,6 @@ namespace LethalMenu.Language
                     var value = p.Value.ToString();
 
                     localization.Add(name, value);
-
-                    //Debug.Log($"Loaded localization {name} = {value}");
                 });
 
 
@@ -87,12 +77,17 @@ namespace LethalMenu.Language
             });
         }
 
-        public static string[] GetLanguages() => _languages.Keys.ToArray();
+        public static string[] GetLanguages()
+        {
+            _languages.Values.ToList().ForEach(x => x.Rank = Language == x ? 1 : 999);
+
+            return _languages.Values.OrderBy(x => x.Rank).ThenBy(x => x.Name).Select(x => x.Name).ToArray();
+        }
         public static void SetLanguage(string name) => Language = LanguageExists(name) ? _languages[name] : _languages["English"];
         public static bool LanguageExists(string name) => _languages.ContainsKey(name);
         public static string Localize(string key) => Language.Has(key) ? Language.Localize(key) : LocalizeEnglish(key);
         public static string[] LocalizeArray(string[] keys) => keys.Select(key => Localize(key)).ToArray();
-        public static string Localize(string[] keys) => keys.Aggregate("", (current, key) => current + " " + Localize(key));
+        public static string Localize(string[] keys, bool newLine = false) => keys.Aggregate("", (current, key) => current + (newLine ? "\n" : " ") + Localize(key)).Substring(1);
         private static string LocalizeEnglish(string key) => _languages["English"].Localize(key);
     }
 }

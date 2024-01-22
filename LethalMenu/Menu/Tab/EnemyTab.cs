@@ -155,13 +155,13 @@ namespace LethalMenu.Menu.Tab
             if (enemy is SandSpiderAI spider) UI.Button("EnemyTab.SpawnWeb", () => { spider.SpawnWeb(spider.abdomen.position); });
 
 
-            UI.Button("EnemyTab.Kill", () => { enemy.Handle().Kill(); });
+            UI.Button("EnemyTab.KillEnemy", () => { enemy.Handle().Kill(); });
             UI.Button("EnemyTab.TargetSelectedPlayer", () => { enemy.Handle().TargetPlayer(selectedPlayer); });
             
             if(enemy.Handle().HasInstaKill())
                 UI.Button("EnemyTab.KillSelectedPlayer", () => { enemy.Handle().KillPlayer(selectedPlayer); });
 
-            UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayerr", selectedPlayer, enemy);
+            UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayer", selectedPlayer, enemy);
             UI.Hack(Hack.EnemyControl, "EnemyTab.ControlEnemy", enemy);
             UI.Button("EnemyTab.Control", () => { Hack.EnemyControl.Execute(enemy); });
 

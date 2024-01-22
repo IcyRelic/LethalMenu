@@ -6,17 +6,16 @@ using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
 namespace LethalMenu.Menu.Tab
 {
     internal class SettingsTab : MenuTab
     {
-        private string kbError = "";
-        private string tierColorError = "";
+        private string s_kbError = "";
+        private string s_tierColorError = "";
+        private string s_kbSearch = "";
 
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 kbScrollPos = Vector2.zero;
@@ -44,7 +43,6 @@ namespace LethalMenu.Menu.Tab
         private string s_lootTierColors = string.Join(",", Array.ConvertAll(Settings.c_scrapValueColors, x => x.GetHexCode()));
         private string s_lootTiers = string.Join(",", Settings.i_scrapValueThresholds);
 
-        private int i_selectedSizeIndex = -1;
         private int i_selectedCrosshairIndex = -1;
         private int i_languageIndex = -1;
 
@@ -56,7 +54,6 @@ namespace LethalMenu.Menu.Tab
         {
             f_leftWidth = HackMenu.Instance.contentWidth * 0.55f - HackMenu.Instance.spaceFromLeft;
 
-            if(i_selectedSizeIndex == -1) i_selectedSizeIndex = (int) Settings.GUISize;
             if(i_selectedCrosshairIndex == -1) i_selectedCrosshairIndex = (int) Settings.ct_crosshairType;
             if(i_languageIndex == -1) i_languageIndex = Array.IndexOf(Localization.GetLanguages(), Localization.Language.Name);
 
@@ -75,27 +72,30 @@ namespace LethalMenu.Menu.Tab
 
             GUILayout.EndVertical();
         }
-        
-        
+
 
         private void MenuContent()
         {
-            UI.Header("SettingsTab.General");
+            
             UI.Actions(
                 new UIButton("SettingsTab.ResetSettings", () => Settings.Config.RegenerateConfig()),
                 new UIButton("SettingsTab.SaveSettings", () => Settings.Config.SaveConfig()),
                 new UIButton("SettingsTab.ReloadSettings", () => Settings.Config.LoadConfig())
             );
-            UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
+            //UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
 
-            UI.Select("Language", ref i_languageIndex, Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
+            UI.Header("SettingsTab.General");
 
-            UI.Select("SettingsTab.GuiSize", ref i_selectedSizeIndex,
-                new UIOption("XSmall", () => Settings.GUISize = GuiSize.XSmall),
-                new UIOption("Small", () => Settings.GUISize = GuiSize.Small),
-                new UIOption("Medium", () => Settings.GUISize = GuiSize.Medium),
-                new UIOption("Large", () => Settings.GUISize = GuiSize.Large)
-            );
+            UI.Select("SettingsTab.Language", ref i_languageIndex, Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
+
+            UI.NumSelect("SettingsTab.FontSize", ref Settings.i_menuFontSize, 5, 30);
+            UI.PercentSelect("SettingsTab.TabWidth", ref Settings.f_tabWidth);
+            UI.NumSelect("SettingsTab.TabPadding", ref Settings.i_tabPadding, 5, 15);
+            UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);
+            UI.NumSelect("SettingsTab.TextboxSize", ref Settings.i_textboxWidth, 50, 120);
+            UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
+            UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
+
         }
 
         private void VisualSettingsContent()
@@ -223,7 +223,7 @@ namespace LethalMenu.Menu.Tab
 
 
             UI.Header("SettingsTab.TieredLootHeader", true);
-            if (tierColorError != "") UI.Label(tierColorError, Settings.c_error);
+            if (s_tierColorError != "") UI.Label(s_tierColorError, Settings.c_error);
 
             
 
@@ -244,13 +244,16 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("SettingsTab.Keybinds");
 
-            if (kbError != "") UI.Label(kbError, Settings.c_error);
+            if (s_kbError != "") UI.Label(s_kbError, Settings.c_error);
 
 
             GUILayout.BeginVertical();
             kbScrollPos = GUILayout.BeginScrollView(kbScrollPos);
+            UI.Textbox("General.Search", ref s_kbSearch, big: false);
 
-            foreach (Hack hack in Enum.GetValues(typeof(Hack)))
+            List<Hack> hacks = Enum.GetValues(typeof(Hack)).Cast<Hack>().ToList().FindAll(x => x.ToString().ToLower().Contains(s_kbSearch.ToLower()));
+
+            foreach (Hack hack in hacks)
             {
                 if (!hack.CanHaveKeyBind()) continue;
 
@@ -268,18 +271,8 @@ namespace LethalMenu.Menu.Tab
                 if (hack.HasKeyBind() && hack != Hack.OpenMenu && hack != Hack.UnlockDoorAction && GUILayout.Button("-")) hack.RemoveKeyBind();
 
                 string btnText = hack.IsWaiting() ? "Waiting" : kb;
-                if (GUILayout.Button(btnText, GUILayout.Width(70)))
-                {
-                    hack.SetWaiting(true);
-                    _ = TryGetPressedKeyTask(async (btn) =>
-                    {
-                        kbError = "";
-                        hack.SetKeyBind(btn);
-                        await Task.Delay(100);
-                        hack.SetWaiting(false);
-                        Settings.Config.SaveConfig();
-                    });
-                }
+                if (GUILayout.Button(btnText, GUILayout.Width(85))) KBUtil.BeginChangeKeyBind(hack);
+                
 
                 GUILayout.EndHorizontal();
             }
@@ -287,53 +280,6 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndVertical();
 
 
-        }
-
-        private async Task TryGetPressedKeyTask(Action<ButtonControl> callback)
-        {
-            await Task.Run(() =>
-            {
-                float startTime = Time.time;
-                ButtonControl btn = null;
-                do
-                {
-                    ButtonControl pressed = GetPressedBtn();
-                    
-
-                    if (pressed != null)
-                    {
-                        //if (!HackExtensions.KeyBindInUse(pressed)) 
-                            btn = pressed;
-                        //else kbError = "SettingsTab.BindInUseError";
-                    }
-
-                    if (Time.time - startTime > 15f) break;
-                } while (btn == null);
-
-                if (btn == null) return;
-
-                callback?.Invoke(btn);
-            });
-
-
-        }
-
-        private ButtonControl GetPressedBtn()
-        {
-            foreach (KeyControl key in Keyboard.current.allKeys)
-            {
-                if (key.wasPressedThisFrame) return key;
-
-            }
-
-            ButtonControl[] mouseButtons = new ButtonControl[] { Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton };
-
-            foreach (ButtonControl btn in mouseButtons)
-            {
-                if (btn.wasPressedThisFrame) return btn;
-            }
-
-            return null;
         }
 
         private void SetColor(ref RGBAColor color, string hexCode)
@@ -350,7 +296,7 @@ namespace LethalMenu.Menu.Tab
 
             if (thresholds.Length != rgbaColors.Length)
             {
-                tierColorError = "SettingsTab.TierColorError";
+                s_tierColorError = "SettingsTab.TierColorError";
                 return;
             }
 
