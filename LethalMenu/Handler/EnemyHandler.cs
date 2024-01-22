@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 namespace LethalMenu.Handler
 {
@@ -78,7 +77,12 @@ namespace LethalMenu.Handler
         {
             CentipedeAI centipede = enemy as CentipedeAI;
             centipede.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-            centipede.ClingToPlayerServerRpc(target.playerClientId);
+            //centipede.ClingToPlayerServerRpc(target.playerClientId);
+            bool clingingToCeiling = (bool)centipede.Reflect().GetValue("clingingToCeiling");
+
+            if(clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
+
+           
         }
 
         private void HandleLureFlowerman()
@@ -249,6 +253,10 @@ namespace LethalMenu.Handler
                 case SandWormAI worm:
                     HandleSandWormKillPlayer();
                     break;
+                case CentipedeAI centipede:
+                    centipede.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
+                    centipede.ClingToPlayerServerRpc(target.playerClientId);
+                    break;
                 case BlobAI blob:
                     blob.SlimeKillPlayerEffectServerRpc((int) target.playerClientId);
                     break;
@@ -267,7 +275,8 @@ namespace LethalMenu.Handler
                 typeof(MaskedPlayerEnemy),
                 typeof(JesterAI),
                 typeof(SandWormAI),
-                typeof(BlobAI)
+                typeof(BlobAI),
+                typeof(CentipedeAI)
             };
                 
             return types.Contains(enemy.GetType());

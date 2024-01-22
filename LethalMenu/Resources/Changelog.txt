@@ -6,6 +6,7 @@ v1.4.0
 - Added Search feature to the item manager
 - Added Search feature to keybind list
 - Added feature where cursor will be shown/hidden when you toggle the menu
+- Changed Centipede lure to now drop/chase player. Kill will now auto cling to player
 - Fixed Kill Nearby Enemies
 - Fixed EnemyFilter not working on esp/chams
 - Removed Basic GUISize

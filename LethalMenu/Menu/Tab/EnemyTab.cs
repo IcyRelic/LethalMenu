@@ -144,7 +144,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Label("EnemyTab.SelectedPlayer", Settings.c_playerESP.AsString(s_target));
 
-            UI.Label("EnemyTab.Tergeting", (enemy.targetPlayer == null ? "None" : enemy.targetPlayer.playerUsername));
+            UI.Label("EnemyTab.Targeting", (enemy.targetPlayer == null ? "None" : enemy.targetPlayer.playerUsername));
 
             if(enemy is DressGirlAI girl)
                 UI.Label("EnemyTab.Haunting", (girl.hauntingPlayer == null ? "None" : girl.hauntingPlayer.playerUsername));
