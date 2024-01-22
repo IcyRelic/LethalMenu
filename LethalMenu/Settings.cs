@@ -1,7 +1,5 @@
 ﻿using LethalMenu.Cheats;
-using LethalMenu.Handler;
 using LethalMenu.Language;
-using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using Newtonsoft.Json;
@@ -20,7 +18,7 @@ namespace LethalMenu
     internal class Settings
     {
 
-        public static string version = "v1.3.2";
+        public static string version = "v1.4.0";
         public static bool isDebugMode = false;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen

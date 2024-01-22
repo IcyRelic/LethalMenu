@@ -1,7 +1,11 @@
-v1.3.3
+v1.4.0
 - Added LANGUAGE SUPPORT! (English, German, Chinese, Russian, Polish)
+- Added NEW GUI size customizations (Resize, Font Size, and more!)
+- Added First Launch setup screen
 - Added Missing breaker esp color to settings
 - Added Search feature to the item manager
+- Added Search feature to keybind list
+- Removed Basic GUISize
 
 v1.3.2
 - Added Place All Scrap on Company Desk
