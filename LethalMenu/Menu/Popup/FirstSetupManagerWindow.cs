@@ -20,6 +20,7 @@ namespace LethalMenu.Menu.Popup
         private int selectedLanguage = -1;
         private string[] languages;
         private GUIStyle style;
+        private bool disableBtns = false;
 
         public FirstSetupManagerWindow(int id) : base("FirstSetup.Title", new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100f, 300f, 250f), id) 
         {
@@ -28,8 +29,9 @@ namespace LethalMenu.Menu.Popup
         }
         public override void DrawContent(int windowID)
         {
+            if (disableBtns) GUI.enabled = false;
             SetupContent();
-
+            if (disableBtns) GUI.enabled = true;
             //GUI.DragWindow(new Rect(0.0f, 0.0f, 10000f, 45f));
         }
 
@@ -109,9 +111,12 @@ namespace LethalMenu.Menu.Popup
 
             
 
-            UI.Actions(new UIButton(btnText, () => KBUtil.BeginChangeKeyBind(Hack.OpenMenu), style));
+            UI.Actions(new UIButton(btnText, () =>
+            {
+                disableBtns = true;
+                KBUtil.BeginChangeKeyBind(Hack.OpenMenu, () => { disableBtns = false; });
+            }, style));
             GUILayout.EndVertical();
-
         }
     }
 }

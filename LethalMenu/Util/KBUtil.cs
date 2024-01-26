@@ -30,16 +30,20 @@ namespace LethalMenu.Util
             
         }
 
-        public static void BeginChangeKeyBind(Hack hack)
+        public static void BeginChangeKeyBind(Hack hack, params Action[] callbacks)
         {
             hack.SetWaiting(true);
-            _ = TryGetPressedKeyTask(new KBCallback(hack).Invoke);
+            _ = TryGetPressedKeyTask(new KBCallback(hack).Invoke, callbacks);
         }
 
-        private static async Task TryGetPressedKeyTask(Action<ButtonControl> callback)
+        private static async Task TryGetPressedKeyTask(Action<ButtonControl> callback, params Action[] otherCallbacks)
         {
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
+                //wait .5 seconds
+                
+                await Task.Delay(250);
+
                 float startTime = Time.time;
                 ButtonControl btn = null;
                 do
@@ -60,6 +64,7 @@ namespace LethalMenu.Util
                 if (btn == null) return;
 
                 callback?.Invoke(btn);
+                otherCallbacks.ToList().ForEach(cb => cb?.Invoke());
             });
 
 
