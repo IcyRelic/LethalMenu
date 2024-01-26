@@ -26,6 +26,7 @@ namespace LethalMenu.Language
         }
         public string Localize(string key) => _language.ContainsKey(key) ? _language[key] : key;
         public bool Has(string key) => _language.ContainsKey(key);
+        public int Count() => _language.Count;
     }
 
     public class Localization
@@ -71,9 +72,26 @@ namespace LethalMenu.Language
                 });
 
 
-
                 _languages.Add(language, new Language(language, translator, localization));
                 Debug.Log($"Loaded Language {language} by {translator}");
+            });
+
+            //check languages for completion against english
+            int englishCount = _languages["English"].Count();
+            _languages.Values.ToList().ForEach(x =>
+            {
+                if (x.Count() != englishCount)
+                {
+                    double percentComplete = (x.Count() / (double)englishCount) * 100;
+                    Debug.LogWarning($"Language {x.Name} is missing {englishCount - x.Count()} keys");
+
+                    if (percentComplete < 80.00)
+                    {
+                        _languages.Remove(x.Name);
+                        Debug.LogError($"{x.Name} is too far behind. Unloading it.");
+                    }
+                }
+                    
             });
         }
 
