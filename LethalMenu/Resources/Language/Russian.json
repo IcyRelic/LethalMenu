@@ -3,7 +3,7 @@
 	"TRANSLATOR": "Kiow",
 	"General.HostRequired": "Для данной функции необходимо быть хостом!",
 	"General.HostTag": "(Только хост)",
-	"General.HostStormyTag": "(Host/Шторм)",
+	"General.HostStormyTag": "(Хост/Шторм)",
 	"General.HostVowTag": "(Хост/Vow)",
 	"General.GeneralActions": "Основные действия",
 	"General.None": "Не задана",
