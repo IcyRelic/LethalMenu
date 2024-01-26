@@ -1,3 +1,6 @@
+v1.4.1
+- Fixed ServerTab Manager translations not working
+
 v1.4.0
 - Added LANGUAGE SUPPORT! (English, German, Chinese, Russian, Polish, and more!)
 - Added NEW GUI size customizations (Resize, Font Size, and more!)
