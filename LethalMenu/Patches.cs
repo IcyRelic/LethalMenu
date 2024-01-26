@@ -1,5 +1,7 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
 using LethalMenu.Cheats;
+using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -19,6 +21,7 @@ namespace LethalMenu
             LethalMenu.debugMessage2 = "Disconnect Detected";
 
             SpectatePlayer.Reset();
+            LethalMenu.lmUsers.Clear();
         }
 
         [HarmonyPrefix]
@@ -46,6 +49,19 @@ namespace LethalMenu
                 yield return instruction.opcode == OpCodes.Ldc_I4_S && instruction.operand.ToString().Equals("12") ?
                     new CodeInstruction(OpCodes.Ldc_I4, int.MaxValue) : instruction;
             }
+        }
+
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(HUDManager), "AddTextMessageServerRpc")]
+        public static void ReceiveMessage(string chatMessage)
+        {
+            Debug.Log("Message Received =>" + chatMessage);
+            chatMessage = chatMessage.Replace("<size=0>", "").Replace("</size>", "");
+
+            bool isEncrypted = MenuUtil.IsEncrypted(chatMessage);
+
+            if (isEncrypted) MenuUtil.ProcessEncryptedMessage(chatMessage);
         }
 
     }

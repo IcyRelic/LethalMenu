@@ -75,7 +75,7 @@ namespace LethalMenu.Menu.Tab
             }
             GUILayout.EndHorizontal();
 
-            
+
 
             GUILayout.BeginHorizontal();
             GUILayout.Label("Goto Not Spawned");

@@ -48,7 +48,13 @@ namespace LethalMenu.Menu.Tab
 
                 if (selectedPlayer == (int)player.playerClientId) GUI.contentColor = Settings.c_playerESP.GetColor();
 
-                if (GUILayout.Button(player.playerUsername, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
+                bool isLmUser = LethalMenu.lmUsers.ContainsKey(player.playerSteamId);
+
+
+                string btnText = player.playerUsername + (isLmUser ? $" ({LethalMenu.lmUsers[player.playerSteamId]})" : "");
+
+
+                if (GUILayout.Button(btnText, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
 
                 GUI.contentColor = Settings.c_menuText.GetColor();
             }
@@ -82,12 +88,12 @@ namespace LethalMenu.Menu.Tab
             if (player == null || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
 
 
+            bool isLmUser = LethalMenu.lmUsers.ContainsKey(player.playerSteamId);
+            string lmVersion = isLmUser ? LethalMenu.lmUsers[player.playerSteamId] : "";
             string name = player.playerUsername;
 
             if (player.isPlayerDead && player.deadBody != null)
                 name = $"{Settings.c_deadPlayer.AsString("PlayerTab.DeadPrefix")} {name} ({Settings.c_causeOfDeath.AsString(player.deadBody.causeOfDeath.ToString())})";
-                
-                //name = "<color=red>[Dead]</color> " + name + Settings.c_causeOfDeath.AsString("(" + player.deadBody.causeOfDeath + ")");
 
 
             UI.Header(name);
