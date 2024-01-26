@@ -1,11 +1,12 @@
 v1.4.0
-- Added LANGUAGE SUPPORT! (English, German, Chinese, Russian, Polish)
+- Added LANGUAGE SUPPORT! (English, German, Chinese, Russian, Polish, and more!)
 - Added NEW GUI size customizations (Resize, Font Size, and more!)
 - Added First Launch setup screen
 - Added Missing breaker esp color to settings
 - Added Search feature to the item manager
 - Added Search feature to keybind list
 - Added feature where cursor will be shown/hidden when you toggle the menu
+- Added feature with LethalMenu will communicate its existance to other users of LethalMenu
 - Changed Centipede lure to now drop/chase player. Kill will now auto cling to player
 - Fixed Kill Nearby Enemies
 - Fixed EnemyFilter not working on esp/chams
