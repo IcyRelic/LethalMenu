@@ -1,8 +1,10 @@
-﻿using LethalMenu.Manager;
+﻿using GameNetcodeStuff;
+using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using Steamworks;
 using Steamworks.Data;
+using System.Linq;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
@@ -40,6 +42,8 @@ namespace LethalMenu.Menu.Tab
 
         }
 
+        private int selectedMode = 0;
+        private string[] modes = new string[] { "Mode 1", "Mode 2", "Mode 3" };
         private void MenuContent()
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
@@ -52,7 +56,34 @@ namespace LethalMenu.Menu.Tab
             GUILayout.TextArea(LethalMenu.debugMessage, GUILayout.Height(50));
             GUILayout.TextArea(LethalMenu.debugMessage2, GUILayout.Height(50));
 
-            
+            UI.IndexSelect("Message Mode: ", ref selectedMode, modes);
+            UI.Label("Selected Mode: " + modes[selectedMode]);
+
+
+            UI.Button("LookAt Closest Item", () =>
+            {
+                GrabbableObject item = LethalMenu.items.Where(i => !i.isInShipRoom).OrderBy(
+                    i => Vector3.Distance(i.transform.position, LethalMenu.localPlayer.transform.position)
+                ).FirstOrDefault();
+
+                if (item == null) return;
+
+                LethalMenu.localPlayer.transform.LookAt(item.transform.position);
+            });
+
+
+            UI.Button("LookAt Closest Player", () =>
+            {
+                PlayerControllerB player = LethalMenu.players.Where(p => p != LethalMenu.localPlayer).OrderBy(
+                        p => Vector3.Distance(p.transform.position, LethalMenu.localPlayer.transform.position)
+                ).FirstOrDefault();
+
+                if (player == null) return;
+
+                LethalMenu.localPlayer.transform.LookAt(player.transform.position);
+            });
+
+
 
             GUILayout.Label("Debug Menu");
 
@@ -66,12 +97,13 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("New Credits Sync");
+            GUILayout.Label("Send LM Info");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                int levelID = StartOfRound.Instance.currentLevel.levelID;
-                StartOfRound.Instance.ChangeLevelServerRpc(levelID, 9999999);
+                string response = $"{LethalMenu.localPlayer.playerSteamId}|{Settings.version}";
+
+                HUDManager.Instance.AddTextToChatOnServer($"<size=0>{MenuUtil.Encrypt(response)}</size>");
             }
             GUILayout.EndHorizontal();
 

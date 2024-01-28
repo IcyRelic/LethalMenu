@@ -262,8 +262,23 @@ namespace LethalMenu.Util
 
             options[index].Draw(ref value);
 
-            if (GUILayout.Button("-")) index = Mathf.Clamp(index-1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = Mathf.Clamp(index+1, 0, options.Length - 1);
+            if (GUILayout.Button("-")) index = Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = Mathf.Clamp(index + 1, 0, options.Length - 1);
+
+
+            GUILayout.EndHorizontal();
+        }
+
+        public static void IndexSelect(string header, ref int index, params string[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+
+            GUILayout.Label(Localization.Localize(options[index]));
+
+            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
 
 
             GUILayout.EndHorizontal();
