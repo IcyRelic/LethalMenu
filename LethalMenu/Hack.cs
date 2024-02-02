@@ -52,7 +52,6 @@ namespace LethalMenu
         Invisibility,
         NoFallDamage,
         HearEveryone,
-        ExtraPresents,
 
         /** Server Tab **/
         DisplayBodyCount,
