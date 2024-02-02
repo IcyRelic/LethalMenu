@@ -58,7 +58,6 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.Invisibility, "SelfTab.Invisibility");
             UI.Hack(Hack.NoFallDamage, "SelfTab.NoFallDamage");
             UI.Hack(Hack.HearEveryone, "SelfTab.HearEveryone");
-            UI.Hack(Hack.ExtraPresents, "SelfTab.ExtraPresents");
 
             GUILayout.EndScrollView();
         }
