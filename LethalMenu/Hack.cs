@@ -43,7 +43,6 @@ namespace LethalMenu
         BuildAnywhere,
         Weight,
         GhostMode,
-        //UnlimitedPresents,
         UnlimitedAmmo,
         FreeCam,
         NoCooldown,
@@ -52,6 +51,8 @@ namespace LethalMenu
         StrongHands,
         Invisibility,
         NoFallDamage,
+        HearEveryone,
+        ExtraPresents,
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -66,6 +67,7 @@ namespace LethalMenu
         StartGame,
         SpawnMoreScrap,
         UnlockUnlockable,
+        NeverLoseScrap,
 
         /** Troll Tab **/
         ToggleShipLights,
@@ -90,6 +92,7 @@ namespace LethalMenu
         SellEverything,
         TeleportAllItems,
         TeleportOneItem,
+        EjectEveryone,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -109,6 +112,8 @@ namespace LethalMenu
         Crosshair,
         Breadcrumbs,
         NoFog,
+        NoVisor,
+        NoFieldOfDepth,
 
         /** Player Tab **/
         KillPlayer,
@@ -199,7 +204,6 @@ namespace LethalMenu
             {Hack.BuildAnywhere, false},
             {Hack.Weight, false},
             {Hack.GhostMode, false},
-            //{Hack.UnlimitedPresents, false},
             {Hack.UnlimitedAmmo, false},
             {Hack.FreeCam, false},
             {Hack.SpectatePlayer, false},
@@ -211,6 +215,11 @@ namespace LethalMenu
             {Hack.StrongHands, false},
             {Hack.Invisibility, false},
             {Hack.NoFallDamage, false},
+            {Hack.HearEveryone, false},
+            {Hack.NoVisor, false},
+            {Hack.NoFieldOfDepth, false},
+            {Hack.ExtraPresents, false},
+            {Hack.NeverLoseScrap, false},
 
 
         };
@@ -267,6 +276,7 @@ namespace LethalMenu
             {Hack.SellEverything, (Action) HackExecutor.SellEverything},
             {Hack.TeleportAllItems, (Action) HackExecutor.TeleportAllItems},
             {Hack.TeleportOneItem, (Action) HackExecutor.TeleportOneItem},
+            {Hack.EjectEveryone, (Action) HackExecutor.EjectEveryone},
 
         };
 
@@ -529,5 +539,7 @@ namespace LethalMenu
         public static void TeleportAllItems() => RoundHandler.TeleportAllItems();
         public static void TeleportOneItem() => RoundHandler.TeleportOneItem();
 
+        public static void EjectEveryone() => StartOfRound.Instance.ManuallyEjectPlayersServerRpc();
+        
     }
 }
