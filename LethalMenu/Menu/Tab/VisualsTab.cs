@@ -53,6 +53,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.Crosshair, "VisualsTab.Crosshair");
             UI.Hack(Hack.Breadcrumbs, "VisualsTab.Breadcrumbs");
             UI.Hack(Hack.NoFog, "VisualsTab.NoFog");
+            UI.Hack(Hack.NoVisor, "VisualsTab.NoVisor");
+            UI.Hack(Hack.NoFieldOfDepth, "VisualsTab.NoFieldOfDepth");
         }
     }
 }
