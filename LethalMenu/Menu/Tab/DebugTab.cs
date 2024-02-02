@@ -97,19 +97,6 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Send LM Info");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                string response = $"{LethalMenu.localPlayer.playerSteamId}|{Settings.version}";
-
-                HUDManager.Instance.AddTextToChatOnServer($"<size=0>{MenuUtil.Encrypt(response)}</size>");
-            }
-            GUILayout.EndHorizontal();
-
-
-
-            GUILayout.BeginHorizontal();
             GUILayout.Label("Goto Not Spawned");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))

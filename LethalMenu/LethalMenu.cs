@@ -33,8 +33,6 @@ namespace LethalMenu
         public static PlayerControllerB localPlayer;
         public static int selectedPlayer = -1;
 
-        public static Dictionary<ulong, string> lmUsers = new Dictionary<ulong, string>();
-
         
         public static string debugMessage = "";
         public static string debugMessage2 = "";
@@ -61,9 +59,7 @@ namespace LethalMenu
                 Localization.Initialize();
                 LoadCheats();
                 DoPatching();
-                this.StartCoroutine(this.CollectObjects());
-                this.StartCoroutine(this.SyncLMUsers());
-                
+                this.StartCoroutine(this.CollectObjects());                
             } catch
             (Exception e)
             {
@@ -213,21 +209,6 @@ namespace LethalMenu
         {
             list.Clear();
             list.AddRange(filter == null ? Object.FindObjectsOfType<T>() : Object.FindObjectsOfType<T>().Where(filter));
-        }
-
-        private IEnumerator SyncLMUsers()
-        {
-            while (true)
-            {
-                if (localPlayer != null)
-                {
-                    string response = $"{localPlayer.playerSteamId}|{Settings.version}";
-
-                    HUDManager.Instance.AddTextToChatOnServer($"<size=0>{MenuUtil.Encrypt(response)}</size>");
-                }
-                
-                yield return new WaitForSeconds(60f);
-            }
         }
 
         public void Unload()

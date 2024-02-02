@@ -1,10 +1,8 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Menu.Core;
-using System;
-using System.Linq;
-using UnityEngine;
 using LethalMenu.Util;
-using LethalMenu.Language;
+using System;
+using UnityEngine;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -42,19 +40,13 @@ namespace LethalMenu.Menu.Tab
 
             foreach (PlayerControllerB player in LethalMenu.players)
             {
-                if (player.disconnectedMidGame) continue;
+                if (player.disconnectedMidGame || !player.IsSpawned) continue;
 
                 if (selectedPlayer == -1) selectedPlayer = (int)player.playerClientId;
 
                 if (selectedPlayer == (int)player.playerClientId) GUI.contentColor = Settings.c_playerESP.GetColor();
 
-                bool isLmUser = LethalMenu.lmUsers.ContainsKey(player.playerSteamId);
-
-
-                string btnText = player.playerUsername + (isLmUser ? $" ({LethalMenu.lmUsers[player.playerSteamId]})" : "");
-
-
-                if (GUILayout.Button(btnText, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
+                if (GUILayout.Button(player.playerUsername, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
 
                 GUI.contentColor = Settings.c_menuText.GetColor();
             }
@@ -87,9 +79,6 @@ namespace LethalMenu.Menu.Tab
 
             if (player == null || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
 
-
-            bool isLmUser = LethalMenu.lmUsers.ContainsKey(player.playerSteamId);
-            string lmVersion = isLmUser ? LethalMenu.lmUsers[player.playerSteamId] : "";
             string name = player.playerUsername;
 
             if (player.isPlayerDead && player.deadBody != null)
@@ -97,6 +86,29 @@ namespace LethalMenu.Menu.Tab
 
 
             UI.Header(name);
+            UI.Header("PlayerTab.PlayerInfo");
+
+            UI.Label("PlayerTab.SteamId", player.playerSteamId.ToString());
+            UI.Label("PlayerTab.PlayerId", player.playerClientId.ToString());
+            UI.Label("PlayerTab.PlayerStatus", player.isPlayerDead ? "PlayerTab.DeadPrefix" : "PlayerTab.AlivePrefix");
+            UI.Label("PlayerTab.PlayerHealth", player.health.ToString());
+            UI.Label("PlayerTab.IsInFactory", player.isInsideFactory.ToString());
+            UI.Label("PlayerTab.IsInShip", player.isInHangarShipRoom.ToString());
+            UI.Label("PlayerTab.Insanity", player.insanityLevel.ToString());
+
+            //get the inventory of the player
+            GrabbableObject[] items = player.ItemSlots;
+            //show the inventory
+            UI.Header("PlayerTab.Inventory", true);
+            foreach (GrabbableObject item in items)
+            {
+                if (item == null) continue;
+
+                UI.Label("", item.name);
+            }
+
+
+            UI.Header("General.GeneralActions", true);
             UI.Hack(Hack.Teleport, "PlayerTab.TeleportTo", player.transform.position, player.isInElevator, player.isInHangarShipRoom, player.isInsideFactory);
             UI.Hack(Hack.KillPlayer, "PlayerTab.Kill", player);
             UI.Hack(Hack.HealPlayer, "PlayerTab.Heal", player);

@@ -18,10 +18,7 @@ namespace LethalMenu
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
         public static void Disconnect(GameNetworkManager __instance)
         {
-            LethalMenu.debugMessage2 = "Disconnect Detected";
-
             SpectatePlayer.Reset();
-            LethalMenu.lmUsers.Clear();
         }
 
         [HarmonyPrefix]
@@ -50,19 +47,5 @@ namespace LethalMenu
                     new CodeInstruction(OpCodes.Ldc_I4, int.MaxValue) : instruction;
             }
         }
-
-
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(HUDManager), "AddTextMessageServerRpc")]
-        public static void ReceiveMessage(string chatMessage)
-        {
-            Debug.Log("Message Received =>" + chatMessage);
-            chatMessage = chatMessage.Replace("<size=0>", "").Replace("</size>", "");
-
-            bool isEncrypted = MenuUtil.IsEncrypted(chatMessage);
-
-            if (isEncrypted) MenuUtil.ProcessEncryptedMessage(chatMessage);
-        }
-
     }
 }
