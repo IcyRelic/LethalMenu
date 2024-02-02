@@ -88,6 +88,9 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Resources\BaseGame\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
+      <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UIModule">
       <HintPath>Resources\BaseGame\UnityEngine.UIModule.dll</HintPath>
     </Reference>
