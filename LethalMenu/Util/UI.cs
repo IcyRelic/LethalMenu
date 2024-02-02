@@ -135,11 +135,6 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Toggle(string header, ref bool value)
-        {
-            Toggle(header, ref value, "Disable", "Enable");
-        }
-
         public static void Toggle(string header, ref bool value, string enabled, string disabled)
         {
             GUILayout.BeginHorizontal();
