@@ -14,6 +14,7 @@ namespace LethalMenu.Menu.Tab
         private string s_quota = "";
         private string s_scrapAmount = "1";
         private string s_scrapValue = "1";
+        private Vector2 scrollPos = Vector2.zero;
 
         public ServerTab() : base("ServerTab.Title") { }
 
