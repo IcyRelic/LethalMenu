@@ -57,6 +57,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.StrongHands, "SelfTab.StrongHands");
             UI.Hack(Hack.Invisibility, "SelfTab.Invisibility");
             UI.Hack(Hack.NoFallDamage, "SelfTab.NoFallDamage");
+            UI.Hack(Hack.HearEveryone, "SelfTab.HearEveryone");
+            UI.Hack(Hack.ExtraPresents, "SelfTab.ExtraPresents");
 
             GUILayout.EndScrollView();
         }
@@ -108,12 +110,12 @@ namespace LethalMenu.Menu.Tab
             char c = 'A';
             foreach (EntranceTeleport door in doors)
             {
-                string text = door.isEntranceToBuilding ? "SelfTab.TeleportEntrance" : "SelfTab.TeleportExit";
-                
-                UI.Hack(Hack.Teleport, $"{text} {c}", door.entrancePoint.position, false, true, door.isEntranceToBuilding);
+                string textKey = door.isEntranceToBuilding ? "SelfTab.TeleportEntrance" : "SelfTab.TeleportExit";
+                string localizedText = Localization.Localize(textKey);
+
+                UI.Hack(Hack.Teleport, $"{localizedText} {c}", door.entrancePoint.position, false, true, door.isEntranceToBuilding);
                 c++;
             }
         }
     }
-
 }
