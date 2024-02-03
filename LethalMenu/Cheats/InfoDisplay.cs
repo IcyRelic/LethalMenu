@@ -11,14 +11,14 @@ namespace LethalMenu.Cheats
         {
             String info = "";
 
-            if (Hack.DisplayBodyCount.IsEnabled()) info += Localization.Localize("ServerTab.BodyCount") + ": " + GetBodyCount().ToString() + "\n";
-            if (Hack.DisplayEnemyCount.IsEnabled()) info += Localization.Localize("ServerTab.EnemyCount") + ": " + GetEnemyCount().ToString() + "\n";
-            if (Hack.DisplayObjectCount.IsEnabled()) info += Localization.Localize("ServerTab.ObjectCount") + ": " + GetObjectCount().ToString() + "\n";
-            if (Hack.DisplayObjectValue.IsEnabled()) info += Localization.Localize("ServerTab.ObjectValue") + ": " + GetObjectValue().ToString() + "\n";
-            if (Hack.DisplayShipValue.IsEnabled()) info += Localization.Localize("ServerTab.ShipScan") + ": " + GetShipValue().ToString() + "\n";
+            if (Hack.DisplayBodyCount.IsEnabled()) info += Localization.Localize("ServerTab.BodyCount") + ": " + GetBodyCount() + "\n";
+            if (Hack.DisplayEnemyCount.IsEnabled()) info += Localization.Localize("ServerTab.EnemyCount") + ": " + GetEnemyCount() + "\n";
+            if (Hack.DisplayObjectCount.IsEnabled()) info += Localization.Localize("ServerTab.ObjectCount") + ": " + GetObjectCount() + "\n";
+            if (Hack.DisplayObjectValue.IsEnabled()) info += Localization.Localize("ServerTab.ObjectValue") + ": " + GetObjectValue() + "\n";
+            if (Hack.DisplayShipValue.IsEnabled()) info += Localization.Localize("ServerTab.ShipScan") + ": " + GetShipValue() + "\n";
             if (Hack.DisplayQuota.IsEnabled()) info += Localization.Localize("ServerTab.Quota") + ": " + GetQuota() + "\n";
             if (Hack.DisplayDaysLeft.IsEnabled()) info += Localization.Localize("ServerTab.DaysLeft") + ": " + GetDaysLeft() + "\n";
-            if (Hack.DisplayBuyingRate.IsEnabled()) info += Localization.Localize("ServerTab.BuyingRate") + ": " + GetBuyingRate().ToString() + "%\n";
+            if (Hack.DisplayBuyingRate.IsEnabled()) info += Localization.Localize("ServerTab.BuyingRate") + ": " + GetBuyingRate() + "%\n";
 
             GUI.color = Color.white;
             GUI.Label(new Rect(Screen.width - 160 - 0, 0, 160f, 180f), info, new GUIStyle(GUI.skin.label) { fontSize = 14 });
