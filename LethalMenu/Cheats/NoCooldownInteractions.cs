@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using LethalMenu.Util;
 using HarmonyLib;
 using System.Linq;
@@ -55,10 +55,20 @@ namespace LethalMenu.Cheats
                     if (!triggers.ContainsKey(t.GetInstanceID()))
                     {
                         triggers.Add(t.GetInstanceID(), t.timeToHold);
-                        Debug.Log($"Added {t.name} to triggers with => {t.timeToHold}");
                     }
 
                     float original = triggers.TryGetValue(t.GetInstanceID(), out float value) ? value : 0.5f;
+
+                    if (t.name.Equals("StartGameLever"))
+                    {
+                        float leverHoldTime = TimeOfDay.Instance.daysUntilDeadline > 0 ? t.timeToHold = 0.7f : t.timeToHold = 4f;
+                       
+                        if(leverHoldTime != original)
+                        {
+                            triggers[t.GetInstanceID()] = leverHoldTime;
+                            original = leverHoldTime;
+                        }
+                    }
 
                     float timeToHold = Hack.InstantInteract.IsEnabled() ? t.name.StartsWith("EntranceTeleport") ? 0.3f : 0.0f : original;
                     
