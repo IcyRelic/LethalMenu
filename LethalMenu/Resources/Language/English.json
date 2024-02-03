@@ -240,12 +240,4 @@
 	"FirstSetup.SelectKeybind": "Select Menu Keybind:",
 	"FirstSetup.Complete": "Complete Setup",
 	"FirstSetup.ClickToChange": "Click Here To Change",
-	"Cheats.Info.BodyCount": "Dead Body Count:",
-	"Cheats.Info.EnemyCount": "Enemy Count:",
-	"Cheats.Info.ObjectCount": "Object Count:",
-	"Cheats.Info.ObjectValue": "Object Value:",
-	"Cheats.Info.ShipValue": "Ship Value:",
-	"Cheats.Info.Quota": "Quota:",
-	"Cheats.Info.DaysLeft": "Days Left:",
-	"Cheats.Info.BuyingRate": "Company Buying Rate:"
 }
