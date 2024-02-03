@@ -15,7 +15,7 @@ namespace LethalMenu.Cheats
             if (Hack.DisplayEnemyCount.IsEnabled()) info += Localization.Localize("ServerTab.EnemyCount") + ": " + GetEnemyCount().ToString() + "\n";
             if (Hack.DisplayObjectCount.IsEnabled()) info += Localization.Localize("ServerTab.ObjectCount") + ": " + GetObjectCount().ToString() + "\n";
             if (Hack.DisplayObjectValue.IsEnabled()) info += Localization.Localize("ServerTab.ObjectValue") + ": " + GetObjectValue().ToString() + "\n";
-            if (Hack.DisplayShipScan.IsEnabled()) info += Localization.Localize("ServerTab.ShipScan") + ": " + GetShipValue().ToString() + "\n";
+            if (Hack.DisplayShipValue.IsEnabled()) info += Localization.Localize("ServerTab.ShipScan") + ": " + GetShipValue().ToString() + "\n";
             if (Hack.DisplayQuota.IsEnabled()) info += Localization.Localize("ServerTab.Quota") + ": " + GetQuota() + "\n";
             if (Hack.DisplayDaysLeft.IsEnabled()) info += Localization.Localize("ServerTab.DaysLeft") + ": " + GetDaysLeft() + "\n";
             if (Hack.DisplayBuyingRate.IsEnabled()) info += Localization.Localize("ServerTab.BuyingRate") + ": " + GetBuyingRate().ToString() + "%\n";
