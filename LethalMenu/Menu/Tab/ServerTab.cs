@@ -35,9 +35,11 @@ namespace LethalMenu.Menu.Tab
             UI.Header("ServerTab.InfoDisplay");
             UI.Hack(Hack.DisplayBodyCount, "ServerTab.BodyCount");
             UI.Hack(Hack.DisplayEnemyCount, "ServerTab.EnemyCount");
-            UI.Hack(Hack.DisplayObjectScan, "ServerTab.ObjectScan");
-            UI.Hack(Hack.DisplayShipScan, "ServerTab.ShipScan");
+            UI.Hack(Hack.DisplayObjectCount, "ServerTab.ObjectCount");
+            UI.Hack(Hack.DisplayObjectValue, "ServerTab.ObjectValue");
+            UI.Hack(Hack.DisplayShipValue, "ServerTab.ShipScan");
             UI.Hack(Hack.DisplayQuota, "ServerTab.Quota");
+            UI.Hack(Hack.DisplayDaysLeft, "ServerTab.DaysLeft");
             UI.Hack(Hack.DisplayBuyingRate, "ServerTab.BuyingRate");
         }
 
