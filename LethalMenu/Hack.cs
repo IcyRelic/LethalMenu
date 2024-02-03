@@ -221,7 +221,6 @@ namespace LethalMenu
             {Hack.HearEveryone, false},
             {Hack.NoVisor, false},
             {Hack.NoFieldOfDepth, false},
-            {Hack.ExtraPresents, false},
             {Hack.NeverLoseScrap, false},
 
 
