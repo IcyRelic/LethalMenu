@@ -34,13 +34,18 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.FixAllValves, "TrollTab.FixValves");
             UI.Hack(Hack.SpawnMaskedEnemy, "TrollTab.SpawnMasks");
             UI.Hack(Hack.SellEverything, "TrollTab.SellEverything");
-            UI.Hack(Hack.TeleportAllItems, "TrollTab.TeleportAllItems");
-            UI.Hack(Hack.TeleportOneItem, "TrollTab.TeleportOneItem");
+            UI.Hack(Hack.TeleportOneItem, ["TrollTab.TeleportAllItems", "(" + GetObjectCount().ToString() + ")"]);
+            UI.Hack(Hack.TeleportOneItem, ["TrollTab.TeleportOneItem", "(" + GetObjectCount().ToString() + ")"]);
             UI.Hack(Hack.EjectEveryone, ["TrollTab.EjectEveryone", "General.HostTag"]);
 
             GUILayout.EndScrollView();
 
         }
 
+
+        private int GetObjectCount()
+        {
+            return LethalMenu.items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed).Count();
+        }
     }
 }
