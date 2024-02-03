@@ -1,5 +1,15 @@
 v1.4.1
 - Fixed ServerTab Manager translations not working
+- Fixed enable and disable not being translated for use scrap tiers and VC Display
+- Fixed Teleport Entrance and Teleport Exit not being translated
+- Fixed Display Info not being translated
+- Added more display options
+- Added No Visor
+- Added No Field Of Depth
+- Added Item count for teleport all items and teleport one item
+- Added Never Lose Scrap (You won't lose scrap on the ship after everyone dies)
+- Added Hear Everyone
+- Added Eject Everyone (Host Only)
 
 v1.4.0
 - Added LANGUAGE SUPPORT! (English, German, Chinese, Russian, Polish, and more!)
@@ -22,6 +32,8 @@ v1.3.2
 - Moved all enemy related hacks to the Enemy Tab
 - Removed Enemy Manager
 - Fixed FPS Issues with NoClip
+- VC Display
+- No Fall Damage
 
 v1.3.1
 - Added Strong Hands (Carry any item with 1 hand) 
