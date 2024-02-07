@@ -66,6 +66,7 @@ namespace LethalMenu
         StartGame,
         SpawnMoreScrap,
         UnlockUnlockable,
+        Shoplifter,
 
         /** Troll Tab **/
         ToggleShipLights,
@@ -211,6 +212,7 @@ namespace LethalMenu
             {Hack.StrongHands, false},
             {Hack.Invisibility, false},
             {Hack.NoFallDamage, false},
+            {Hack.Shoplifter, false},
 
 
         };
