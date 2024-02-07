@@ -44,6 +44,8 @@ namespace LethalMenu.Menu.Tab
         {
             UI.Header("ServerTab.ServerCheats");
 
+            scrollPos = GUILayout.BeginScrollView(scrollPos);
+
             UI.TextboxAction("ServerTab.EditCredits", ref s_credits, @"[^0-9]", 50, 
                 new UIButton("General.Remove", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Remove)),
                 new UIButton("General.Add", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Add)),
@@ -69,7 +71,9 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandTurrets", "General.HostTag"], MapObject.TurretContainer);
             UI.Hack(Hack.SpawnLandmine, ["ServerTab.SpawnLandmine", "General.HostTag"]);
             UI.Hack(Hack.SpawnTurret, ["ServerTab.SpawnTurret", "General.HostTag"]);
-
+            UI.Hack(Hack.Shoplifter, "ServerTab.Shoplifter");
+            
+            GUILayout.EndScrollView();
         }
 
         private void ManagersContent()
