@@ -1,4 +1,5 @@
 v1.4.1
+- Added Shoplifter - All shop items are free
 - Fixed ServerTab Manager translations not working
 
 v1.4.0
