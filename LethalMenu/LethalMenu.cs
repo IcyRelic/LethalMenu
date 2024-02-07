@@ -147,7 +147,8 @@ namespace LethalMenu
                 
                 if (Event.current.type == EventType.Repaint)
                 {
-                    VisualUtil.DrawString(new Vector2(10f, 5f), "Lethal Menu " + Settings.version + " By IcyRelic", Settings.c_primary, false, false, false, 22);
+                    VisualUtil.DrawString(new Vector2(5f, 2f), "Lethal Menu " + Settings.version + " By IcyRelic", Settings.c_primary,
+                        centered: false, bold: true, fontSize: 14);
 
                    if(MenuUtil.resizing)
                     {
@@ -162,7 +163,7 @@ namespace LethalMenu
 
                     if (Settings.isDebugMode)
                     {
-                        VisualUtil.DrawString(new Vector2(10f, 35f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, 14);
+                        VisualUtil.DrawString(new Vector2(5f, 20f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, 10);
                         VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage), false, false, false, 22);
                         VisualUtil.DrawString(new Vector2(10f, 125f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage2), false, false, false, 22);
                     }
