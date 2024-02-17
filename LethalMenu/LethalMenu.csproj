@@ -91,6 +91,12 @@
     <Reference Include="UnityEngine.UIModule">
       <HintPath>Resources\BaseGame\UnityEngine.UIModule.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
+      <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+      <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Core.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UnityWebRequestWWWModule">
       <HintPath>Resources\BaseGame\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     </Reference>
