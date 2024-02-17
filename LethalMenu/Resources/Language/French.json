@@ -254,23 +254,4 @@
 	"Cheats.Info.Quota": "Quota:",
 	"Cheats.Info.DaysLeft": "Nombre de jours restants:",
 	"Cheats.Info.BuyingRate": "Taux d'achat de la compagnie:"
-	"ServerTab.Managers": "Créateur",
-	"MoonManager.Visit": "Visiter",
-	"ItemManager.Title": "Gestionnaire d’Objets",
-	"ItemManager.ScrapValue": "Valeur d'Objets",
-	"UnlockableManager.Title": "Gestionnaire de déverrouillage",
-	"UnlockableManager.UnlockAll": "Tout débloquer",
-	"FirstSetup.Title": "Première configuration",
-	"FirstSetup.Welcome": "Bienvenue sur LethalMenu, Veuillez choisir votre touche de menu et la langue.",
-	"FirstSetup.SelectLanguage": "Choix de la langue",
-	"FirstSetup.SelectKeybind": "Sélectionnez le raccourci du menu :",
-	"FirstSetup.Complete": "Terminer la configuration",
-	"FirstSetup.ClickToChange": "Cliquez ici pour changer",
-	"Cheats.Info.BodyCount": "Compteur de cadavres",
-	"Cheats.Info.EnemyCount": "Nombre d'Ennemis:",
-	"Cheats.Info.ObjectCount": "Nombre d'objets:",
-	"Cheats.Info.ObjectValue": "Valeurs de l'objet scanné:",
-	"Cheats.Info.ShipValue": "Valeur du vaisseau:",
-	"Cheats.Info.Quota": "Quota:",
-	"Cheats.Info.DaysLeft": "Jours Restants"
 }
