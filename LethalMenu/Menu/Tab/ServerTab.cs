@@ -68,6 +68,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Hack(Hack.StartGame, "ServerTab.ForceLand");
             UI.Hack(Hack.EndGame, "ServerTab.ForceLeave");
+            UI.Hack(Hack.NeverLoseScrap, "ServerTab.NeverLoseScrap");
             UI.Hack(Hack.SpawnMoreScrap, ["ServerTab.SpawnScrap", "General.HostTag"]);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandMines", "General.HostTag"], MapObject.Landmine);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandTurrets", "General.HostTag"], MapObject.TurretContainer);
