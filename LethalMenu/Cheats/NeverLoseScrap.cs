@@ -1,6 +1,6 @@
 namespace LethalMenu.Cheats
 {
-    internal class KeepShipItems : Cheat
+    internal class NeverLoseScrap : Cheat
     {
         public override void Update()
         {
@@ -9,7 +9,7 @@ namespace LethalMenu.Cheats
 
         public void KeepItems()
         {
-            if (Hack.KeepShipItems.IsEnabled() && StartOfRound.Instance.allPlayersDead)
+            if (Hack.NeverLoseScrap.IsEnabled() && StartOfRound.Instance.allPlayersDead)
             {
                 StartOfRound.Instance.allPlayersDead = false;
             }
