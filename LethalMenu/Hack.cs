@@ -52,6 +52,7 @@ namespace LethalMenu
         Invisibility,
         NoFallDamage,
         HearEveryone,
+        NoFlash,
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -220,7 +221,7 @@ namespace LethalMenu
             {Hack.NoVisor, false},
             {Hack.NoFieldOfDepth, false},
             {Hack.NeverLoseScrap, false},
-
+            {Hack.NoFlash, false},
 
         };
 
