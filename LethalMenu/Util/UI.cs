@@ -135,11 +135,6 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Toggle(string header, ref bool value)
-        {
-            Toggle(header, ref value, "Disable", "Enable");
-        }
-
         public static void Toggle(string header, ref bool value, string enabled, string disabled)
         {
             GUILayout.BeginHorizontal();
@@ -251,21 +246,6 @@ namespace LethalMenu.Util
             bool modifiedValue = GUILayout.Toggle(isChecked, "");
             
             if(modifiedValue != isChecked) onChanged.Invoke();
-            GUILayout.EndHorizontal();
-        }
-
-        public static void Select(string header, ref object value, ref int index, params UIOption[] options)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
-            GUILayout.FlexibleSpace();
-
-            options[index].Draw(ref value);
-
-            if (GUILayout.Button("-")) index = Mathf.Clamp(index - 1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = Mathf.Clamp(index + 1, 0, options.Length - 1);
-
-
             GUILayout.EndHorizontal();
         }
 

@@ -20,6 +20,8 @@ namespace LethalMenu.Menu.Tab
 
         private void TrollMenuContent()
         {
+            UI.Header("TrollTab.Title");
+        
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             
             UI.Hack(Hack.ToggleShipHorn, "TrollTab.ShipHorn");
@@ -36,6 +38,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SellEverything, "TrollTab.SellEverything");
             UI.Hack(Hack.TeleportAllItems, "TrollTab.TeleportAllItems");
             UI.Hack(Hack.TeleportOneItem, "TrollTab.TeleportOneItem");
+            UI.Hack(Hack.EjectEveryone, ["TrollTab.EjectEveryone", "General.HostTag"]);
 
             GUILayout.EndScrollView();
 
