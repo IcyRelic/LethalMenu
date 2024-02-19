@@ -11,7 +11,7 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            LethalMenu.localPlayer.gameplayCamera.fieldOfView = Hack.FOV.IsEnabled() ? Settings.f_fov : Settings.f_defaultFOV;
+            LethalMenu.localPlayer.gameplayCamera.fieldOfView = Settings.f_fov;
         }
 
     }
