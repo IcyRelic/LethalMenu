@@ -89,6 +89,7 @@ namespace LethalMenu
         public static float f_espDistance = 5000;
         public static float f_chamDistance = 15;
         public static float f_enemyKillDistance = 15;
+        public static float f_fov = 60f;
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
         public static bool b_VCDisplay = false;
@@ -112,6 +113,7 @@ namespace LethalMenu
         public static float f_defaultMovementSpeed = 4.6f;
         public static float f_defaultNightVisionIntensity = 360f;
         public static float f_defaultNightVisionRange = 12f;
+        public static float f_defaultFOV = 66f;
 
         public static int[] i_scrapValueThresholds = new int[] { 30,50,75,100 };
 
@@ -227,6 +229,7 @@ namespace LethalMenu
                 hackSettings["DisableSpectatorModels"] = b_disableSpectatorModels.ToString();
                 hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
                 hackSettings["VCDisplay"] = b_VCDisplay.ToString();
+                hackSettings["FOV"] = f_fov.ToString();
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
                 chams["Enemy"] = b_chamsEnemy.ToString();
@@ -325,7 +328,9 @@ namespace LethalMenu
                         b_disableSpectatorModels = bool.Parse(disableSpectatorModelsToken.ToString());
                     if (hackSettings.TryGetValue("VCDisplay", out JToken vcDisplayToken))
                         b_VCDisplay = bool.Parse(vcDisplayToken.ToString());
-
+                    if (hackSettings.TryGetValue("FOV", out JToken fovToken))
+                        f_fov = float.Parse(fovToken.ToString());
+                    
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {
