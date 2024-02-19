@@ -126,7 +126,7 @@ namespace LethalMenu.Menu.Core
         {
 
             GUI.color = new Color(1f, 1f, 1f, 0.1f);
-            GUIStyle watermark = new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold };
+            GUIStyle watermark = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold };
             string text = "Developed By IcyRelic , and Dustin";
 
             //draw the watermark in the bottom right of the screen
