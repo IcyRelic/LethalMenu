@@ -207,15 +207,18 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void SliderAction(string header, string displayValue, ref float value, float min, float max, params UIButton[] buttons)
+        public static void SliderAction(string header, string displayValue, ref float value, float min, float max, float defaultValue)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
             value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth));
-            buttons.ToList().ForEach(btn => btn.Draw());
+            if (GUILayout.Button(Localization.Localize("General.Reset")))
+            {
+                value = defaultValue;
+            }
             GUILayout.EndHorizontal();
-        }   
+        }
 
         public static void NumSelect(string header, ref int value, int min, int max)
         {
