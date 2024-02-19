@@ -55,6 +55,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.NoFog, "VisualsTab.NoFog");
             UI.Hack(Hack.NoVisor, "VisualsTab.NoVisor");
             UI.Hack(Hack.NoFieldOfDepth, "VisualsTab.NoFieldOfDepth");
+            UI.SliderAction("VisualsTab.FOV", Settings.f_fov.ToString("0"), ref Settings.f_fov, 10f, 180f, 66f);
         }
     }
 }
