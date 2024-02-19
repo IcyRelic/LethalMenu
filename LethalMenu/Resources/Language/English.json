@@ -179,6 +179,7 @@
 	"VisualsTab.NoFog": "No Fog",
 	"VisualsTab.NoVisor": "No Visor",
 	"VisualsTab.NoFieldOfDepth": "No Field Of Depth",
+	"VisualsTab.FOV": "Field Of View",
 	"SettingsTab.Title": "Settings",
 	"SettingsTab.General": "General Settings",
 	"SettingsTab.ResetSettings": "Reset Settings",
