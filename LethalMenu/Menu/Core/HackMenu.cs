@@ -120,8 +120,8 @@ namespace LethalMenu.Menu.Core
         {
 
             GUI.color = new Color(1f, 1f, 1f, 0.1f);
-            GUIStyle watermark = new GUIStyle(GUI.skin.label) { fontSize = 30, fontStyle = FontStyle.Bold };
-            string text = "Developed By IcyRelic";
+            GUIStyle watermark = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold };
+            string text = "Developed By IcyRelic, and Dustin";
 
             GUI.Label(new Rect(windowRect.width - watermark.CalcSize(new GUIContent(text)).x - 10, windowRect.height - watermark.CalcSize(new GUIContent(text)).y - 10, watermark.CalcSize(new GUIContent(text)).x, watermark.CalcSize(new GUIContent(text)).y), text, watermark);
             GUI.color = Color.white;

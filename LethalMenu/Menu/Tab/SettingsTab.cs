@@ -101,9 +101,7 @@ namespace LethalMenu.Menu.Tab
         private void VisualSettingsContent()
         {
             UI.Header("SettingsTab.Visual");
-            UI.SliderAction("SettingsTab.FOV", Settings.f_fov.ToString("0"), ref Settings.f_fov, 60f, 180f, 
-                new UIButton("General.Reset", () => Settings.f_fov = Settings.f_defaultFOV)
-            );
+         
             UI.Slider("SettingsTab.MaxESP", Settings.f_espDistance.ToString("0") + "m", ref Settings.f_espDistance, 0, 10000);
             UI.Slider("SettingsTab.MinCham", Settings.f_chamDistance.ToString("0") + "m", ref Settings.f_chamDistance, 0, 100);
             UI.Slider("SettingsTab.CrosshairScale", Settings.f_crosshairScale.ToString("0.00"), ref Settings.f_crosshairScale, 4f, 24f);
