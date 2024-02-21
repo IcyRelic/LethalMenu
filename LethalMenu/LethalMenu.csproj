@@ -22,7 +22,6 @@
     <None Remove="Resources\Language\Korean.json" />
     <None Remove="Resources\Language\Polish.json" />
     <None Remove="Resources\Language\Russian.json" />
-    <None Remove="Resources\Skin\LethalMenu.skin" />
     <None Remove="Resources\Skin\lmskin.skin" />
   </ItemGroup>
 
@@ -39,7 +38,6 @@
     <EmbeddedResource Include="Resources\Language\English.json" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\Planned.txt" />
-    <EmbeddedResource Include="Resources\Skin\LethalMenu.skin" />
     <EmbeddedResource Include="Resources\Skin\lmskin.skin" />
   </ItemGroup>
 
