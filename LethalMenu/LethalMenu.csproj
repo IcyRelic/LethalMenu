@@ -75,7 +75,7 @@
       <HintPath>Resources\BaseGame\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\ImGuiUnity Test\Resources\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>..\..\Resources\BaseGame\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>Resources\BaseGame\UnityEngine.AudioModule.dll</HintPath>
