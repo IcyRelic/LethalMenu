@@ -40,7 +40,6 @@
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\Planned.txt" />
     <EmbeddedResource Include="Resources\Skin\LethalMenu.skin" />
-    <EmbeddedResource Include="Resources\Skin\lmskin.skin" />
   </ItemGroup>
 
   <ItemGroup>
