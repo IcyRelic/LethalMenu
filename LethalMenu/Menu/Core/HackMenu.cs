@@ -42,7 +42,6 @@ namespace LethalMenu.Menu.Core
         public HackMenu()
         {
             instance = this;
-            menuTabs.Add(new DebugTab());
             menuTabs.Add(new SettingsTab());
             menuTabs.Add(new GeneralTab());
             menuTabs.Add(new SelfTab());
@@ -52,7 +51,11 @@ namespace LethalMenu.Menu.Core
             menuTabs.Add(new EnemyTab());
             menuTabs.Add(new ServerTab());
 
-
+            if (Settings.isDebugMode)
+            {
+                menuTabs.Add(new DebugTab());
+            }
+            
             Resize();
 
             selectedTab = menuTabs.IndexOf(menuTabs.Find(x => x.name == "General"));
