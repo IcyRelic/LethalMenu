@@ -74,10 +74,8 @@ namespace LethalMenu.Menu.Core
             Settings.i_menuFontSize = 14;
             Settings.i_menuWidth = 810;
             Settings.i_menuHeight = 410;
-            Settings.i_tabPadding = 10;
             Settings.i_sliderWidth = 100;
             Settings.i_textboxWidth = 85;
-            Settings.f_tabWidth = 0.15f;
             Settings.Config.SaveConfig();
         }
 
@@ -110,10 +108,12 @@ namespace LethalMenu.Menu.Core
             if (Settings.isFirstLaunch) firstSetupManagerWindow.Draw();
             else
             {
+                GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
                 windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
                 unlockableManagerWindow.Draw();
                 itemManagerWindow.Draw();
                 moonManagerWindow.Draw();
+                GUI.color = Color.white;
             }
         }
 
@@ -125,7 +125,8 @@ namespace LethalMenu.Menu.Core
             string text = "Developed By IcyRelic, and Dustin";
 
             GUI.Label(new Rect(windowRect.width - watermark.CalcSize(new GUIContent(text)).x - 10, windowRect.height - watermark.CalcSize(new GUIContent(text)).y - 10, watermark.CalcSize(new GUIContent(text)).x, watermark.CalcSize(new GUIContent(text)).y), text, watermark);
-            GUI.color = Color.white;
+
+            GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
 
             GUILayout.BeginVertical();
             GUILayout.BeginArea(new Rect(0, 25, windowRect.width, 25), style: "Toolbar");
@@ -148,6 +149,8 @@ namespace LethalMenu.Menu.Core
             GUILayout.EndScrollView();
 
             GUILayout.EndArea();
+
+            GUI.color = Color.white;
 
             GUI.DragWindow();
         }

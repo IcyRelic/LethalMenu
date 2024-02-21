@@ -33,10 +33,9 @@ namespace LethalMenu
         public static int i_menuFontSize = 14;
         public static int i_menuWidth = 810;
         public static int  i_menuHeight = 410;
-        public static int i_tabPadding = 10;
         public static int i_sliderWidth = 100;
         public static int i_textboxWidth = 85;
-        public static float f_tabWidth = 0.15f;
+        public static float f_menuAlpha = 1f;
 
         /* *
          * Color Settings
@@ -267,10 +266,9 @@ namespace LethalMenu
                 settings["MenuFontSize"] = i_menuFontSize.ToString();
                 settings["MenuWidth"] = i_menuWidth.ToString();
                 settings["MenuHeight"] = i_menuHeight.ToString();
-                settings["TabPadding"] = i_tabPadding.ToString();
-                settings["TabWidth"] = f_tabWidth.ToString();
                 settings["SliderWidth"] = i_sliderWidth.ToString();
                 settings["TextboxWidth"] = i_textboxWidth.ToString();
+                settings["MenuAlpha"] = f_menuAlpha.ToString();
 
 
                 json["Language"] = Localization.Language.Name;
@@ -433,14 +431,12 @@ namespace LethalMenu
                         i_menuWidth = int.Parse(menuWidthToken.ToString());
                     if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
                         i_menuHeight = int.Parse(menuHeightToken.ToString());
-                    if (settings.TryGetValue("TabPadding", out JToken tabPaddingToken))
-                        i_tabPadding = int.Parse(tabPaddingToken.ToString());
-                    if (settings.TryGetValue("TabWidth", out JToken tabWidthToken))
-                        f_tabWidth = float.Parse(tabWidthToken.ToString());
                     if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
                         i_sliderWidth = int.Parse(sliderWidthToken.ToString());
                     if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
                         i_textboxWidth = int.Parse(textboxWidthToken.ToString());
+                    if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
+                        f_menuAlpha = float.Parse(menuAlphaToken.ToString());
 
                 }
 

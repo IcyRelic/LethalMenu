@@ -89,10 +89,9 @@ namespace LethalMenu.Menu.Tab
             UI.Select("SettingsTab.Language", ref i_languageIndex, Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
 
             UI.NumSelect("SettingsTab.FontSize", ref Settings.i_menuFontSize, 5, 30);
-            UI.PercentSelect("SettingsTab.TabWidth", ref Settings.f_tabWidth);
-            UI.NumSelect("SettingsTab.TabPadding", ref Settings.i_tabPadding, 5, 15);
             UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);
             UI.NumSelect("SettingsTab.TextboxSize", ref Settings.i_textboxWidth, 50, 120);
+            UI.Slider("SettingsTab.MenuAlpha", Settings.f_menuAlpha.ToString("0.00"), ref Settings.f_menuAlpha, 0.1f, 1f);  
             UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
             UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
 
