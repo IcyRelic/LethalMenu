@@ -20,13 +20,10 @@ namespace LethalMenu.Menu.Tab
 
         public override void Draw()
         {
-            GUILayout.BeginVertical(GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
+            GUILayout.BeginVertical();
             MenuContent();
             GUILayout.EndVertical();
 
-            GUILayout.BeginVertical(GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
-
-            GUILayout.EndVertical();
         }
 
         private async void Leaderboard()

@@ -63,15 +63,16 @@ namespace LethalMenu.Menu.Tab
             
         }
 
-        private void DrawList<T>(IEnumerable<T> objects, Func<T, bool> conditional, Func<T, string> label, ref Vector2 scroll, ref int instanceID) where T : Object
+        private void DrawList<T>(string title, IEnumerable<T> objects, Func<T, bool> conditional, Func<T, string> label, ref Vector2 scroll, ref int instanceID) where T : Object
         {
             float width = HackMenu.Instance.contentWidth * 0.3f - HackMenu.Instance.spaceFromLeft * 2;
             float height = HackMenu.Instance.contentHeight - 45;
 
             Rect rect = new Rect(0, 30, width, height);
-            GUI.Box(rect, GUIContent.none);
+            GUI.Box(rect, title);
 
             GUILayout.BeginVertical(GUILayout.Width(width), GUILayout.Height(height));
+            GUILayout.Space(25);
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             foreach (T item in objects)
@@ -98,11 +99,11 @@ namespace LethalMenu.Menu.Tab
             {
                 case 0:
                     if (!LethalMenu.enemies.Exists(e => e.GetInstanceID() == selectedEnemy)) selectedEnemy = -1;
-                    DrawList<EnemyAI>(LethalMenu.enemies, e => e.isEnemyDead, e => e.enemyType.name, ref scrollPos, ref selectedEnemy);
+                    DrawList<EnemyAI>("Enemy List", LethalMenu.enemies, e => e.isEnemyDead, e => e.enemyType.name, ref scrollPos, ref selectedEnemy);
                     break;
                 case 1:
                     if(!GameUtil.GetEnemyTypes().Exists(e => e.GetInstanceID() == selectedEnemyType)) selectedEnemyType = -1;
-                    DrawList<EnemyType>(GameUtil.GetEnemyTypes(), _ => false, e => e.name, ref scrollPos3, ref selectedEnemyType);
+                    DrawList<EnemyType>("Enemy Types", GameUtil.GetEnemyTypes(), _ => false, e => e.name, ref scrollPos3, ref selectedEnemyType);
                     break;
             }
 

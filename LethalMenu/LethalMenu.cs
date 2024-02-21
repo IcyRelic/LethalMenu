@@ -57,6 +57,7 @@ namespace LethalMenu
             try
             {
                 Localization.Initialize();
+                SkinUtil.LoadSkin();
                 LoadCheats();
                 DoPatching();
                 this.StartCoroutine(this.CollectObjects());                

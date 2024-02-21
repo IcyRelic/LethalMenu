@@ -22,6 +22,8 @@
     <None Remove="Resources\Language\Korean.json" />
     <None Remove="Resources\Language\Polish.json" />
     <None Remove="Resources\Language\Russian.json" />
+    <None Remove="Resources\Skin\LethalMenu.skin" />
+    <None Remove="Resources\Skin\lmskin.skin" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +39,8 @@
     <EmbeddedResource Include="Resources\Language\English.json" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\Planned.txt" />
+    <EmbeddedResource Include="Resources\Skin\LethalMenu.skin" />
+    <EmbeddedResource Include="Resources\Skin\lmskin.skin" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,6 +73,9 @@
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>Resources\BaseGame\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>..\..\ImGuiUnity Test\Resources\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AudioModule">
       <HintPath>Resources\BaseGame\UnityEngine.AudioModule.dll</HintPath>
