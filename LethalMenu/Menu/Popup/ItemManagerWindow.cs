@@ -25,7 +25,7 @@ namespace LethalMenu.Menu.Popup
         {
             ItemContent();
 
-            GUI.DragWindow(new Rect(0.0f, 0.0f, 10000f, 45f));
+            GUI.DragWindow();
         }
 
         private void ItemContent()
