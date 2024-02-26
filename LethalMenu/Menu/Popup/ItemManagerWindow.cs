@@ -24,8 +24,6 @@ namespace LethalMenu.Menu.Popup
         public override void DrawContent(int windowID)
         {
             ItemContent();
-
-            GUI.DragWindow();
         }
 
         private void ItemContent()
@@ -51,6 +49,7 @@ namespace LethalMenu.Menu.Popup
             UI.ButtonGrid(StartOfRound.Instance.allItemsList.itemsList, (i) => i.name, s_search, (i) => SpawnItem(i), 3);
 
             GUILayout.EndScrollView();
+            GUI.DragWindow();
         }
 
         private void SpawnItem(Item item)
