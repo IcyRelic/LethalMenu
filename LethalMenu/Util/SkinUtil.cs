@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -8,29 +9,64 @@ namespace LethalMenu.Util
     public class SkinUtil
     {
         public static GUISkin Skin;
+        private static string DefaultSkinName = "Default";
+        private static AssetBundle AssetBundle;
 
-        public static void LoadSkin()
+        public static void LoadSkin(string skinName)
         {
-            //load LethalMenu.skin
-            string name = "LethalMenu.Resources.Skin.lmskin.skin";
-
-            //check if rss exists
-            if (Assembly.GetExecutingAssembly().GetManifestResourceInfo(name) == null)
+            if (AssetBundle != null)
             {
-                Debug.LogError($"Skin not found => {name}");
-                return;
+                AssetBundle.Unload(true);
+                AssetBundle = null;
+                Skin = null;
             }
 
+            string resourceName = $"LethalMenu.Resources.Skin.{skinName}.skin";
+
+            try
+            {
+                AssetBundle = LoadAssetBundle(resourceName);
+                if (AssetBundle == null)
+                {
+                    Debug.LogError($"Failed to load skin AssetBundle for {skinName}");
+                    return;
+                }
+
+                Skin = AssetBundle.LoadAllAssets<GUISkin>().FirstOrDefault();
+                if (Skin == null)
+                {
+                    Debug.LogError($"Failed to load Skin from AssetBundle for {skinName}");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"Failed to load skin: {e.Message}\n{e.StackTrace}");
+            }
+        }
+
+        private static AssetBundle LoadAssetBundle(string resourceName)
+        {
             Assembly assembly = Assembly.GetExecutingAssembly();
-            Stream skinStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name);
+            using (Stream skinStream = assembly.GetManifestResourceStream(resourceName))
+            {
+                return AssetBundle.LoadFromStream(skinStream);
+            }
+        }
 
-            AssetBundle Bundle = AssetBundle.LoadFromStream(skinStream);
+        public static string SkinName
+        {
+            get => DefaultSkinName;
+            set
+            {
+                DefaultSkinName = value;
+                LoadSkin(value);
+            }
+        }
 
-            Skin = Bundle.LoadAllAssets<GUISkin>().First();
-            
-            Debug.Log($"Loaded Skin => {Skin.name}");
-            
-        }   
-
+        public static void ApplySkin(string skinName)
+        {
+            SkinName = skinName;
+        }
     }
 }
