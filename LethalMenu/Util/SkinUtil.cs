@@ -6,13 +6,13 @@ using UnityEngine;
 
 namespace LethalMenu.Util
 {
-    public class SkinUtil
+    public class ThemeUtil
     {
         public static GUISkin Skin;
-        private static string DefaultSkinName = "Default";
+        private static string DefaultThemeName = "Default";
         private static AssetBundle AssetBundle;
 
-        public static void LoadSkin(string skinName)
+        public static void LoadTheme(string themeName)
         {
             if (AssetBundle != null)
             {
@@ -21,52 +21,52 @@ namespace LethalMenu.Util
                 Skin = null;
             }
 
-            string resourceName = $"LethalMenu.Resources.Skin.{skinName}.skin";
+            string resourceName = $"LethalMenu.Resources.Theme.{themeName}.theme";
 
             try
             {
                 AssetBundle = LoadAssetBundle(resourceName);
                 if (AssetBundle == null)
                 {
-                    Debug.LogError($"Failed to load skin AssetBundle for {skinName}");
+                    Debug.LogError($"Failed to load theme AssetBundle for {themeName}");
                     return;
                 }
 
                 Skin = AssetBundle.LoadAllAssets<GUISkin>().FirstOrDefault();
                 if (Skin == null)
                 {
-                    Debug.LogError($"Failed to load Skin from AssetBundle for {skinName}");
+                    Debug.LogError($"Failed to load GUISkin from AssetBundle for {themeName}");
                     return;
                 }
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to load skin: {e.Message}\n{e.StackTrace}");
+                Debug.LogError($"Failed to load theme: {e.Message}\n{e.StackTrace}");
             }
         }
 
         private static AssetBundle LoadAssetBundle(string resourceName)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
-            using (Stream skinStream = assembly.GetManifestResourceStream(resourceName))
+            using (Stream themeStream = assembly.GetManifestResourceStream(resourceName))
             {
-                return AssetBundle.LoadFromStream(skinStream);
+                return AssetBundle.LoadFromStream(themeStream);
             }
         }
 
-        public static string SkinName
+        public static string ThemeName
         {
-            get => DefaultSkinName;
+            get => DefaultThemeName;
             set
             {
-                DefaultSkinName = value;
-                LoadSkin(value);
+                DefaultThemeName = value;
+                LoadTheme(value);
             }
         }
 
-        public static void ApplySkin(string skinName)
+        public static void ApplyTheme(string themeName)
         {
-            SkinName = skinName;
+            ThemeName = themeName;
         }
     }
 }
