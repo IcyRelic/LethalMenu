@@ -81,7 +81,7 @@ namespace LethalMenu.Menu.Core
 
         public void Stylize()
         {
-            GUI.skin = SkinUtil.Skin;
+            GUI.skin = ThemeUtil.Skin;
             GUI.color = Color.white;
 
             GUI.skin.label.fontSize = Settings.i_menuFontSize;
