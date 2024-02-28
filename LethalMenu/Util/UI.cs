@@ -277,6 +277,27 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
+        public static void IndexSelectAction(string header, ref int index, params string[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header + " " + options[index]));
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("-"))
+            {
+                index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+                ThemeUtil.ApplyTheme(options[index]);
+            }
+
+            if (GUILayout.Button("+"))
+            {
+                index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
+                ThemeUtil.ApplyTheme(options[index]);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+        
         public static void Select(string header, ref int index, params UIOption[] options)
         {
             GUILayout.BeginHorizontal();
