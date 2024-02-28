@@ -21,7 +21,7 @@ namespace LethalMenu.Util
                 Skin = null;
             }
 
-            string resourceName = $"LethalMenu.Resources.Theme.{themeName}.theme";
+            string resourceName = $"LethalMenu.Resources.Theme.{themeName}.skin";
 
             try
             {
