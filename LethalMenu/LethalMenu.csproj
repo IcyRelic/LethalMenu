@@ -22,9 +22,9 @@
     <None Remove="Resources\Language\Korean.json" />
     <None Remove="Resources\Language\Polish.json" />
     <None Remove="Resources\Language\Russian.json" />
-    <None Remove="Resources\Skin\Default.skin" />
-    <None Remove="Resources\Skin\Green.skin" />
-    <None Remove="Resources\Skin\Blue.skin" />
+    <None Remove="Resources\Theme\Default.skin" />
+    <None Remove="Resources\Theme\Green.skin" />
+    <None Remove="Resources\Theme\Blue.skin" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,9 +40,9 @@
     <EmbeddedResource Include="Resources\Language\English.json" />
     <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
     <EmbeddedResource Include="Resources\Planned.txt" />
-    <EmbeddedResource Include="Resources\Skin\Default.skin" />
-    <EmbeddedResource Include="Resources\Skin\Green.skin" />
-    <EmbeddedResource Include="Resources\Skin\Blue.skin" />
+    <EmbeddedResource Include="Resources\Theme\Default.skin" />
+    <EmbeddedResource Include="Resources\Theme\Green.skin" />
+    <EmbeddedResource Include="Resources\Theme\Blue.skin" />
   </ItemGroup>
 
   <ItemGroup>
