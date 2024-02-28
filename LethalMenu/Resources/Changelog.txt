@@ -8,8 +8,8 @@ v1.4.1
 - Added No Field Of Depth 
 - Added No Flash - No flash from flashbangs
 - Fixed Many things not being translated
-- Changed teleport one item and made it random
-- Added skins
+- Changed Teleport one item and made it random
+- Added Skins
 - Added Theme manager in settings tab
 
 v1.4.0
