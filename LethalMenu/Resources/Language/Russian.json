@@ -176,6 +176,7 @@
 	"VisualsTab.Crosshair": "Показывать прицел",
 	"VisualsTab.Breadcrumbs": "Показывать пройденный маршрут",
 	"VisualsTab.NoFog": "Без тумана",
+	"VisualsTab.NoFieldOfDepth": "Без размытия вне фокуса",
 	"VisualsTab.FOV": "Поле зрения",
 	"SettingsTab.Title": "Настройки",
 	"SettingsTab.General": "Основные настройки",
