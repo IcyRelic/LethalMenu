@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Components;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -11,6 +12,7 @@ namespace LethalMenu.Cheats
 {
     internal class NoClip : Cheat
     {
+        private KBInput movement = null;
 
         public override void Update()
         {
@@ -22,26 +24,21 @@ namespace LethalMenu.Cheats
             {
                 PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
 
-              
+                if(movement == null) movement = player.gameObject.AddComponent<KBInput>();
+
                 collider.enabled = false;
 
-                Vector3 vector3 = new Vector3();
-                if (Keyboard.current.wKey.isPressed) vector3 += player.transform.forward;
-                if (Keyboard.current.sKey.isPressed) vector3 -= player.transform.forward;
-                if (Keyboard.current.aKey.isPressed) vector3 -= player.transform.right;
-                if (Keyboard.current.dKey.isPressed) vector3 += player.transform.right;
-                if (Keyboard.current.spaceKey.isPressed) vector3 += player.transform.up;
-                if (Keyboard.current.ctrlKey.isPressed) vector3 -= player.transform.up;
-
-                if (vector3.Equals(Vector3.zero)) return;
-
-                player.transform.position += vector3 * (Settings.f_noclipSpeed * Time.deltaTime);
+                player.transform.transform.position = movement.transform.position;
 
 
-
-
+                //player.transform.position += vector3 * (Settings.f_noclipSpeed * Time.deltaTime);
             } 
-            else collider.enabled = true;
+            else
+            {
+                collider.enabled = true;
+                Destroy(movement);
+                movement = null;
+            }
         }
 
     }
