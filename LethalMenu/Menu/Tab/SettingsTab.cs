@@ -61,6 +61,7 @@ namespace LethalMenu.Menu.Tab
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             MenuContent();
+            ControlSettingsContent();
             VisualSettingsContent();
             ColorContent();
             ESPSettingsContent();
@@ -94,7 +95,14 @@ namespace LethalMenu.Menu.Tab
             UI.Slider("SettingsTab.MenuAlpha", Settings.f_menuAlpha.ToString("0.00"), ref Settings.f_menuAlpha, 0.1f, 1f);  
             UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
             UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
+        }
 
+        private void ControlSettingsContent()
+        {
+            UI.Header("SettingsTab.Control");
+
+            UI.Slider("SettingsTab.mouseSens", Settings.f_mouseSensitivity.ToString("0.00"), ref Settings.f_mouseSensitivity, 0.1f, 1f);
+            UI.Slider("SettingsTab.movementSpeed", Settings.f_inputMovementSpeed.ToString("0"), ref Settings.f_inputMovementSpeed, 10, 30);
         }
 
         private void VisualSettingsContent()
