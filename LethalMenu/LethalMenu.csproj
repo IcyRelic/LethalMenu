@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <ErrorReport>none</ErrorReport>
     <LangVersion>12.0</LangVersion>
   </PropertyGroup>
@@ -108,6 +108,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Cheats\NewEnemyControl\" />
     <Folder Include="Resources\Language\Source\" />
   </ItemGroup>
 </Project>
