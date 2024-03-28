@@ -33,9 +33,11 @@ namespace LethalMenu.Menu.Tab
             float height = HackMenu.Instance.contentHeight - 20;
 
             Rect rect = new Rect(0, 0, width, height);
-            GUI.Box(rect, GUIContent.none);
+            GUI.Box(rect, "Player List");
 
             GUILayout.BeginVertical(GUILayout.Width(width), GUILayout.Height(height));
+
+            GUILayout.Space(25);
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             foreach (PlayerControllerB player in LethalMenu.players)

@@ -20,7 +20,7 @@ namespace LethalMenu.Menu.Tab
         {
             GUILayout.BeginHorizontal();
 
-            GUILayout.BeginVertical(GUILayout.Width(HackMenu.Instance.contentWidth - HackMenu.Instance.spaceFromLeft));
+            GUILayout.BeginVertical();
             MenuContent();
             GUILayout.EndVertical();
 

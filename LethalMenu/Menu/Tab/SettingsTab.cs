@@ -13,6 +13,8 @@ namespace LethalMenu.Menu.Tab
 {
     internal class SettingsTab : MenuTab
     {
+        private int selectedMode = 0;
+        private readonly string[] modes = { "Default", "Green", "Blue" };
         private string s_kbError = "";
         private string s_tierColorError = "";
         private string s_kbSearch = "";
@@ -61,6 +63,7 @@ namespace LethalMenu.Menu.Tab
 
             scrollPos = GUILayout.BeginScrollView(scrollPos);
             MenuContent();
+            ControlSettingsContent();
             VisualSettingsContent();
             ColorContent();
             ESPSettingsContent();
@@ -86,21 +89,28 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("SettingsTab.General");
 
+            UI.IndexSelectAction($"Theme:", ref selectedMode, modes);
             UI.Select("SettingsTab.Language", ref i_languageIndex, Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
-
             UI.NumSelect("SettingsTab.FontSize", ref Settings.i_menuFontSize, 5, 30);
-            UI.PercentSelect("SettingsTab.TabWidth", ref Settings.f_tabWidth);
-            UI.NumSelect("SettingsTab.TabPadding", ref Settings.i_tabPadding, 5, 15);
             UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);
             UI.NumSelect("SettingsTab.TextboxSize", ref Settings.i_textboxWidth, 50, 120);
+            UI.Slider("SettingsTab.MenuAlpha", Settings.f_menuAlpha.ToString("0.00"), ref Settings.f_menuAlpha, 0.1f, 1f);  
             UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
             UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
+        }
 
+        private void ControlSettingsContent()
+        {
+            UI.Header("SettingsTab.Control");
+
+            UI.Slider("SettingsTab.mouseSens", Settings.f_mouseSensitivity.ToString("0.00"), ref Settings.f_mouseSensitivity, 0.1f, 1f);
+            UI.Slider("SettingsTab.movementSpeed", Settings.f_inputMovementSpeed.ToString("0"), ref Settings.f_inputMovementSpeed, 10, 30);
         }
 
         private void VisualSettingsContent()
         {
             UI.Header("SettingsTab.Visual");
+         
             UI.Slider("SettingsTab.MaxESP", Settings.f_espDistance.ToString("0") + "m", ref Settings.f_espDistance, 0, 10000);
             UI.Slider("SettingsTab.MinCham", Settings.f_chamDistance.ToString("0") + "m", ref Settings.f_chamDistance, 0, 100);
             UI.Slider("SettingsTab.CrosshairScale", Settings.f_crosshairScale.ToString("0.00"), ref Settings.f_crosshairScale, 4f, 24f);

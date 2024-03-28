@@ -19,6 +19,7 @@ namespace LethalMenu
         public static void Disconnect(GameNetworkManager __instance)
         {
             SpectatePlayer.Reset();
+            Freecam.Reset();
         }
 
         [HarmonyPrefix]

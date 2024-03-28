@@ -1,6 +1,16 @@
 v1.4.1
 - Added Shoplifter - All shop items are free
 - Fixed ServerTab Manager translations not working
+- Added Hear Everyone - Hear everyone on the map even if they're dead
+- Added Eject Everyone (Host Only) - Eject everyone off the ship 
+- Added Never Lose Scrap - Keep scrap when everyone dies and ship leaves
+- Added No Visor
+- Added No Field Of Depth 
+- Added No Flash - No flash from flashbangs
+- Fixed Many things not being translated
+- Changed Teleport one item and made it random
+- Added Skins
+- Added Theme manager in settings tab
 
 v1.4.0
 - Added LANGUAGE SUPPORT! (English, German, Chinese, Russian, Polish, and more!)

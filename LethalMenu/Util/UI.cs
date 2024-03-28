@@ -1,9 +1,7 @@
 ﻿using LethalMenu.Language;
-using LethalMenu.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
@@ -135,11 +133,6 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Toggle(string header, ref bool value)
-        {
-            Toggle(header, ref value, "Disable", "Enable");
-        }
-
         public static void Toggle(string header, ref bool value, string enabled, string disabled)
         {
             GUILayout.BeginHorizontal();
@@ -212,6 +205,19 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
+        public static void SliderAction(string header, string displayValue, ref float value, float min, float max, float defaultValue)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
+            GUILayout.FlexibleSpace();
+            value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth));
+            if (GUILayout.Button(Localization.Localize("General.Reset")))
+            {
+                value = defaultValue;
+            }
+            GUILayout.EndHorizontal();
+        }
+
         public static void NumSelect(string header, ref int value, int min, int max)
         {
             GUILayout.BeginHorizontal();
@@ -254,21 +260,6 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Select(string header, ref object value, ref int index, params UIOption[] options)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
-            GUILayout.FlexibleSpace();
-
-            options[index].Draw(ref value);
-
-            if (GUILayout.Button("-")) index = Mathf.Clamp(index - 1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = Mathf.Clamp(index + 1, 0, options.Length - 1);
-
-
-            GUILayout.EndHorizontal();
-        }
-
         public static void IndexSelect(string header, ref int index, params string[] options)
         {
             GUILayout.BeginHorizontal();
@@ -284,6 +275,27 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
+        public static void IndexSelectAction(string header, ref int index, params string[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header + " " + options[index]));
+            GUILayout.FlexibleSpace();
+
+            if (GUILayout.Button("-"))
+            {
+                index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+                ThemeUtil.ApplyTheme(options[index]);
+            }
+
+            if (GUILayout.Button("+"))
+            {
+                index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
+                ThemeUtil.ApplyTheme(options[index]);
+            }
+
+            GUILayout.EndHorizontal();
+        }
+        
         public static void Select(string header, ref int index, params UIOption[] options)
         {
             GUILayout.BeginHorizontal();

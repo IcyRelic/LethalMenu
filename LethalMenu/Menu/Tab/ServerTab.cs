@@ -68,6 +68,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Hack(Hack.StartGame, "ServerTab.ForceLand");
             UI.Hack(Hack.EndGame, "ServerTab.ForceLeave");
+            UI.Hack(Hack.NeverLoseScrap, "ServerTab.NeverLoseScrap");
             UI.Hack(Hack.SpawnMoreScrap, ["ServerTab.SpawnScrap", "General.HostTag"]);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandMines", "General.HostTag"], MapObject.Landmine);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandTurrets", "General.HostTag"], MapObject.TurretContainer);
@@ -84,6 +85,7 @@ namespace LethalMenu.Menu.Tab
             UI.Toggle("MoonManager.Title", ref HackMenu.Instance.moonManagerWindow.isOpen, "General.Close", "General.Open");
             UI.Toggle("UnlockableManager.Title", ref HackMenu.Instance.unlockableManagerWindow.isOpen, "General.Close", "General.Open");
             UI.Toggle("ItemManager.Title", ref HackMenu.Instance.itemManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("LootManager.Title", ref HackMenu.Instance.LootManager.isOpen, "General.Close", "General.Open");
 
         }
     }

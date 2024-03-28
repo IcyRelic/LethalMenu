@@ -28,8 +28,8 @@ namespace LethalMenu.Menu.Tab
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             UI.Hack(Hack.ToggleAllESP, "VisualsTab.ToggleAll");
-            UI.Toggle("VisualsTab.UseScrapTiers", ref Settings.b_useScrapTiers);
-            UI.Toggle("VisualsTab.VCDisplay", ref Settings.b_VCDisplay);
+            UI.Toggle("VisualsTab.UseScrapTiers", ref Settings.b_useScrapTiers, "General.Disable", "General.Enable");
+            UI.Toggle("VisualsTab.VCDisplay", ref Settings.b_VCDisplay, "General.Disable", "General.Enable");
             UI.Hack(Hack.ObjectESP, "VisualsTab.ObjectESP");
             UI.Hack(Hack.EnemyESP, "VisualsTab.EnemyESP");
             UI.Hack(Hack.PlayerESP, "VisualsTab.PlayerESP");
@@ -53,6 +53,9 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.Crosshair, "VisualsTab.Crosshair");
             UI.Hack(Hack.Breadcrumbs, "VisualsTab.Breadcrumbs");
             UI.Hack(Hack.NoFog, "VisualsTab.NoFog");
+            UI.Hack(Hack.NoVisor, "VisualsTab.NoVisor");
+            UI.Hack(Hack.NoFieldOfDepth, "VisualsTab.NoFieldOfDepth");
+            UI.SliderAction("VisualsTab.FOV", Settings.f_fov.ToString("0"), ref Settings.f_fov, 10f, 180f, 66f);
         }
     }
 }

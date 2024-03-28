@@ -19,7 +19,7 @@ namespace LethalMenu
     {
 
         public static string version = "v1.4.1";
-        public static bool isDebugMode = false;
+        public static bool isDebugMode = true;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen
         {
@@ -33,10 +33,9 @@ namespace LethalMenu
         public static int i_menuFontSize = 14;
         public static int i_menuWidth = 810;
         public static int  i_menuHeight = 410;
-        public static int i_tabPadding = 10;
         public static int i_sliderWidth = 100;
         public static int i_textboxWidth = 85;
-        public static float f_tabWidth = 0.15f;
+        public static float f_menuAlpha = 1f;
 
         /* *
          * Color Settings
@@ -89,6 +88,9 @@ namespace LethalMenu
         public static float f_espDistance = 5000;
         public static float f_chamDistance = 15;
         public static float f_enemyKillDistance = 15;
+        public static float f_fov = 66f;
+        public static float f_mouseSensitivity = 0.15f;
+        public static float f_inputMovementSpeed = 15f;
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
         public static bool b_VCDisplay = false;
@@ -112,6 +114,7 @@ namespace LethalMenu
         public static float f_defaultMovementSpeed = 4.6f;
         public static float f_defaultNightVisionIntensity = 360f;
         public static float f_defaultNightVisionRange = 12f;
+        public static float f_defaultFOV = 66f;
 
         public static int[] i_scrapValueThresholds = new int[] { 30,50,75,100 };
 
@@ -227,6 +230,7 @@ namespace LethalMenu
                 hackSettings["DisableSpectatorModels"] = b_disableSpectatorModels.ToString();
                 hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
                 hackSettings["VCDisplay"] = b_VCDisplay.ToString();
+                hackSettings["FOV"] = f_fov.ToString();
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
                 chams["Enemy"] = b_chamsEnemy.ToString();
@@ -264,10 +268,9 @@ namespace LethalMenu
                 settings["MenuFontSize"] = i_menuFontSize.ToString();
                 settings["MenuWidth"] = i_menuWidth.ToString();
                 settings["MenuHeight"] = i_menuHeight.ToString();
-                settings["TabPadding"] = i_tabPadding.ToString();
-                settings["TabWidth"] = f_tabWidth.ToString();
                 settings["SliderWidth"] = i_sliderWidth.ToString();
                 settings["TextboxWidth"] = i_textboxWidth.ToString();
+                settings["MenuAlpha"] = f_menuAlpha.ToString();
 
 
                 json["Language"] = Localization.Language.Name;
@@ -325,7 +328,9 @@ namespace LethalMenu
                         b_disableSpectatorModels = bool.Parse(disableSpectatorModelsToken.ToString());
                     if (hackSettings.TryGetValue("VCDisplay", out JToken vcDisplayToken))
                         b_VCDisplay = bool.Parse(vcDisplayToken.ToString());
-
+                    if (hackSettings.TryGetValue("FOV", out JToken fovToken))
+                        f_fov = float.Parse(fovToken.ToString());
+                    
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {
@@ -428,14 +433,12 @@ namespace LethalMenu
                         i_menuWidth = int.Parse(menuWidthToken.ToString());
                     if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
                         i_menuHeight = int.Parse(menuHeightToken.ToString());
-                    if (settings.TryGetValue("TabPadding", out JToken tabPaddingToken))
-                        i_tabPadding = int.Parse(tabPaddingToken.ToString());
-                    if (settings.TryGetValue("TabWidth", out JToken tabWidthToken))
-                        f_tabWidth = float.Parse(tabWidthToken.ToString());
                     if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
                         i_sliderWidth = int.Parse(sliderWidthToken.ToString());
                     if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
                         i_textboxWidth = int.Parse(textboxWidthToken.ToString());
+                    if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
+                        f_menuAlpha = float.Parse(menuAlphaToken.ToString());
 
                 }
 

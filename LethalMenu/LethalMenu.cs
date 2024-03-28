@@ -1,4 +1,4 @@
-﻿    using GameNetcodeStuff;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMenu.Language;
 using LethalMenu.Menu.Core;
@@ -57,6 +57,7 @@ namespace LethalMenu
             try
             {
                 Localization.Initialize();
+                ThemeUtil.LoadTheme("Default");
                 LoadCheats();
                 DoPatching();
                 this.StartCoroutine(this.CollectObjects());                
@@ -147,7 +148,7 @@ namespace LethalMenu
                 
                 if (Event.current.type == EventType.Repaint)
                 {
-                    VisualUtil.DrawString(new Vector2(5f, 2f), "Lethal Menu " + Settings.version + " By IcyRelic", Settings.c_primary,
+                    VisualUtil.DrawString(new Vector2(5f, 2f), "Lethal Menu " + Settings.version + " By IcyRelic, and Dustin", Settings.c_primary,
                         centered: false, bold: true, fontSize: 14);
 
                    if(MenuUtil.resizing)

@@ -30,7 +30,7 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            LethalMenu.debugMessage = FindObjectOfType<StartMatchLever>().triggerScript.timeToHold + "";
+            //LethalMenu.debugMessage = FindObjectOfType<StartMatchLever>().triggerScript.timeToHold + "";
 
             if (Hack.NoCooldown.IsEnabled())
                 LethalMenu.teleporters.FindAll(t => t != null).ForEach(t =>

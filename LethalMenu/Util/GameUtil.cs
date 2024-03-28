@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GameNetcodeStuff;
+using LethalMenu.Cheats;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -95,5 +97,36 @@ namespace LethalMenu.Util
             }
         }
 
+        public static void RenderPlayerModels()
+        {
+            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
+
+            if (Hack.SpectatePlayer.IsEnabled() || Hack.FreeCam.IsEnabled())
+            {
+                localPlayer.DisablePlayerModel(localPlayer.gameObject, true);
+                localPlayer.thisPlayerModelArms.enabled = false;
+            }
+            else
+            {
+                localPlayer.DisablePlayerModel(localPlayer.gameObject);
+                localPlayer.thisPlayerModelArms.enabled = true;
+            }
+
+            foreach (PlayerControllerB player in localPlayer.playersManager.allPlayerScripts)
+            {
+                if (localPlayer.playerClientId == player.playerClientId) continue;
+
+                if ((SpectatePlayer.isSpectatingPlayer(player) || SpectatePlayer.isCamPlayer(player)) && Settings.b_disableSpectatorModels)
+                {
+                    player.DisablePlayerModel(player.gameObject);
+                    player.thisPlayerModelArms.enabled = true;
+                }
+                else
+                {
+                    player.DisablePlayerModel(player.gameObject, true, true);
+                    player.thisPlayerModelArms.enabled = false;
+                }
+            }
+        }
     }
 }

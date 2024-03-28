@@ -78,7 +78,7 @@ namespace LethalMenu.Util
             LethalMenu.localPlayer.playerActions.Disable();
             Cursor.visible = true;
             Settings.clm_lastCursorState = Cursor.lockState;
-            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.lockState = CursorLockMode.None;
         }
 
         public static void HideCursor()

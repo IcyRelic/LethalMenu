@@ -50,7 +50,7 @@ namespace LethalMenu.Menu.Popup
             }
 
             GUILayout.EndScrollView();
-            GUI.DragWindow(new Rect(0.0f, 0.0f, 10000f, 45f));
+            GUI.DragWindow();
         }
 
 

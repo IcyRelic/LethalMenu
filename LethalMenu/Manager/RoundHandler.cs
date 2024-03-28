@@ -149,7 +149,9 @@ namespace LethalMenu.Manager
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
 
             GrabbableObject itemToTeleport = LethalMenu.items
-                .FirstOrDefault(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom);
+                .Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom)
+                .OrderBy(_ => UnityEngine.Random.value) 
+                .FirstOrDefault();
 
             if (itemToTeleport != null)
             {
