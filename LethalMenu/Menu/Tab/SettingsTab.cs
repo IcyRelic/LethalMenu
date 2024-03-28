@@ -13,6 +13,8 @@ namespace LethalMenu.Menu.Tab
 {
     internal class SettingsTab : MenuTab
     {
+        private int selectedMode = 0;
+        private readonly string[] modes = { "Default", "Green", "Blue" };
         private string s_kbError = "";
         private string s_tierColorError = "";
         private string s_kbSearch = "";
@@ -87,8 +89,8 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("SettingsTab.General");
 
+            UI.IndexSelectAction($"Theme:", ref selectedMode, modes);
             UI.Select("SettingsTab.Language", ref i_languageIndex, Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
-
             UI.NumSelect("SettingsTab.FontSize", ref Settings.i_menuFontSize, 5, 30);
             UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);
             UI.NumSelect("SettingsTab.TextboxSize", ref Settings.i_textboxWidth, 50, 120);
