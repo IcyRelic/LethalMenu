@@ -1,133 +1,338 @@
-﻿using GameNetcodeStuff;
-using LethalMenu.Manager;
+﻿using LethalMenu.Components;
+using LethalMenu.Handler;
+using LethalMenu.Handler.EnemyControl;
+using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine.InputSystem;
+using System.Runtime.CompilerServices;
 using UnityEngine;
-using LethalMenu.Util;
+using UnityEngine.AI;
+using UnityEngine.InputSystem;
 
 namespace LethalMenu.Cheats
 {
     internal class EnemyControl : Cheat
     {
 
-        private static Camera camera = null;
-        private static Light light = null;
         private static EnemyAI enemy = null;
+        private static GameObject ControllerInstance = null;
+        private static MouseInput mouse = null;
+        private static AIMovement movement = null;
+        private static bool IsAIControlled = false;
+        private static bool NoClipEnabled = false;
+
+
+        const float TeleportDoorCooldown = 2.5f;
+        const float DoorInteractionCooldown = 0.7f;
+        float DoorCooldownRemaining  = 0.0f;
+        float TeleportCooldownRemaining = 0.0f;
+
+        private static Dictionary<Type, IController> EnemyControllers { get; } = new() {
+            { typeof(CentipedeAI), new CentipedeController() },
+            { typeof(FlowermanAI), new FlowermanController() },
+            { typeof(ForestGiantAI), new ForestGiantController() },
+            { typeof(HoarderBugAI), new HoarderBugController() },
+            { typeof(JesterAI), new JesterController() },
+            { typeof(NutcrackerEnemyAI), new NutcrackerController() },
+            { typeof(PufferAI), new PufferController() },
+            { typeof(BaboonBirdAI), new BaboonBirdController() },
+            { typeof(SandWormAI), new SandWormController() },
+            { typeof(MouthDogAI), new MouthDogController() },
+            { typeof(MaskedPlayerEnemy), new MaskedPlayerController() },
+            { typeof(SpringManAI), new SpringManController() },
+            { typeof(BlobAI), new BlobController() },
+            { typeof(TestEnemy), new TestEnemyController() },
+            { typeof(LassoManAI), new LassoManController() },
+            { typeof(CrawlerAI), new CrawlerController() },
+            { typeof(SandSpiderAI), new SandSpiderController() },
+            { typeof(RedLocustBees), new RedLocustBeesController() }
+        };
+
 
         public static void Control(EnemyAI enemy)
         {
-            if(enemy.isEnemyDead) return;
+            if (enemy.isEnemyDead) return;
             EnemyControl.enemy = enemy;
+            enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            ControllerInstance = new GameObject("EnemyController");
+            ControllerInstance.transform.position = enemy.transform.position;
+            ControllerInstance.transform.rotation = enemy.transform.rotation;
+
+            mouse = ControllerInstance.AddComponent<MouseInput>();
+            movement = ControllerInstance.AddComponent<AIMovement>();
+            
+            movement.Init();
+            movement.CalibrateCollision(enemy);
+            movement.CharacterSprintSpeed = 5.0f;
+            movement.SetNoClipMode(false);
+            movement.SetPosition(enemy.transform.position);
+            movement.CharacterSprintSpeed = SprintMultiplier();
+            SetAIControl(false);
         }
 
         public static void StopControl()
         {
-            if (!Hack.EnemyControl.IsEnabled() && enemy != null)
+            if (Hack.EnemyControl.IsEnabled() || enemy is null) return;
+            Hack.FreeCam.SetToggle(false);
+            if(enemy?.agent is not null)
             {
-                if (camera != null) GameObject.Destroy(camera.gameObject);
-                if (light != null) GameObject.Destroy(light.gameObject);
-
-                camera = null;
-                light = null;
-
-                enemy.moveTowardsDestination = true;
-                enemy.updatePositionThreshold = 1f;
-
-                enemy.GetComponentsInChildren<Collider>().ToList().ForEach(c => c.enabled = true);
-                LethalMenu.localPlayer.GetComponent<CharacterController>().enabled = true;
-
-                enemy = null;
-
-                CameraManager.GetBaseCamera().enabled = true;
-                CameraManager.ActiveCamera = CameraManager.GetBaseCamera();
+                enemy.agent.updatePosition = true;
+                enemy.agent.updateRotation = true;
+                enemy.agent.isStopped = false;
+                UpdateEnemyPosition();
+                enemy.agent.Warp(enemy.transform.position);
             }
 
-            
+            if (EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
+            {
+                controller.OnReleaseControl(enemy);
+            }
 
+            IsAIControlled = false;
+            Destroy(ControllerInstance);
+            enemy = null;
+            ControllerInstance = null;
+            mouse = null;
+            movement = null;
         }
 
         public override void Update()
         {
             StopControl();
-
+            if(!Hack.EnemyControl.IsEnabled()) return;
+            if(enemy == null) return;            
+            if(!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
+            if (Freecam.camera == null) return;
             
 
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
+            {
+                if (!IsAIControlled)
+                {
+                    UpdateEnemyPosition();
+                    UpdateEnemyRotation();
+                }
 
-            ControlEnemy();
+                return;
+            }
 
 
+            if(!(bool) enemy.agent) return;
+
+            UpdateCooldowns();
+
+            enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            MoveCamera();
+
+            if (enemy.isEnemyDead)
+            {
+                controller.OnDeath(enemy);
+                Hack.EnemyControl.SetToggle(false);
+                StopControl();
+                return;
+            }
+
+            controller.Update(enemy, false);
+            InteractWithAmbient(enemy, EnemyControllers[enemy.GetType()]);
+            LethalMenu.localPlayer.cursorTip.text = controller.GetPrimarySkillName(enemy);
+
+            HandleInput();
+
+            if (IsAIControlled) return;
+            if (!controller.IsAbleToMove(enemy)) return;
+
+            if (controller.SyncAnimationSpeedEnabled(enemy)) movement.CharacterSpeed = enemy.agent.speed;
+
+            if (controller.IsAbleToRotate(enemy)) UpdateEnemyRotation();
+
+            UpdateEnemyPosition();
+            controller.OnMovement(enemy, movement.IsMoving, movement.IsSprinting);            
         }
 
-
-        
-
-
-        private void ControlEnemy()
+        private void UpdateCooldowns()
         {
+            DoorCooldownRemaining = Mathf.Clamp(
+                this.DoorCooldownRemaining - Time.deltaTime,
+                0.0f,
+                DoorInteractionCooldown
+            );
 
-            if (enemy == null) return;
-
-            if (Hack.SpectatePlayer.IsEnabled() || Hack.FreeCam.IsEnabled())
-            {
-                Hack.SpectatePlayer.SetToggle(false);
-                Hack.FreeCam.SetToggle(false);
-                SpectatePlayer.StopSpectating();
-            }
-
-            if (!enemy.IsOwner) enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-
-
-            enemy.updatePositionThreshold = 0f;
-
-
-            //enemy.GetComponentsInChildren<Collider>().ToList().ForEach(c => c.enabled = false);
-
-            if (camera == null)
-            {
-                camera = GameObjectUtil.CreateCamera("EnemyControlCam", CameraManager.GetBaseCamera().transform);
-                camera.enabled = true;
-                light = GameObjectUtil.CreateLight();
-                light.transform.SetParent(camera.transform, false);
-                CameraManager.GetBaseCamera().enabled = false;
-                CameraManager.ActiveCamera = camera;
-
-                //set the position of the camera
-                camera.transform.position = enemy.transform.position - (enemy.transform.forward * 3f) + (enemy.transform.up * 1.5f);
-            }
-
-            light.intensity = Settings.f_nvIntensity;
-            light.range = Settings.f_nvRange;
-
-            LethalMenu.localPlayer.GetComponent<CharacterController>().enabled = false;
-
-            Vector3 vector3 = new Vector3();
-            if (Keyboard.current.wKey.isPressed) vector3 += enemy.transform.forward;
-            if (Keyboard.current.sKey.isPressed) vector3 -= enemy.transform.forward;
-            if (Keyboard.current.aKey.isPressed) vector3 -= enemy.transform.right;
-            if (Keyboard.current.dKey.isPressed) vector3 += enemy.transform.right;
-            if (Keyboard.current.spaceKey.isPressed) vector3 += enemy.transform.up;
-            if (Keyboard.current.ctrlKey.isPressed) vector3 -= enemy.transform.up;
-
-            Vector3 localPosition = enemy.transform.position;
-            Vector3 vector3_2 = localPosition + vector3 * (Settings.f_movementSpeed * Time.deltaTime);
-            Vector3 camPos = vector3_2 - (enemy.transform.forward * 2f) + (enemy.transform.up * 3f);
-
-            camera.transform.SetPositionAndRotation(camPos, LethalMenu.localPlayer.gameplayCamera.transform.rotation);
-
-            if (vector3.Equals(Vector3.zero)) return;
-
-            
-            enemy.transform.SetPositionAndRotation(vector3_2, LethalMenu.localPlayer.gameplayCamera.transform.rotation);
-            enemy.moveTowardsDestination = false;
-            enemy.TargetClosestPlayer();
-            
-
-            enemy.SetDestinationToPosition(vector3_2);
-            enemy.SyncPositionToClients();
+            TeleportCooldownRemaining = Mathf.Clamp(
+                this.TeleportCooldownRemaining - Time.deltaTime,
+                0.0f,
+                TeleportDoorCooldown
+            );
         }
+
+        private void MoveCamera()
+        {
+            Freecam.camera.transform.SetPositionAndRotation(
+                enemy.transform.position + (3.0f * (Vector3.up - enemy.transform.forward)),
+                Quaternion.LookRotation(enemy.transform.forward)
+            );
+        }
+
+        private static void UpdateEnemyPosition()
+        {
+            Vector3 euler = enemy.transform.eulerAngles;
+            euler.y = mouse.transform.eulerAngles.y;
+
+            enemy.transform.eulerAngles = euler;
+            enemy.transform.position = movement.transform.position;
+        }
+
+        private static void UpdateEnemyRotation()
+        {
+            if(movement == null) return;
+            movement.transform.rotation = mouse.transform.rotation;
+        }
+
+        private void HandleInput()
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame) UsePrimarySkill();
+            if (Mouse.current.rightButton.wasPressedThisFrame) UseSecondarySkill();
+            if (Mouse.current.rightButton.isPressed) OnSecondarySkillHold();
+            if (Mouse.current.rightButton.wasReleasedThisFrame) ReleaseSecondarySkill();
+
+ 
+            if(Keyboard.current.f9Key.wasPressedThisFrame) ToggleAIControl();
+            if(Keyboard.current.f10Key.wasPressedThisFrame) ToggleNoClip();
+            if(Keyboard.current.f11Key.wasPressedThisFrame) Hack.EnemyControl.SetToggle(false);
+            if (Keyboard.current.f12Key.wasPressedThisFrame)
+            {
+                Hack.EnemyControl.SetToggle(false);
+                enemy.Handle().Kill();
+            }
+        }
+
+        static float InteractRange() =>
+            EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
+                ? value.InteractRange(enemy)
+                : IController.DefaultInteractRange;
+
+        static float SprintMultiplier() =>
+            EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
+                ? value.SprintMultiplier(enemy)
+                : IController.DefaultSprintMultiplier;
+
+        void ToggleAIControl()
+        {
+            if (enemy?.agent is null || movement is null || mouse is null) return;
+
+            IsAIControlled = !IsAIControlled;
+            SetAIControl(IsAIControlled);
+            //this.SendPossessionNotifcation($"AI Control: {(this.IsAIControlled ? "Enabled" : "Disabled")}");
+        }
+        private static void SetAIControl(bool enableAI)
+        {
+            if (movement is null || enemy is null || enemy.agent is null) return;
+
+            if (enableAI)
+            {
+                _ = enemy.agent.Warp(enemy.transform.position);
+                enemy.SyncPositionToClients();
+            }
+
+            if (NoClipEnabled)
+            {
+                NoClipEnabled = false;
+                movement.SetNoClipMode(false);
+            }
+
+            enemy.agent.updatePosition = enableAI;
+            enemy.agent.updateRotation = enableAI;
+            enemy.agent.isStopped = !enableAI;
+            movement.SetPosition(enemy.transform.position);
+            movement.enabled = !enableAI;
+        }
+
+        void HandleEntranceDoors(EnemyAI enemy, RaycastHit hit)
+        {
+            if (this.TeleportCooldownRemaining > 0.0f) return;
+            if (!hit.collider.gameObject.TryGetComponent(out EntranceTeleport entrance)) return;
+
+            this.InteractWithTeleport(enemy, entrance);
+            this.TeleportCooldownRemaining = EnemyControl.TeleportDoorCooldown;
+        }
+
+        void InteractWithAmbient(EnemyAI enemy, IController controller)
+        {
+            if (!Physics.Raycast(enemy.transform.position, enemy.transform.forward, out RaycastHit hit, InteractRange())) return;
+            if (hit.collider.gameObject.TryGetComponent(out DoorLock doorLock) && this.DoorCooldownRemaining <= 0.0f)
+            {
+                this.OpenDoorAsEnemy(doorLock);
+                this.DoorCooldownRemaining = EnemyControl.DoorInteractionCooldown;
+                return;
+            }
+
+            if (controller.CanUseEntranceDoors(enemy))
+            {
+                this.HandleEntranceDoors(enemy, hit);
+                return;
+            }
+        }
+        void OpenDoorAsEnemy(DoorLock door)
+        {
+            if (door.Reflect().GetValue<bool>("isDoorOpened")) return;
+            if (door.gameObject.TryGetComponent(out AnimatedObjectTrigger trigger))
+            {
+                trigger.TriggerAnimationNonPlayer(false, true, false);
+            }
+
+            door.OpenDoorAsEnemyServerRpc();
+        }
+
+        Transform? GetExitPointFromDoor(EntranceTeleport entrance) =>
+            LethalMenu.doors.Find(teleport =>
+                teleport.entranceId == entrance.entranceId && teleport.isEntranceToBuilding != entrance.isEntranceToBuilding
+            )?.entrancePoint;
+
+        void InteractWithTeleport(EnemyAI enemy, EntranceTeleport teleport)
+        {
+            if (movement is not AIMovement aiMovement) return;
+            if (this.GetExitPointFromDoor(teleport) is not Transform exitPoint) return;
+
+            aiMovement.SetPosition(exitPoint.position);
+            enemy.EnableEnemyMesh(true, false);
+        }
+
+
+
+
+        void ToggleNoClip()
+        {
+            NoClipEnabled = !NoClipEnabled;
+            movement.SetNoClipMode(NoClipEnabled);
+            //this.SendPossessionNotifcation($"NoClip: {(NoClipEnabled ? "Enabled" : "Disabled")}");
+        }
+
+        void UsePrimarySkill()
+        {
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+
+            controller.UsePrimarySkill(enemy);
+        }
+
+        void UseSecondarySkill()
+        {
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+
+            controller.UseSecondarySkill(enemy);
+        }
+
+        void OnSecondarySkillHold()
+        {
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+
+            controller.OnSecondarySkillHold(enemy);
+        }
+
+        void ReleaseSecondarySkill()
+        {
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+
+            controller.ReleaseSecondarySkill(enemy);
+        }
+
     }
 }

@@ -1,9 +1,11 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Util;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace LethalMenu.Handler
 {
@@ -350,6 +352,28 @@ namespace LethalMenu.Handler
     public static class EnemyAIExtensions
     {
         public static EnemyHandler Handle(this EnemyAI enemy) => EnemyHandler.GetHandler(enemy);
+
+        public static bool IsBehaviourState(this EnemyAI enemy, Enum state) =>
+        enemy.currentBehaviourStateIndex == Convert.ToInt32(state);
+
+        public static void SetBehaviourState(this EnemyAI enemy, Enum state)
+        {
+            if (enemy.IsBehaviourState(state)) return;
+            enemy.SwitchToBehaviourServerRpc(Convert.ToInt32(state));
+        }
+
+        public static GrabbableObject? FindNearbyItem(this EnemyAI enemy, float grabRange = 1.0f)
+        {
+            foreach (Collider collider in Physics.OverlapSphere(enemy.transform.position, grabRange))
+            {
+                if (!collider.TryGetComponent(out GrabbableObject item)) continue;
+                if (!item.TryGetComponent(out NetworkObject _)) continue;
+
+                return item;
+            }
+
+            return null;
+        }
     }
 
     public static class HoarderBugAIExtensions
