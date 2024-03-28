@@ -1,4 +1,4 @@
-﻿using GameNetcodeStuff;
+using GameNetcodeStuff;
 using LethalMenu.Util;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,16 +18,11 @@ namespace LethalMenu.Handler.EnemyControl
     {
         void UseHeldItem(HoarderBugAI enemy)
         {
-            if (enemy.heldItem is not { itemGrabbableObject: GrabbableObject grabbable }) return;
+            if (enemy.heldItem == null || enemy.heldItem.itemGrabbableObject == null) return;
 
-            switch (grabbable)
+            if (enemy.heldItem.itemGrabbableObject is ShotgunItem gun)
             {
-                case ShotgunItem gun:
-                    gun.ShootGunAsEnemy(enemy);
-                    break;
-
-                default:
-                    break;
+                gun.ShootGunAsEnemy(enemy);
             }
         }
 
@@ -42,32 +37,18 @@ namespace LethalMenu.Handler.EnemyControl
 
         void GrabItem(HoarderBugAI enemy, GrabbableObject item)
         {
-            Debug.Log("Grabbing item");
-            if (!item.TryGetComponent(out NetworkObject netItem)) return;
-
-            Debug.Log("Item is networked");
-            Debug.Log(netItem.NetworkObjectId);
-            Debug.Log(enemy.enemyType);
-            Debug.Log(item.itemProperties.itemName);
-
-
-            Debug.Log("Calling GrabItem");
-
             ReflectionUtil<HoarderBugAI> reflect = enemy.Reflect();
+            NetworkObject netItem = item.GetComponent<NetworkObject>();
+            if (enemy == null || item == null || netItem == null || reflect is null)
+            {
+                return;
+            }
 
-            Debug.Log(reflect is null ? "Reflect is null" : "Reflect is not null");
-
-
-            reflect.Invoke("GrabItem", netItem);
-            Debug.Log("Setting sendingGrabOrDropRPC");
-            reflect.SetValue("sendingGrabOrDropRPC", true);
-
-            Debug.Log("Switching to behaviour server rpc");
             enemy.SwitchToBehaviourServerRpc(1);
 
-            Debug.Log("Grabbing item server rpc");
             enemy.GrabItemServerRpc(netItem);
         }
+
 
         public void OnDeath(HoarderBugAI enemy)
         {
@@ -82,6 +63,8 @@ namespace LethalMenu.Handler.EnemyControl
 
         public void UsePrimarySkill(HoarderBugAI enemy)
         {
+            if (enemy == null) return;
+
             if (enemy.angryTimer > 0.0f)
             {
                 enemy.angryTimer = 0.0f;
@@ -89,14 +72,14 @@ namespace LethalMenu.Handler.EnemyControl
                 enemy.SetBehaviourState(BugState.IDLE);
             }
 
-            if (enemy.heldItem is null && enemy.FindNearbyItem() is GrabbableObject grabbable)
+            GrabbableObject nearbyItem = enemy.FindNearbyItem();
+            if (nearbyItem != null)
             {
-                this.GrabItem(enemy, grabbable);
+                GrabItem(enemy, nearbyItem);
             }
-
             else
             {
-                this.UseHeldItem(enemy);
+                UseHeldItem(enemy);
             }
         }
 
@@ -122,6 +105,6 @@ namespace LethalMenu.Handler.EnemyControl
 
         public string GetSecondarySkillName(HoarderBugAI enemy) => enemy.heldItem is null ? "" : "Drop item";
 
-        public float InteractRange(HoarderBugAI _) => 1.0f;
+        public float InteractRange(HoarderBugAI _) => 1.5f;
     }
 }
