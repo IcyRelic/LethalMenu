@@ -19,7 +19,7 @@ namespace LethalMenu
     {
 
         public static string version = "v1.4.1";
-        public static bool isDebugMode = false;
+        public static bool isDebugMode = true;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen
         {
@@ -89,6 +89,8 @@ namespace LethalMenu
         public static float f_chamDistance = 15;
         public static float f_enemyKillDistance = 15;
         public static float f_fov = 66f;
+        public static float f_mouseSensitivity = 0.15f;
+        public static float f_inputMovementSpeed = 15f;
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
         public static bool b_VCDisplay = false;

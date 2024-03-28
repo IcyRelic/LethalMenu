@@ -5,6 +5,8 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
+            if (!LethalMenu.localPlayer) return;
+
             LethalMenu.localPlayer.gameplayCamera.fieldOfView = Settings.f_fov;
 
             if (LethalMenu.localPlayer.inTerminalMenu)
