@@ -10,7 +10,7 @@ namespace LethalMenu.Cheats;
 [HarmonyPatch]
 internal class NoCooldownInteractions : Cheat
 {
-    private static readonly Dictionary<int, float> triggers = new();
+    private static readonly Dictionary<int, float> Triggers = new();
 
     public NoCooldownInteractions()
     {
@@ -23,7 +23,7 @@ internal class NoCooldownInteractions : Cheat
         //LethalMenu.debugMessage = FindObjectOfType<StartMatchLever>().triggerScript.timeToHold + "";
 
         if (Hack.NoCooldown.IsEnabled())
-            LethalMenu.teleporters.FindAll(t => t).ForEach(t =>
+            LethalMenu.Teleporters.FindAll(t => t).ForEach(t =>
             {
                 t.Reflect().SetValue("cooldownTime", 0.0f);
                 t.buttonTrigger.enabled = true;
@@ -31,16 +31,16 @@ internal class NoCooldownInteractions : Cheat
     }
 
 
-    private IEnumerator TimeToHold()
+    private static IEnumerator TimeToHold()
     {
         while (true)
         {
             yield return new WaitForSeconds(2f);
-            LethalMenu.interactTriggers.FindAll(t => t).ForEach(t =>
+            LethalMenu.InteractTriggers.FindAll(t => t).ForEach(t =>
             {
-                if (!triggers.ContainsKey(t.GetInstanceID())) triggers.Add(t.GetInstanceID(), t.timeToHold);
+                if (!Triggers.ContainsKey(t.GetInstanceID())) Triggers.Add(t.GetInstanceID(), t.timeToHold);
 
-                var original = triggers.TryGetValue(t.GetInstanceID(), out var value) ? value : 0.5f;
+                var original = Triggers.GetValueOrDefault(t.GetInstanceID(), 0.5f);
 
                 if (t.name.Equals("StartGameLever"))
                 {
@@ -50,7 +50,7 @@ internal class NoCooldownInteractions : Cheat
 
                     if (Mathf.Approximately(leverHoldTime, original))
                     {
-                        triggers[t.GetInstanceID()] = leverHoldTime;
+                        Triggers[t.GetInstanceID()] = leverHoldTime;
                         original = leverHoldTime;
                     }
                 }
@@ -72,14 +72,14 @@ internal class NoCooldownInteractions : Cheat
 
             var keep = new List<int>();
 
-            LethalMenu.interactTriggers.ForEach(t => keep.Add(t.GetInstanceID()));
-            triggers.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => triggers.Remove(k));
+            LethalMenu.InteractTriggers.ForEach(t => keep.Add(t.GetInstanceID()));
+            Triggers.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => Triggers.Remove(k));
         }
     }
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(GrabbableObject), "RequireCooldown")]
-    public static bool RequireCD(ref bool __result)
+    public static bool RequireCd(ref bool __result)
     {
         if (!Hack.NoCooldown.IsEnabled()) return true;
 
@@ -118,8 +118,9 @@ internal class NoCooldownInteractions : Cheat
         var normal = TimeOfDay.Instance.daysUntilDeadline > 0 ? 0.5f : 4f;
 
 
-        if (triggers.TryGetValue(__instance.triggerScript.GetInstanceID(), out var holdTime) && holdTime != normal)
-            triggers[__instance.triggerScript.GetInstanceID()] = normal;
+        if (Triggers.TryGetValue(__instance.triggerScript.GetInstanceID(), out var holdTime) &&
+            Mathf.Approximately(holdTime, normal))
+            Triggers[__instance.triggerScript.GetInstanceID()] = normal;
 
         if (Hack.InstantInteract.IsEnabled())
             __instance.triggerScript.timeToHold = 0.0f;
@@ -129,8 +130,9 @@ internal class NoCooldownInteractions : Cheat
     [HarmonyPatch(typeof(DoorLock), nameof(DoorLock.UnlockDoor))]
     public static void UnlockDoorPostfix(StartMatchLever __instance)
     {
-        if (triggers.TryGetValue(__instance.triggerScript.GetInstanceID(), out var holdTime) && holdTime != 0.3f)
-            triggers[__instance.triggerScript.GetInstanceID()] = 0.3f;
+        if (Triggers.TryGetValue(__instance.triggerScript.GetInstanceID(), out var holdTime) &&
+            Mathf.Approximately(holdTime, 0.3f))
+            Triggers[__instance.triggerScript.GetInstanceID()] = 0.3f;
 
         if (Hack.InstantInteract.IsEnabled())
             __instance.triggerScript.timeToHold = 0.0f;
@@ -138,7 +140,7 @@ internal class NoCooldownInteractions : Cheat
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(Shovel), "reelUpShovel")]
-    public static IEnumerator reelUpShovelPostfix(IEnumerator reelUpShovel)
+    public static IEnumerator ReelUpShovelPostfix(IEnumerator reelUpShovel)
     {
         while (reelUpShovel.MoveNext())
         {

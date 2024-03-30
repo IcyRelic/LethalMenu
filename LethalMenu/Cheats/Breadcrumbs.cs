@@ -7,12 +7,13 @@ namespace LethalMenu.Cheats;
 
 internal class Breadcrumbs : Cheat
 {
-    private readonly List<Vector3> crumbs = [];
-    private long last;
+    private readonly List<Vector3> _crumbs = [];
+    private long _last;
 
     public override void Update()
     {
-        if ((!(bool)StartOfRound.Instance || !StartOfRound.Instance.shipHasLanded) && crumbs.Count > 0) crumbs.Clear();
+        if ((!(bool)StartOfRound.Instance || !StartOfRound.Instance.shipHasLanded) && _crumbs.Count > 0)
+            _crumbs.Clear();
 
         if (!Hack.Breadcrumbs.IsEnabled()) return;
 
@@ -20,13 +21,13 @@ internal class Breadcrumbs : Cheat
 
         var currentTimeMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 
-        if (!(currentTimeMillis - last >= Settings.f_breadcrumbInterval * 1000L) || player.isPlayerDead) return;
+        if (!(currentTimeMillis - _last >= Settings.f_breadcrumbInterval * 1000L) || player.isPlayerDead) return;
 
-        last = currentTimeMillis;
+        _last = currentTimeMillis;
         var pos = player.transform.position;
         pos.y -= 0.5f;
 
-        crumbs.Add(pos);
+        _crumbs.Add(pos);
     }
 
     public override void OnGui()
@@ -34,12 +35,12 @@ internal class Breadcrumbs : Cheat
         if (!Hack.Breadcrumbs.IsEnabled()) return;
 
 
-        foreach (var crumb in crumbs)
+        foreach (var crumb in _crumbs)
         {
             Vector3 screen;
             if (!WorldToScreen(crumb, out screen)) continue;
 
-            VisualUtil.DrawString(new Vector2(screen.x, screen.y), crumbs.IndexOf(crumb).ToString(), true, true);
+            VisualUtil.DrawString(new Vector2(screen.x, screen.y), _crumbs.IndexOf(crumb).ToString(), true, true);
         }
     }
 }

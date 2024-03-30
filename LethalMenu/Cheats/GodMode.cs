@@ -12,13 +12,13 @@ internal class GodMode : Cheat
         if (!Hack.GodMode.IsEnabled()) return;
 
         var player = GameNetworkManager.Instance.localPlayerController;
-        if (player == null) return;
+        if (!player) return;
         player.health = 100;
     }
 
     [HarmonyPrefix]
     [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DamagePlayer))]
-    public static bool PrefixDamagePlayer(int damageNumber, bool hasDamageSFX = true, bool callRPC = true,
+    public static bool PrefixDamagePlayer(int damageNumber, bool hasDamageSfx = true, bool callRPC = true,
         CauseOfDeath causeOfDeath = CauseOfDeath.Unknown, int deathAnimation = 0, bool fallDamage = false,
         Vector3 force = default)
     {
@@ -37,7 +37,7 @@ internal class GodMode : Cheat
     [HarmonyPatch(typeof(FlowermanAI), nameof(FlowermanAI.KillPlayerAnimationServerRpc))]
     public static bool PrefixFlowermanKill(int playerObjectId)
     {
-        if (LethalMenu.localPlayer == null || playerObjectId != (int)LethalMenu.localPlayer.playerClientId) return true;
+        if (!LethalMenu.LocalPlayer || playerObjectId != (int)LethalMenu.LocalPlayer.playerClientId) return true;
 
 
         return !Hack.GodMode.IsEnabled();
@@ -47,7 +47,7 @@ internal class GodMode : Cheat
     [HarmonyPatch(typeof(ForestGiantAI), nameof(ForestGiantAI.GrabPlayerServerRpc))]
     public static bool PrefixGiantKill(int playerId)
     {
-        if (LethalMenu.localPlayer == null || playerId != (int)LethalMenu.localPlayer.playerClientId) return true;
+        if (!LethalMenu.LocalPlayer || playerId != (int)LethalMenu.LocalPlayer.playerClientId) return true;
 
 
         return !Hack.GodMode.IsEnabled();
@@ -57,7 +57,7 @@ internal class GodMode : Cheat
     [HarmonyPatch(typeof(JesterAI), nameof(JesterAI.KillPlayerServerRpc))]
     public static bool PrefixJesterKill(int playerId)
     {
-        if (LethalMenu.localPlayer == null || playerId != (int)LethalMenu.localPlayer.playerClientId) return true;
+        if (!LethalMenu.LocalPlayer || playerId != (int)LethalMenu.LocalPlayer.playerClientId) return true;
 
 
         return !Hack.GodMode.IsEnabled();
@@ -67,7 +67,7 @@ internal class GodMode : Cheat
     [HarmonyPatch(typeof(MaskedPlayerEnemy), nameof(MaskedPlayerEnemy.KillPlayerAnimationServerRpc))]
     public static bool PrefixMaskedPlayerKill(int playerObjectId)
     {
-        if (LethalMenu.localPlayer == null || playerObjectId != (int)LethalMenu.localPlayer.playerClientId) return true;
+        if (!LethalMenu.LocalPlayer || playerObjectId != (int)LethalMenu.LocalPlayer.playerClientId) return true;
 
 
         return !Hack.GodMode.IsEnabled();
@@ -79,8 +79,8 @@ internal class GodMode : Cheat
     {
         var player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-        if (LethalMenu.localPlayer == null ||
-            player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+        if (!LethalMenu.LocalPlayer ||
+            player.playerClientId != LethalMenu.LocalPlayer.playerClientId) return true;
 
         return !Hack.GodMode.IsEnabled();
     }
@@ -90,12 +90,12 @@ internal class GodMode : Cheat
     [HarmonyPatch(typeof(CentipedeAI), nameof(CentipedeAI.OnCollideWithPlayer))]
     public static bool PrefixCentipedeCling(CentipedeAI __instance, Collider other)
     {
-        if (other == null) return true;
+        if (!other) return true;
 
         var player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-        if (LethalMenu.localPlayer == null ||
-            player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+        if (!LethalMenu.LocalPlayer ||
+            player.playerClientId != LethalMenu.LocalPlayer.playerClientId) return true;
 
 
         return !Hack.GodMode.IsEnabled();

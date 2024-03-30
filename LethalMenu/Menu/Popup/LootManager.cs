@@ -6,55 +6,48 @@ using UnityEngine;
 
 namespace LethalMenu.Menu.Popup;
 
-internal class LootManager : PopupMenu
+internal class LootManager(int id) : PopupMenu("Loot Manager", new Rect(50f, 50f, 577f, 300f), id)
 {
-    private readonly Dictionary<string, int> items = new();
-    private string s_search = "";
-    private Vector2 scrollPos = Vector2.zero;
-
-    public LootManager(int id) : base("Loot Manager", new Rect(50f, 50f, 577f, 300f), id)
-    {
-    }
+    private readonly Dictionary<string, int> _items = new();
+    private Vector2 _scrollPosition = Vector2.zero;
+    private string _sSearch = "";
 
     protected override void DrawContent(int windowID)
     {
         if (!(bool)StartOfRound.Instance) return;
 
-        items.Clear();
-        foreach (var item in LethalMenu.items.Where(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed))
-            items[item.name] = items.ContainsKey(item.name) ? items[item.name] + 1 : 1;
+        _items.Clear();
+        foreach (var item in LethalMenu.Items.Where(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed))
+            _items[item.name] = _items.ContainsKey(item.name) ? _items[item.name] + 1 : 1;
 
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
         GUILayout.BeginHorizontal();
-        UI.Textbox("General.Search", ref s_search);
+        UI.Textbox("General.Search", ref _sSearch);
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
         GUILayout.Space(20);
 
-        UI.ButtonGrid(items.Keys.ToList(), itemName => itemName.Replace("(Clone)", "") + " x" + items[itemName],
-            s_search, itemName =>
+        UI.ButtonGrid(_items.Keys.ToList(), itemName => itemName.Replace("(Clone)", "") + " x" + _items[itemName],
+            _sSearch, itemName =>
             {
-                var itemToTeleport = LethalMenu.items
+                var itemToTeleport = LethalMenu.Items
                     .Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom && i.name == itemName)
                     .OrderBy(_ => Random.value)
                     .FirstOrDefault();
 
-                if (itemToTeleport != null)
-                {
-                    var point = LethalMenu.localPlayer.gameplayCamera.transform.position +
-                                LethalMenu.localPlayer.gameplayCamera.transform.forward * 1f;
+                if (!itemToTeleport) return;
+                var point = LethalMenu.LocalPlayer.gameplayCamera.transform.position +
+                            LethalMenu.LocalPlayer.gameplayCamera.transform.forward * 1f;
 
-                    itemToTeleport.gameObject.transform.position = point;
-                    itemToTeleport.startFallingPosition = point;
-                    itemToTeleport.targetFloorPosition = point;
+                itemToTeleport.gameObject.transform.position = point;
+                itemToTeleport.startFallingPosition = point;
+                itemToTeleport.targetFloorPosition = point;
 
-                    if (items.ContainsKey(itemName))
-                    {
-                        items[itemName]--;
-                        if (items[itemName] == 0)
-                            items.Remove(itemName);
-                    }
-                }
+                if (!_items.ContainsKey(itemName)) return;
+
+                _items[itemName]--;
+                if (_items[itemName] == 0)
+                    _items.Remove(itemName);
             }, 3);
 
         GUILayout.EndScrollView();

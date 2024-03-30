@@ -49,7 +49,7 @@ internal class SpectatePlayer : Cheat
         }
         catch (Exception e)
         {
-            LethalMenu.debugMessage = e.Message + "\n" + e.StackTrace;
+            LethalMenu.DebugMessage = e.Message + "\n" + e.StackTrace;
         }
     }
 
@@ -86,7 +86,7 @@ internal class SpectatePlayer : Cheat
 
             camera.enabled = false;
             CameraManager.GetBaseCamera().enabled = true;
-            CameraManager.ActiveCamera = !Hack.FreeCam.IsEnabled() ? CameraManager.GetBaseCamera() : Freecam.camera;
+            CameraManager.ActiveCamera = !Hack.FreeCam.IsEnabled() ? CameraManager.GetBaseCamera() : Freecam.Camera;
             spectatingPlayer = -1;
             Destroy(camera.gameObject);
             camera = null;

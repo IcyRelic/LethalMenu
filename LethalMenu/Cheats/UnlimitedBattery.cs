@@ -7,10 +7,10 @@ internal class UnlimitedBattery : Cheat
         if (!Hack.UnlimitedBattery.IsEnabled()) return;
 
 
-        if (LethalMenu.localPlayer == null) return;
-        foreach (var item in LethalMenu.localPlayer.ItemSlots)
+        if (!LethalMenu.LocalPlayer) return;
+        foreach (var item in LethalMenu.LocalPlayer.ItemSlots)
         {
-            if (item == null || !item.itemProperties.requiresBattery) continue;
+            if (!item || !item.itemProperties.requiresBattery) continue;
 
             item.insertedBattery.charge = 1f;
             item.SyncBatteryServerRpc(100);

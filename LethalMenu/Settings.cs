@@ -15,11 +15,11 @@ using UnityEngine.InputSystem.Controls;
 
 namespace LethalMenu;
 
-internal class Settings
+public static class Settings
 {
-    public static string version = "v1.4.1";
-    public static bool isDebugMode = false;
-    public static bool isFirstLaunch = true;
+    public const string Version = "v1.4.1";
+    public const bool IsDebugMode = false;
+    public static bool IsFirstLaunch = true;
 
     /* *
      * Menu Settings
@@ -122,34 +122,34 @@ internal class Settings
 
     public static CursorLockMode clm_lastCursorState = Cursor.lockState;
 
-    public static bool isMenuOpen
+    public static bool IsMenuOpen
     {
         get => Hack.OpenMenu.IsEnabled();
         set => Hack.OpenMenu.SetToggle(value);
     }
 
-
-    internal class Changelog
+    internal static class Changelog
     {
-        public static List<string> changes;
+        public static List<string> Changes;
 
         public static void ReadChanges()
         {
-            changes = new List<string>();
+            Changes = [];
 
-            using (var stream = Assembly.GetExecutingAssembly()
-                       .GetManifestResourceStream("LethalMenu.Resources.Changelog.txt"))
-            using (var reader = new StreamReader(stream))
-            {
-                while (!reader.EndOfStream) changes.Add(reader.ReadLine());
-            }
+            using var stream = Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream("LethalMenu.Resources.Changelog.txt");
+
+            if (stream == null) return;
+
+            using var reader = new StreamReader(stream);
+            while (!reader.EndOfStream) Changes.Add(reader.ReadLine());
         }
     }
 
-    internal class Config
+    internal static class Config
     {
-        private static readonly string config = "lethelmenu.config.json";
-        private static readonly string defaultConf = "lethalmenu.default.config.json";
+        private const string ConfigJson = "lethelmenu.config.json";
+        private const string DefaultConf = "lethalmenu.default.config.json";
 
         public static void CreateConfigIfNotExists()
         {
@@ -160,22 +160,22 @@ internal class Settings
 
         public static void SaveDefaultConfig()
         {
-            SaveConfig(defaultConf);
+            SaveConfig(DefaultConf);
         }
 
         public static bool HasConfig()
         {
-            return config != null && File.Exists(config);
+            return ConfigJson != null && File.Exists(ConfigJson);
         }
 
         public static void SaveConfig()
         {
-            SaveConfig(config);
+            SaveConfig(ConfigJson);
         }
 
         public static void SaveConfig(string conf)
         {
-            var keybinds = new Dictionary<string, string>();
+            var keybindings = new Dictionary<string, string>();
             var toggles = new Dictionary<string, string>();
             var enemyFilter = new Dictionary<string, string>();
 
@@ -187,7 +187,7 @@ internal class Settings
                     ? ((KeyControl)item.Value).keyCode.ToString()
                     : item.Value.displayName;
 
-                keybinds.Add(key, value);
+                keybindings.Add(key, value);
             }
 
             foreach (var item in HackExtensions.ToggleFlags)
@@ -264,7 +264,7 @@ internal class Settings
             colors["SteamHazardESP"] = JsonConvert.SerializeObject(c_steamHazardESP);
             colors["CauseOfDeath"] = JsonConvert.SerializeObject(c_causeOfDeath);
 
-            settings["FirstLaunch"] = isFirstLaunch.ToString();
+            settings["FirstLaunch"] = IsFirstLaunch.ToString();
             settings["MenuFontSize"] = i_menuFontSize.ToString();
             settings["MenuWidth"] = i_menuWidth.ToString();
             settings["MenuHeight"] = i_menuHeight.ToString();
@@ -277,7 +277,7 @@ internal class Settings
             json["Colors"] = colors;
             json["HackSettings"] = hackSettings;
             json["MenuSettings"] = settings;
-            json["KeyBinds"] = JObject.FromObject(keybinds);
+            json["KeyBinds"] = JObject.FromObject(keybindings);
             json["Toggles"] = JObject.FromObject(toggles);
 
 
@@ -288,7 +288,7 @@ internal class Settings
         {
             CreateConfigIfNotExists();
 
-            var jsonStr = File.ReadAllText(config);
+            var jsonStr = File.ReadAllText(ConfigJson);
 
 
             var json = JObject.Parse(jsonStr);
@@ -333,18 +333,13 @@ internal class Settings
 
 
                 if (hackSettings.TryGetValue("EnemyFilter", out var enemyFilterToken))
-                    foreach (var item in enemyFilterToken.ToObject<Dictionary<string, string>>())
+                    foreach (var (sType, sValue) in enemyFilterToken.ToObject<Dictionary<string, string>>())
                     {
-                        var s_type = item.Key;
-                        var s_value = item.Value;
+                        if (!Enum.TryParse(sType, out EnemyAIType type)) continue;
+                        if (type == EnemyAIType.Unknown) continue;
+                        var value = bool.TryParse(sValue, out var result) && result;
 
-                        if (Enum.TryParse(s_type, out EnemyAIType type))
-                        {
-                            if (type == EnemyAIType.Unknown) continue;
-                            var value = bool.TryParse(s_value, out var result) ? result : false;
-
-                            EnemyAITypeExtensions.EnemyFilter[type] = value;
-                        }
+                        EnemyAITypeExtensions.EnemyFilter[type] = value;
                     }
 
                 if (hackSettings.TryGetValue("Chams", out var chamsToken))
@@ -420,7 +415,7 @@ internal class Settings
                 var settings = settingsToken.ToObject<JObject>();
 
                 if (settings.TryGetValue("FirstLaunch", out var firstLaunchToken))
-                    isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
+                    IsFirstLaunch = bool.Parse(firstLaunchToken.ToString());
                 if (settings.TryGetValue("MenuFontSize", out var menuFontSizeToken))
                     i_menuFontSize = int.Parse(menuFontSizeToken.ToString());
                 if (settings.TryGetValue("MenuWidth", out var menuWidthToken))
@@ -441,52 +436,45 @@ internal class Settings
                 HackExtensions.KeyBinds.Clear();
 
                 ButtonControl[] mouseButtons =
-                {
+                [
                     Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton,
                     Mouse.current.forwardButton, Mouse.current.backButton
-                };
+                ];
 
 
-                foreach (var item in keybindsToken.ToObject<Dictionary<string, string>>())
+                foreach (var (sHack, sKey) in keybindsToken.ToObject<Dictionary<string, string>>())
                 {
-                    var s_hack = item.Key;
-                    var s_key = item.Value;
+                    var mouseBtn = mouseButtons.FirstOrDefault(k => k.displayName == sKey);
 
-                    var mouseBtn = mouseButtons.FirstOrDefault(k => k.displayName == s_key);
-
-                    ButtonControl key = Keyboard.current.allKeys.FirstOrDefault(k => k.keyCode.ToString() == s_key);
+                    ButtonControl key = Keyboard.current.allKeys.FirstOrDefault(k => k.keyCode.ToString() == sKey);
 
 
-                    if (Enum.TryParse(s_hack, out Hack hack))
-                    {
-                        if (mouseBtn == null && key == null) continue;
-                        hack.SetKeyBind(mouseBtn ?? key);
-                    }
+                    if (!Enum.TryParse(sHack, out Hack hack)) continue;
+                    if (mouseBtn == null && key == null) continue;
+
+                    hack.SetKeyBind(mouseBtn ?? key);
                 }
             }
 
 
-            if (json.TryGetValue("Toggles", out var togglesToken))
-                foreach (var item in togglesToken.ToObject<Dictionary<string, string>>())
+            if (!json.TryGetValue("Toggles", out var togglesToken)) return;
+            {
+                foreach (var (sHack, sKey) in togglesToken.ToObject<Dictionary<string, string>>())
                 {
-                    var s_hack = item.Key;
-                    var s_key = item.Value;
+                    if (!Enum.TryParse(sHack, out Hack hack)) continue;
+                    if (hack.CanBeExecuted()) continue;
 
-                    if (Enum.TryParse(s_hack, out Hack hack))
-                    {
-                        if (hack.CanBeExecuted()) continue;
+                    var toggle = bool.TryParse(sKey, out var result) && result;
 
-                        var toggle = bool.TryParse(s_key, out var result) ? result : false;
-
-                        hack.SetToggle(toggle);
-                    }
+                    hack.SetToggle(toggle);
                 }
+            }
         }
 
         public static void RegenerateConfig()
         {
-            if (HasConfig()) File.Delete(config);
-            File.Copy(defaultConf, config);
+            if (HasConfig()) File.Delete(ConfigJson);
+            File.Copy(DefaultConf, ConfigJson);
 
             HackExtensions.KeyBinds.Clear();
 

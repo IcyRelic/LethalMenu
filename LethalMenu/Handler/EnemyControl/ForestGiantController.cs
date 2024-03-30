@@ -54,7 +54,7 @@ internal class ForestGiantController : IEnemyController<ForestGiantAI>
         return false;
     }
 
-    public void onReleaseControl(ForestGiantAI enemy)
+    public void OnReleaseControl(ForestGiantAI enemy)
     {
         IsUsingSecondarySkill = false;
     }

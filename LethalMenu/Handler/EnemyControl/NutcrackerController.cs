@@ -29,7 +29,7 @@ internal class NutcrackerController : IEnemyController<NutcrackerEnemyAI>
 
     public void UsePrimarySkill(NutcrackerEnemyAI enemy)
     {
-        if (enemy.gun is not ShotgunItem shotgun) return;
+        if (enemy.gun is not { } shotgun) return;
 
         shotgun.gunShootAudio.volume = 0.25f;
         enemy.FireGunServerRpc();

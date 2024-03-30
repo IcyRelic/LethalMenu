@@ -13,7 +13,7 @@ internal class BuildAnywhere : Cheat
         if (!Hack.BuildAnywhere.IsEnabled()) return;
         var placingObject = (PlaceableShipObject)__instance.Reflect().GetValue("placingObject");
 
-        if (placingObject == null) return;
+        if (!placingObject) return;
 
         placingObject.AllowPlacementOnCounters = true;
         placingObject.AllowPlacementOnWalls = true;
@@ -24,12 +24,9 @@ internal class BuildAnywhere : Cheat
     [HarmonyPatch(typeof(ShipBuildModeManager), "PlayerMeetsConditionsToBuild")]
     public static bool PlayerMeetsConditions(ShipBuildModeManager __instance, ref bool __result)
     {
-        if (Hack.BuildAnywhere.IsEnabled())
-        {
-            __result = true;
-            return false;
-        }
+        if (!Hack.BuildAnywhere.IsEnabled()) return true;
 
-        return true;
+        __result = true;
+        return false;
     }
 }

@@ -53,16 +53,16 @@ public static class RoundHandler
 
     public static bool ToggleFactoryLights()
     {
-        if (!(bool)StartOfRound.Instance || !(bool)RoundManager.Instance || LethalMenu.breaker == null) return false;
+        if (!(bool)StartOfRound.Instance || !(bool)RoundManager.Instance || LethalMenu.Breaker == null) return false;
         if (RoundManager.Instance.powerOffPermanently) RoundManager.Instance.powerOffPermanently = false;
-        RoundManager.Instance.SwitchPower(!LethalMenu.breaker.isPowerOn);
-        return LethalMenu.breaker.isPowerOn;
+        RoundManager.Instance.SwitchPower(!LethalMenu.Breaker.isPowerOn);
+        return LethalMenu.Breaker.isPowerOn;
     }
 
     public static bool AreFactoryLightsOn()
     {
-        if (!(bool)StartOfRound.Instance || LethalMenu.breaker == null) return false;
-        return LethalMenu.breaker.isPowerOn;
+        if (!(bool)StartOfRound.Instance || LethalMenu.Breaker == null) return false;
+        return LethalMenu.Breaker.isPowerOn;
     }
 
     public static bool AreShipLightsOn()
@@ -134,7 +134,7 @@ public static class RoundHandler
     {
         var localPlayer = GameNetworkManager.Instance.localPlayerController;
 
-        LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).ForEach(i =>
+        LethalMenu.Items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).ForEach(i =>
         {
             var point = new Ray(localPlayer.gameplayCamera.transform.position,
                 localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
@@ -149,12 +149,12 @@ public static class RoundHandler
     {
         var localPlayer = GameNetworkManager.Instance.localPlayerController;
 
-        var itemToTeleport = LethalMenu.items
+        var itemToTeleport = LethalMenu.Items
             .Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom)
             .OrderBy(_ => Random.value)
             .FirstOrDefault();
 
-        if (itemToTeleport == null) return;
+        if (!itemToTeleport) return;
 
         var point = new Ray(localPlayer.gameplayCamera.transform.position,
             localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
@@ -173,7 +173,7 @@ public static class RoundHandler
     public static void SpawnMimicFromMasks()
     {
         var alivePlayer = StartOfRound.Instance.allPlayerScripts.ToList().Find(p => !p.isPlayerDead);
-        LethalMenu.items.FindAll(i => i.GetType() == typeof(HauntedMaskItem)).Cast<HauntedMaskItem>().ToList().ForEach(
+        LethalMenu.Items.FindAll(i => i.GetType() == typeof(HauntedMaskItem)).Cast<HauntedMaskItem>().ToList().ForEach(
             m =>
             {
                 m.ChangeOwnershipOfProp(GameNetworkManager.Instance.localPlayerController.actualClientId);
@@ -181,7 +181,7 @@ public static class RoundHandler
                 m.Reflect().SetValue("previousPlayerHeldBy", alivePlayer);
 
 
-                var factory = m.transform.position.y < LethalMenu.shipDoor.transform.position.y - 10f;
+                var factory = m.transform.position.y < LethalMenu.ShipDoor.transform.position.y - 10f;
 
                 m.CreateMimicServerRpc(factory, m.transform.position);
             });
@@ -205,7 +205,7 @@ public static class RoundHandler
 
     public static void SpawnMapObject(MapObject type)
     {
-        var pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
+        var pos = LethalMenu.LocalPlayer.transform.position + LethalMenu.LocalPlayer.transform.forward * 2f;
 
         var spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
 
@@ -227,42 +227,42 @@ public static class RoundHandler
 
         var spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
 
-        var num = Random.Range(5, 15);
+        var numb = Random.Range(5, 15);
 
-        Debug.LogError("Spawning " + num + " " + spawnable?.prefabToSpawn.name);
+        Debug.LogError("Spawning " + numb + " " + spawnable?.prefabToSpawn.name);
 
 
-        for (var i = 0; i < num; i++)
+        for (var i = 0; i < numb; i++)
         {
             var node = RoundManager.Instance.insideAINodes[Random.Range(0, RoundManager.Instance.insideAINodes.Length)];
 
-            var pos = RoundManager.Instance.GetRandomNavMeshPositionInRadius(node.transform.position, 30);
-            var gameObject = Object.Instantiate(spawnable?.prefabToSpawn, pos, Quaternion.identity,
+            var pose = RoundManager.Instance.GetRandomNavMeshPositionInRadius(node.transform.position, 30);
+            var gameObject = Object.Instantiate(spawnable?.prefabToSpawn, pose, Quaternion.identity,
                 RoundManager.Instance.mapPropsContainer.transform);
             gameObject.transform.eulerAngles = spawnable is { spawnFacingAwayFromWall: false }
                 ? new Vector3(gameObject.transform.eulerAngles.x, RoundManager.Instance.AnomalyRandom.Next(0, 360),
                     gameObject.transform.eulerAngles.z)
                 : new Vector3(0.0f,
-                    RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
+                    RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pose + Vector3.up * 0.2f), 0.0f);
             gameObject.GetComponent<NetworkObject>().Spawn(true);
         }
     }
 
     public static void BreakAllWebs()
     {
-        LethalMenu.enemies.FindAll(e => e.GetType() == typeof(SandSpiderAI)).Cast<SandSpiderAI>().ToList()
+        LethalMenu.Enemies.FindAll(e => e.GetType() == typeof(SandSpiderAI)).Cast<SandSpiderAI>().ToList()
             .ForEach(s => s.BreakAllWebs());
     }
 
     public static void UnlockAllDoors()
     {
-        LethalMenu.doorLocks.FindAll(door => door.isLocked).ForEach(door => door.UnlockDoorServerRpc());
-        LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(true));
+        LethalMenu.DoorLocks.FindAll(door => door.isLocked).ForEach(door => door.UnlockDoorServerRpc());
+        LethalMenu.BigDoors.ForEach(door => door.SetDoorOpenServerRpc(true));
     }
 
     public static void CloseAllBigDoors()
     {
-        LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(false));
+        LethalMenu.BigDoors.ForEach(door => door.SetDoorOpenServerRpc(false));
     }
 
     public static void ChangeMoon(int levelID)
@@ -273,22 +273,22 @@ public static class RoundHandler
 
     public static void FixAllValves()
     {
-        LethalMenu.steamValves.ForEach(v => v.FixValveServerRpc());
+        LethalMenu.SteamValves.ForEach(v => v.FixValveServerRpc());
     }
 
     public static void ToggleAllLandmines()
     {
-        LethalMenu.landmines.ForEach(mine => mine.ToggleMine(!Hack.ToggleAllLandmines.IsEnabled()));
+        LethalMenu.Landmines.ForEach(mine => mine.ToggleMine(!Hack.ToggleAllLandmines.IsEnabled()));
     }
 
     public static void ToggleAllTurrets()
     {
-        LethalMenu.turrets.ForEach(turret => turret.turretActive = !Hack.ToggleAllTurrets.IsEnabled());
+        LethalMenu.Turrets.ForEach(turret => turret.turretActive = !Hack.ToggleAllTurrets.IsEnabled());
     }
 
     public static void BlowUpAllLandmines()
     {
-        LethalMenu.landmines.ForEach(mine => mine.ExplodeMineServerRpc());
+        LethalMenu.Landmines.ForEach(mine => mine.ExplodeMineServerRpc());
     }
 
     public static Terminal GetTerminal()

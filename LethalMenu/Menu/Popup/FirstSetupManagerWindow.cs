@@ -36,15 +36,25 @@ internal class FirstSetupManagerWindow : PopupMenu
         WindowRect.x = Screen.width / 2 - 150;
         WindowRect.y = Screen.height / 2 - 100f;
 
-        _style = new GUIStyle(GUI.skin.button);
-
-        _style.padding = new RectOffset(15, 15, 10, 10);
-        _style.margin = new RectOffset(5, 5, 5, 5);
-        _style.normal.textColor = Settings.c_menuText.GetColor();
-        _style.hover.textColor = Settings.c_menuText.GetColor();
-        _style.active.textColor = Settings.c_menuText.GetColor();
-        _style.fontSize = 18;
-        _style.fontStyle = FontStyle.Bold;
+        _style = new GUIStyle(GUI.skin.button)
+        {
+            padding = new RectOffset(15, 15, 10, 10),
+            margin = new RectOffset(5, 5, 5, 5),
+            normal =
+            {
+                textColor = Settings.c_menuText.GetColor()
+            },
+            hover =
+            {
+                textColor = Settings.c_menuText.GetColor()
+            },
+            active =
+            {
+                textColor = Settings.c_menuText.GetColor()
+            },
+            fontSize = 18,
+            fontStyle = FontStyle.Bold
+        };
 
         UI.Label("FirstSetup.Welcome");
         GUILayout.Space(20f);
@@ -56,7 +66,7 @@ internal class FirstSetupManagerWindow : PopupMenu
 
         UI.Actions(new UIButton("FirstSetup.Complete", () =>
         {
-            Settings.isFirstLaunch = false;
+            Settings.IsFirstLaunch = false;
             Settings.Config.SaveConfig();
         }, _style));
     }

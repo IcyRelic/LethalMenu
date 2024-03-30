@@ -5,9 +5,11 @@ namespace LethalMenu.Handler.EnemyControl;
 
 internal class SandSpiderController : IEnemyController<SandSpiderAI>
 {
+    private static readonly int Moving = Animator.StringToHash("moving");
+
     public void OnMovement(SandSpiderAI enemy, bool isMoving, bool isSprinting)
     {
-        enemy.creatureAnimator.SetBool("moving", true);
+        enemy.creatureAnimator.SetBool(Moving, true);
         // spider is too slow, make it like 6f default, 8f sprinting
         var speed = isSprinting ? 8.0f : 6.0f;
         enemy.agent.speed = speed;
@@ -20,9 +22,9 @@ internal class SandSpiderController : IEnemyController<SandSpiderAI>
         PlaceWebTrap(enemy);
     }
 
-    private void PlaceWebTrap(SandSpiderAI enemy)
+    private static void PlaceWebTrap(SandSpiderAI enemy)
     {
-        if (!(bool)StartOfRound.Instance) return;
+        if (!StartOfRound.Instance) return;
 
         var randomDirection = Random.onUnitSphere;
         randomDirection.y = Mathf.Min(0.0f, randomDirection.y * Random.Range(0.5f, 1.0f));

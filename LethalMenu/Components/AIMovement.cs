@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using GameNetcodeStuff;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,17 +11,17 @@ internal class AIMovement : MonoBehaviour
     private const float SprintDuration = 0.0f; // Duration sprint key must be held for sprinting (adjust as needed)
     private const float JumpForce = 9.2f;
     private const float Gravity = 18.0f;
-    private CharacterController CharacterController;
+    private CharacterController _characterController;
+    private bool _isSprintHeld;
+    private Keyboard _keyboard = Keyboard.current;
+    private KbInput _noClipInput;
+    private float _sprintTimer;
+
+    // Components and state variables
+    private float _velocityY;
 
     internal float CharacterSpeed = 5.0f;
     internal float CharacterSprintSpeed = 2.8f;
-    private bool IsSprintHeld;
-    private Keyboard Keyboard = Keyboard.current;
-    private KBInput NoClipInput;
-    private float SprintTimer;
-
-    // Components and state variables
-    private float VelocityY;
 
     // used to sync with the enemy to make sure it plays the correct animation when it is moving
     internal bool IsMoving { get; private set; }
@@ -31,25 +30,25 @@ internal class AIMovement : MonoBehaviour
 
     private void Awake()
     {
-        Keyboard = Keyboard.current;
-        NoClipInput = gameObject.AddComponent<KBInput>();
-        CharacterController = gameObject.AddComponent<CharacterController>();
+        _keyboard = Keyboard.current;
+        _noClipInput = gameObject.AddComponent<KbInput>();
+        _characterController = gameObject.AddComponent<CharacterController>();
     }
 
     // Update is called once per frame
     private void Update()
     {
-        if (NoClipInput is { enabled: true }) return;
-        if (CharacterController is { enabled: false }) return;
+        if (_noClipInput is { enabled: true }) return;
+        if (_characterController is { enabled: false }) return;
 
         var moveInput = new Vector2(
-            Keyboard.dKey.ReadValue() - Keyboard.aKey.ReadValue(),
-            Keyboard.wKey.ReadValue() - Keyboard.sKey.ReadValue()
+            _keyboard.dKey.ReadValue() - _keyboard.aKey.ReadValue(),
+            _keyboard.wKey.ReadValue() - _keyboard.sKey.ReadValue()
         ).normalized;
 
         IsMoving = moveInput.magnitude > 0.0f;
 
-        var speedModifier = Keyboard.leftCtrlKey.isPressed
+        var speedModifier = _keyboard.leftCtrlKey.isPressed
             ? WalkingSpeed
             : 1.0f;
 
@@ -69,84 +68,84 @@ internal class AIMovement : MonoBehaviour
         ApplyGravity();
 
         // Attempt to move
-        _ = CharacterController?.Move(moveDirection * Time.deltaTime);
+        _ = _characterController?.Move(moveDirection * Time.deltaTime);
 
         // Jump if jump key is pressed
-        if (Keyboard.spaceKey.wasPressedThisFrame) Jump();
+        if (_keyboard.spaceKey.wasPressedThisFrame) Jump();
 
         // Sprinting mechanic: Hold to sprint
-        if (Keyboard.leftShiftKey.isPressed)
+        if (_keyboard.leftShiftKey.isPressed)
         {
-            if (!IsSprintHeld)
+            if (!_isSprintHeld)
             {
-                SprintTimer = 0f;
-                IsSprintHeld = true;
+                _sprintTimer = 0f;
+                _isSprintHeld = true;
             }
 
-            if (!IsSprinting && SprintTimer >= SprintDuration) IsSprinting = true;
+            if (!IsSprinting && _sprintTimer >= SprintDuration) IsSprinting = true;
 
-            SprintTimer += Time.deltaTime;
+            _sprintTimer += Time.deltaTime;
         }
 
         else
         {
-            IsSprintHeld = false;
+            _isSprintHeld = false;
             IsSprinting = false;
         }
     }
 
     internal void SetNoClipMode(bool enabled)
     {
-        if (NoClipInput is null) return;
-        NoClipInput.enabled = enabled;
+        if (_noClipInput is null) return;
+        _noClipInput.enabled = enabled;
     }
 
     internal void Init()
     {
-        if (LethalMenu.localPlayer is not PlayerControllerB localPlayer) return;
+        if (LethalMenu.LocalPlayer is not { } localPlayer) return;
         gameObject.layer = localPlayer.gameObject.layer;
     }
 
     internal void SetPosition(Vector3 newPosition)
     {
-        if (CharacterController is null) return;
+        if (_characterController is null) return;
 
-        CharacterController.enabled = false;
+        _characterController.enabled = false;
         transform.position = newPosition;
-        CharacterController.enabled = true;
+        _characterController.enabled = true;
     }
 
 
     internal void CalibrateCollision(EnemyAI enemy)
     {
-        if (CharacterController is null) return;
+        if (_characterController is null) return;
 
-        CharacterController.height = 1.0f;
-        CharacterController.radius = 0.5f;
-        CharacterController.center = new Vector3(0.0f, 0.5f, 0.0f);
+        _characterController.height = 1.0f;
+        _characterController.radius = 0.5f;
+        _characterController.center = new Vector3(0.0f, 0.5f, 0.0f);
 
         const float maxStepOffset = 0.25f;
-        CharacterController.stepOffset = Mathf.Min(CharacterController.stepOffset, maxStepOffset);
+        _characterController.stepOffset = Mathf.Min(_characterController.stepOffset, maxStepOffset);
 
         enemy.GetComponentsInChildren<Collider>()
-            .Where(collider => collider != CharacterController).ToList()
-            .ForEach(collider => Physics.IgnoreCollision(CharacterController, collider));
+            .Where(collider => collider != _characterController).ToList()
+            .ForEach(collider => Physics.IgnoreCollision(_characterController, collider));
     }
 
     // Apply gravity to the character controller
     private void ApplyGravity()
     {
-        VelocityY = CharacterController is { isGrounded: false }
-            ? VelocityY - Gravity * Time.deltaTime
+        _velocityY = _characterController is { isGrounded: false }
+            ? _velocityY - Gravity * Time.deltaTime
             : 0.0f;
 
-        Vector3 motion = new(0.0f, VelocityY, 0.0f);
-        _ = CharacterController?.Move(motion * Time.deltaTime);
+        Vector3 motion = new(0.0f, _velocityY, 0.0f);
+        _ = _characterController?.Move(motion * Time.deltaTime);
     }
 
     // Jumping action
     private void Jump()
     {
-        VelocityY = JumpForce;
+        _velocityY = JumpForce;
     }
 }

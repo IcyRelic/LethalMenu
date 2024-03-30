@@ -5,19 +5,19 @@ namespace LethalMenu.Components;
 
 internal class MouseInput : MonoBehaviour
 {
-    private float Pitch;
-    private float Yaw;
+    private float _pitch;
+    private float _yaw;
 
     private void Update()
     {
         if (Cursor.visible) return;
 
-        Yaw += Mouse.current.delta.x.ReadValue() * Settings.f_mouseSensitivity;
-        Yaw = (Yaw + 360) % 360;
+        _yaw += Mouse.current.delta.x.ReadValue() * Settings.f_mouseSensitivity;
+        _yaw = (_yaw + 360) % 360;
 
-        Pitch -= Mouse.current.delta.y.ReadValue() * Settings.f_mouseSensitivity;
-        Pitch = Mathf.Clamp(Pitch, -90, 90);
+        _pitch -= Mouse.current.delta.y.ReadValue() * Settings.f_mouseSensitivity;
+        _pitch = Mathf.Clamp(_pitch, -90, 90);
 
-        transform.eulerAngles = new Vector3(Pitch, Yaw, 0f);
+        transform.eulerAngles = new Vector3(_pitch, _yaw, 0f);
     }
 }

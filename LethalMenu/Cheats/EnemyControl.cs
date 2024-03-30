@@ -48,28 +48,27 @@ internal class EnemyControl : Cheat
     {
         StopControl();
         if (!Hack.EnemyControl.IsEnabled()) return;
-        if (enemy == null) return;
+        if (!enemy) return;
         if (!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
-        if (Freecam.camera == null) return;
+        if (!Freecam.Camera) return;
 
 
         if (!EnemyControllers.TryGetValue(enemy.GetType(), out var controller))
         {
-            if (!IsAIControlled)
-            {
-                UpdateEnemyPosition();
-                UpdateEnemyRotation();
-            }
+            if (IsAIControlled) return;
+
+            UpdateEnemyPosition();
+            UpdateEnemyRotation();
 
             return;
         }
 
 
-        if (!(bool)enemy.agent) return;
+        if (!enemy.agent) return;
 
         UpdateCooldowns();
 
-        enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+        enemy.ChangeEnemyOwnerServerRpc(LethalMenu.LocalPlayer.actualClientId);
         MoveCamera();
 
         if (enemy.isEnemyDead)
@@ -82,7 +81,7 @@ internal class EnemyControl : Cheat
 
         controller.Update(enemy, false);
         InteractWithAmbient(enemy, EnemyControllers[enemy.GetType()]);
-        LethalMenu.localPlayer.cursorTip.text = controller.GetPrimarySkillName(enemy);
+        LethalMenu.LocalPlayer.cursorTip.text = controller.GetPrimarySkillName(enemy);
 
         HandleInput();
 
@@ -102,10 +101,15 @@ internal class EnemyControl : Cheat
     {
         if (enemy.isEnemyDead) return;
         EnemyControl.enemy = enemy;
-        enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-        ControllerInstance = new GameObject("EnemyController");
-        ControllerInstance.transform.position = enemy.transform.position;
-        ControllerInstance.transform.rotation = enemy.transform.rotation;
+        enemy.ChangeEnemyOwnerServerRpc(LethalMenu.LocalPlayer.actualClientId);
+        ControllerInstance = new GameObject("EnemyController")
+        {
+            transform =
+            {
+                position = enemy.transform.position,
+                rotation = enemy.transform.rotation
+            }
+        };
 
         mouse = ControllerInstance.AddComponent<MouseInput>();
         movement = ControllerInstance.AddComponent<AIMovement>();
@@ -132,7 +136,8 @@ internal class EnemyControl : Cheat
             enemy.agent.Warp(enemy.transform.position);
         }
 
-        if (EnemyControllers.TryGetValue(enemy.GetType(), out var controller)) controller.OnReleaseControl(enemy);
+        if (enemy && EnemyControllers.TryGetValue(enemy.GetType(), out var controller))
+            controller.OnReleaseControl(enemy);
 
         IsAIControlled = false;
         Destroy(ControllerInstance);
@@ -159,7 +164,7 @@ internal class EnemyControl : Cheat
 
     private void MoveCamera()
     {
-        Freecam.camera.transform.SetPositionAndRotation(
+        Freecam.Camera.transform.SetPositionAndRotation(
             enemy.transform.position + 3.0f * (Vector3.up - enemy.transform.forward),
             Quaternion.LookRotation(enemy.transform.forward)
         );
@@ -176,7 +181,7 @@ internal class EnemyControl : Cheat
 
     private static void UpdateEnemyRotation()
     {
-        if (movement == null) return;
+        if (!movement) return;
         movement.transform.rotation = mouse.transform.rotation;
     }
 
@@ -191,11 +196,11 @@ internal class EnemyControl : Cheat
         if (Keyboard.current.f9Key.wasPressedThisFrame) ToggleAIControl();
         if (Keyboard.current.f10Key.wasPressedThisFrame) ToggleNoClip();
         if (Keyboard.current.f11Key.wasPressedThisFrame) Hack.EnemyControl.SetToggle(false);
-        if (Keyboard.current.f12Key.wasPressedThisFrame)
-        {
-            Hack.EnemyControl.SetToggle(false);
-            enemy.Handle().Kill();
-        }
+
+        if (!Keyboard.current.f12Key.wasPressedThisFrame) return;
+
+        Hack.EnemyControl.SetToggle(false);
+        enemy.Handle().Kill();
     }
 
     private static float InteractRange()
@@ -212,7 +217,7 @@ internal class EnemyControl : Cheat
             : IController.DefaultSprintMultiplier;
     }
 
-    private void ToggleAIControl()
+    private static void ToggleAIControl()
     {
         if (enemy?.agent is null || movement is null || mouse is null) return;
 
@@ -223,7 +228,7 @@ internal class EnemyControl : Cheat
 
     private static void SetAIControl(bool enableAI)
     {
-        if (movement is null || enemy is null || enemy.agent is null) return;
+        if (movement is null || enemy?.agent is null) return;
 
         if (enableAI)
         {
@@ -277,15 +282,15 @@ internal class EnemyControl : Cheat
 
     private Transform? GetExitPointFromDoor(EntranceTeleport entrance)
     {
-        return LethalMenu.doors.Find(teleport =>
+        return LethalMenu.Doors.Find(teleport =>
             teleport.entranceId == entrance.entranceId && teleport.isEntranceToBuilding != entrance.isEntranceToBuilding
         )?.entrancePoint;
     }
 
     private void InteractWithTeleport(EnemyAI enemy, EntranceTeleport teleport)
     {
-        if (movement is not AIMovement aiMovement) return;
-        if (GetExitPointFromDoor(teleport) is not Transform exitPoint) return;
+        if (movement is not { } aiMovement) return;
+        if (GetExitPointFromDoor(teleport) is not { } exitPoint) return;
 
         aiMovement.SetPosition(exitPoint.position);
         enemy.EnableEnemyMesh(true);

@@ -38,7 +38,7 @@ internal class HoarderBugController : IEnemyController<HoarderBugAI>
 
     public void UsePrimarySkill(HoarderBugAI enemy)
     {
-        if (enemy == null) return;
+        if (!enemy) return;
 
         if (enemy.angryTimer > 0.0f)
         {
@@ -48,7 +48,7 @@ internal class HoarderBugController : IEnemyController<HoarderBugAI>
         }
 
         var nearbyItem = enemy.FindNearbyItem();
-        if (nearbyItem != null)
+        if (nearbyItem)
             GrabItem(enemy, nearbyItem);
         else
             UseHeldItem(enemy);
@@ -85,18 +85,18 @@ internal class HoarderBugController : IEnemyController<HoarderBugAI>
         return 1.5f;
     }
 
-    private void UseHeldItem(HoarderBugAI enemy)
+    private static void UseHeldItem(HoarderBugAI enemy)
     {
-        if (enemy.heldItem == null || enemy.heldItem.itemGrabbableObject == null) return;
+        if (enemy.heldItem == null || !enemy.heldItem.itemGrabbableObject) return;
 
         if (enemy.heldItem.itemGrabbableObject is ShotgunItem gun) gun.ShootGunAsEnemy(enemy);
     }
 
-    private void GrabItem(HoarderBugAI enemy, GrabbableObject item)
+    private static void GrabItem(HoarderBugAI enemy, GrabbableObject item)
     {
         var reflect = enemy.Reflect();
         var netItem = item.GetComponent<NetworkObject>();
-        if (enemy == null || item == null || netItem == null || reflect is null) return;
+        if (!enemy || !item || !netItem || reflect is null) return;
 
         enemy.SwitchToBehaviourServerRpc(1);
 

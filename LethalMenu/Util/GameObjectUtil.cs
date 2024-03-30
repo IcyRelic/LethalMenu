@@ -39,7 +39,7 @@ internal class GameObjectUtil
     public static Light CreateLight()
     {
         //create and return a copy of LethalMenu.localPlayer.nightVision
-        var light = Object.Instantiate(LethalMenu.localPlayer.nightVision);
+        var light = Object.Instantiate(LethalMenu.LocalPlayer.nightVision);
 
         light.enabled = true;
         light.intensity = Settings.f_nvIntensity;

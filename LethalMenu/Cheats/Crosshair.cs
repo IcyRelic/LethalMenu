@@ -15,7 +15,7 @@ internal class Crosshair : Cheat
     {
         if (!Hack.Crosshair.IsEnabled()) return;
 
-        var pointsX = new Vector2[4]
+        var pointsX = new Vector2[]
         {
             new(Screen.width / 2f - Settings.f_crosshairScale,
                 Screen.height / 2f - Settings.f_crosshairScale),
@@ -27,7 +27,7 @@ internal class Crosshair : Cheat
                 Screen.height / 2f + Settings.f_crosshairScale)
         };
 
-        var pointsPlus = new Vector2[4]
+        var pointsPlus = new Vector2[]
         {
             new(Screen.width / 2f - Settings.f_crosshairScale, Screen.height / 2f),
             new(Screen.width / 2f + Settings.f_crosshairScale, Screen.height / 2f),

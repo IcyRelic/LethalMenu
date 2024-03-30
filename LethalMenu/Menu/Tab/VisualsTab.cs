@@ -4,19 +4,15 @@ using UnityEngine;
 
 namespace LethalMenu.Menu.Tab;
 
-internal class VisualsTab : MenuTab
+internal class VisualsTab() : MenuTab("VisualsTab.Title")
 {
-    private Vector2 scrollPos = Vector2.zero;
-
-    public VisualsTab() : base("VisualsTab.Title")
-    {
-    }
+    private Vector2 _scrollPosition = Vector2.zero;
 
     public override void Draw()
     {
         GUILayout.BeginVertical(
             GUILayout.Width(HackMenu.Instance.ContentWidth * 0.5f - HackMenu.SpaceFromLeft));
-        ESPMenuContent();
+        EspMenuContent();
         GUILayout.EndVertical();
         GUILayout.BeginVertical(
             GUILayout.Width(HackMenu.Instance.ContentWidth * 0.5f - HackMenu.SpaceFromLeft));
@@ -24,11 +20,11 @@ internal class VisualsTab : MenuTab
         GUILayout.EndVertical();
     }
 
-    private void ESPMenuContent()
+    private void EspMenuContent()
     {
         UI.Header("ESP");
 
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
         UI.Hack(Hack.ToggleAllEsp, "VisualsTab.ToggleAll");
         UI.Toggle("VisualsTab.UseScrapTiers", ref Settings.b_useScrapTiers, "General.Disable", "General.Enable");
@@ -48,7 +44,7 @@ internal class VisualsTab : MenuTab
         GUILayout.EndScrollView();
     }
 
-    private void OtherVisualsContent()
+    private static void OtherVisualsContent()
     {
         UI.Header("VisualsTab.OtherVisuals");
         UI.Hack(Hack.AlwaysShowClock, "VisualsTab.ShowClock");

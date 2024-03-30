@@ -9,7 +9,7 @@ internal class NoVisor : Cheat
         RemoveVisor();
     }
 
-    public static void RemoveVisor()
+    private static void RemoveVisor()
     {
         var localVisor = GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/");
 

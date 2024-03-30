@@ -437,10 +437,10 @@ public class HackExecutor
         }
         else
         {
-            LethalMenu.turrets.ForEach(turret =>
+            LethalMenu.Turrets.ForEach(turret =>
                 turret.gameObject.GetComponent<TerminalAccessibleObject>().CallFunctionFromTerminal());
 
-            foreach (var obj in from obj in LethalMenu.allTerminalObjects
+            foreach (var obj in from obj in LethalMenu.AllTerminalObjects
                      let directionToObject = obj.transform.position - player.transform.position
                      let angle = Vector3.Angle(player.transform.forward, directionToObject)
                      where angle < 60f && directionToObject.magnitude < 5f
@@ -607,7 +607,7 @@ public class HackExecutor
 
     public static void SellEverything()
     {
-        LethalMenu.localPlayer.Handle().PlaceEverythingOnDesk();
+        LethalMenu.LocalPlayer.Handle().PlaceEverythingOnDesk();
     }
 
     public static void ExplodeClosestMine(PlayerControllerB player)
@@ -637,22 +637,22 @@ public class HackExecutor
 
     public static void SaveTeleportPosition()
     {
-        LethalMenu.localPlayer.Handle().SavePosition();
+        LethalMenu.LocalPlayer.Handle().SavePosition();
     }
 
     public static void TeleportShip()
     {
-        LethalMenu.localPlayer.Handle().TeleportShip();
+        LethalMenu.LocalPlayer.Handle().TeleportShip();
     }
 
     public static void TeleportSavedPosition()
     {
-        LethalMenu.localPlayer.Handle().TeleportSaved();
+        LethalMenu.LocalPlayer.Handle().TeleportSaved();
     }
 
     public static void Teleport(Vector3 pos, bool elevator = false, bool ship = false, bool factory = false)
     {
-        LethalMenu.localPlayer.Handle().Teleport(pos, elevator, ship, factory);
+        LethalMenu.LocalPlayer.Handle().Teleport(pos, elevator, ship, factory);
     }
 
     public static void KillPlayer(PlayerControllerB player)
@@ -682,17 +682,17 @@ public class HackExecutor
 
     public static void StunAllEnemies()
     {
-        LethalMenu.enemies.ForEach(enemy => enemy.Handle().Stun());
+        LethalMenu.Enemies.ForEach(enemy => enemy.Handle().Stun());
     }
 
     public static void KillAllEnemies()
     {
-        LethalMenu.enemies.ForEach(enemy => enemy.Handle().Kill());
+        LethalMenu.Enemies.ForEach(enemy => enemy.Handle().Kill());
     }
 
     public static void KillNearbyEnemies(int distance = -1)
     {
-        LethalMenu.enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance)
+        LethalMenu.Enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance)
             .ForEach(enemy => enemy.Handle().Kill());
     }
 

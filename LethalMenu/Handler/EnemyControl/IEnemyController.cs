@@ -41,7 +41,7 @@ internal interface IController
     bool SyncAnimationSpeedEnabled(EnemyAI enemy);
 }
 
-internal interface IEnemyController<T> : IController where T : EnemyAI
+internal interface IEnemyController<in T> : IController where T : EnemyAI
 {
     void IController.OnTakeControl(EnemyAI enemy)
     {

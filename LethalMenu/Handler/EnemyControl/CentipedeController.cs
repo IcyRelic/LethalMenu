@@ -60,7 +60,7 @@ internal class CentipedeController : IEnemyController<CentipedeAI>
         return false;
     }
 
-    private bool IsClingingToSomething(CentipedeAI enemy)
+    private static bool IsClingingToSomething(CentipedeAI enemy)
     {
         var centipedeReflector = enemy.Reflect();
 

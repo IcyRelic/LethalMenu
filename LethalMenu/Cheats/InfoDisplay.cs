@@ -21,49 +21,48 @@ internal class InfoDisplay : Cheat
         GUI.color = Color.white;
         GUI.Label(new Rect(Screen.width - 160 - 0, 0, 160f, 180f), info,
             new GUIStyle(GUI.skin.label) { fontSize = 14 });
-        ;
     }
 
-    private int GetBodyCount()
+    private static int GetBodyCount()
     {
-        return LethalMenu.players.FindAll(player => player.isPlayerDead).Count();
+        return LethalMenu.Players.FindAll(player => player.isPlayerDead).Count();
     }
 
-    private int GetEnemyCount()
+    private static int GetEnemyCount()
     {
-        return LethalMenu.enemies.FindAll(enemy => !enemy.isEnemyDead).Count();
+        return LethalMenu.Enemies.FindAll(enemy => !enemy.isEnemyDead).Count();
     }
 
-    private int GetShipValue()
+    private static int GetShipValue()
     {
-        return LethalMenu.items.FindAll(item => item.isInShipRoom && !item.isHeld && !item.isPocketed)
+        return LethalMenu.Items.FindAll(item => item.isInShipRoom && !item.isHeld && !item.isPocketed)
             .Sum(item => item.scrapValue);
     }
 
-    private int GetObjectValue()
+    private static int GetObjectValue()
     {
-        return LethalMenu.items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed)
+        return LethalMenu.Items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed)
             .Sum(item => item.scrapValue);
     }
 
-    private int GetObjectCount()
+    private static int GetObjectCount()
     {
-        return LethalMenu.items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed).Count();
+        return LethalMenu.Items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed).Count();
     }
 
-    private int GetQuota()
+    private static int GetQuota()
     {
         if (!(bool)StartOfRound.Instance) return 0;
         return TimeOfDay.Instance.profitQuota;
     }
 
-    private int GetDaysLeft()
+    private static int GetDaysLeft()
     {
         if (!(bool)StartOfRound.Instance) return 0;
         return TimeOfDay.Instance.daysUntilDeadline;
     }
 
-    private float GetBuyingRate()
+    private static float GetBuyingRate()
     {
         if (!(bool)StartOfRound.Instance) return 0f;
         return StartOfRound.Instance.companyBuyingRate * 100;

@@ -9,15 +9,11 @@ using Vector2 = UnityEngine.Vector2;
 
 namespace LethalMenu.Menu.Tab;
 
-internal class SelfTab : MenuTab
+internal class SelfTab() : MenuTab("SelfTab.Title")
 {
-    private string s_xp = "";
-    private Vector2 scrollPos = Vector2.zero;
-    private Vector2 tpScrollPos = Vector2.zero;
-
-    public SelfTab() : base("SelfTab.Title")
-    {
-    }
+    private Vector2 _scrollPosition = Vector2.zero;
+    private string _sXp = "";
+    private Vector2 _tpScrollPos = Vector2.zero;
 
     public override void Draw()
     {
@@ -34,7 +30,7 @@ internal class SelfTab : MenuTab
     {
         UI.Header("SelfTab.Title");
 
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
         UI.Hack(Hack.GodMode, "SelfTab.GodMode");
         UI.Hack(Hack.GhostMode, "SelfTab.GhostMode");
@@ -80,10 +76,10 @@ internal class SelfTab : MenuTab
         UI.Label("SelfTab.Level", level.ToString());
         UI.Label("SelfTab.XP", xp.ToString());
 
-        UI.TextboxAction("SelfTab.AddXP", ref s_xp, @"[^0-9]", 8,
-            new UIButton("General.Remove", () => Hack.Experience.Execute(int.Parse(s_xp), ActionType.Remove)),
-            new UIButton("General.Add", () => Hack.Experience.Execute(int.Parse(s_xp), ActionType.Add)),
-            new UIButton("General.Set", () => Hack.Experience.Execute(int.Parse(s_xp), ActionType.Set))
+        UI.TextboxAction("SelfTab.AddXP", ref _sXp, @"[^0-9]", 8,
+            new UIButton("General.Remove", () => Hack.Experience.Execute(int.Parse(_sXp), ActionType.Remove)),
+            new UIButton("General.Add", () => Hack.Experience.Execute(int.Parse(_sXp), ActionType.Add)),
+            new UIButton("General.Set", () => Hack.Experience.Execute(int.Parse(_sXp), ActionType.Set))
         );
     }
 
@@ -96,12 +92,12 @@ internal class SelfTab : MenuTab
 
         var player = GameNetworkManager.Instance.localPlayerController;
 
-        tpScrollPos = GUILayout.BeginScrollView(tpScrollPos);
+        _tpScrollPos = GUILayout.BeginScrollView(_tpScrollPos);
 
         UI.Hack(Hack.TeleportShip, "SelfTab.TeleportShip", "SelfTab.Teleport");
 
-        DoorTeleportLocations(player, LethalMenu.doors.FindAll(door => door.isEntranceToBuilding));
-        DoorTeleportLocations(player, LethalMenu.doors.FindAll(door => !door.isEntranceToBuilding));
+        DoorTeleportLocations(player, LethalMenu.Doors.FindAll(door => door.isEntranceToBuilding));
+        DoorTeleportLocations(player, LethalMenu.Doors.FindAll(door => !door.isEntranceToBuilding));
 
         UI.Hack(Hack.TeleportSavedPosition, "SelfTab.TeleportSaved", "SelfTab.Teleport");
         UI.Hack(Hack.SaveTeleportPosition, "SelfTab.SavePosition", "General.Save");

@@ -64,7 +64,7 @@ public static class MenuUtil
 
     public static void ShowCursor()
     {
-        LethalMenu.localPlayer.playerActions.Disable();
+        LethalMenu.LocalPlayer.playerActions.Disable();
         Cursor.visible = true;
         Settings.clm_lastCursorState = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
@@ -72,7 +72,7 @@ public static class MenuUtil
 
     public static void HideCursor()
     {
-        LethalMenu.localPlayer.playerActions.Enable();
+        LethalMenu.LocalPlayer.playerActions.Enable();
         Cursor.visible = false;
         Cursor.lockState = Settings.clm_lastCursorState;
     }

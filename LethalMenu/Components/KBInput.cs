@@ -3,10 +3,9 @@ using UnityEngine.InputSystem;
 
 namespace LethalMenu.Components;
 
-internal class KBInput : MonoBehaviour
+internal class KbInput : MonoBehaviour
 {
-    private float sprintMultiplier = 1f;
-
+    private float _sprintMultiplier = 1f;
 
     private void Update()
     {
@@ -23,9 +22,9 @@ internal class KBInput : MonoBehaviour
 
         if (input.Equals(Vector3.zero)) return;
 
-        sprintMultiplier = Keyboard.current.shiftKey.isPressed
-            ? Mathf.Min(sprintMultiplier + 5f * Time.deltaTime, 5f)
+        _sprintMultiplier = Keyboard.current.shiftKey.isPressed
+            ? Mathf.Min(_sprintMultiplier + 5f * Time.deltaTime, 5f)
             : 1f;
-        transform.position += input * Time.deltaTime * Settings.f_inputMovementSpeed * sprintMultiplier;
+        transform.position += input * (Time.deltaTime * Settings.f_inputMovementSpeed * _sprintMultiplier);
     }
 }

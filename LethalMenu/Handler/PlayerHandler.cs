@@ -5,18 +5,11 @@ using UnityEngine;
 
 namespace LethalMenu.Handler;
 
-public class PlayerHandler
+public class PlayerHandler(PlayerControllerB player)
 {
-    private readonly PlayerControllerB player;
-
-    public PlayerHandler(PlayerControllerB player)
-    {
-        this.player = player;
-    }
-
     public void TeleportAllItems()
     {
-        LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).ForEach(i =>
+        LethalMenu.Items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).ForEach(i =>
         {
             var point = new Ray(player.gameplayCamera.transform.position, player.gameplayCamera.transform.forward)
                 .GetPoint(1f);
@@ -61,7 +54,7 @@ public class PlayerHandler
 
     public void TeleportTo()
     {
-        LethalMenu.localPlayer.Handle().Teleport(player.transform.position, player.isInElevator,
+        LethalMenu.LocalPlayer.Handle().Teleport(player.transform.position, player.isInElevator,
             player.isInHangarShipRoom, player.isInsideFactory);
     }
 
@@ -82,7 +75,7 @@ public class PlayerHandler
 
     public void TeleportEnemies(EnemyAI[] enemies = null)
     {
-        if (enemies == null) enemies = LethalMenu.enemies.ToArray();
+        enemies ??= LethalMenu.Enemies.ToArray();
         enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));
     }
 
@@ -107,32 +100,32 @@ public class PlayerHandler
 
     public void ExplodeClosestLandmine()
     {
-        var mine = LethalMenu.landmines.OrderBy(m => Vector3.Distance(m.transform.position, player.transform.position))
+        var mine = LethalMenu.Landmines.OrderBy(m => Vector3.Distance(m.transform.position, player.transform.position))
             .FirstOrDefault();
-        mine.ExplodeMineServerRpc();
+        mine?.ExplodeMineServerRpc();
     }
 
     public void LureAllEnemies()
     {
-        LethalMenu.enemies.FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().TargetPlayer(player));
+        LethalMenu.Enemies.FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().TargetPlayer(player));
     }
 
     public void PlaceEverythingOnDesk()
     {
         var desk = Object.FindObjectOfType<DepositItemsDesk>();
-        if (desk == null) return;
+        if (!desk) return;
 
         player.DropAllHeldItems();
-        LethalMenu.items.FindAll(i => i.itemProperties.isScrap && !i.isHeld && !i.isPocketed).ForEach(i =>
+        LethalMenu.Items.FindAll(i => i.itemProperties.isScrap && !i.isHeld && !i.isPocketed).ForEach(i =>
         {
             player.currentlyHeldObjectServer = i;
             desk.PlaceItemOnCounter(player);
         });
     }
 
-    public PlayerHandler GetHandler(PlayerControllerB player)
+    public PlayerHandler GetHandler(PlayerControllerB handler)
     {
-        return new PlayerHandler(player);
+        return new PlayerHandler(handler);
     }
 }
 

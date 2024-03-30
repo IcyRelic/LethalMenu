@@ -6,18 +6,14 @@ using UnityEngine;
 
 namespace LethalMenu.Menu.Popup;
 
-internal class MoonManagerWindow : PopupMenu
+internal class MoonManagerWindow(int id) : PopupMenu("Moon Manager", new Rect(50f, 50f, 350f, 250f), id)
 {
-    private Vector2 scrollPos = Vector2.zero;
-
-    public MoonManagerWindow(int id) : base("Moon Manager", new Rect(50f, 50f, 350f, 250f), id)
-    {
-    }
+    private Vector2 _scrollPosition = Vector2.zero;
 
     protected override void DrawContent(int windowID)
     {
         //if (!(bool)StartOfRound.Instance) return;
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
         if ((bool)StartOfRound.Instance)
         {

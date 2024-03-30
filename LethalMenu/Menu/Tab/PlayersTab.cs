@@ -1,19 +1,16 @@
-﻿using LethalMenu.Cheats;
+﻿using System.Linq;
+using LethalMenu.Cheats;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using UnityEngine;
 
 namespace LethalMenu.Menu.Tab;
 
-internal class PlayersTab : MenuTab
+internal class PlayersTab() : MenuTab("PlayerTab.Title")
 {
-    public static int selectedPlayer;
-    private Vector2 scrollPos = Vector2.zero;
-    private Vector2 scrollPos2 = Vector2.zero;
-
-    public PlayersTab() : base("PlayerTab.Title")
-    {
-    }
+    public static int SelectedPlayer;
+    private Vector2 _scrollPosition = Vector2.zero;
+    private Vector2 _scrollPosition2 = Vector2.zero;
 
     public override void Draw()
     {
@@ -24,7 +21,7 @@ internal class PlayersTab : MenuTab
 
         GUILayout.BeginVertical(
             GUILayout.Width(HackMenu.Instance.ContentWidth * 0.7f - HackMenu.SpaceFromLeft));
-        scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
+        _scrollPosition2 = GUILayout.BeginScrollView(_scrollPosition2);
         GeneralActions();
         PlayerActions();
         GUILayout.EndScrollView();
@@ -42,17 +39,15 @@ internal class PlayersTab : MenuTab
         GUILayout.BeginVertical(GUILayout.Width(width), GUILayout.Height(height));
 
         GUILayout.Space(25);
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
-        foreach (var player in LethalMenu.players)
+        foreach (var player in LethalMenu.Players.Where(player => !player.disconnectedMidGame && player.IsSpawned))
         {
-            if (player.disconnectedMidGame || !player.IsSpawned) continue;
+            if (SelectedPlayer == -1) SelectedPlayer = (int)player.playerClientId;
 
-            if (selectedPlayer == -1) selectedPlayer = (int)player.playerClientId;
+            if (SelectedPlayer == (int)player.playerClientId) GUI.contentColor = Settings.c_playerESP.GetColor();
 
-            if (selectedPlayer == (int)player.playerClientId) GUI.contentColor = Settings.c_playerESP.GetColor();
-
-            if (GUILayout.Button(player.playerUsername, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
+            if (GUILayout.Button(player.playerUsername, GUI.skin.label)) SelectedPlayer = (int)player.playerClientId;
 
             GUI.contentColor = Settings.c_menuText.GetColor();
         }
@@ -61,7 +56,7 @@ internal class PlayersTab : MenuTab
         GUILayout.EndVertical();
     }
 
-    private void GeneralActions()
+    private static void GeneralActions()
     {
         UI.Header("General.GeneralActions");
         UI.Hack(Hack.DeathNotifications, "PlayerTab.DeathNotifications");
@@ -73,22 +68,22 @@ internal class PlayersTab : MenuTab
         if (Hack.MiniCam.IsEnabled())
             UI.Button("PlayerTab.StopMiniCam", () => Hack.MiniCam.SetToggle(false), "General.Stop");
 
-        UI.Button("PlayerTab.KillEveryone", () => LethalMenu.players.ForEach(p => Hack.KillPlayer.Execute(p)));
+        UI.Button("PlayerTab.KillEveryone", () => LethalMenu.Players.ForEach(p => Hack.KillPlayer.Execute(p)));
         UI.Button("PlayerTab.KillEveryoneElse",
-            () => LethalMenu.players
+            () => LethalMenu.Players
                 .FindAll(p => p.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
                 .ForEach(p => Hack.KillPlayer.Execute(p)));
     }
 
-    private void PlayerActions()
+    private static void PlayerActions()
     {
-        var player = LethalMenu.players.Find(p => (int)p.playerClientId == selectedPlayer);
+        var player = LethalMenu.Players.Find(p => (int)p.playerClientId == SelectedPlayer);
 
-        if (player == null || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
+        if (!player || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
 
         var name = player.playerUsername;
 
-        if (player.isPlayerDead && player.deadBody != null)
+        if (player.isPlayerDead && player.deadBody)
             name =
                 $"{Settings.c_deadPlayer.AsString("PlayerTab.DeadPrefix")} {name} ({Settings.c_causeOfDeath.AsString(player.deadBody.causeOfDeath.ToString())})";
 
@@ -110,7 +105,7 @@ internal class PlayersTab : MenuTab
         UI.Header("PlayerTab.Inventory", true);
         foreach (var item in items)
         {
-            if (item == null) continue;
+            if (!item) continue;
 
             UI.Label("", item.name);
         }
@@ -123,39 +118,37 @@ internal class PlayersTab : MenuTab
         UI.Hack(Hack.HealPlayer, "PlayerTab.Heal", player);
         UI.Hack(Hack.LightningStrikePlayer, ["PlayerTab.Strike", "General.HostStormyTag"], player);
         UI.Hack(Hack.SpiderWebPlayer, "PlayerTab.SpiderWeb", player);
-        UI.Hack(Hack.TeleportEnemy, "PlayerTab.TeleportAllEnemies", player, LethalMenu.enemies.ToArray());
+        UI.Hack(Hack.TeleportEnemy, "PlayerTab.TeleportAllEnemies", player, LethalMenu.Enemies.ToArray());
         UI.Hack(Hack.LureAllEnemies, "PlayerTab.Lure", player);
         UI.Hack(Hack.ExplodeClosestMine, "PlayerTab.ExplodeMine", player);
 
 
-        if (player.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
+        if (player.playerClientId == GameNetworkManager.Instance.localPlayerController.playerClientId) return;
+
+        var btnText = SpectatePlayer.isSpectatingPlayer(player) ? "General.Stop" : "PlayerTab.Spectate";
+
+        var startAction = () =>
         {
-            var btnText = SpectatePlayer.isSpectatingPlayer(player) ? "General.Stop" : "PlayerTab.Spectate";
+            Hack.SpectatePlayer.SetToggle(true);
+            Hack.SpectatePlayer.Invoke(player);
+        };
+        var stopAction = () => { Hack.SpectatePlayer.SetToggle(false); };
 
-            var startAction = () =>
-            {
-                Hack.SpectatePlayer.SetToggle(true);
-                Hack.SpectatePlayer.Invoke(player);
-            };
-            var stopAction = () => { Hack.SpectatePlayer.SetToggle(false); };
+        var action = SpectatePlayer.isSpectatingPlayer(player) ? stopAction : startAction;
 
-            var action = SpectatePlayer.isSpectatingPlayer(player) ? stopAction : startAction;
+        UI.Button("PlayerTab.Spectate", action, btnText);
 
-            UI.Button("PlayerTab.Spectate", action, btnText);
+        btnText = (int)player.playerClientId == SpectatePlayer.camPlayer ? "General.Stop" : "General.View";
 
+        startAction = () =>
+        {
+            Hack.MiniCam.SetToggle(true);
+            Hack.MiniCam.Invoke(player);
+        };
+        stopAction = () => { Hack.MiniCam.SetToggle(false); };
 
-            btnText = (int)player.playerClientId == SpectatePlayer.camPlayer ? "General.Stop" : "General.View";
+        action = SpectatePlayer.isCamPlayer(player) ? stopAction : startAction;
 
-            startAction = () =>
-            {
-                Hack.MiniCam.SetToggle(true);
-                Hack.MiniCam.Invoke(player);
-            };
-            stopAction = () => { Hack.MiniCam.SetToggle(false); };
-
-            action = SpectatePlayer.isCamPlayer(player) ? stopAction : startAction;
-
-            UI.Button("PlayerTab.MiniCam", action, btnText);
-        }
+        UI.Button("PlayerTab.MiniCam", action, btnText);
     }
 }

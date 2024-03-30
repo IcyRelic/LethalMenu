@@ -7,12 +7,12 @@ internal class Invisibility : Cheat
 {
     public override void Update()
     {
-        if (LethalMenu.localPlayer == null || !Hack.Invisibility.IsEnabled()) return;
+        if (!LethalMenu.LocalPlayer || !Hack.Invisibility.IsEnabled()) return;
 
-        var pos = StartOfRound.Instance.shipHasLanded
+        var position = StartOfRound.Instance.shipHasLanded
             ? StartOfRound.Instance.notSpawnedPosition.position
             : Vector3.zero;
 
-        LethalMenu.localPlayer.Reflect().Invoke("UpdatePlayerPositionServerRpc", pos, true, false, false, true);
+        LethalMenu.LocalPlayer.Reflect().Invoke("UpdatePlayerPositionServerRpc", position, true, false, false, true);
     }
 }

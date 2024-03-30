@@ -23,14 +23,14 @@ internal class ThroughWalls : Cheat
             typeof(PlayerControllerB)
                 .GetField("interactableObjectsMask",
                     BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
-                .SetValue(__instance, mask.value);
+                ?.SetValue(__instance, mask.value);
         }
         else
         {
             typeof(PlayerControllerB)
                 .GetField("interactableObjectsMask",
                     BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
-                .SetValue(__instance, 832);
+                ?.SetValue(__instance, 832);
             if (!Hack.Reach.IsEnabled())
                 __instance.grabDistance = 5f;
         }

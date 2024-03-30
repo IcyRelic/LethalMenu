@@ -30,12 +30,12 @@ internal class BlobController : IEnemyController<BlobAI>
         return 9.8f;
     }
 
-    private void SetTamedTimer(BlobAI enemy, float time)
+    private static void SetTamedTimer(BlobAI enemy, float time)
     {
         enemy.Reflect().SetValue("tamedTimer", time);
     }
 
-    private void SetAngeredTimer(BlobAI enemy, float time)
+    private static void SetAngeredTimer(BlobAI enemy, float time)
     {
         enemy.Reflect().SetValue("angeredTimer", time);
     }

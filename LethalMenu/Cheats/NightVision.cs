@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
+using UnityEngine;
 
 namespace LethalMenu.Cheats;
 
@@ -9,9 +10,9 @@ internal class NightVision : Cheat
     public override void Update()
     {
         var player = GameNetworkManager.Instance.localPlayerController;
-        if (player == null) return;
-        if (Settings.f_nvIntensity == -1f) Settings.f_nvIntensity = player.nightVision.intensity;
-        if (Settings.f_nvRange == -1f) Settings.f_nvRange = player.nightVision.range;
+        if (!player) return;
+        if (Mathf.Approximately(Settings.f_nvIntensity, -1f)) Settings.f_nvIntensity = player.nightVision.intensity;
+        if (Mathf.Approximately(Settings.f_nvRange, -1f)) Settings.f_nvRange = player.nightVision.range;
 
         player.nightVision.enabled = Hack.NightVision.IsEnabled() || player.isInsideFactory;
         player.nightVision.intensity = Hack.NightVision.IsEnabled()

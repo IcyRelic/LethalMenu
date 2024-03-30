@@ -8,23 +8,22 @@ internal class StrongHands : Cheat
 {
     public override void Update()
     {
-        if (LethalMenu.localPlayer == null) return;
+        if (!LethalMenu.LocalPlayer) return;
 
-        var heldObject = LethalMenu.localPlayer.currentlyHeldObjectServer;
+        var heldObject = LethalMenu.LocalPlayer.currentlyHeldObjectServer;
 
-        LethalMenu.localPlayer.twoHanded = heldObject == null ? false :
-            Hack.StrongHands.IsEnabled() ? false : heldObject.itemProperties.twoHanded;
+        LethalMenu.LocalPlayer.twoHanded =
+            heldObject && !Hack.StrongHands.IsEnabled() && heldObject.itemProperties.twoHanded;
     }
 
     [HarmonyPostfix]
     [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
     public static void PlayerLateUpdate(PlayerControllerB __instance)
     {
-        if (LethalMenu.localPlayer == null ||
-            __instance.playerClientId != LethalMenu.localPlayer.playerClientId) return;
+        if (!LethalMenu.LocalPlayer ||
+            __instance.playerClientId != LethalMenu.LocalPlayer.playerClientId) return;
 
         var heldObject = __instance.currentlyHeldObjectServer;
-        __instance.twoHanded = heldObject == null ? false :
-            Hack.StrongHands.IsEnabled() ? false : heldObject.itemProperties.twoHanded;
+        __instance.twoHanded = heldObject && !Hack.StrongHands.IsEnabled() && heldObject.itemProperties.twoHanded;
     }
 }

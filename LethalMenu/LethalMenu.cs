@@ -14,46 +14,46 @@ namespace LethalMenu;
 
 public class LethalMenu : MonoBehaviour
 {
-    public static List<GrabbableObject> items = new();
-    public static List<Landmine> landmines = new();
-    public static List<Turret> turrets = new();
-    public static List<EntranceTeleport> doors = new();
-    public static List<PlayerControllerB> players = new();
-    public static List<EnemyAI> enemies = new();
-    public static List<SteamValveHazard> steamValves = new();
-    public static List<TerminalAccessibleObject> bigDoors = new();
-    public static List<TerminalAccessibleObject> allTerminalObjects = new();
-    public static List<DoorLock> doorLocks = new();
-    public static List<ShipTeleporter> teleporters = new();
-    public static List<InteractTrigger> interactTriggers = new();
-    public static HangarShipDoor shipDoor;
-    public static BreakerBox breaker;
-    public static PlayerControllerB localPlayer;
-    public static int selectedPlayer = -1;
+    public static readonly List<GrabbableObject> Items = [];
+    public static readonly List<Landmine> Landmines = [];
+    public static readonly List<Turret> Turrets = [];
+    public static readonly List<EntranceTeleport> Doors = [];
+    public static readonly List<PlayerControllerB> Players = [];
+    public static readonly List<EnemyAI> Enemies = [];
+    public static readonly List<SteamValveHazard> SteamValves = [];
+    public static readonly List<TerminalAccessibleObject> BigDoors = [];
+    public static readonly List<TerminalAccessibleObject> AllTerminalObjects = [];
+    public static readonly List<DoorLock> DoorLocks = [];
+    public static readonly List<ShipTeleporter> Teleporters = [];
+    public static readonly List<InteractTrigger> InteractTriggers = [];
+    public static HangarShipDoor ShipDoor;
+    public static BreakerBox Breaker;
+    public static PlayerControllerB LocalPlayer;
+    public static int SelectedPlayer = -1;
 
 
-    public static string debugMessage = "";
-    public static string debugMessage2 = "";
-    private static LethalMenu instance;
-    private List<Cheat> cheats;
+    public static string DebugMessage = "";
+    public static string DebugMessage2 = "";
+    private static LethalMenu _instance;
+    private List<Cheat> _cheats;
 
-    private Harmony harmony;
-    private HackMenu menu;
+    private Harmony _harmony;
+    private HackMenu _menu;
 
     public static LethalMenu Instance
     {
         get
         {
-            if (instance == null)
-                instance = new LethalMenu();
-            return instance;
+            if (!_instance)
+                _instance = new LethalMenu();
+            return _instance;
         }
     }
 
 
     public void Start()
     {
-        instance = this;
+        _instance = this;
         try
         {
             Localization.Initialize();
@@ -65,34 +65,34 @@ public class LethalMenu : MonoBehaviour
         catch
             (Exception e)
         {
-            debugMessage = e.Message + "\n" + e.StackTrace;
+            DebugMessage = e.Message + "\n" + e.StackTrace;
         }
     }
 
     public void Update()
     {
-        if (!(bool)StartOfRound.Instance || StartOfRound.Instance.inShipPhase) Settings.v_savedLocation = Vector3.zero;
+        if (!StartOfRound.Instance || StartOfRound.Instance.inShipPhase) Settings.v_savedLocation = Vector3.zero;
 
         try
         {
             foreach (Hack hack in Enum.GetValues(typeof(Hack)))
             {
-                if ((bool)StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat ||
-                                                                           localPlayer.quickMenuManager.isMenuOpen ||
-                                                                           localPlayer.inTerminalMenu)) continue;
+                if (StartOfRound.Instance && LocalPlayer && (LocalPlayer.isTypingChat ||
+                                                             LocalPlayer.quickMenuManager.isMenuOpen ||
+                                                             LocalPlayer.inTerminalMenu)) continue;
 
 
                 if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsAnyHackWaiting())
                     hack.Execute();
             }
 
-            if (!(bool)StartOfRound.Instance) return;
+            if (!StartOfRound.Instance) return;
 
-            cheats.ForEach(cheat => cheat.Update());
+            _cheats.ForEach(cheat => cheat.Update());
         }
         catch (Exception e)
         {
-            debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+            DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
         }
     }
 
@@ -100,11 +100,11 @@ public class LethalMenu : MonoBehaviour
     {
         try
         {
-            if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
+            if (StartOfRound.Instance) _cheats.ForEach(cheat => cheat.FixedUpdate());
         }
         catch (Exception e)
         {
-            debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+            DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
         }
     }
 
@@ -116,13 +116,13 @@ public class LethalMenu : MonoBehaviour
             if (Event.current.type == EventType.Repaint)
             {
                 VisualUtil.DrawString(new Vector2(5f, 2f),
-                    "Lethal Menu " + Settings.version + " By IcyRelic, and Dustin", Settings.c_primary,
+                    "Lethal Menu " + Settings.Version + " By IcyRelic, and Dustin", Settings.c_primary,
                     false, bold: true, fontSize: 14);
 
                 if (MenuUtil.Resizing)
                 {
-                    var rTitle = "SettingsTab.ResizeTitle";
-                    var rConfirm = "SettingsTab.ResizeConfirm";
+                    const string rTitle = "SettingsTab.ResizeTitle";
+                    const string rConfirm = "SettingsTab.ResizeConfirm";
                     var rSize = $"{HackMenu.Instance.WindowRect.width}x{HackMenu.Instance.WindowRect.height}";
 
                     VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f),
@@ -132,33 +132,33 @@ public class LethalMenu : MonoBehaviour
                 }
 
 
-                if (Settings.isDebugMode)
+                if (Settings.IsDebugMode)
                 {
                     VisualUtil.DrawString(new Vector2(5f, 20f), "[DEBUG MODE]", new RgbaColor(50, 205, 50, 1f), false,
                         false, false, 10);
-                    VisualUtil.DrawString(new Vector2(10f, 65f), new RgbaColor(255, 195, 0, 1f).AsString(debugMessage),
+                    VisualUtil.DrawString(new Vector2(10f, 65f), new RgbaColor(255, 195, 0, 1f).AsString(DebugMessage),
                         false, false, false, 22);
                     VisualUtil.DrawString(new Vector2(10f, 125f),
-                        new RgbaColor(255, 195, 0, 1f).AsString(debugMessage2), false, false, false, 22);
+                        new RgbaColor(255, 195, 0, 1f).AsString(DebugMessage2), false, false, false, 22);
                 }
 
-                if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.OnGui());
+                if ((bool)StartOfRound.Instance) _cheats.ForEach(cheat => cheat.OnGui());
             }
 
 
-            menu.Draw();
+            _menu.Draw();
         }
         catch (Exception e)
         {
-            debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+            DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
         }
     }
 
     private void DoPatching()
     {
-        harmony = new Harmony("LethalMenu");
+        _harmony = new Harmony("LethalMenu");
         Harmony.DEBUG = false;
-        harmony.PatchAll(Assembly.GetExecutingAssembly());
+        _harmony.PatchAll(Assembly.GetExecutingAssembly());
     }
 
     private void LoadCheats()
@@ -166,11 +166,11 @@ public class LethalMenu : MonoBehaviour
         try
         {
             Settings.Changelog.ReadChanges();
-            cheats = new List<Cheat>();
-            menu = new HackMenu();
+            _cheats = new List<Cheat>();
+            _menu = new HackMenu();
             foreach (var type in Assembly.GetExecutingAssembly().GetTypes().Where(t =>
                          string.Equals(t.Namespace, "LethalMenu.Cheats", StringComparison.Ordinal) &&
-                         t.IsSubclassOf(typeof(Cheat)))) cheats.Add((Cheat)Activator.CreateInstance(type));
+                         t.IsSubclassOf(typeof(Cheat)))) _cheats.Add((Cheat)Activator.CreateInstance(type));
 
             Settings.Config.SaveDefaultConfig();
             Settings.Config.LoadConfig();
@@ -182,32 +182,32 @@ public class LethalMenu : MonoBehaviour
         }
     }
 
-    public IEnumerator CollectObjects()
+    private static IEnumerator CollectObjects()
     {
         while (true)
         {
-            CollectObjects(items);
-            CollectObjects(landmines);
-            CollectObjects(turrets);
-            CollectObjects(doors);
-            CollectObjects(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame);
-            CollectObjects(enemies);
-            CollectObjects(steamValves);
-            CollectObjects(allTerminalObjects);
-            CollectObjects(teleporters);
-            CollectObjects(interactTriggers);
-            CollectObjects(bigDoors, obj => obj.isBigDoor);
-            CollectObjects(doorLocks);
+            CollectObjects(Items);
+            CollectObjects(Landmines);
+            CollectObjects(Turrets);
+            CollectObjects(Doors);
+            CollectObjects(Players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame);
+            CollectObjects(Enemies);
+            CollectObjects(SteamValves);
+            CollectObjects(AllTerminalObjects);
+            CollectObjects(Teleporters);
+            CollectObjects(InteractTriggers);
+            CollectObjects(BigDoors, obj => obj.isBigDoor);
+            CollectObjects(DoorLocks);
 
-            shipDoor = FindObjectOfType<HangarShipDoor>();
-            breaker = FindObjectOfType<BreakerBox>();
-            localPlayer = GameNetworkManager.Instance?.localPlayerController;
+            ShipDoor = FindObjectOfType<HangarShipDoor>();
+            Breaker = FindObjectOfType<BreakerBox>();
+            LocalPlayer = GameNetworkManager.Instance?.localPlayerController;
 
             yield return new WaitForSeconds(1f);
         }
     }
 
-    private void CollectObjects<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
+    private static void CollectObjects<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
     {
         list.Clear();
         list.AddRange(filter == null ? FindObjectsOfType<T>() : FindObjectsOfType<T>().Where(filter));

@@ -33,7 +33,7 @@ internal class HackMenu : MenuFragment
     public HackMenu()
     {
         _instance = this;
-        if (Settings.isDebugMode) _menuTabs.Add(new DebugTab());
+        if (Settings.IsDebugMode) _menuTabs.Add(new DebugTab());
         _menuTabs.Add(new SettingsTab());
         _menuTabs.Add(new GeneralTab());
         _menuTabs.Add(new SelfTab());
@@ -72,7 +72,7 @@ internal class HackMenu : MenuFragment
         Settings.Config.SaveConfig();
     }
 
-    public void Stylize()
+    private void Stylize()
     {
         GUI.skin = ThemeUtil.Skin;
         GUI.color = Color.white;
@@ -96,10 +96,10 @@ internal class HackMenu : MenuFragment
 
     public void Draw()
     {
-        if (Settings.isFirstLaunch || Settings.isMenuOpen) Stylize();
+        if (Settings.IsFirstLaunch || Settings.IsMenuOpen) Stylize();
         else return;
 
-        if (Settings.isFirstLaunch)
+        if (Settings.IsFirstLaunch)
         {
             _firstSetupManagerWindow.Draw();
         }

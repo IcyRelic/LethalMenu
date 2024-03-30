@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using UnityEngine;
 
 namespace LethalMenu.Cheats;
 
@@ -7,10 +8,11 @@ internal class FastClimb : Cheat
 {
     public override void Update()
     {
-        if (LethalMenu.localPlayer == null) return;
-        if (Settings.f_defaultClimbSpeed == -1f) Settings.f_defaultClimbSpeed = LethalMenu.localPlayer.climbSpeed;
+        if (!LethalMenu.LocalPlayer) return;
+        if (Mathf.Approximately(Settings.f_defaultClimbSpeed, -1f))
+            Settings.f_defaultClimbSpeed = LethalMenu.LocalPlayer.climbSpeed;
 
-        LethalMenu.localPlayer.climbSpeed =
+        LethalMenu.LocalPlayer.climbSpeed =
             Hack.FastClimb.IsEnabled() ? Settings.f_climbSpeed : Settings.f_defaultClimbSpeed;
     }
 }

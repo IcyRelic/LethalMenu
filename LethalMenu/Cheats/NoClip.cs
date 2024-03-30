@@ -5,19 +5,19 @@ namespace LethalMenu.Cheats;
 
 internal class NoClip : Cheat
 {
-    private KBInput movement;
+    private KbInput movement;
 
     public override void Update()
     {
-        if (!LethalMenu.localPlayer) return;
+        if (!LethalMenu.LocalPlayer) return;
 
-        Collider collider = LethalMenu.localPlayer.GetComponent<CharacterController>();
+        Collider collider = LethalMenu.LocalPlayer.GetComponent<CharacterController>();
 
         if (Hack.NoClip.IsEnabled())
         {
             var player = GameNetworkManager.Instance.localPlayerController;
 
-            if (movement == null) movement = player.gameObject.AddComponent<KBInput>();
+            if (!movement) movement = player.gameObject.AddComponent<KbInput>();
 
             collider.enabled = false;
 

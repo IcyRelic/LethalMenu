@@ -6,18 +6,14 @@ using UnityEngine;
 
 namespace LethalMenu.Menu.Tab;
 
-internal class ServerTab : MenuTab
+internal class ServerTab() : MenuTab("ServerTab.Title")
 {
-    private string s_credits = "";
-    private string s_quota = "";
-    private string s_scrapAmount = "1";
-    private string s_scrapValue = "1";
+    private string _sCredits = "";
+    private string _sQuota = "";
+    private string _sScrapAmount = "1";
+    private string _sScrapValue = "1";
 
     private Vector2 scrollPos = Vector2.zero;
-
-    public ServerTab() : base("ServerTab.Title")
-    {
-    }
 
     public override void Draw()
     {
@@ -48,22 +44,22 @@ internal class ServerTab : MenuTab
 
         scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-        UI.TextboxAction("ServerTab.EditCredits", ref s_credits, @"[^0-9]", 50,
-            new UIButton("General.Remove", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Remove)),
-            new UIButton("General.Add", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Add)),
-            new UIButton("General.Set", () => Hack.ModifyCredits.Execute(int.Parse(s_credits), ActionType.Set))
+        UI.TextboxAction("ServerTab.EditCredits", ref _sCredits, @"[^0-9]", 50,
+            new UIButton("General.Remove", () => Hack.ModifyCredits.Execute(int.Parse(_sCredits), ActionType.Remove)),
+            new UIButton("General.Add", () => Hack.ModifyCredits.Execute(int.Parse(_sCredits), ActionType.Add)),
+            new UIButton("General.Set", () => Hack.ModifyCredits.Execute(int.Parse(_sCredits), ActionType.Set))
         );
 
-        UI.TextboxAction(["ServerTab.EditQuota", "General.HostTag"], ref s_quota, @"[^0-9]", 50,
-            new UIButton("General.Set", () => Hack.ModifyQuota.Execute(int.Parse(s_quota)))
+        UI.TextboxAction(["ServerTab.EditQuota", "General.HostTag"], ref _sQuota, @"[^0-9]", 50,
+            new UIButton("General.Set", () => Hack.ModifyQuota.Execute(int.Parse(_sQuota)))
         );
 
-        UI.TextboxAction(["ServerTab.ScrapAmount", "General.HostTag"], ref s_scrapAmount, @"[^0-9]", 3,
-            new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapAmount), 0))
+        UI.TextboxAction(["ServerTab.ScrapAmount", "General.HostTag"], ref _sScrapAmount, @"[^0-9]", 3,
+            new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(_sScrapAmount), 0))
         );
 
-        UI.TextboxAction(["ServerTab.ScrapValue", "General.HostTag"], ref s_scrapValue, @"[^0-9]", 3,
-            new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapValue), 1))
+        UI.TextboxAction(["ServerTab.ScrapValue", "General.HostTag"], ref _sScrapValue, @"[^0-9]", 3,
+            new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(_sScrapValue), 1))
         );
 
         UI.Hack(Hack.StartGame, "ServerTab.ForceLand");
@@ -79,7 +75,7 @@ internal class ServerTab : MenuTab
         GUILayout.EndScrollView();
     }
 
-    private void ManagersContent()
+    private static void ManagersContent()
     {
         UI.Header("ServerTab.Managers");
         UI.Toggle("MoonManager.Title", ref HackMenu.Instance.MoonManagerWindow.IsOpen, "General.Close", "General.Open");

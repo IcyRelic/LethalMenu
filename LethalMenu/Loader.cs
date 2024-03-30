@@ -18,7 +18,7 @@ public class Loader : MonoBehaviour
         DontDestroyOnLoad(_load);
     }
 
-    public static void LoadHarmony()
+    private static void LoadHarmony()
     {
         const string name = "LethalMenu.Resources.0Harmony.dll";
         var assembly = Assembly.GetExecutingAssembly();

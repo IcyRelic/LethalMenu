@@ -1,15 +1,20 @@
-﻿namespace LethalMenu.Handler.EnemyControl;
+﻿using UnityEngine;
+
+namespace LethalMenu.Handler.EnemyControl;
 
 internal class MaskedPlayerController : IEnemyController<MaskedPlayerEnemy>
 {
+    private static readonly int HandsOut = Animator.StringToHash("HandsOut");
+    private static readonly int Crouching = Animator.StringToHash("Crouching");
+
     public void UsePrimarySkill(MaskedPlayerEnemy enemy)
     {
-        enemy.SetHandsOutServerRpc(!enemy.creatureAnimator.GetBool("HandsOut"));
+        enemy.SetHandsOutServerRpc(!enemy.creatureAnimator.GetBool(HandsOut));
     }
 
     public void UseSecondarySkill(MaskedPlayerEnemy enemy)
     {
-        enemy.SetCrouchingServerRpc(!enemy.creatureAnimator.GetBool("Crouching"));
+        enemy.SetCrouchingServerRpc(!enemy.creatureAnimator.GetBool(Crouching));
     }
 
     public float InteractRange(MaskedPlayerEnemy _)

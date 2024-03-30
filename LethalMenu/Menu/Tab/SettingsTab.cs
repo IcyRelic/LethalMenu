@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using LethalMenu.Cheats;
 using LethalMenu.Language;
@@ -10,67 +11,63 @@ using UnityEngine.InputSystem.Controls;
 
 namespace LethalMenu.Menu.Tab;
 
-internal class SettingsTab : MenuTab
+internal class SettingsTab() : MenuTab("SettingsTab.Title")
 {
-    private readonly string[] modes = { "Default", "Green", "Blue" };
-    private readonly string s_breakerESPColor = Settings.c_breakerESP.GetHexCode();
-    private readonly string s_kbError = "";
+    private const string SKbError = "";
+    private readonly string[] _modes = ["Default", "Green", "Blue"];
+    private readonly string _sBreakerEspColor = Settings.c_breakerESP.GetHexCode();
 
-    private float f_leftWidth;
-    private int i_languageIndex = -1;
+    private float _fLeftWidth;
+    private int _iLanguageIndex = -1;
 
-    private int i_selectedCrosshairIndex = -1;
-    private Vector2 kbScrollPos = Vector2.zero;
+    private int _iSelectedCrosshairIndex = -1;
+    private Vector2 _kbScrollPosition = Vector2.zero;
 
-    private string s_bgColor = Settings.c_background.GetHexCode();
-    private string s_bigDoorESPColor = Settings.c_bigDoorESP.GetHexCode();
-    private string s_causeOfDeath = Settings.c_causeOfDeath.GetHexCode();
+    private string _sBgColor = Settings.c_background.GetHexCode();
+    private string _sBigDoorEspColor = Settings.c_bigDoorESP.GetHexCode();
+    private string _sCauseOfDeath = Settings.c_causeOfDeath.GetHexCode();
 
     //esp colors
-    private string s_chamsColor = Settings.c_chams.GetHexCode();
-    private string s_crosshairColor = Settings.c_crosshair.GetHexCode();
-    private string s_doorESPColor = Settings.c_entranceExitESP.GetHexCode();
-    private string s_doorLockESPColor = Settings.c_doorLockESP.GetHexCode();
-    private string s_enemyESPColor = Settings.c_enemyESP.GetHexCode();
-    private string s_kbSearch = "";
-    private string s_landmineESPColor = Settings.c_landmineESP.GetHexCode();
+    private string _sChamsColor = Settings.c_chams.GetHexCode();
 
-    private string s_lootTierColors =
+    private Vector2 _scrollPosition = Vector2.zero;
+    private string _sCrosshairColor = Settings.c_crosshair.GetHexCode();
+    private string _sDoorEspColor = Settings.c_entranceExitESP.GetHexCode();
+    private string _sDoorLockEspColor = Settings.c_doorLockESP.GetHexCode();
+    private int _selectedMode;
+    private string _sEnemyEspColor = Settings.c_enemyESP.GetHexCode();
+    private string _sKbSearch = "";
+    private string _sLandmineEspColor = Settings.c_landmineESP.GetHexCode();
+
+    private string _sLootTierColors =
         string.Join(",", Array.ConvertAll(Settings.c_scrapValueColors, x => x.GetHexCode()));
 
-    private string s_lootTiers = string.Join(",", Settings.i_scrapValueThresholds);
-    private string s_menuText = Settings.c_menuText.GetHexCode();
-    private string s_objectESPColor = Settings.c_objectESP.GetHexCode();
-    private string s_playerESPColor = Settings.c_playerESP.GetHexCode();
-    private string s_primaryColor = Settings.c_primary.GetHexCode();
-    private string s_shipESPColor = Settings.c_shipESP.GetHexCode();
-    private string s_tierColorError = "";
-    private string s_turretESPColor = Settings.c_turretESP.GetHexCode();
-    private string s_valveESPColor = Settings.c_steamHazardESP.GetHexCode();
-
-    private Vector2 scrollPos = Vector2.zero;
-    private int selectedMode;
-
-    public SettingsTab() : base("SettingsTab.Title")
-    {
-    }
+    private string _sLootTiers = string.Join(",", Settings.i_scrapValueThresholds);
+    private string _sMenuText = Settings.c_menuText.GetHexCode();
+    private string _sObjectEspColor = Settings.c_objectESP.GetHexCode();
+    private string _sPlayerEspColor = Settings.c_playerESP.GetHexCode();
+    private string _sPrimaryColor = Settings.c_primary.GetHexCode();
+    private string _sShipEspColor = Settings.c_shipESP.GetHexCode();
+    private string _sTierColorError = "";
+    private string _sTurretEspColor = Settings.c_turretESP.GetHexCode();
+    private string _sValveEspColor = Settings.c_steamHazardESP.GetHexCode();
 
     public override void Draw()
     {
-        f_leftWidth = HackMenu.Instance.ContentWidth * 0.55f - HackMenu.SpaceFromLeft;
+        _fLeftWidth = HackMenu.Instance.ContentWidth * 0.55f - HackMenu.SpaceFromLeft;
 
-        if (i_selectedCrosshairIndex == -1) i_selectedCrosshairIndex = (int)Settings.ct_crosshairType;
-        if (i_languageIndex == -1)
-            i_languageIndex = Array.IndexOf(Localization.GetLanguages(), Localization.Language.Name);
+        if (_iSelectedCrosshairIndex == -1) _iSelectedCrosshairIndex = (int)Settings.ct_crosshairType;
+        if (_iLanguageIndex == -1)
+            _iLanguageIndex = Array.IndexOf(Localization.GetLanguages(), Localization.Language.Name);
 
-        GUILayout.BeginVertical(GUILayout.Width(f_leftWidth));
+        GUILayout.BeginVertical(GUILayout.Width(_fLeftWidth));
 
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
         MenuContent();
         ControlSettingsContent();
         VisualSettingsContent();
         ColorContent();
-        ESPSettingsContent();
+        EspSettingsContent();
         GUILayout.EndScrollView();
         GUILayout.EndVertical();
         GUILayout.BeginVertical(
@@ -85,26 +82,26 @@ internal class SettingsTab : MenuTab
     private void MenuContent()
     {
         UI.Actions(
-            new UIButton("SettingsTab.ResetSettings", () => Settings.Config.RegenerateConfig()),
-            new UIButton("SettingsTab.SaveSettings", () => Settings.Config.SaveConfig()),
-            new UIButton("SettingsTab.ReloadSettings", () => Settings.Config.LoadConfig())
+            new UIButton("SettingsTab.ResetSettings", Settings.Config.RegenerateConfig),
+            new UIButton("SettingsTab.SaveSettings", Settings.Config.SaveConfig),
+            new UIButton("SettingsTab.ReloadSettings", Settings.Config.LoadConfig)
         );
         //UI.Checkbox("Debug Mode", ref Settings.isDebugMode);
 
         UI.Header("SettingsTab.General");
 
-        UI.IndexSelectAction("Theme:", ref selectedMode, modes);
-        UI.Select("SettingsTab.Language", ref i_languageIndex,
+        UI.IndexSelectAction("Theme:", ref _selectedMode, _modes);
+        UI.Select("SettingsTab.Language", ref _iLanguageIndex,
             Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
         UI.NumSelect("SettingsTab.FontSize", ref Settings.i_menuFontSize, 5, 30);
         UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);
         UI.NumSelect("SettingsTab.TextboxSize", ref Settings.i_textboxWidth, 50, 120);
         UI.Slider("SettingsTab.MenuAlpha", Settings.f_menuAlpha.ToString("0.00"), ref Settings.f_menuAlpha, 0.1f, 1f);
-        UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
+        UI.Button("SettingsTab.ResizeMenu", MenuUtil.BeginResizeMenu, "SettingsTab.Resize");
         UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
     }
 
-    private void ControlSettingsContent()
+    private static void ControlSettingsContent()
     {
         UI.Header("SettingsTab.Control");
 
@@ -126,26 +123,28 @@ internal class SettingsTab : MenuTab
             ref Settings.f_crosshairScale, 4f, 24f);
         UI.Slider("SettingsTab.CrosshairThickness", Settings.f_crosshairThickness.ToString("0.00"),
             ref Settings.f_crosshairThickness, 1f, 5f);
-        UI.Select("SettingsTab.CrosshairType", ref i_selectedCrosshairIndex,
+        UI.Select("SettingsTab.CrosshairType", ref _iSelectedCrosshairIndex,
             new UIOption("X", () => Settings.ct_crosshairType = CrosshairType.X),
             new UIOption("+", () => Settings.ct_crosshairType = CrosshairType.Plus)
         );
-        UI.Slider("SettingsTab.BreadcrumbInterval", Settings.f_breadcrumbInterval.ToString(),
+        UI.Slider("SettingsTab.BreadcrumbInterval", Settings.f_breadcrumbInterval.ToString(CultureInfo.CurrentCulture),
             ref Settings.f_breadcrumbInterval, 1f, 10f);
-        UI.Slider("SettingsTab.NVIntensity", Settings.f_nvIntensity.ToString(), ref Settings.f_nvIntensity,
+        UI.Slider("SettingsTab.NVIntensity", Settings.f_nvIntensity.ToString(CultureInfo.CurrentCulture),
+            ref Settings.f_nvIntensity,
             Settings.f_defaultNightVisionIntensity, 10000f);
-        UI.Slider("SettingsTab.NVRange", Settings.f_nvRange.ToString(), ref Settings.f_nvRange,
+        UI.Slider("SettingsTab.NVRange", Settings.f_nvRange.ToString(CultureInfo.CurrentCulture),
+            ref Settings.f_nvRange,
             Settings.f_defaultNightVisionRange, 10000f);
         UI.Checkbox("SettingsTab.DisableModels", ref Settings.b_disableSpectatorModels);
     }
 
-    private void ESPSettingsContent()
+    private void EspSettingsContent()
     {
         UI.Header("SettingsTab.ESP", true);
         UI.SubHeader("SettingsTab.Chams");
 
         GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical(GUILayout.Width(f_leftWidth * 0.465f));
+        GUILayout.BeginVertical(GUILayout.Width(_fLeftWidth * 0.465f));
         UI.Checkbox("SettingsTab.Objects", ref Settings.b_chamsObject);
         UI.Checkbox("SettingsTab.Enemies", ref Settings.b_chamsEnemy);
         UI.Checkbox("SettingsTab.Players", ref Settings.b_chamsPlayer);
@@ -153,7 +152,7 @@ internal class SettingsTab : MenuTab
         UI.Checkbox("SettingsTab.Breaker", ref Settings.b_chamsBreaker);
         GUILayout.EndVertical();
 
-        GUILayout.BeginVertical(GUILayout.Width(f_leftWidth * 0.465f));
+        GUILayout.BeginVertical(GUILayout.Width(_fLeftWidth * 0.465f));
         UI.Checkbox("SettingsTab.Turrets", ref Settings.b_chamsTurret);
         UI.Checkbox("SettingsTab.Ship", ref Settings.b_chamsShip);
         UI.Checkbox("SettingsTab.SteamValves", ref Settings.b_chamsSteamHazard);
@@ -168,7 +167,7 @@ internal class SettingsTab : MenuTab
         var types = Enum.GetValues(typeof(EnemyAIType)).Cast<EnemyAIType>().ToList();
 
         GUILayout.BeginHorizontal();
-        GUILayout.BeginVertical(GUILayout.Width(f_leftWidth * 0.465f));
+        GUILayout.BeginVertical(GUILayout.Width(_fLeftWidth * 0.465f));
         for (var i = 0; i < types.Count / 2; i++)
         {
             var type = types[i];
@@ -177,7 +176,7 @@ internal class SettingsTab : MenuTab
         }
 
         GUILayout.EndVertical();
-        GUILayout.BeginVertical(GUILayout.Width(f_leftWidth * 0.465f));
+        GUILayout.BeginVertical(GUILayout.Width(_fLeftWidth * 0.465f));
         for (var i = types.Count / 2; i < types.Count; i++)
         {
             var type = types[i];
@@ -194,71 +193,71 @@ internal class SettingsTab : MenuTab
     {
         UI.Header("SettingsTab.ColorsHeader");
 
-        UI.TextboxAction("SettingsTab.MenuBG", ref s_bgColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_background, s_bgColor))
+        UI.TextboxAction("SettingsTab.MenuBG", ref _sBgColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_background, _sBgColor))
         );
-        UI.TextboxAction("SettingsTab.MenuText", ref s_menuText, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_menuText, s_menuText))
+        UI.TextboxAction("SettingsTab.MenuText", ref _sMenuText, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_menuText, _sMenuText))
         );
-        UI.TextboxAction("SettingsTab.Primary", ref s_primaryColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_primary, s_primaryColor))
+        UI.TextboxAction("SettingsTab.Primary", ref _sPrimaryColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_primary, _sPrimaryColor))
         );
-        UI.TextboxAction("SettingsTab.Crosshair", ref s_crosshairColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_crosshair, s_crosshairColor))
+        UI.TextboxAction("SettingsTab.Crosshair", ref _sCrosshairColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_crosshair, _sCrosshairColor))
         );
 
         UI.Header("SettingsTab.ESPColors", true);
-        UI.TextboxAction("SettingsTab.Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_chams, s_chamsColor))
+        UI.TextboxAction("SettingsTab.Chams", ref _sChamsColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_chams, _sChamsColor))
         );
 
-        UI.TextboxAction("SettingsTab.Objects", ref s_objectESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_objectESP, s_objectESPColor))
+        UI.TextboxAction("SettingsTab.Objects", ref _sObjectEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_objectESP, _sObjectEspColor))
         );
-        UI.TextboxAction("SettingsTab.Enemies", ref s_enemyESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_enemyESP, s_enemyESPColor))
+        UI.TextboxAction("SettingsTab.Enemies", ref _sEnemyEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_enemyESP, _sEnemyEspColor))
         );
-        UI.TextboxAction("SettingsTab.Players", ref s_playerESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_playerESP, s_playerESPColor))
+        UI.TextboxAction("SettingsTab.Players", ref _sPlayerEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_playerESP, _sPlayerEspColor))
         );
-        UI.TextboxAction("SettingsTab.EntExtDoors", ref s_doorESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_entranceExitESP, s_doorESPColor))
+        UI.TextboxAction("SettingsTab.EntExtDoors", ref _sDoorEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_entranceExitESP, _sDoorEspColor))
         );
-        UI.TextboxAction("SettingsTab.Landmines", ref s_landmineESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_landmineESP, s_landmineESPColor))
+        UI.TextboxAction("SettingsTab.Landmines", ref _sLandmineEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_landmineESP, _sLandmineEspColor))
         );
-        UI.TextboxAction("SettingsTab.Turrets", ref s_turretESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_turretESP, s_turretESPColor))
+        UI.TextboxAction("SettingsTab.Turrets", ref _sTurretEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_turretESP, _sTurretEspColor))
         );
-        UI.TextboxAction("SettingsTab.Ship", ref s_shipESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_shipESP, s_shipESPColor))
+        UI.TextboxAction("SettingsTab.Ship", ref _sShipEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_shipESP, _sShipEspColor))
         );
-        UI.TextboxAction("SettingsTab.SteamValves", ref s_valveESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_steamHazardESP, s_valveESPColor))
+        UI.TextboxAction("SettingsTab.SteamValves", ref _sValveEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_steamHazardESP, _sValveEspColor))
         );
-        UI.TextboxAction("SettingsTab.BigDoors", ref s_bigDoorESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_bigDoorESP, s_bigDoorESPColor))
+        UI.TextboxAction("SettingsTab.BigDoors", ref _sBigDoorEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_bigDoorESP, _sBigDoorEspColor))
         );
-        UI.TextboxAction("SettingsTab.LockedDoors", ref s_doorLockESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_doorLockESP, s_doorLockESPColor))
+        UI.TextboxAction("SettingsTab.LockedDoors", ref _sDoorLockEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_doorLockESP, _sDoorLockEspColor))
         );
-        UI.TextboxAction("SettingsTab.Breaker", ref s_doorLockESPColor, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_breakerESP, s_breakerESPColor))
+        UI.TextboxAction("SettingsTab.Breaker", ref _sDoorLockEspColor, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_breakerESP, _sBreakerEspColor))
         );
 
 
         UI.Header("SettingsTab.TieredLootHeader", true);
-        if (s_tierColorError != "") UI.Label(s_tierColorError, Settings.c_error);
+        if (_sTierColorError != "") UI.Label(_sTierColorError, Settings.c_error);
 
 
-        UI.Button(["SettingsTab.TieredLoot", $"({GetTiersColored()})"], () => EditTierColors(), "General.Set");
-        UI.Textbox("SettingsTab.Tiers", ref s_lootTiers, @"[^0-9,]");
-        UI.Textbox("SettingsTab.Colors", ref s_lootTierColors, @"[^0-9A-Za-z,]");
+        UI.Button(["SettingsTab.TieredLoot", $"({GetTiersColored()})"], EditTierColors, "General.Set");
+        UI.Textbox("SettingsTab.Tiers", ref _sLootTiers, @"[^0-9,]");
+        UI.Textbox("SettingsTab.Colors", ref _sLootTierColors, @"[^0-9A-Za-z,]");
 
         UI.Header("SettingsTab.OtherColors", true);
 
-        UI.TextboxAction("SettingsTab.CauseOfDeath", ref s_causeOfDeath, @"[^0-9A-Za-z]", 8,
-            new UIButton("General.Set", () => SetColor(ref Settings.c_causeOfDeath, s_causeOfDeath))
+        UI.TextboxAction("SettingsTab.CauseOfDeath", ref _sCauseOfDeath, @"[^0-9A-Za-z]", 8,
+            new UIButton("General.Set", () => SetColor(ref Settings.c_causeOfDeath, _sCauseOfDeath))
         );
     }
 
@@ -266,15 +265,15 @@ internal class SettingsTab : MenuTab
     {
         UI.Header("SettingsTab.Keybinds");
 
-        if (s_kbError != "") UI.Label(s_kbError, Settings.c_error);
+        if (SKbError != "") UI.Label(SKbError, Settings.c_error);
 
 
         GUILayout.BeginVertical();
-        kbScrollPos = GUILayout.BeginScrollView(kbScrollPos);
-        UI.Textbox("General.Search", ref s_kbSearch, big: false);
+        _kbScrollPosition = GUILayout.BeginScrollView(_kbScrollPosition);
+        UI.Textbox("General.Search", ref _sKbSearch, big: false);
 
         var hacks = Enum.GetValues(typeof(Hack)).Cast<Hack>().ToList()
-            .FindAll(x => x.ToString().ToLower().Contains(s_kbSearch.ToLower()));
+            .FindAll(x => x.ToString().ToLower().Contains(_sKbSearch.ToLower()));
 
         foreach (var hack in hacks)
         {
@@ -306,7 +305,7 @@ internal class SettingsTab : MenuTab
         GUILayout.EndVertical();
     }
 
-    private void SetColor(ref RgbaColor color, string hexCode)
+    private static void SetColor(ref RgbaColor color, string hexCode)
     {
         while (hexCode.Length < 6) hexCode += "0";
         color = new RgbaColor(hexCode);
@@ -315,12 +314,12 @@ internal class SettingsTab : MenuTab
 
     private void EditTierColors()
     {
-        var thresholds = Array.ConvertAll(s_lootTiers.Split(','), x => int.TryParse(x, out var i) ? i : 0);
-        var rgbaColors = Array.ConvertAll(s_lootTierColors.Split(','), x => new RgbaColor(x));
+        var thresholds = Array.ConvertAll(_sLootTiers.Split(','), x => int.TryParse(x, out var i) ? i : 0);
+        var rgbaColors = Array.ConvertAll(_sLootTierColors.Split(','), x => new RgbaColor(x));
 
         if (thresholds.Length != rgbaColors.Length)
         {
-            s_tierColorError = "SettingsTab.TierColorError";
+            _sTierColorError = "SettingsTab.TierColorError";
             return;
         }
 
@@ -330,7 +329,7 @@ internal class SettingsTab : MenuTab
         Settings.Config.SaveConfig();
     }
 
-    private string GetTiersColored()
+    private static string GetTiersColored()
     {
         var tiers = new string[Settings.i_scrapValueThresholds.Length];
 

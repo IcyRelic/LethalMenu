@@ -11,30 +11,38 @@ namespace LethalMenu.Handler;
 public class ChamHandler
 {
     //private static Dictionary<int, List<Renderer>> renderers = new Dictionary<int, List<Renderer>>();
-    private static readonly Dictionary<int, Material[]> materials = new();
-    private static Material m_chamMaterial;
+    private static readonly Dictionary<int, Material[]> Materials = new();
+    private static Material _mChamMaterial;
     private static int _color;
 
-    private readonly Object @object;
+    // Shader properties
+    private static readonly int SrcBlend = Shader.PropertyToID("_SrcBlend");
+    private static readonly int DstBlend = Shader.PropertyToID("_DstBlend");
+    private static readonly int Cull = Shader.PropertyToID("_Cull");
+    private static readonly int ZTest = Shader.PropertyToID("_ZTest");
+    private static readonly int ZWrite = Shader.PropertyToID("_ZWrite");
+    private static readonly int Color1 = Shader.PropertyToID("_Color");
 
-    public ChamHandler(Object obj)
+    private readonly Object _object;
+
+    private ChamHandler(Object obj)
     {
-        @object = obj;
+        _object = obj;
     }
 
     public static void SetupChamMaterial()
     {
-        m_chamMaterial = new Material(Shader.Find("Hidden/Internal-Colored"))
+        _mChamMaterial = new Material(Shader.Find("Hidden/Internal-Colored"))
         {
             hideFlags = HideFlags.DontSaveInEditor | HideFlags.HideInHierarchy
         };
 
-        m_chamMaterial.SetInt("_SrcBlend", 5);
-        m_chamMaterial.SetInt("_DstBlend", 10);
-        m_chamMaterial.SetInt("_Cull", 0);
-        m_chamMaterial.SetInt("_ZTest", 8);
-        m_chamMaterial.SetInt("_ZWrite", 0);
-        m_chamMaterial.SetColor("_Color", Settings.c_chams.GetColor());
+        _mChamMaterial.SetInt(SrcBlend, 5);
+        _mChamMaterial.SetInt(DstBlend, 10);
+        _mChamMaterial.SetInt(Cull, 0);
+        _mChamMaterial.SetInt(ZTest, 8);
+        _mChamMaterial.SetInt(ZWrite, 0);
+        _mChamMaterial.SetColor(Color1, Settings.c_chams.GetColor());
         _color = Shader.PropertyToID("_Color");
 
         LethalMenu.Instance.StartCoroutine(CleanUpMaterials());
@@ -44,12 +52,20 @@ public class ChamHandler
     {
         var renderers = new List<Renderer>();
 
-        if (@object == null) return renderers;
+        if (_object == null) return renderers;
 
 
-        if (@object is GameObject) renderers.AddRange(((GameObject)@object).GetComponentsInChildren<Renderer>());
-        if (@object is Component) renderers.AddRange(((Component)@object).GetComponentsInChildren<Renderer>());
-        if (@object is DoorLock) renderers.AddRange(((DoorLock)@object).GetComponentsInParent<Renderer>());
+        switch (_object)
+        {
+            case GameObject gameObject:
+                renderers.AddRange(gameObject.GetComponentsInChildren<Renderer>());
+                break;
+            case Component component:
+                renderers.AddRange(component.GetComponentsInChildren<Renderer>());
+                break;
+        }
+
+        if (_object is DoorLock @lock) renderers.AddRange(@lock.GetComponentsInParent<Renderer>());
 
         return renderers;
     }
@@ -58,63 +74,60 @@ public class ChamHandler
     {
         GetRenderers().ForEach(r =>
         {
-            if (materials.ContainsKey(r.GetInstanceID()))
-            {
-                r.SetMaterials(materials[r.GetInstanceID()].ToList());
-                materials.Remove(r.GetInstanceID());
-            }
+            if (!Materials.ContainsKey(r.GetInstanceID())) return;
+
+            r.SetMaterials(Materials[r.GetInstanceID()].ToList());
+            Materials.Remove(r.GetInstanceID());
         });
     }
 
     public void ProcessCham(float distance)
     {
-        if (@object == null) return;
+        if (_object == null) return;
 
-        var e = false;
-
-        if (@object is GrabbableObject) e = Settings.b_chamsObject;
-        if (@object is Landmine) e = Settings.b_chamsLandmine;
-        if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
-        if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
-        if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsEspEnabled() ? Settings.b_chamsEnemy : false;
-        if (@object is SteamValveHazard) e = Settings.b_chamsSteamHazard;
-        if (@object is TerminalAccessibleObject && ((TerminalAccessibleObject)@object).isBigDoor)
-            e = Settings.b_chamsBigDoor;
-        if (@object is DoorLock) e = Settings.b_chamsDoorLock;
-        if (@object is HangarShipDoor) e = Settings.b_chamsShip;
-        if (@object is BreakerBox) e = Settings.b_chamsBreaker;
-
+        var e = _object switch
+        {
+            GrabbableObject => Settings.b_chamsObject,
+            Landmine => Settings.b_chamsLandmine,
+            GameObject when _object.name.StartsWith("TurretContainer") => Settings.b_chamsTurret,
+            PlayerControllerB => Settings.b_chamsPlayer,
+            EnemyAI enemy => enemy.GetEnemyAIType().IsEspEnabled() && Settings.b_chamsEnemy,
+            SteamValveHazard => Settings.b_chamsSteamHazard,
+            TerminalAccessibleObject { isBigDoor: true } => Settings.b_chamsBigDoor,
+            DoorLock => Settings.b_chamsDoorLock,
+            HangarShipDoor => Settings.b_chamsShip,
+            BreakerBox => Settings.b_chamsBreaker,
+            _ => false
+        };
 
         if (e && distance >= Settings.f_chamDistance) ApplyCham();
         else RemoveCham();
 
-        if ((@object is GrabbableObject && ((GrabbableObject)@object).isHeld)
-            || (@object is SteamValveHazard && !((SteamValveHazard)@object).triggerScript.interactable)
-           ) RemoveCham();
+        if (_object is GrabbableObject { isHeld: true } ||
+            (_object is SteamValveHazard hazard && !hazard.triggerScript.interactable))
+            RemoveCham();
     }
 
     public void ApplyCham()
     {
-        if (@object == null) return;
+        if (_object == null) return;
 
         GetRenderers().ForEach(r =>
         {
-            if (r == null) return;
+            if (!r) return;
 
-            if (!materials.ContainsKey(r.GetInstanceID()))
-            {
-                if (r.materials == null) return;
+            if (Materials.ContainsKey(r.GetInstanceID())) return;
+            if (r.materials == null) return;
 
-                materials.Add(r.GetInstanceID(), r.materials);
-                r.SetMaterials(Enumerable.Repeat(m_chamMaterial, r.materials.Length).ToList());
-                UpdateChamColor(r);
-            }
+            Materials.Add(r.GetInstanceID(), r.materials);
+            r.SetMaterials(Enumerable.Repeat(_mChamMaterial, r.materials.Length).ToList());
+            UpdateChamColor(r);
         });
     }
 
     private void UpdateChamColor(Renderer r)
     {
-        if (r == null || r.materials == null) return;
+        if (!r || r.materials == null) return;
         r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
     }
 
@@ -129,15 +142,11 @@ public class ChamHandler
         while (true)
         {
             yield return new WaitForSeconds(15f);
-            var cnt = 0;
+
             var keep = new List<int>();
             Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
 
-            materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k =>
-            {
-                materials.Remove(k);
-                cnt++;
-            });
+            Materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => { Materials.Remove(k); });
         }
     }
 }

@@ -9,8 +9,8 @@ namespace LethalMenu.Menu.Popup;
 
 internal class UnlockableManagerWindow : PopupMenu
 {
-    private string s_search = "";
-    private Vector2 scrollPos = Vector2.zero;
+    private Vector2 _scrollPosition = Vector2.zero;
+    private string _sSearch = "";
 
     public UnlockableManagerWindow(int id) : base("UnlockableManager.Title", new Rect(50f, 50f, 562f, 225f), id)
     {
@@ -20,18 +20,18 @@ internal class UnlockableManagerWindow : PopupMenu
     {
         if (!(bool)StartOfRound.Instance) return;
 
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
         var unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().ToList();
 
         GUILayout.BeginHorizontal();
-        UI.Textbox("General.Search", ref s_search);
+        UI.Textbox("General.Search", ref _sSearch);
         GUILayout.FlexibleSpace();
         UI.Button("UnlockableManager.UnlockAll", () => unlockables.ForEach(x => Hack.UnlockUnlockable.Execute(x)));
         GUILayout.EndHorizontal();
 
 
-        UI.ButtonGrid(unlockables, u => u.GetItem().unlockableName, s_search, u => Hack.UnlockUnlockable.Execute(u), 3);
+        UI.ButtonGrid(unlockables, u => u.GetItem().unlockableName, _sSearch, u => Hack.UnlockUnlockable.Execute(u), 3);
 
         GUILayout.EndScrollView();
         GUI.DragWindow();

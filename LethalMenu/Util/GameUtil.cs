@@ -52,8 +52,8 @@ public static class GameUtil
     {
         if (!(bool)StartOfRound.Instance) return;
 
-        LethalMenu.turrets.ForEach(t => t.GetComponent<TerminalAccessibleObject>().InitializeValues());
-        LethalMenu.landmines.ForEach(l => l.GetComponent<TerminalAccessibleObject>().InitializeValues());
+        LethalMenu.Turrets.ForEach(t => t.GetComponent<TerminalAccessibleObject>().InitializeValues());
+        LethalMenu.Landmines.ForEach(l => l.GetComponent<TerminalAccessibleObject>().InitializeValues());
     }
 
     public static float GetDistanceToPlayer(Vector3 position)

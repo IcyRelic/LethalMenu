@@ -4,13 +4,9 @@ using UnityEngine;
 
 namespace LethalMenu.Menu.Tab;
 
-internal class TrollTab : MenuTab
+internal class TrollTab() : MenuTab("TrollTab.Title")
 {
-    private Vector2 scrollPos = Vector2.zero;
-
-    public TrollTab() : base("TrollTab.Title")
-    {
-    }
+    private Vector2 _scrollPosition = Vector2.zero;
 
     public override void Draw()
     {
@@ -24,7 +20,7 @@ internal class TrollTab : MenuTab
     {
         UI.Header("TrollTab.Title");
 
-        scrollPos = GUILayout.BeginScrollView(scrollPos);
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
         UI.Hack(Hack.ToggleShipHorn, "TrollTab.ShipHorn");
         UI.Hack(Hack.ToggleShipLights, "TrollTab.ShipLights");

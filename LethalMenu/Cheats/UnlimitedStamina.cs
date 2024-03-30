@@ -11,7 +11,7 @@ internal class UnlimitedStamina : Cheat
         if (!Hack.UnlimitedStamina.IsEnabled()) return;
 
         var player = GameNetworkManager.Instance.localPlayerController;
-        if (player == null) return;
+        if (!player) return;
         player.sprintMeter = 1f;
     }
 
@@ -19,7 +19,7 @@ internal class UnlimitedStamina : Cheat
     [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
     public static void PlayerLateUpdate(PlayerControllerB __instance)
     {
-        if (LethalMenu.localPlayer == null || LethalMenu.localPlayer.playerClientId != __instance.playerClientId ||
+        if (LethalMenu.LocalPlayer == null || LethalMenu.LocalPlayer.playerClientId != __instance.playerClientId ||
             !Hack.UnlimitedStamina.IsEnabled()) return;
 
 

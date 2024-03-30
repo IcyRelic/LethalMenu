@@ -24,9 +24,9 @@ internal class Shoplifter : Cheat
                         originalCreditsWorths[i] = ___buyableItemsList[i].creditsWorth;
             }
 
-            for (var index = 0; index < ___buyableItemsList.Length; ++index)
-                if (___buyableItemsList[index] != null)
-                    ___buyableItemsList[index].creditsWorth = 0;
+            foreach (var t in ___buyableItemsList)
+                if (t != null)
+                    t.creditsWorth = 0;
         }
         else
         {

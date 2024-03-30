@@ -19,36 +19,36 @@ internal enum Behaviour
 
 public class EnemyHandler
 {
-    private readonly EnemyAI enemy;
-    private PlayerControllerB target;
+    private readonly EnemyAI _enemy;
+    private PlayerControllerB _target;
 
-    public EnemyHandler(EnemyAI enemy)
+    private EnemyHandler(EnemyAI enemy)
     {
-        this.enemy = enemy;
+        _enemy = enemy;
     }
 
     private void HandleLureCrawler()
     {
-        var crawler = enemy as CrawlerAI;
+        var crawler = _enemy as CrawlerAI;
 
-        crawler.BeginChasingPlayerServerRpc((int)target.playerClientId);
+        crawler?.BeginChasingPlayerServerRpc((int)_target.playerClientId);
     }
 
     private void HandleLureMouthDog()
     {
-        var dog = enemy as MouthDogAI;
+        var dog = _enemy as MouthDogAI;
 
-        dog.ReactToOtherDogHowl(target.transform.position);
+        dog?.ReactToOtherDogHowl(_target.transform.position);
     }
 
     private void HandleLureBaboonBird()
     {
-        var baboon = enemy as BaboonBirdAI;
+        var baboon = _enemy as BaboonBirdAI;
 
         Threat threat = new()
         {
-            threatScript = target,
-            lastSeenPosition = target.transform.position,
+            threatScript = _target,
+            lastSeenPosition = _target.transform.position,
             threatLevel = int.MaxValue,
             type = ThreatType.Player,
             focusLevel = int.MaxValue,
@@ -59,50 +59,58 @@ public class EnemyHandler
             hasAttacked = true
         };
 
-        baboon.SetAggressiveModeServerRpc(1);
+        baboon?.SetAggressiveModeServerRpc(1);
         baboon.Reflect().Invoke("ReactToThreat", threat);
     }
 
     private void HandleLureForestGiant()
     {
-        var giant = enemy as ForestGiantAI;
+        var giant = _enemy as ForestGiantAI;
+
+        if (!giant) return;
 
         giant.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         giant.StopSearch(giant.roamPlanet, false);
-        giant.chasingPlayer = target;
+        giant.chasingPlayer = _target;
         giant.investigating = true;
 
-        giant.SetDestinationToPosition(target.transform.position);
+        giant.SetDestinationToPosition(_target.transform.position);
         giant.Reflect().SetValue("lostPlayerInChase", false);
     }
 
     private void HandleLureCentipede()
     {
-        var centipede = enemy as CentipedeAI;
-        centipede.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-        //centipede.ClingToPlayerServerRpc(target.playerClientId);
-        var clingingToCeiling = (bool)centipede.Reflect().GetValue("clingingToCeiling");
+        var centipede = _enemy as CentipedeAI;
 
-        if (clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
+        if (!centipede) return;
+
+        centipede.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
+
+        var clingingToCeiling = centipede.Reflect().GetValue<bool>("clingingToCeiling");
+
+        if (clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(_target.playerClientId);
     }
 
     private void HandleLureFlowerman()
     {
-        var flowerman = enemy as FlowermanAI;
-        flowerman.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-        flowerman.EnterAngerModeServerRpc(20);
+        var enemy = _enemy as FlowermanAI;
+
+        if (!enemy) return;
+
+        enemy.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
+        enemy.EnterAngerModeServerRpc(20);
     }
 
     private void HandleLureSandSpider()
     {
-        var spider = enemy as SandSpiderAI;
-        spider.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        var spider = _enemy as SandSpiderAI;
+        spider?.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         //spider.meshContainer.position = target.transform.position;
         //spider.SyncMeshContainerPositionToClients();
 
-        var web = spider.SpawnWeb(target.transform.position);
+        var web = spider.SpawnWeb(_target.transform.position);
 
-        spider.webTraps.ForEach(web => spider.PlayerTripWebServerRpc(web.trapID, (int)target.playerClientId));
+        spider?.webTraps.ForEach(webTrap => spider.PlayerTripWebServerRpc(webTrap.trapID, (int)_target.playerClientId));
 
 
         //spider.Reflect().SetValue("onWall", false).SetValue("watchFromDistance", false);
@@ -110,64 +118,67 @@ public class EnemyHandler
 
     private void HandleLureRedLocustBees()
     {
-        var bees = enemy as RedLocustBees;
-        bees.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-        bees.hive.isHeld = true;
+        var bees = _enemy as RedLocustBees;
+        bees?.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
+        if (bees) bees.hive.isHeld = true;
     }
 
     private void HandleLureHoarderBug()
     {
-        var bug = enemy as HoarderBugAI;
+        var bug = _enemy as HoarderBugAI;
+
+        if (!bug) return;
+
         bug.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-        bug.angryAtPlayer = target;
+        bug.angryAtPlayer = _target;
         bug.angryTimer = float.MaxValue;
 
         bug.Reflect().SetValue("lostPlayerInChase", false)
-            .Invoke("SyncNestPositionServerRpc", target.transform.position);
+            ?.Invoke("SyncNestPositionServerRpc", _target.transform.position);
     }
 
     private void HandleLureNutcrackerEnemy()
     {
-        var nutcracker = enemy as NutcrackerEnemyAI;
-        nutcracker.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
+        var nutcracker = _enemy as NutcrackerEnemyAI;
+        nutcracker?.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
 
-        nutcracker.Reflect().SetValue("lastSeenPlayerPos", target.transform.position)
-            .Invoke("timeSinceSeeingTarget", 0);
+        nutcracker.Reflect().SetValue("lastSeenPlayerPos", _target.transform.position)
+            ?.Invoke("timeSinceSeeingTarget", 0);
     }
 
     private void HandleLureMaskedPlayerEnemy()
     {
-        var masked = enemy as MaskedPlayerEnemy;
-        masked.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        var masked = _enemy as MaskedPlayerEnemy;
+        masked?.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
     }
 
     private void HandleLureSpringMan()
     {
-        var spring = enemy as SpringManAI;
-        spring.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        var spring = _enemy as SpringManAI;
+        spring?.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
     }
 
     private void HandleLurePuffer()
     {
-        var puffer = enemy as PufferAI;
-        puffer.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
+        var puffer = _enemy as PufferAI;
+        puffer?.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
     }
 
     private void HandleLureJester()
     {
-        var jester = enemy as JesterAI;
-        jester.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
+        var jester = _enemy as JesterAI;
+        jester?.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
     }
 
     private void HandleLureSandWorm()
     {
-        var worm = enemy as SandWormAI;
-        worm.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        var worm = _enemy as SandWormAI;
+        worm?.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
     }
 
     private void HandleLureEnemyByType()
     {
-        switch (enemy)
+        switch (_enemy)
         {
             case CrawlerAI:
                 HandleLureCrawler();
@@ -215,60 +226,60 @@ public class EnemyHandler
                 HandleLureSandWorm();
                 break;
             default:
-                enemy.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+                _enemy.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
                 break;
         }
     }
 
     private void HandleSandWormKillPlayer()
     {
-        var worm = enemy as SandWormAI;
-        Teleport(target);
-        worm.StartEmergeAnimation();
+        var worm = _enemy as SandWormAI;
+        Teleport(_target);
+        worm?.StartEmergeAnimation();
     }
 
     private void HandleKillPlayerByType()
     {
-        switch (enemy)
+        switch (_enemy)
         {
             case MouthDogAI dog:
-                dog.KillPlayerServerRpc((int)target.playerClientId);
+                dog.KillPlayerServerRpc((int)_target.playerClientId);
                 break;
             case ForestGiantAI giant:
-                giant.GrabPlayerServerRpc((int)target.playerClientId);
+                giant.GrabPlayerServerRpc((int)_target.playerClientId);
                 break;
             case FlowermanAI flowerman:
-                flowerman.KillPlayerAnimationServerRpc((int)target.playerClientId);
+                flowerman.KillPlayerAnimationServerRpc((int)_target.playerClientId);
                 break;
             case RedLocustBees bees:
-                bees.BeeKillPlayerServerRpc((int)target.playerClientId);
+                bees.BeeKillPlayerServerRpc((int)_target.playerClientId);
                 break;
             case NutcrackerEnemyAI nutcracker:
-                nutcracker.LegKickPlayerServerRpc((int)target.playerClientId);
+                nutcracker.LegKickPlayerServerRpc((int)_target.playerClientId);
                 break;
             case MaskedPlayerEnemy masked:
-                masked.KillPlayerAnimationServerRpc((int)target.playerClientId);
+                masked.KillPlayerAnimationServerRpc((int)_target.playerClientId);
                 break;
             case JesterAI jester:
-                jester.KillPlayerServerRpc((int)target.playerClientId);
+                jester.KillPlayerServerRpc((int)_target.playerClientId);
                 break;
             case SandWormAI worm:
                 HandleSandWormKillPlayer();
                 break;
             case CentipedeAI centipede:
                 centipede.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-                centipede.ClingToPlayerServerRpc(target.playerClientId);
+                centipede.ClingToPlayerServerRpc(_target.playerClientId);
                 break;
             case BlobAI blob:
-                blob.SlimeKillPlayerEffectServerRpc((int)target.playerClientId);
+                blob.SlimeKillPlayerEffectServerRpc((int)_target.playerClientId);
                 break;
         }
     }
 
     public bool HasInstaKill()
     {
-        List<Type> types = new()
-        {
+        List<Type> types =
+        [
             typeof(MouthDogAI),
             typeof(ForestGiantAI),
             typeof(FlowermanAI),
@@ -279,69 +290,66 @@ public class EnemyHandler
             typeof(SandWormAI),
             typeof(BlobAI),
             typeof(CentipedeAI)
-        };
+        ];
 
-        return types.Contains(enemy.GetType());
+        return types.Contains(_enemy.GetType());
     }
 
     public void Control()
     {
-        if (enemy.isEnemyDead) return;
+        if (_enemy.isEnemyDead) return;
 
-        Cheats.EnemyControl.Control(enemy);
+        Cheats.EnemyControl.Control(_enemy);
     }
 
     public void Kill(bool despawn = false)
     {
-        var forceDespawn = false;
+        var forceDespawn = _enemy.GetType() == typeof(ForestGiantAI)
+                           || _enemy.GetType() == typeof(SandWormAI)
+                           || _enemy.GetType() == typeof(BlobAI)
+                           || _enemy.GetType() == typeof(DressGirlAI)
+                           || _enemy.GetType() == typeof(PufferAI)
+                           || _enemy.GetType() == typeof(SpringManAI)
+                           || _enemy.GetType() == typeof(DocileLocustBeesAI)
+                           || _enemy.GetType() == typeof(DoublewingAI)
+                           || _enemy.GetType() == typeof(RedLocustBees)
+                           || _enemy.GetType() == typeof(LassoManAI)
+                           || _enemy.GetType() == typeof(JesterAI);
 
-        if (enemy.GetType() == typeof(ForestGiantAI)
-            || enemy.GetType() == typeof(SandWormAI)
-            || enemy.GetType() == typeof(BlobAI)
-            || enemy.GetType() == typeof(DressGirlAI)
-            || enemy.GetType() == typeof(PufferAI)
-            || enemy.GetType() == typeof(SpringManAI)
-            || enemy.GetType() == typeof(DocileLocustBeesAI)
-            || enemy.GetType() == typeof(DoublewingAI)
-            || enemy.GetType() == typeof(RedLocustBees)
-            || enemy.GetType() == typeof(LassoManAI)
-            || enemy.GetType() == typeof(JesterAI)
-           ) forceDespawn = true;
-
-        enemy.KillEnemyServerRpc(forceDespawn ? forceDespawn : despawn);
+        _enemy.KillEnemyServerRpc(forceDespawn || despawn);
     }
 
     public void Stun()
     {
-        if (!enemy.enemyType.canBeStunned) return;
-        enemy.SetEnemyStunned(true, 5);
+        if (!_enemy.enemyType.canBeStunned) return;
+        _enemy.SetEnemyStunned(true, 5);
     }
 
     public void Teleport(PlayerControllerB player)
     {
-        if (enemy.GetType() != typeof(MaskedPlayerEnemy) && ((enemy.isOutside && player.isInsideFactory) ||
-                                                             (!enemy.isOutside && !player.isInsideFactory))) return;
+        if (_enemy.GetType() != typeof(MaskedPlayerEnemy) && ((_enemy.isOutside && player.isInsideFactory) ||
+                                                              (!_enemy.isOutside && !player.isInsideFactory))) return;
 
-        enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-        enemy.transform.position = player.transform.position;
-        enemy.SyncPositionToClients();
+        _enemy.ChangeEnemyOwnerServerRpc(LethalMenu.LocalPlayer.actualClientId);
+        _enemy.transform.position = player.transform.position;
+        _enemy.SyncPositionToClients();
     }
 
 
     public void TargetPlayer(PlayerControllerB player)
     {
-        target = player;
-        enemy.targetPlayer = player;
-        enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-        enemy.SetMovingTowardsTargetPlayer(player);
+        _target = player;
+        _enemy.targetPlayer = player;
+        _enemy.ChangeEnemyOwnerServerRpc(LethalMenu.LocalPlayer.actualClientId);
+        _enemy.SetMovingTowardsTargetPlayer(player);
         HandleLureEnemyByType();
     }
 
     public void KillPlayer(PlayerControllerB player)
     {
-        target = player;
-        enemy.targetPlayer = player;
-        enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+        _target = player;
+        _enemy.targetPlayer = player;
+        _enemy.ChangeEnemyOwnerServerRpc(LethalMenu.LocalPlayer.actualClientId);
         HandleKillPlayerByType();
     }
 
@@ -388,14 +396,14 @@ public static class HoarderBugAIExtensions
 {
     public static void StealAllItems(this HoarderBugAI bug)
     {
-        bug.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+        bug.ChangeEnemyOwnerServerRpc(LethalMenu.LocalPlayer.actualClientId);
 
         LethalMenu.Instance.StartCoroutine(StealItems(bug));
     }
 
     private static IEnumerator StealItems(HoarderBugAI bug)
     {
-        var items = LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom && i.isInFactory)
+        var items = LethalMenu.Items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom && i.isInFactory)
             .ConvertAll(i => i.NetworkObject);
 
         foreach (var obj in items)
@@ -411,24 +419,21 @@ public static class SandSpiderAIExtensions
 {
     public static int SpawnWeb(this SandSpiderAI spider, Vector3 position)
     {
-        spider.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+        spider.ChangeEnemyOwnerServerRpc(LethalMenu.LocalPlayer.actualClientId);
 
         var ray = new Ray(position, Vector3.Scale(Random.onUnitSphere, new Vector3(1f, Random.Range(0.6f, 1f), 1f)));
 
-        if (Physics.Raycast(ray, out var rayHit, 7f, StartOfRound.Instance.collidersAndRoomMask) &&
-            rayHit.distance >= 1.5)
-        {
-            var point = rayHit.point;
-            if (Physics.Raycast(position, Vector3.down, out rayHit, 10f, StartOfRound.Instance.collidersAndRoomMask))
-            {
-                spider.SpawnWebTrapServerRpc(rayHit.point, point);
+        if (!Physics.Raycast(ray, out var rayHit, 7f, StartOfRound.Instance.collidersAndRoomMask) ||
+            !(rayHit.distance >= 1.5)) return -1;
 
+        var point = rayHit.point;
 
-                return spider.webTraps.Count - 1;
-            }
-        }
+        if (!Physics.Raycast(position, Vector3.down, out rayHit, 10f,
+                StartOfRound.Instance.collidersAndRoomMask)) return -1;
 
-        return -1;
+        spider.SpawnWebTrapServerRpc(rayHit.point, point);
+
+        return spider.webTraps.Count - 1;
     }
 
     public static void BreakAllWebs(this SandSpiderAI spider)

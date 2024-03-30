@@ -106,6 +106,12 @@
         <Reference Include="Unity.RenderPipelines.Core.Runtime">
             <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Core.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestModule">
+            <HintPath>Resources\BaseGame\UnityEngine.UnityWebRequestModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+            <HintPath>Resources\BaseGame\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.UnityWebRequestWWWModule">
             <HintPath>Resources\BaseGame\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
         </Reference>

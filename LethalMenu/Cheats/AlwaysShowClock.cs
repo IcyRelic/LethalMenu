@@ -21,18 +21,18 @@ internal class AlwaysShowClock : Cheat
 
     private string GetTime()
     {
-        var num1 = (int)(TimeOfDay.Instance.normalizedTimeOfDay *
-                         (60.0 * TimeOfDay.Instance.numberOfHours)) + 360;
-        var num2 = (int)Mathf.Floor(num1 / 60);
+        var timeOfDay = (int)(TimeOfDay.Instance.normalizedTimeOfDay *
+                              (60.0 * TimeOfDay.Instance.numberOfHours)) + 360;
+        var floor = (int)Mathf.Floor(timeOfDay / 60);
 
 
-        if (num2 >= 24) return "12:00 AM";
+        if (floor >= 24) return "12:00 AM";
 
-        var amPM = num2 >= 12 ? "PM" : "AM";
-        if (num2 > 12)
-            num2 %= 12;
-        var num3 = num1 % 60;
+        var amPm = floor >= 12 ? "PM" : "AM";
+        if (floor > 12)
+            floor %= 12;
+        var i = timeOfDay % 60;
 
-        return $"{num2:00}:{num3:00} ".TrimStart('0') + amPM;
+        return $"{floor:00}:{i:00} ".TrimStart('0') + amPm;
     }
 }
