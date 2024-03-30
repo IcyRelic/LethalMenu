@@ -13,7 +13,6 @@ namespace LethalMenu.Menu.Tab;
 
 internal class SettingsTab() : MenuTab("SettingsTab.Title")
 {
-    private const string SKbError = "";
     private readonly string[] _modes = ["Default", "Green", "Blue"];
     private readonly string _sBreakerEspColor = Settings.c_breakerESP.GetHexCode();
 
@@ -264,9 +263,6 @@ internal class SettingsTab() : MenuTab("SettingsTab.Title")
     private void KeybindContent()
     {
         UI.Header("SettingsTab.Keybinds");
-
-        if (SKbError != "") UI.Label(SKbError, Settings.c_error);
-
 
         GUILayout.BeginVertical();
         _kbScrollPosition = GUILayout.BeginScrollView(_kbScrollPosition);

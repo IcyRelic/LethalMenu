@@ -9,7 +9,6 @@ internal class PopupMenu : MenuFragment
     private readonly int _id;
     private readonly string _localization;
     private string _name;
-    private int _selectedTab = 0;
     public bool IsOpen = false;
 
     protected List<MenuTab> MenuTabs = [];
