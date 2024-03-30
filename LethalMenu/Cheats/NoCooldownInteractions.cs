@@ -110,7 +110,7 @@ namespace LethalMenu.Cheats
             {
                 __instance.interactCooldown = true;
                 DoorLock door = __instance.GetComponentInParent<DoorLock>();
-                bool isOpen = (bool) door.Reflect().GetValue("isDoorOpened");
+                bool isOpen = door.Reflect().GetValue<bool>("isDoorOpened");
                 if (isOpen) __instance.timeToHold = 0.0f;
                 else __instance.timeToHold = Hack.InstantInteract.IsEnabled()? 0.0f : 0.3f;
             }
