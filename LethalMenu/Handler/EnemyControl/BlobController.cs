@@ -1,25 +1,42 @@
 ﻿using LethalMenu.Util;
 
-namespace LethalMenu.Handler.EnemyControl
+namespace LethalMenu.Handler.EnemyControl;
+
+internal class BlobController : IEnemyController<BlobAI>
 {
-    internal class BlobController : IEnemyController<BlobAI>
+    public void OnSecondarySkillHold(BlobAI enemy)
     {
-        void SetTamedTimer(BlobAI enemy, float time) => enemy.Reflect().SetValue("tamedTimer", time);
+        SetAngeredTimer(enemy, 0.0f);
+        SetTamedTimer(enemy, 2.0f);
+    }
 
-        void SetAngeredTimer(BlobAI enemy, float time) => enemy.Reflect().SetValue("angeredTimer", time);
+    public void ReleaseSecondarySkill(BlobAI enemy)
+    {
+        SetTamedTimer(enemy, 0.0f);
+    }
 
-        public void OnSecondarySkillHold(BlobAI enemy)
-        {
-            this.SetAngeredTimer(enemy, 0.0f);
-            this.SetTamedTimer(enemy, 2.0f);
-        }
+    public void UsePrimarySkill(BlobAI enemy)
+    {
+        SetAngeredTimer(enemy, 18.0f);
+    }
 
-        public void ReleaseSecondarySkill(BlobAI enemy) => this.SetTamedTimer(enemy, 0.0f);
+    public float InteractRange(BlobAI _)
+    {
+        return 3.5f;
+    }
 
-        public void UsePrimarySkill(BlobAI enemy) => this.SetAngeredTimer(enemy, 18.0f);
+    public float SprintMultiplier(BlobAI _)
+    {
+        return 9.8f;
+    }
 
-        public float InteractRange(BlobAI _) => 3.5f;
+    private void SetTamedTimer(BlobAI enemy, float time)
+    {
+        enemy.Reflect().SetValue("tamedTimer", time);
+    }
 
-        public float SprintMultiplier(BlobAI _) => 9.8f;
+    private void SetAngeredTimer(BlobAI enemy, float time)
+    {
+        enemy.Reflect().SetValue("angeredTimer", time);
     }
 }

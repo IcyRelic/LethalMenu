@@ -1,24 +1,19 @@
-﻿using GameNetcodeStuff;
+﻿namespace LethalMenu.Cheats;
 
-namespace LethalMenu.Cheats
+internal class UnlimitedBattery : Cheat
 {
-    internal class UnlimitedBattery : Cheat
+    public override void Update()
     {
-        public override void Update()
+        if (!Hack.UnlimitedBattery.IsEnabled()) return;
+
+
+        if (LethalMenu.localPlayer == null) return;
+        foreach (var item in LethalMenu.localPlayer.ItemSlots)
         {
-            if (!Hack.UnlimitedBattery.IsEnabled()) return;
+            if (item == null || !item.itemProperties.requiresBattery) continue;
 
-
-            if(LethalMenu.localPlayer == null) return;
-            foreach (GrabbableObject item in LethalMenu.localPlayer.ItemSlots)
-            {
-                if (item == null || !item.itemProperties.requiresBattery) continue;
-
-                item.insertedBattery.charge = 1f;
-                item.SyncBatteryServerRpc(100);
-
-               
-            }
+            item.insertedBattery.charge = 1f;
+            item.SyncBatteryServerRpc(100);
         }
     }
 }

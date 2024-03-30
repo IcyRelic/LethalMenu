@@ -1,91 +1,79 @@
 ﻿using LethalMenu.Menu.Core;
-using System;
-using System.Collections;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace LethalMenu.Util
+namespace LethalMenu.Util;
+
+public static class MenuUtil
 {
+    public static bool Resizing;
+    private static readonly float MaxWidth = Screen.width - Screen.width * 0.1f;
+    private static readonly float MaxHeight = Screen.height - Screen.height * 0.1f;
+    private static int _oldWidth, _oldHeight;
+    private static float MouseX => Mouse.current.position.value.x;
+    private static float MouseY => Screen.height - Mouse.current.position.value.y;
 
 
-    public class MenuUtil
+    public static void BeginResizeMenu()
     {
-        public static bool resizing = false;
-        public static float MouseX => Mouse.current.position.value.x;
-        public static float MouseY => Screen.height - Mouse.current.position.value.y;
-        public static float maxWidth = Screen.width - (Screen.width * 0.1f);
-        public static float maxHeight = Screen.height - (Screen.height * 0.1f);
-        private static int oldWidth, oldHeight;
+        if (Resizing) return;
+        WarpCursor();
+        Resizing = true;
+        _oldWidth = Settings.i_menuWidth;
+        _oldHeight = Settings.i_menuHeight;
+    }
 
+    private static void WarpCursor()
+    {
+        var currentX = HackMenu.Instance.WindowRect.x + HackMenu.Instance.WindowRect.width;
+        //get an inverted screen position for the height
+        var currentY = Screen.height - (HackMenu.Instance.WindowRect.y + HackMenu.Instance.WindowRect.height);
 
-        public static void BeginResizeMenu()
+        Mouse.current.WarpCursorPosition(new Vector2(currentX, currentY));
+    }
+
+    public static void ResizeMenu()
+    {
+        if (!Resizing) return;
+
+        if (Mouse.current.leftButton.wasPressedThisFrame)
         {
-            if (resizing) return;
-            WarpCursor();
-            resizing = true;
-            oldWidth = Settings.i_menuWidth;
-            oldHeight = Settings.i_menuHeight;
+            Resizing = false;
+            Settings.Config.SaveConfig();
+            return;
         }
 
-        public static void WarpCursor()
+        if (Mouse.current.rightButton.wasPressedThisFrame)
         {
-            float currentX = HackMenu.Instance.windowRect.x + HackMenu.Instance.windowRect.width;
-            //get an inverted screen position for the height
-            float currentY = Screen.height - (HackMenu.Instance.windowRect.y + HackMenu.Instance.windowRect.height);
-
-            Mouse.current.WarpCursorPosition(new Vector2(currentX, currentY));
-
-
-        }
-        
-        public static void ResizeMenu()
-        {
-            if(!resizing) return;
-
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                resizing = false;
-                Settings.Config.SaveConfig();
-                return;
-            }
-
-            if(Mouse.current.rightButton.wasPressedThisFrame)
-            {
-                resizing = false;
-                Settings.i_menuWidth = oldWidth;
-                Settings.i_menuHeight = oldHeight;
-                //HackMenu.Instance.Resize();
-                Settings.Config.SaveConfig();
-                return;
-            }
-
-            
-
-
-            float currentX = HackMenu.Instance.windowRect.x + HackMenu.Instance.windowRect.width;
-            float currentY = HackMenu.Instance.windowRect.y + HackMenu.Instance.windowRect.height;
-
-            Settings.i_menuWidth = (int) Mathf.Clamp(MouseX - HackMenu.Instance.windowRect.x, 500, maxWidth);
-            Settings.i_menuHeight = (int) Mathf.Clamp(MouseY - HackMenu.Instance.windowRect.y, 250, maxHeight);
-            HackMenu.Instance.Resize();
-        }
-    
-        public static void ShowCursor()
-        {
-            LethalMenu.localPlayer.playerActions.Disable();
-            Cursor.visible = true;
-            Settings.clm_lastCursorState = Cursor.lockState;
-            Cursor.lockState = CursorLockMode.None;
+            Resizing = false;
+            Settings.i_menuWidth = _oldWidth;
+            Settings.i_menuHeight = _oldHeight;
+            //HackMenu.Instance.Resize();
+            Settings.Config.SaveConfig();
+            return;
         }
 
-        public static void HideCursor()
-        {
-            LethalMenu.localPlayer.playerActions.Enable();
-            Cursor.visible = false;
-            Cursor.lockState = Settings.clm_lastCursorState;
-        }
+
+        var currentX = HackMenu.Instance.WindowRect.x + HackMenu.Instance.WindowRect.width;
+        var currentY = HackMenu.Instance.WindowRect.y + HackMenu.Instance.WindowRect.height;
+
+        Settings.i_menuWidth = (int)Mathf.Clamp(MouseX - HackMenu.Instance.WindowRect.x, 500, MaxWidth);
+        Settings.i_menuHeight = (int)Mathf.Clamp(MouseY - HackMenu.Instance.WindowRect.y, 250, MaxHeight);
+        HackMenu.Instance.Resize();
+    }
+
+    public static void ShowCursor()
+    {
+        LethalMenu.localPlayer.playerActions.Disable();
+        Cursor.visible = true;
+        Settings.clm_lastCursorState = Cursor.lockState;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public static void HideCursor()
+    {
+        LethalMenu.localPlayer.playerActions.Enable();
+        Cursor.visible = false;
+        Cursor.lockState = Settings.clm_lastCursorState;
     }
 }

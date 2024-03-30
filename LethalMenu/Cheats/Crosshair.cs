@@ -1,43 +1,43 @@
 ﻿using LethalMenu.Util;
 using UnityEngine;
 
-namespace LethalMenu.Cheats
+namespace LethalMenu.Cheats;
+
+public enum CrosshairType
 {
-    public enum CrosshairType
-    {
-        X = 0,
-        Plus = 1
-    }
-    internal class Crosshair : Cheat
-    {
-        
+    X = 0,
+    Plus = 1
+}
 
-        public override void OnGui()
+internal class Crosshair : Cheat
+{
+    public override void OnGui()
+    {
+        if (!Hack.Crosshair.IsEnabled()) return;
+
+        var pointsX = new Vector2[4]
         {
-            if (!Hack.Crosshair.IsEnabled()) return;
+            new(Screen.width / 2f - Settings.f_crosshairScale,
+                Screen.height / 2f - Settings.f_crosshairScale),
+            new(Screen.width / 2f + Settings.f_crosshairScale,
+                Screen.height / 2f + Settings.f_crosshairScale),
+            new(Screen.width / 2f + Settings.f_crosshairScale,
+                Screen.height / 2f - Settings.f_crosshairScale),
+            new(Screen.width / 2f - Settings.f_crosshairScale,
+                Screen.height / 2f + Settings.f_crosshairScale)
+        };
 
-            Vector2[] pointsX = new Vector2[4]
-                {
-                    new Vector2((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f - Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f + Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f - Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f + Settings.f_crosshairScale)
-                };
+        var pointsPlus = new Vector2[4]
+        {
+            new(Screen.width / 2f - Settings.f_crosshairScale, Screen.height / 2f),
+            new(Screen.width / 2f + Settings.f_crosshairScale, Screen.height / 2f),
+            new(Screen.width / 2f, Screen.height / 2f - Settings.f_crosshairScale),
+            new(Screen.width / 2f, Screen.height / 2f + Settings.f_crosshairScale)
+        };
 
-            Vector2[] pointsPlus = new Vector2[4]
-            {
-                    new Vector2((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f),
-                    new Vector2((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f),
-                    new Vector2((float)Screen.width / 2f, (float)Screen.height / 2f - Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f, (float)Screen.height / 2f + Settings.f_crosshairScale)
-                };
+        var points = Settings.ct_crosshairType == CrosshairType.Plus ? pointsPlus : pointsX;
 
-            Vector2[] points = Settings.ct_crosshairType == CrosshairType.Plus ? pointsPlus : pointsX;
-
-            VisualUtil.DrawLine(points[0], points[1], Settings.c_crosshair, Settings.f_crosshairThickness);
-            VisualUtil.DrawLine(points[2], points[3], Settings.c_crosshair, Settings.f_crosshairThickness);
-            
-
-        }
+        VisualUtil.DrawLine(points[0], points[1], Settings.c_crosshair, Settings.f_crosshairThickness);
+        VisualUtil.DrawLine(points[2], points[3], Settings.c_crosshair, Settings.f_crosshairThickness);
     }
 }

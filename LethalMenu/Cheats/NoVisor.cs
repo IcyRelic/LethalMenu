@@ -1,26 +1,18 @@
 using UnityEngine;
 
-namespace LethalMenu.Cheats
+namespace LethalMenu.Cheats;
+
+internal class NoVisor : Cheat
 {
-    internal class NoVisor : Cheat
+    public override void Update()
     {
-        public override void Update()
-        {
-            RemoveVisor();
-        }
+        RemoveVisor();
+    }
 
-        public static void RemoveVisor()
-        {
-            GameObject localVisor = GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/");
+    public static void RemoveVisor()
+    {
+        var localVisor = GameObject.Find("Systems/Rendering/PlayerHUDHelmetModel/");
 
-            if (Hack.NoVisor.IsEnabled())
-            {
-                localVisor?.SetActive(false);
-            }
-            else
-            {
-                localVisor?.SetActive(true);
-            }
-        }
+        localVisor?.SetActive(!Hack.NoVisor.IsEnabled());
     }
 }

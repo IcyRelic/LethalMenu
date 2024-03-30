@@ -1,45 +1,36 @@
-﻿using GameNetcodeStuff;
-using LethalMenu.Components;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
+﻿using LethalMenu.Components;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using Object = UnityEngine.Object;
-using Vector3 = UnityEngine.Vector3;
 
-namespace LethalMenu.Cheats
+namespace LethalMenu.Cheats;
+
+internal class NoClip : Cheat
 {
-    internal class NoClip : Cheat
+    private KBInput movement;
+
+    public override void Update()
     {
-        private KBInput movement = null;
+        if (!LethalMenu.localPlayer) return;
 
-        public override void Update()
+        Collider collider = LethalMenu.localPlayer.GetComponent<CharacterController>();
+
+        if (Hack.NoClip.IsEnabled())
         {
-            if(!LethalMenu.localPlayer) return;
+            var player = GameNetworkManager.Instance.localPlayerController;
 
-            Collider collider = LethalMenu.localPlayer.GetComponent<CharacterController>();
+            if (movement == null) movement = player.gameObject.AddComponent<KBInput>();
 
-            if (Hack.NoClip.IsEnabled())
-            {
-                PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+            collider.enabled = false;
 
-                if(movement == null) movement = player.gameObject.AddComponent<KBInput>();
-
-                collider.enabled = false;
-
-                player.transform.transform.position = movement.transform.position;
+            player.transform.transform.position = movement.transform.position;
 
 
-                //player.transform.position += vector3 * (Settings.f_noclipSpeed * Time.deltaTime);
-            } 
-            else
-            {
-                collider.enabled = true;
-                Destroy(movement);
-                movement = null;
-            }
+            //player.transform.position += vector3 * (Settings.f_noclipSpeed * Time.deltaTime);
         }
-
+        else
+        {
+            collider.enabled = true;
+            Destroy(movement);
+            movement = null;
+        }
     }
 }

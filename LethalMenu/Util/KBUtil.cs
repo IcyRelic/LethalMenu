@@ -1,92 +1,70 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
-namespace LethalMenu.Util
+namespace LethalMenu.Util;
+
+public static class KbUtil
 {
-    public class KBUtil
+    public static void BeginChangeKeyBind(Hack hack, params Action[] callbacks)
     {
-        internal class KBCallback
+        hack.SetWaiting(true);
+        _ = TryGetPressedKeyTask(new KbCallback(hack).Invoke, callbacks);
+    }
+
+    private static async Task TryGetPressedKeyTask(Action<ButtonControl> callback, params Action[] otherCallbacks)
+    {
+        await Task.Run(async () =>
         {
-            private Hack hack;
+            //wait .5 seconds
 
-            public KBCallback(Hack hack)
+            await Task.Delay(250);
+
+            var startTime = Time.time;
+            ButtonControl btn = null;
+            do
             {
-                this.hack = hack;
-            }
+                var pressed = GetPressedBtn();
 
-            public async void Invoke(ButtonControl btn)
-            {
-                hack.SetKeyBind(btn);
-                await Task.Delay(100);
-                hack.SetWaiting(false);
-                Settings.Config.SaveConfig();
-            }
-            
-        }
 
-        public static void BeginChangeKeyBind(Hack hack, params Action[] callbacks)
+                if (pressed != null)
+                    //if (!HackExtensions.KeyBindInUse(pressed)) 
+                    btn = pressed;
+                //else kbError = "SettingsTab.BindInUseError";
+                if (Time.time - startTime > 15f) break;
+            } while (btn == null);
+
+            if (btn == null) return;
+
+            callback?.Invoke(btn);
+            otherCallbacks.ToList().ForEach(cb => cb?.Invoke());
+        });
+    }
+
+    private static ButtonControl GetPressedBtn()
+    {
+        foreach (var key in Keyboard.current.allKeys.Where(key => key.wasPressedThisFrame)) return key;
+
+        var mouseButtons = new[]
         {
-            hack.SetWaiting(true);
-            _ = TryGetPressedKeyTask(new KBCallback(hack).Invoke, callbacks);
-        }
+            Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton,
+            Mouse.current.forwardButton, Mouse.current.backButton
+        };
 
-        private static async Task TryGetPressedKeyTask(Action<ButtonControl> callback, params Action[] otherCallbacks)
+        return mouseButtons.FirstOrDefault(btn => btn.wasPressedThisFrame);
+    }
+
+    private class KbCallback(Hack hack)
+    {
+        public async void Invoke(ButtonControl btn)
         {
-            await Task.Run(async () =>
-            {
-                //wait .5 seconds
-                
-                await Task.Delay(250);
-
-                float startTime = Time.time;
-                ButtonControl btn = null;
-                do
-                {
-                    ButtonControl pressed = GetPressedBtn();
-
-
-                    if (pressed != null)
-                    {
-                        //if (!HackExtensions.KeyBindInUse(pressed)) 
-                        btn = pressed;
-                        //else kbError = "SettingsTab.BindInUseError";
-                    }
-
-                    if (Time.time - startTime > 15f) break;
-                } while (btn == null);
-
-                if (btn == null) return;
-
-                callback?.Invoke(btn);
-                otherCallbacks.ToList().ForEach(cb => cb?.Invoke());
-            });
-
-
+            hack.SetKeyBind(btn);
+            await Task.Delay(100);
+            hack.SetWaiting(false);
+            Settings.Config.SaveConfig();
         }
-
-        private static ButtonControl GetPressedBtn()
-        {
-            foreach (KeyControl key in Keyboard.current.allKeys)
-            {
-                if (key.wasPressedThisFrame) return key;
-
-            }
-
-            ButtonControl[] mouseButtons = new ButtonControl[] { Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton };
-
-            foreach (ButtonControl btn in mouseButtons)
-            {
-                if (btn.wasPressedThisFrame) return btn;
-            }
-
-            return null;
-        }
-
     }
 }

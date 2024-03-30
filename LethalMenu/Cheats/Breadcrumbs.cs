@@ -1,51 +1,45 @@
-﻿using GameNetcodeStuff;
-using LethalMenu.Util;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using LethalMenu.Util;
 using UnityEngine;
 
+namespace LethalMenu.Cheats;
 
-namespace LethalMenu.Cheats
+internal class Breadcrumbs : Cheat
 {
+    private readonly List<Vector3> crumbs = [];
+    private long last;
 
-    internal class Breadcrumbs : Cheat
+    public override void Update()
     {
-        private List<Vector3> crumbs = new List<Vector3>();
-        private long last = 0;
+        if ((!(bool)StartOfRound.Instance || !StartOfRound.Instance.shipHasLanded) && crumbs.Count > 0) crumbs.Clear();
 
-        public override void OnGui()
+        if (!Hack.Breadcrumbs.IsEnabled()) return;
+
+        var player = GameNetworkManager.Instance.localPlayerController;
+
+        var currentTimeMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+
+        if (!(currentTimeMillis - last >= Settings.f_breadcrumbInterval * 1000L) || player.isPlayerDead) return;
+
+        last = currentTimeMillis;
+        var pos = player.transform.position;
+        pos.y -= 0.5f;
+
+        crumbs.Add(pos);
+    }
+
+    public override void OnGui()
+    {
+        if (!Hack.Breadcrumbs.IsEnabled()) return;
+
+
+        foreach (var crumb in crumbs)
         {
-            if(!Hack.Breadcrumbs.IsEnabled()) return;
+            Vector3 screen;
+            if (!WorldToScreen(crumb, out screen)) continue;
 
-
-            foreach(Vector3 crumb in crumbs)
-            {
-                Vector3 screen;
-                if (!WorldToScreen(crumb, out screen)) continue;
-                
-                VisualUtil.DrawString(new Vector2(screen.x, screen.y), crumbs.IndexOf(crumb).ToString(), true, true);
-            }
-            
-        }
-
-        public override void Update()
-        {
-            if ((!(bool)StartOfRound.Instance || !StartOfRound.Instance.shipHasLanded) && crumbs.Count > 0) crumbs.Clear();
-
-            if (!Hack.Breadcrumbs.IsEnabled()) return;
-
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-
-            long currentTimeMillis = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-
-            if (currentTimeMillis - last >= (Settings.f_breadcrumbInterval * 1000L) && !player.isPlayerDead)
-            {
-                last = currentTimeMillis;
-                Vector3 pos = player.transform.position;
-                pos.y -= 0.5f;
-
-                crumbs.Add(pos);
-            }
+            VisualUtil.DrawString(new Vector2(screen.x, screen.y), crumbs.IndexOf(crumb).ToString(), true, true);
         }
     }
 }

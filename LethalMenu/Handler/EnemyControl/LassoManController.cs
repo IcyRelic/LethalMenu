@@ -1,9 +1,14 @@
-﻿namespace LethalMenu.Handler.EnemyControl
-{
-    internal class LassoManController : IEnemyController<LassoManAI>
-    {
-        public void UsePrimarySkill(LassoManAI enemy) => enemy.MakeScreechNoiseServerRpc();
+﻿namespace LethalMenu.Handler.EnemyControl;
 
-        public bool SyncAnimationSpeedEnabled(LassoManAI enemy) => false;
+internal class LassoManController : IEnemyController<LassoManAI>
+{
+    public void UsePrimarySkill(LassoManAI enemy)
+    {
+        enemy.MakeScreechNoiseServerRpc();
+    }
+
+    public bool SyncAnimationSpeedEnabled(LassoManAI enemy)
+    {
+        return false;
     }
 }

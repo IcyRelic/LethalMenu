@@ -1,41 +1,39 @@
-﻿using LethalMenu.Menu.Core;
+﻿using System;
+using System.Linq;
+using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
-using System;
-using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
-namespace LethalMenu.Menu.Popup
+namespace LethalMenu.Menu.Popup;
+
+internal class UnlockableManagerWindow : PopupMenu
 {
-    internal class UnlockableManagerWindow : PopupMenu
+    private string s_search = "";
+    private Vector2 scrollPos = Vector2.zero;
+
+    public UnlockableManagerWindow(int id) : base("UnlockableManager.Title", new Rect(50f, 50f, 562f, 225f), id)
     {
-        private Vector2 scrollPos = Vector2.zero;
-        private string s_search = "";
+    }
 
-        public UnlockableManagerWindow(int id) : base("UnlockableManager.Title", new Rect(50f, 50f, 562f, 225f), id) { }
+    protected override void DrawContent(int windowID)
+    {
+        if (!(bool)StartOfRound.Instance) return;
 
-        public override void DrawContent(int windowID)
-        {
-            if(!(bool)StartOfRound.Instance) return;
+        scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
+        var unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().ToList();
 
-            var unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().ToList();
-
-            GUILayout.BeginHorizontal();
-            UI.Textbox("General.Search", ref s_search);
-            GUILayout.FlexibleSpace();
-            UI.Button("UnlockableManager.UnlockAll", () => unlockables.ForEach(x => Hack.UnlockUnlockable.Execute(x)));
-            GUILayout.EndHorizontal();
-
-            
-            UI.ButtonGrid(unlockables, (u) => u.GetItem().unlockableName, s_search, (u) => Hack.UnlockUnlockable.Execute(u), 3);
-
-            GUILayout.EndScrollView();
-            GUI.DragWindow();
-        }
+        GUILayout.BeginHorizontal();
+        UI.Textbox("General.Search", ref s_search);
+        GUILayout.FlexibleSpace();
+        UI.Button("UnlockableManager.UnlockAll", () => unlockables.ForEach(x => Hack.UnlockUnlockable.Execute(x)));
+        GUILayout.EndHorizontal();
 
 
+        UI.ButtonGrid(unlockables, u => u.GetItem().unlockableName, s_search, u => Hack.UnlockUnlockable.Execute(u), 3);
+
+        GUILayout.EndScrollView();
+        GUI.DragWindow();
     }
 }

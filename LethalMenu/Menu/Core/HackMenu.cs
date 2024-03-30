@@ -1,162 +1,159 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
 using LethalMenu.Menu.Popup;
 using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
-using System.Linq;
-using UnityEngine.Experimental.Rendering;
+using UnityEngine;
 
-namespace LethalMenu.Menu.Core
+namespace LethalMenu.Menu.Core;
+
+internal class HackMenu : MenuFragment
 {
-    internal class HackMenu : MenuFragment
+    private const int SpaceFromTop = 60;
+    public const int SpaceFromLeft = 10;
+
+    private static HackMenu _instance;
+    private readonly PopupMenu _firstSetupManagerWindow = new FirstSetupManagerWindow(4);
+
+    private readonly List<MenuTab> _menuTabs = [];
+    public readonly PopupMenu ItemManagerWindow = new ItemManagerWindow(3);
+    public readonly PopupMenu LootManager = new LootManager(5);
+
+    public readonly PopupMenu MoonManagerWindow = new MoonManagerWindow(1);
+    public readonly PopupMenu UnlockableManagerWindow = new UnlockableManagerWindow(2);
+
+
+    private Vector2 _scrollPosition = Vector2.zero;
+    private int _selectedTab;
+    public float ContentHeight;
+
+    public float ContentWidth;
+    public Rect WindowRect = new(50f, 50f, 700f, 450f);
+
+    public HackMenu()
     {
-        public Rect windowRect = new Rect(50f, 50f, 700f, 450f);
+        _instance = this;
+        if (Settings.isDebugMode) _menuTabs.Add(new DebugTab());
+        _menuTabs.Add(new SettingsTab());
+        _menuTabs.Add(new GeneralTab());
+        _menuTabs.Add(new SelfTab());
+        _menuTabs.Add(new VisualsTab());
+        _menuTabs.Add(new TrollTab());
+        _menuTabs.Add(new PlayersTab());
+        _menuTabs.Add(new EnemyTab());
+        _menuTabs.Add(new ServerTab());
 
-        public PopupMenu moonManagerWindow = new MoonManagerWindow(1);
-        public PopupMenu unlockableManagerWindow = new UnlockableManagerWindow(2);
-        public PopupMenu itemManagerWindow = new ItemManagerWindow(3);
-        public PopupMenu firstSetupManagerWindow = new FirstSetupManagerWindow(4);
-        public PopupMenu LootManager = new LootManager(5);
+        Resize();
 
-        private List<MenuTab> menuTabs = new List<MenuTab>();
-        private int selectedTab = 0;
+        _selectedTab = _menuTabs.IndexOf(_menuTabs.Find(x => x.Name == "General"));
+    }
 
-        public float contentWidth;
-        public float contentHeight;
-        public int spaceFromTop = 60;
-        public int spaceFromLeft = 10;
-        
+    public static HackMenu Instance
+    {
+        get { return _instance ??= new HackMenu(); }
+    }
 
-        private Vector2 scrollPos = Vector2.zero;
 
-        private static HackMenu instance;
-        public static HackMenu Instance
+    public void Resize()
+    {
+        WindowRect.width = Settings.i_menuWidth;
+        WindowRect.height = Settings.i_menuHeight;
+        ContentWidth = WindowRect.width - SpaceFromLeft * 2;
+        ContentHeight = WindowRect.height - SpaceFromTop;
+    }
+
+    public void ResetMenuSize()
+    {
+        Settings.i_menuFontSize = 14;
+        Settings.i_menuWidth = 810;
+        Settings.i_menuHeight = 410;
+        Settings.i_sliderWidth = 100;
+        Settings.i_textboxWidth = 85;
+        Settings.Config.SaveConfig();
+    }
+
+    public void Stylize()
+    {
+        GUI.skin = ThemeUtil.Skin;
+        GUI.color = Color.white;
+
+        GUI.skin.label.fontSize = Settings.i_menuFontSize;
+        GUI.skin.button.fontSize = Settings.i_menuFontSize;
+        GUI.skin.toggle.fontSize = Settings.i_menuFontSize;
+        //GUI.skin.window.fontSize = Settings.i_menuFontSize;
+        GUI.skin.box.fontSize = Settings.i_menuFontSize;
+        GUI.skin.textField.fontSize = Settings.i_menuFontSize;
+        GUI.skin.horizontalSlider.fontSize = Settings.i_menuFontSize;
+        GUI.skin.horizontalSliderThumb.fontSize = Settings.i_menuFontSize;
+        GUI.skin.verticalSlider.fontSize = Settings.i_menuFontSize;
+        GUI.skin.verticalSliderThumb.fontSize = Settings.i_menuFontSize;
+
+        GUI.skin.customStyles.First(x => x.name == "TabBtn").fontSize = Settings.i_menuFontSize;
+        GUI.skin.customStyles.First(x => x.name == "SelectedTab").fontSize = Settings.i_menuFontSize;
+
+        Resize();
+    }
+
+    public void Draw()
+    {
+        if (Settings.isFirstLaunch || Settings.isMenuOpen) Stylize();
+        else return;
+
+        if (Settings.isFirstLaunch)
         {
-            get
-            {
-                if (instance == null)
-                    instance = new HackMenu();
-                return instance;
-            }
+            _firstSetupManagerWindow.Draw();
         }
-        public HackMenu()
+        else
         {
-            instance = this;
-            if (Settings.isDebugMode) menuTabs.Add(new DebugTab());
-            menuTabs.Add(new SettingsTab());
-            menuTabs.Add(new GeneralTab());
-            menuTabs.Add(new SelfTab());
-            menuTabs.Add(new VisualsTab());
-            menuTabs.Add(new TrollTab());
-            menuTabs.Add(new PlayersTab());
-            menuTabs.Add(new EnemyTab());
-            menuTabs.Add(new ServerTab());
-
-            
-            
-            Resize();
-
-            selectedTab = menuTabs.IndexOf(menuTabs.Find(x => x.name == "General"));
-            
-        }
-
-        
-        public void Resize()
-        {
-            windowRect.width = Settings.i_menuWidth;
-            windowRect.height = Settings.i_menuHeight;
-            contentWidth = windowRect.width - (spaceFromLeft*2);
-            contentHeight = windowRect.height - spaceFromTop;
-        }
-
-        public void ResetMenuSize()
-        {
-            Settings.i_menuFontSize = 14;
-            Settings.i_menuWidth = 810;
-            Settings.i_menuHeight = 410;
-            Settings.i_sliderWidth = 100;
-            Settings.i_textboxWidth = 85;
-            Settings.Config.SaveConfig();
-        }
-
-        public void Stylize()
-        {
-            GUI.skin = ThemeUtil.Skin;
-            GUI.color = Color.white;
-
-            GUI.skin.label.fontSize = Settings.i_menuFontSize;
-            GUI.skin.button.fontSize = Settings.i_menuFontSize;
-            GUI.skin.toggle.fontSize = Settings.i_menuFontSize;
-            //GUI.skin.window.fontSize = Settings.i_menuFontSize;
-            GUI.skin.box.fontSize = Settings.i_menuFontSize;
-            GUI.skin.textField.fontSize = Settings.i_menuFontSize;
-            GUI.skin.horizontalSlider.fontSize = Settings.i_menuFontSize;
-            GUI.skin.horizontalSliderThumb.fontSize = Settings.i_menuFontSize;
-            GUI.skin.verticalSlider.fontSize = Settings.i_menuFontSize;
-            GUI.skin.verticalSliderThumb.fontSize = Settings.i_menuFontSize;
-
-            GUI.skin.customStyles.Where(x => x.name == "TabBtn").First().fontSize = Settings.i_menuFontSize;
-            GUI.skin.customStyles.Where(x => x.name == "SelectedTab").First().fontSize = Settings.i_menuFontSize;
-
-            Resize();
-        }
-
-        public void Draw()
-        {
-            if (Settings.isFirstLaunch || Settings.isMenuOpen) Stylize(); else return;
-
-            if (Settings.isFirstLaunch) firstSetupManagerWindow.Draw();
-            else
-            {
-                GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
-                windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
-                unlockableManagerWindow.Draw();
-                itemManagerWindow.Draw();
-                moonManagerWindow.Draw();
-                LootManager.Draw();
-                GUI.color = Color.white;
-            }
-        }
-
-        private void DrawContent(int windowID)
-        {
-
-            GUI.color = new Color(1f, 1f, 1f, 0.1f);
-            GUIStyle watermark = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold };
-            string text = "Developed By IcyRelic, and Dustin";
-
-            GUI.Label(new Rect(windowRect.width - watermark.CalcSize(new GUIContent(text)).x - 10, windowRect.height - watermark.CalcSize(new GUIContent(text)).y - 10, watermark.CalcSize(new GUIContent(text)).x, watermark.CalcSize(new GUIContent(text)).y), text, watermark);
-
             GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
-
-            GUILayout.BeginVertical();
-            GUILayout.BeginArea(new Rect(0, 25, windowRect.width, 25), style: "Toolbar");
-
-            GUILayout.BeginHorizontal();
-            menuTabs.ForEach(x => x.LocalizeName());
-            selectedTab = GUILayout.Toolbar(selectedTab, menuTabs.Select(x => x.name).ToArray(), style: "TabBtn");
-            GUILayout.EndHorizontal();
-            GUILayout.EndArea();
-            GUILayout.Space(spaceFromTop);
-
-            GUILayout.BeginArea(new Rect(spaceFromLeft, spaceFromTop, windowRect.width - spaceFromLeft, contentHeight - 15));
-
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
-
-            GUILayout.BeginHorizontal();
-            menuTabs[selectedTab].Draw();
-            GUILayout.EndHorizontal();
-
-            GUILayout.EndScrollView();
-
-            GUILayout.EndArea();
-
+            WindowRect = GUILayout.Window(0, WindowRect, DrawContent, "Lethal Menu");
+            UnlockableManagerWindow.Draw();
+            ItemManagerWindow.Draw();
+            MoonManagerWindow.Draw();
+            LootManager.Draw();
             GUI.color = Color.white;
-
-            GUI.DragWindow();
         }
+    }
 
+    private void DrawContent(int windowID)
+    {
+        GUI.color = new Color(1f, 1f, 1f, 0.1f);
+        var watermark = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold };
+        const string text = "Developed By IcyRelic, and Dustin";
 
+        GUI.Label(
+            new Rect(WindowRect.width - watermark.CalcSize(new GUIContent(text)).x - 10,
+                WindowRect.height - watermark.CalcSize(new GUIContent(text)).y - 10,
+                watermark.CalcSize(new GUIContent(text)).x, watermark.CalcSize(new GUIContent(text)).y), text,
+            watermark);
+
+        GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
+
+        GUILayout.BeginVertical();
+        GUILayout.BeginArea(new Rect(0, 25, WindowRect.width, 25), style: "Toolbar");
+
+        GUILayout.BeginHorizontal();
+        _menuTabs.ForEach(x => x.LocalizeName());
+        _selectedTab = GUILayout.Toolbar(_selectedTab, _menuTabs.Select(x => x.Name).ToArray(), "TabBtn");
+        GUILayout.EndHorizontal();
+        GUILayout.EndArea();
+        GUILayout.Space(SpaceFromTop);
+
+        GUILayout.BeginArea(new Rect(SpaceFromLeft, SpaceFromTop, WindowRect.width - SpaceFromLeft,
+            ContentHeight - 15));
+
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
+
+        GUILayout.BeginHorizontal();
+        _menuTabs[_selectedTab].Draw();
+        GUILayout.EndHorizontal();
+
+        GUILayout.EndScrollView();
+
+        GUILayout.EndArea();
+
+        GUI.color = Color.white;
+
+        GUI.DragWindow();
     }
 }

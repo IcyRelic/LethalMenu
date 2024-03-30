@@ -1,72 +1,63 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace LethalMenu.Util
+namespace LethalMenu.Util;
+
+public static class ThemeUtil
 {
-    public class ThemeUtil
+    public static GUISkin Skin;
+    private static string _defaultThemeName = "Default";
+    private static AssetBundle _assetBundle;
+
+    public static string ThemeName
     {
-        public static GUISkin Skin;
-        private static string DefaultThemeName = "Default";
-        private static AssetBundle AssetBundle;
-
-        public static void LoadTheme(string themeName)
+        set
         {
-            if (AssetBundle != null)
-            {
-                AssetBundle.Unload(true);
-                AssetBundle = null;
-                Skin = null;
-            }
+            _defaultThemeName = value;
+            LoadTheme(value);
+        }
+    }
 
-            string resourceName = $"LethalMenu.Resources.Theme.{themeName}.skin";
-
-            try
-            {
-                AssetBundle = LoadAssetBundle(resourceName);
-                if (AssetBundle == null)
-                {
-                    Debug.LogError($"Failed to load theme AssetBundle for {themeName}");
-                    return;
-                }
-
-                Skin = AssetBundle.LoadAllAssets<GUISkin>().FirstOrDefault();
-                if (Skin == null)
-                {
-                    Debug.LogError($"Failed to load GUISkin from AssetBundle for {themeName}");
-                    return;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"Failed to load theme: {e.Message}\n{e.StackTrace}");
-            }
+    public static void LoadTheme(string themeName)
+    {
+        if (_assetBundle != null)
+        {
+            _assetBundle.Unload(true);
+            _assetBundle = null;
+            Skin = null;
         }
 
-        private static AssetBundle LoadAssetBundle(string resourceName)
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            using (Stream themeStream = assembly.GetManifestResourceStream(resourceName))
-            {
-                return AssetBundle.LoadFromStream(themeStream);
-            }
-        }
+        var resourceName = $"LethalMenu.Resources.Theme.{themeName}.skin";
 
-        public static string ThemeName
+        try
         {
-            get => DefaultThemeName;
-            set
+            _assetBundle = LoadAssetBundle(resourceName);
+            if (_assetBundle == null)
             {
-                DefaultThemeName = value;
-                LoadTheme(value);
+                Debug.LogError($"Failed to load theme AssetBundle for {themeName}");
+                return;
             }
-        }
 
-        public static void ApplyTheme(string themeName)
-        {
-            ThemeName = themeName;
+            Skin = _assetBundle.LoadAllAssets<GUISkin>().FirstOrDefault();
+            if (Skin == null) Debug.LogError($"Failed to load GUISkin from AssetBundle for {themeName}");
         }
+        catch (Exception e)
+        {
+            Debug.LogError($"Failed to load theme: {e.Message}\n{e.StackTrace}");
+        }
+    }
+
+    private static AssetBundle LoadAssetBundle(string resourceName)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        using var themeStream = assembly.GetManifestResourceStream(resourceName);
+        return AssetBundle.LoadFromStream(themeStream);
+    }
+
+    public static void ApplyTheme(string themeName)
+    {
+        ThemeName = themeName;
     }
 }

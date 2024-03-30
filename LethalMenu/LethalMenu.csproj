@@ -1,118 +1,118 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <ErrorReport>none</ErrorReport>
-    <LangVersion>12.0</LangVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <ErrorReport>none</ErrorReport>
+        <LangVersion>12.0</LangVersion>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\Language\Chinese Simplified.json" />
-    <None Remove="Resources\Language\French.json" />
-    <None Remove="Resources\Language\German.json" />
-    <None Remove="Resources\Language\Japanese.json" />
-    <None Remove="Resources\Language\Korean.json" />
-    <None Remove="Resources\Language\Polish.json" />
-    <None Remove="Resources\Language\Russian.json" />
-    <None Remove="Resources\Theme\Default.skin" />
-    <None Remove="Resources\Theme\Green.skin" />
-    <None Remove="Resources\Theme\Blue.skin" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="Resources\Language\Chinese Simplified.json"/>
+        <None Remove="Resources\Language\French.json"/>
+        <None Remove="Resources\Language\German.json"/>
+        <None Remove="Resources\Language\Japanese.json"/>
+        <None Remove="Resources\Language\Korean.json"/>
+        <None Remove="Resources\Language\Polish.json"/>
+        <None Remove="Resources\Language\Russian.json"/>
+        <None Remove="Resources\Theme\Default.skin"/>
+        <None Remove="Resources\Theme\Green.skin"/>
+        <None Remove="Resources\Theme\Blue.skin"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\0Harmony.dll" />
-    <EmbeddedResource Include="Resources\Changelog.txt" />
-    <EmbeddedResource Include="Resources\Language\Chinese Simplified.json" />
-    <EmbeddedResource Include="Resources\Language\French.json" />
-    <EmbeddedResource Include="Resources\Language\German.json" />
-    <EmbeddedResource Include="Resources\Language\Japanese.json" />
-    <EmbeddedResource Include="Resources\Language\Korean.json" />
-    <EmbeddedResource Include="Resources\Language\Polish.json" />
-    <EmbeddedResource Include="Resources\Language\Russian.json" />
-    <EmbeddedResource Include="Resources\Language\English.json" />
-    <EmbeddedResource Include="Resources\Newtonsoft.Json.dll" />
-    <EmbeddedResource Include="Resources\Planned.txt" />
-    <EmbeddedResource Include="Resources\Theme\Default.skin" />
-    <EmbeddedResource Include="Resources\Theme\Green.skin" />
-    <EmbeddedResource Include="Resources\Theme\Blue.skin" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\0Harmony.dll"/>
+        <EmbeddedResource Include="Resources\Changelog.txt"/>
+        <EmbeddedResource Include="Resources\Language\Chinese Simplified.json"/>
+        <EmbeddedResource Include="Resources\Language\French.json"/>
+        <EmbeddedResource Include="Resources\Language\German.json"/>
+        <EmbeddedResource Include="Resources\Language\Japanese.json"/>
+        <EmbeddedResource Include="Resources\Language\Korean.json"/>
+        <EmbeddedResource Include="Resources\Language\Polish.json"/>
+        <EmbeddedResource Include="Resources\Language\Russian.json"/>
+        <EmbeddedResource Include="Resources\Language\English.json"/>
+        <EmbeddedResource Include="Resources\Newtonsoft.Json.dll"/>
+        <EmbeddedResource Include="Resources\Planned.txt"/>
+        <EmbeddedResource Include="Resources\Theme\Default.skin"/>
+        <EmbeddedResource Include="Resources\Theme\Green.skin"/>
+        <EmbeddedResource Include="Resources\Theme\Blue.skin"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>Resources\0Harmony.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>Resources\BaseGame\Assembly-CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="DissonanceVoip">
-      <HintPath>Resources\BaseGame\DissonanceVoip.dll</HintPath>
-    </Reference>
-    <Reference Include="Facepunch.Steamworks.Win64">
-      <HintPath>Resources\BaseGame\Facepunch.Steamworks.Win64.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>Resources\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InputSystem">
-      <HintPath>Resources\BaseGame\Unity.InputSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Netcode.Runtime">
-      <HintPath>Resources\BaseGame\Unity.Netcode.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>Resources\BaseGame\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AIModule">
-      <HintPath>Resources\BaseGame\UnityEngine.AIModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AnimationModule">
-      <HintPath>Resources\BaseGame\UnityEngine.AnimationModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\Resources\BaseGame\UnityEngine.AssetBundleModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>Resources\BaseGame\UnityEngine.AudioModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>Resources\BaseGame\UnityEngine.CoreModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>Resources\BaseGame\UnityEngine.IMGUIModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>Resources\BaseGame\UnityEngine.PhysicsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>Resources\BaseGame\UnityEngine.TextRenderingModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Resources\BaseGame\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>Resources\BaseGame\UnityEngine.UIModule.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
-      <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-      <HintPath>Resources\BaseGame\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+    <ItemGroup>
+        <Reference Include="0Harmony">
+            <HintPath>Resources\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>Resources\BaseGame\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="DissonanceVoip">
+            <HintPath>Resources\BaseGame\DissonanceVoip.dll</HintPath>
+        </Reference>
+        <Reference Include="Facepunch.Steamworks.Win64">
+            <HintPath>Resources\BaseGame\Facepunch.Steamworks.Win64.dll</HintPath>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>Resources\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.InputSystem">
+            <HintPath>Resources\BaseGame\Unity.InputSystem.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.Netcode.Runtime">
+            <HintPath>Resources\BaseGame\Unity.Netcode.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.TextMeshPro">
+            <HintPath>Resources\BaseGame\Unity.TextMeshPro.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AIModule">
+            <HintPath>Resources\BaseGame\UnityEngine.AIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AnimationModule">
+            <HintPath>Resources\BaseGame\UnityEngine.AnimationModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AssetBundleModule">
+            <HintPath>Resources\BaseGame\UnityEngine.AssetBundleModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AudioModule">
+            <HintPath>Resources\BaseGame\UnityEngine.AudioModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>Resources\BaseGame\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>Resources\BaseGame\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>Resources\BaseGame\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>Resources\BaseGame\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>Resources\BaseGame\UnityEngine.UI.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>Resources\BaseGame\UnityEngine.UIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
+            <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
+        </Reference>
+        <Reference Include="Unity.RenderPipelines.Core.Runtime">
+            <HintPath>Resources\BaseGame\Unity.RenderPipelines.HighDefinition.Core.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+            <HintPath>Resources\BaseGame\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Cheats\NewEnemyControl\" />
-    <Folder Include="Resources\Language\Source\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Cheats\NewEnemyControl\"/>
+        <Folder Include="Resources\Language\Source\"/>
+    </ItemGroup>
 </Project>

@@ -1,52 +1,73 @@
 ﻿using LethalMenu.Util;
 
-namespace LethalMenu.Handler.EnemyControl
+namespace LethalMenu.Handler.EnemyControl;
+
+internal enum CentipedeState
 {
-    enum CentipedeState
+    SEARCHING,
+    HIDING,
+    CHASING,
+    CLINGING
+}
+
+internal class CentipedeController : IEnemyController<CentipedeAI>
+{
+    public void UsePrimarySkill(CentipedeAI enemy)
     {
-        SEARCHING,
-        HIDING,
-        CHASING,
-        CLINGING
+        if (!enemy.IsBehaviourState(CentipedeState.HIDING)) return;
+        enemy.SetBehaviourState(CentipedeState.CHASING);
     }
-    internal class CentipedeController : IEnemyController<CentipedeAI>
+
+    public void UseSecondarySkill(CentipedeAI enemy)
     {
-        bool IsClingingToSomething(CentipedeAI enemy)
-        {
-            ReflectionUtil<CentipedeAI> centipedeReflector = enemy.Reflect();
+        if (IsClingingToSomething(enemy)) return;
+        _ = enemy.Reflect().Invoke("RaycastToCeiling");
+        enemy.SetBehaviourState(CentipedeState.HIDING);
+    }
 
-            return enemy.clingingToPlayer is not null || enemy.inSpecialAnimation ||
-                   centipedeReflector.GetValue<bool>("clingingToDeadBody") ||
-                   centipedeReflector.GetValue<bool>("clingingToCeiling") ||
-                   centipedeReflector.GetValue<bool>("startedCeilingAnimationCoroutine") ||
-                   centipedeReflector.GetValue<bool>("inDroppingOffPlayerAnim");
-        }
+    public bool IsAbleToMove(CentipedeAI enemy)
+    {
+        return !IsClingingToSomething(enemy);
+    }
 
-        public void UsePrimarySkill(CentipedeAI enemy)
-        {
-            if (!enemy.IsBehaviourState(CentipedeState.HIDING)) return;
-            enemy.SetBehaviourState(CentipedeState.CHASING);
-        }
+    public bool IsAbleToRotate(CentipedeAI enemy)
+    {
+        return !IsClingingToSomething(enemy);
+    }
 
-        public void UseSecondarySkill(CentipedeAI enemy)
-        {
-            if (this.IsClingingToSomething(enemy)) return;
-            _ = enemy.Reflect().Invoke("RaycastToCeiling");
-            enemy.SetBehaviourState(CentipedeState.HIDING);
-        }
+    public string GetPrimarySkillName(CentipedeAI _)
+    {
+        return "Drop";
+    }
 
-        public bool IsAbleToMove(CentipedeAI enemy) => !this.IsClingingToSomething(enemy);
+    public string GetSecondarySkillName(CentipedeAI _)
+    {
+        return "Attach to ceiling";
+    }
 
-        public bool IsAbleToRotate(CentipedeAI enemy) => !this.IsClingingToSomething(enemy);
+    public float InteractRange(CentipedeAI _)
+    {
+        return 1.5f;
+    }
 
-        public string GetPrimarySkillName(CentipedeAI _) => "Drop";
+    public bool CanUseEntranceDoors(CentipedeAI _)
+    {
+        return false;
+    }
 
-        public string GetSecondarySkillName(CentipedeAI _) => "Attach to ceiling";
+    public bool SyncAnimationSpeedEnabled(CentipedeAI _)
+    {
+        return false;
+    }
 
-        public float InteractRange(CentipedeAI _) => 1.5f;
+    private bool IsClingingToSomething(CentipedeAI enemy)
+    {
+        var centipedeReflector = enemy.Reflect();
 
-        public bool CanUseEntranceDoors(CentipedeAI _) => false;
-
-        public bool SyncAnimationSpeedEnabled(CentipedeAI _) => false;
+        return enemy.clingingToPlayer is not null || enemy.inSpecialAnimation ||
+               centipedeReflector.GetValue<bool>("clingingToDeadBody") ||
+               centipedeReflector.GetValue<bool>("clingingToCeiling") ||
+               centipedeReflector.GetValue<bool>("startedCeilingAnimationCoroutine") ||
+               centipedeReflector.GetValue<bool>("inDroppingOffPlayerAnim");
     }
 }

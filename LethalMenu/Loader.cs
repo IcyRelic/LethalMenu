@@ -1,42 +1,41 @@
-﻿using System.IO;
+﻿using System;
 using System.Reflection;
-using System;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
+namespace LethalMenu;
 
-namespace LethalMenu
+public class Loader : MonoBehaviour
 {
-    public class Loader : MonoBehaviour
+    private static GameObject _load;
+    public static bool HarmonyLoaded;
+    private static int _read;
+
+    public static void Init()
     {
-        private static GameObject Load;
-        public static bool harmonyLoaded = false;
+        LoadHarmony();
+        _load = new GameObject();
+        _load.AddComponent<LethalMenu>();
+        DontDestroyOnLoad(_load);
+    }
 
-        public static void Init()
+    public static void LoadHarmony()
+    {
+        const string name = "LethalMenu.Resources.0Harmony.dll";
+        var assembly = Assembly.GetExecutingAssembly();
+        var stream = assembly.GetManifestResourceStream(name);
+        if (stream != null)
         {
-
-            LoadHarmony();
-            Loader.Load = new GameObject();
-            Load.AddComponent<LethalMenu>();
-            Object.DontDestroyOnLoad(Loader.Load);
-
-           
-        }
-
-        public static void LoadHarmony()
-        {
-            String name = "LethalMenu.Resources.0Harmony.dll";
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Stream stream = assembly.GetManifestResourceStream(name);
-            byte[] rawAssembly = new byte[stream.Length];
-            stream.Read(rawAssembly, 0, (int)stream.Length);
+            var rawAssembly = new byte[stream.Length];
+            _read = stream.Read(rawAssembly, 0, (int)stream.Length);
 
             AppDomain.CurrentDomain.Load(rawAssembly);
-            harmonyLoaded = true;
         }
 
+        HarmonyLoaded = true;
+    }
 
-        public static void Unload() => Object.Destroy(Load);
-
+    public static void Unload()
+    {
+        Destroy(_load);
     }
 }

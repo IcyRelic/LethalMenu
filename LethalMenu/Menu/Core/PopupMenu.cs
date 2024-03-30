@@ -1,40 +1,40 @@
-﻿using LethalMenu.Language;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using LethalMenu.Language;
 using UnityEngine;
 
-namespace LethalMenu.Menu.Core
+namespace LethalMenu.Menu.Core;
+
+internal class PopupMenu : MenuFragment
 {
-    internal class PopupMenu : MenuFragment
+    private readonly int _id;
+    private readonly string _localization;
+    private string _name;
+    private int _selectedTab = 0;
+    public bool IsOpen = false;
+
+    protected List<MenuTab> MenuTabs = [];
+    protected Rect WindowRect;
+
+    protected PopupMenu(string name, Rect size, int id)
     {
-        public Rect windowRect;
-        public bool isOpen = false;
-        public string name;
-        private string localization;
-        public int id;
+        _localization = name;
+        WindowRect = size;
+        _id = id;
+        LocalizeName();
+    }
 
-        protected List<MenuTab> menuTabs = new List<MenuTab>();
-        protected int selectedTab = 0;
+    private void LocalizeName()
+    {
+        _name = Localization.Localize(_localization);
+    }
 
-        public PopupMenu(string name, Rect size, int id)
-        {
-            this.localization = name;
-            this.windowRect = size;
-            this.id = id;
-            LocalizeName();
-        }
+    public void Draw()
+    {
+        if (!IsOpen) return;
+        WindowRect = GUILayout.Window(_id, WindowRect, DrawContent, _name);
+    }
 
-        public void LocalizeName() => name = Localization.Localize(localization);
-        public void Draw()
-        {
-            if (!isOpen) return;
-            windowRect = GUILayout.Window(id, windowRect, new GUI.WindowFunction(DrawContent), name);
-        }
-
-        public virtual void DrawContent(int windowID) { }
-
+    protected virtual void DrawContent(int windowID)
+    {
     }
 }

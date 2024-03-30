@@ -1,74 +1,129 @@
 ﻿using System;
 using System.Reflection;
 
-namespace LethalMenu.Util
+namespace LethalMenu.Util;
+
+public class ReflectionUtil<TR>
 {
-    public class ReflectionUtil<R>
+    private const BindingFlags PrivateInst = BindingFlags.NonPublic | BindingFlags.Instance;
+    private const BindingFlags PrivateStatic = BindingFlags.NonPublic | BindingFlags.Static;
+
+    private const BindingFlags PrivateField = PrivateInst | BindingFlags.GetField;
+    private const BindingFlags PrivateProp = PrivateInst | BindingFlags.GetProperty;
+    private const BindingFlags PrivateMethod = PrivateInst | BindingFlags.InvokeMethod;
+    private const BindingFlags StaticField = PrivateStatic | BindingFlags.GetField;
+    private const BindingFlags StaticProp = PrivateStatic | BindingFlags.GetProperty;
+    private const BindingFlags StaticMethod = PrivateStatic | BindingFlags.InvokeMethod;
+
+    internal ReflectionUtil(TR obj)
     {
-        private const BindingFlags privateInst = BindingFlags.NonPublic | BindingFlags.Instance;
-        private const BindingFlags privateStatic = BindingFlags.NonPublic | BindingFlags.Static;
-
-        private const BindingFlags privateField = ReflectionUtil<R>.privateInst | BindingFlags.GetField;
-        private const BindingFlags privateProp = ReflectionUtil<R>.privateInst | BindingFlags.GetProperty;
-        private const BindingFlags privateMethod = ReflectionUtil<R>.privateInst | BindingFlags.InvokeMethod;
-        private const BindingFlags staticField = ReflectionUtil<R>.privateStatic | BindingFlags.GetField;
-        private const BindingFlags staticProp = ReflectionUtil<R>.privateStatic | BindingFlags.GetProperty;
-        private const BindingFlags staticMethod = ReflectionUtil<R>.privateStatic | BindingFlags.InvokeMethod;
-
-        private R @object { get; }
-        private Type type { get; }
-
-        internal ReflectionUtil(R obj)
-        {
-            this.@object = obj;
-            this.type = typeof(R);
-        }
-
-        private T? GetValue<T>(string variableName, BindingFlags flags) 
-        { 
-            try { return (T)this.type.GetField(variableName, flags).GetValue(this.@object); } catch (InvalidCastException) { return default; }
-        }
-        private T? GetProperty<T>(string propertyName, BindingFlags flags) 
-        { 
-            try { return (T)this.type.GetProperty(propertyName, flags).GetValue(this.@object); } catch (InvalidCastException) { return default; } 
-        }
-
-        private ReflectionUtil<R>? SetValue(string variableName, object value, BindingFlags flags) 
-        { 
-            try { this.type.GetField(variableName, flags).SetValue(this.@object, value); return this; } catch (Exception) { return null; } 
-        }
-        private ReflectionUtil<R>? SetProperty(string propertyName, object value, BindingFlags flags)
-        {
-            try { this.type.GetProperty(propertyName, flags).SetValue(this.@object, value); return this; } catch (Exception) { return null; }
-        }
-
-        private T? Invoke<T>(string methodName, BindingFlags flags, params object[] args)
-        {
-            try { return (T)this.type.GetMethod(methodName, flags).Invoke(this.@object, args); } catch (InvalidCastException) { return default; }
-        }
-
-
-        public T? GetValue<T>(string fieldName, bool isStatic = false, bool isProperty = false)
-        {
-            BindingFlags flags = isProperty ? isStatic ? staticProp : privateProp : isStatic ? staticField : privateField;
-            return isProperty ? this.GetProperty<T>(fieldName, flags) : this.GetValue<T>(fieldName, flags);
-        }
-        public ReflectionUtil<R>? SetValue(string fieldName, object value, bool isStatic = false, bool isProperty = false)
-        {
-            BindingFlags flags = isProperty ? isStatic ? staticProp : privateProp : isStatic ? staticField : privateField;
-            return isProperty ? this.SetProperty(fieldName, value, flags) : this.SetValue(fieldName, value, flags);
-        }
-        private T? Invoke<T>(string methodName, bool isStatic = false, params object[] args) => this.Invoke<T>(methodName, isStatic ? ReflectionUtil<R>.staticMethod : ReflectionUtil<R>.privateMethod, args);
-
-        public object? GetValue(string fieldName, bool isStatic = false, bool isProperty = false) => this.GetValue<R>(fieldName, isStatic, isProperty);
-        public ReflectionUtil<R>? Invoke(string methodName, bool isStatic = false, params object[] args) => this.Invoke<R>(methodName, isStatic, args)?.Reflect();
-        public ReflectionUtil<R>? Invoke(string methodName, params object[] args) => this.Invoke<R>(methodName, args: args)?.Reflect();
+        Object = obj;
+        Type = typeof(TR);
     }
 
-    public static class ReflectorExtensions
+    private TR Object { get; }
+    private Type Type { get; }
+
+    private T? GetValue<T>(string variableName, BindingFlags flags)
     {
-        public static ReflectionUtil<R> Reflect<R>(this R obj) => new(obj);
+        try
+        {
+            return (T)Type.GetField(variableName, flags)?.GetValue(Object);
+        }
+        catch (InvalidCastException)
+        {
+            return default;
+        }
+    }
+
+    private T? GetProperty<T>(string propertyName, BindingFlags flags)
+    {
+        try
+        {
+            return (T)Type.GetProperty(propertyName, flags)?.GetValue(Object);
+        }
+        catch (InvalidCastException)
+        {
+            return default;
+        }
+    }
+
+    private ReflectionUtil<TR>? SetValue(string variableName, object value, BindingFlags flags)
+    {
+        try
+        {
+            Type.GetField(variableName, flags)?.SetValue(Object, value);
+            return this;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private ReflectionUtil<TR>? SetProperty(string propertyName, object value, BindingFlags flags)
+    {
+        try
+        {
+            Type.GetProperty(propertyName, flags)?.SetValue(Object, value);
+            return this;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+
+    private T? Invoke<T>(string methodName, BindingFlags flags, params object[] args)
+    {
+        try
+        {
+            return (T)Type.GetMethod(methodName, flags)?.Invoke(Object, args);
+        }
+        catch (InvalidCastException)
+        {
+            return default;
+        }
     }
 
 
+    public T? GetValue<T>(string fieldName, bool isStatic = false, bool isProperty = false)
+    {
+        var flags = isProperty ? isStatic ? StaticProp : PrivateProp : isStatic ? StaticField : PrivateField;
+        return isProperty ? GetProperty<T>(fieldName, flags) : GetValue<T>(fieldName, flags);
+    }
+
+    public ReflectionUtil<TR>? SetValue(string fieldName, object value, bool isStatic = false, bool isProperty = false)
+    {
+        var flags = isProperty ? isStatic ? StaticProp : PrivateProp : isStatic ? StaticField : PrivateField;
+        return isProperty ? SetProperty(fieldName, value, flags) : SetValue(fieldName, value, flags);
+    }
+
+    private T? Invoke<T>(string methodName, bool isStatic = false, params object[] args)
+    {
+        return Invoke<T>(methodName, isStatic ? StaticMethod : PrivateMethod, args);
+    }
+
+    public object? GetValue(string fieldName, bool isStatic = false, bool isProperty = false)
+    {
+        return GetValue<TR>(fieldName, isStatic, isProperty);
+    }
+
+    public ReflectionUtil<TR>? Invoke(string methodName, bool isStatic = false, params object[] args)
+    {
+        return Invoke<TR>(methodName, isStatic, args)?.Reflect();
+    }
+
+    public ReflectionUtil<TR>? Invoke(string methodName, params object[] args)
+    {
+        return Invoke<TR>(methodName, args: args)?.Reflect();
+    }
+}
+
+public static class ReflectorExtensions
+{
+    public static ReflectionUtil<TR> Reflect<TR>(this TR obj)
+    {
+        return new ReflectionUtil<TR>(obj);
+    }
 }

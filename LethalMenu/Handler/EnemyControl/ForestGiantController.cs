@@ -1,46 +1,61 @@
 ﻿using LethalMenu.Util;
 
-namespace LethalMenu.Handler.EnemyControl
+namespace LethalMenu.Handler.EnemyControl;
+
+internal enum GiantState
 {
-    enum GiantState
+    DEFAULT = 0,
+    CHASE = 1
+}
+
+internal class ForestGiantController : IEnemyController<ForestGiantAI>
+{
+    private bool IsUsingSecondarySkill { get; set; }
+
+    public void OnMovement(ForestGiantAI enemy, bool isMoving, bool isSprinting)
     {
-        DEFAULT = 0,
-        CHASE = 1
+        if (!IsUsingSecondarySkill) enemy.SetBehaviourState(GiantState.DEFAULT);
     }
-    internal class ForestGiantController : IEnemyController<ForestGiantAI>
+
+    public void OnSecondarySkillHold(ForestGiantAI enemy)
     {
-        bool IsUsingSecondarySkill { get; set; } = false;
+        IsUsingSecondarySkill = true;
+        enemy.SetBehaviourState(GiantState.CHASE);
+    }
 
-        public void OnMovement(ForestGiantAI enemy, bool isMoving, bool isSprinting)
-        {
-            if (!this.IsUsingSecondarySkill)
-            {
-                enemy.SetBehaviourState(GiantState.DEFAULT);
-            }
-        }
+    public void ReleaseSecondarySkill(ForestGiantAI enemy)
+    {
+        IsUsingSecondarySkill = false;
+        enemy.SetBehaviourState(GiantState.DEFAULT);
+    }
 
-        public void OnSecondarySkillHold(ForestGiantAI enemy)
-        {
-            this.IsUsingSecondarySkill = true;
-            enemy.SetBehaviourState(GiantState.CHASE);
-        }
+    public bool IsAbleToMove(ForestGiantAI enemy)
+    {
+        return !enemy.Reflect().GetValue<bool>("inEatingPlayerAnimation");
+    }
 
-        public void ReleaseSecondarySkill(ForestGiantAI enemy)
-        {
-            this.IsUsingSecondarySkill = false;
-            enemy.SetBehaviourState(GiantState.DEFAULT);
-        }
+    public string GetSecondarySkillName(ForestGiantAI _)
+    {
+        return "(HOLD) Chase";
+    }
 
-        public bool IsAbleToMove(ForestGiantAI enemy) => !enemy.Reflect().GetValue<bool>("inEatingPlayerAnimation");
+    public bool CanUseEntranceDoors(ForestGiantAI _)
+    {
+        return false;
+    }
 
-        public string GetSecondarySkillName(ForestGiantAI _) => "(HOLD) Chase";
+    public float InteractRange(ForestGiantAI _)
+    {
+        return 0.0f;
+    }
 
-        public bool CanUseEntranceDoors(ForestGiantAI _) => false;
+    public bool SyncAnimationSpeedEnabled(ForestGiantAI _)
+    {
+        return false;
+    }
 
-        public float InteractRange(ForestGiantAI _) => 0.0f;
-
-        public void onReleaseControl(ForestGiantAI enemy) => this.IsUsingSecondarySkill = false;
-
-        public bool SyncAnimationSpeedEnabled(ForestGiantAI _) => false;
+    public void onReleaseControl(ForestGiantAI enemy)
+    {
+        IsUsingSecondarySkill = false;
     }
 }
