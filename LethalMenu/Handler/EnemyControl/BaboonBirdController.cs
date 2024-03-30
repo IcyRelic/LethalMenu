@@ -1,4 +1,4 @@
-﻿using LethalMenu.Util;
+using LethalMenu.Util;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -11,7 +11,8 @@ namespace LethalMenu.Handler.EnemyControl
 
         public void OnDeath(BaboonBirdAI enemy)
         {
-            if (enemy.heldScrap is not null) enemy.Reflect().Invoke("DropHeldItemAndSync");
+            if (enemy.heldScrap is not null)
+                enemy.Reflect().Invoke("DropHeldItemAndSync");
         }
 
         public void OnTakeControl(BaboonBirdAI _)
@@ -28,21 +29,16 @@ namespace LethalMenu.Handler.EnemyControl
             BaboonBirdAI.baboonCampPosition = this.OriginalCamp;
         }
 
-        void GrabItemAndSync(BaboonBirdAI enemy, GrabbableObject item)
-        {
-            if (!item.TryGetComponent(out NetworkObject netItem)) return;
-            enemy.Reflect().Invoke("GrabItemAndSync", netItem);
-        }
-
         public void UsePrimarySkill(BaboonBirdAI enemy)
         {
             if (enemy.heldScrap is null && enemy.FindNearbyItem() is GrabbableObject grabbable)
             {
-                this.GrabItemAndSync(enemy, grabbable);
+                GrabItemAndSync(enemy, grabbable);
                 return;
             }
 
-            if (enemy.heldScrap is ShotgunItem shotgun) shotgun.ShootGunAsEnemy(enemy);
+            if (enemy.heldScrap is ShotgunItem shotgun)
+                shotgun.ShootGunAsEnemy(enemy);
         }
 
         public void UseSecondarySkill(BaboonBirdAI enemy)
@@ -51,10 +47,24 @@ namespace LethalMenu.Handler.EnemyControl
             enemy.Reflect().Invoke("DropHeldItemAndSync");
         }
 
-        public string GetPrimarySkillName(BaboonBirdAI enemy) => enemy.heldScrap is not null ? "" : "Grab Item";
+        public string GetPrimarySkillName(BaboonBirdAI enemy) => enemy.heldScrap is not null ? "Use item" : "Grab Item";
 
         public string GetSecondarySkillName(BaboonBirdAI enemy) => enemy.heldScrap is null ? "" : "Drop item";
 
         public float InteractRange(BaboonBirdAI _) => 1.5f;
+
+        void GrabItemAndSync(BaboonBirdAI enemy, GrabbableObject item)
+        {
+            ReflectionUtil<BaboonBirdAI> reflect = enemy.Reflect();
+            NetworkObject netItem = item.GetComponent<NetworkObject>();
+            if (enemy == null || item == null || netItem == null || reflect is null)
+            {
+                return;
+            }
+
+            enemy.SwitchToBehaviourServerRpc(1);
+
+            reflect.Invoke("GrabItemAndSync", netItem);
+        }
     }
 }
