@@ -1,23 +1,32 @@
-﻿namespace LethalMenu.Handler.EnemyControl
+﻿namespace LethalMenu.Handler.EnemyControl;
+
+internal enum BeesState
 {
-    enum BeesState
+    IDLE,
+    DEFENSIVE,
+    ATTACK
+}
+
+internal class RedLocustBeesController : IEnemyController<RedLocustBees>
+{
+    public bool CanUseEntranceDoors(RedLocustBees _)
     {
-        IDLE,
-        DEFENSIVE,
-        ATTACK
+        return true;
     }
 
-    internal class RedLocustBeesController : IEnemyController<RedLocustBees>
+    public float InteractRange(RedLocustBees _)
     {
-        public bool CanUseEntranceDoors(RedLocustBees _) => true;
+        return 2.5f;
+    }
 
-        public float InteractRange(RedLocustBees _) => 2.5f;
+    public void UsePrimarySkill(RedLocustBees enemy)
+    {
+        enemy.SetBehaviourState(BeesState.ATTACK);
+        enemy.EnterAttackZapModeServerRpc(-1);
+    }
 
-        public void UsePrimarySkill(RedLocustBees enemy)
-        {
-            enemy.SetBehaviourState(BeesState.ATTACK);
-            enemy.EnterAttackZapModeServerRpc(-1);
-        }
-        public void UseSecondarySkill(RedLocustBees enemy) => enemy.SetBehaviourState(BeesState.IDLE);
+    public void UseSecondarySkill(RedLocustBees enemy)
+    {
+        enemy.SetBehaviourState(BeesState.IDLE);
     }
 }

@@ -1,16 +1,14 @@
-namespace LethalMenu.Cheats
+namespace LethalMenu.Cheats;
+
+internal class FOV : Cheat
 {
-    internal class FOV : Cheat
+    public override void Update()
     {
+        if (!LethalMenu.LocalPlayer) return;
 
-        public override void Update()
-        {
-            if (!LethalMenu.localPlayer) return;
+        LethalMenu.LocalPlayer.gameplayCamera.fieldOfView = Settings.f_fov;
 
-            LethalMenu.localPlayer.gameplayCamera.fieldOfView = Settings.f_fov;
-
-            if (LethalMenu.localPlayer.inTerminalMenu)
-                LethalMenu.localPlayer.gameplayCamera.fieldOfView = 66f;
-        }
+        if (LethalMenu.LocalPlayer.inTerminalMenu)
+            LethalMenu.LocalPlayer.gameplayCamera.fieldOfView = 66f;
     }
 }

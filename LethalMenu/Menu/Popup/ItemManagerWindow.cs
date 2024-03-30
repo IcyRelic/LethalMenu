@@ -1,66 +1,57 @@
-﻿using LethalMenu.Cheats;
-using LethalMenu.Menu.Core;
+﻿using LethalMenu.Menu.Core;
 using LethalMenu.Util;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Unity.Netcode;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace LethalMenu.Menu.Popup
+namespace LethalMenu.Menu.Popup;
+
+internal class ItemManagerWindow(int id) : PopupMenu("Item Manager", new Rect(50f, 50f, 577f, 300f), id)
 {
-    internal class ItemManagerWindow : PopupMenu
+    private Vector2 _scrollPosition = Vector2.zero;
+    private string _sScrapValue = "1000";
+    private string _sSearch = "";
+
+    protected override void DrawContent(int windowID)
     {
-        private Vector2 scrollPos = Vector2.zero;
+        ItemContent();
+    }
 
-        private string s_scrapValue = "1000";
-        private string s_search = "";
+    private void ItemContent()
+    {
+        if (!(bool)StartOfRound.Instance) return;
 
-        public ItemManagerWindow(int id) : base("Item Manager", new Rect(50f, 50f, 577f, 300f), id)
+        if (!LethalMenu.LocalPlayer.IsHost)
         {
-
+            UI.Label("General.HostRequired", Settings.c_error);
+            return;
         }
 
-        public override void DrawContent(int windowID)
-        {
-            ItemContent();
-        }
+        _scrollPosition = GUILayout.BeginScrollView(_scrollPosition);
 
-        private void ItemContent()
-        {
-            if(!(bool)StartOfRound.Instance) return;
+        GUILayout.BeginHorizontal();
+        UI.Textbox("General.Search", ref _sSearch);
+        GUILayout.FlexibleSpace();
+        UI.Textbox("ItemManager.ScrapValue", ref _sScrapValue, @"[^0-9]");
+        GUILayout.EndHorizontal();
 
-            if (!LethalMenu.localPlayer.IsHost)
-            {
-                UI.Label("General.HostRequired", Settings.c_error);
-                return;
-            }
+        GUILayout.Space(20);
 
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
+        UI.ButtonGrid(StartOfRound.Instance.allItemsList.itemsList, i => i.name, _sSearch, SpawnItem, 3);
 
-            GUILayout.BeginHorizontal();
-            UI.Textbox("General.Search", ref s_search);
-            GUILayout.FlexibleSpace();
-            UI.Textbox("ItemManager.ScrapValue", ref s_scrapValue, @"[^0-9]");
-            GUILayout.EndHorizontal();
+        GUILayout.EndScrollView();
+        GUI.DragWindow();
+    }
 
-            GUILayout.Space(20);
+    private void SpawnItem(Item item)
+    {
+        var position = GameNetworkManager.Instance.localPlayerController.playerEye.transform.position;
+        var gameObject = Object.Instantiate(item.spawnPrefab, position, Quaternion.identity,
+            StartOfRound.Instance.propsContainer);
+        int value = int.TryParse(_sScrapValue, out value) ? value : Random.Range(15, 100);
 
-            UI.ButtonGrid(StartOfRound.Instance.allItemsList.itemsList, (i) => i.name, s_search, (i) => SpawnItem(i), 3);
-
-            GUILayout.EndScrollView();
-            GUI.DragWindow();
-        }
-
-        private void SpawnItem(Item item)
-        {
-            Vector3 position = GameNetworkManager.Instance.localPlayerController.playerEye.transform.position;
-            GameObject gameObject = Object.Instantiate(item.spawnPrefab, position, Quaternion.identity, StartOfRound.Instance.propsContainer);
-            int value = int.TryParse(s_scrapValue, out value) ? value : Random.Range(15, 100);
-
-            gameObject.GetComponent<GrabbableObject>().SetScrapValue(value);
-            gameObject.GetComponent<GrabbableObject>().fallTime = 0.0f;
-            gameObject.GetComponent<NetworkObject>().Spawn();
-        }
+        gameObject.GetComponent<GrabbableObject>().SetScrapValue(value);
+        gameObject.GetComponent<GrabbableObject>().fallTime = 0.0f;
+        gameObject.GetComponent<NetworkObject>().Spawn();
     }
 }

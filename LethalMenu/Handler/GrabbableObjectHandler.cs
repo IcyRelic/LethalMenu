@@ -1,17 +1,15 @@
-﻿namespace LethalMenu.Handler
-{
-    internal class GrabbableObjectHandler
-    {
-        
-    }
+﻿namespace LethalMenu.Handler;
 
-    public static class ShotgunItemExtensions
+internal class GrabbableObjectHandler
+{
+}
+
+public static class ShotgunItemExtensions
+{
+    public static void ShootGunAsEnemy(this ShotgunItem shotgun, EnemyAI enemy)
     {
-        public static void ShootGunAsEnemy(this ShotgunItem shotgun, EnemyAI enemy)
-        {
-            shotgun.gunShootAudio.volume = 0.15f;
-            shotgun.shotgunRayPoint = enemy.transform;
-            shotgun.ShootGunAndSync(false);
-        }
+        shotgun.gunShootAudio.volume = 0.15f;
+        shotgun.shotgunRayPoint = enemy.transform;
+        shotgun.ShootGunAndSync(false);
     }
 }

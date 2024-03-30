@@ -1,20 +1,24 @@
 ﻿using LethalMenu.Language;
 
-namespace LethalMenu.Menu.Core
+namespace LethalMenu.Menu.Core;
+
+internal class MenuTab : MenuFragment
 {
+    private readonly string _localization;
+    public string Name;
 
-    internal class MenuTab : MenuFragment
+    protected MenuTab(string name)
     {
-        public string name;
-        private string localization;
-        public MenuTab(string name)
-        {
-            this.localization = name;
-            LocalizeName();
-        }
+        _localization = name;
+        LocalizeName();
+    }
 
-        public void LocalizeName() => name = Localization.Localize(localization);
-        public virtual void Draw() { }
+    public void LocalizeName()
+    {
+        Name = Localization.Localize(_localization);
+    }
 
+    public virtual void Draw()
+    {
     }
 }

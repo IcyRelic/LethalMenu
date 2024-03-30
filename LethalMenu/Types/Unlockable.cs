@@ -1,64 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LethalMenu.Types;
 
-namespace LethalMenu.Types
+public enum Unlockable
 {
-    public enum Unlockable : int
+    /**
+     * USELESS
+     * OrangeSuit = 0,
+     * Cupboard = 7,
+     * FileCabinet = 8,
+     * LightSwitch = 11,
+     * Bunkbeds = 15,
+     * Terminal = 16,
+     * *
+     */
+    GreenSuit = 1,
+    HazardSuit = 2,
+    PajamaSuit = 3,
+    CozyLights = 4,
+    Teleporter = 5,
+    Television = 6,
+    Toilet = 9,
+    Shower = 10,
+    RecordPlayer = 12,
+    Table = 13,
+    RomanticTable = 14,
+    SignalTranslator = 17,
+    LoudHorn = 18,
+    InverseYeleporter = 19,
+    JackOLantern = 20,
+    WelcomeMat = 21,
+    Goldfish = 22,
+    PlushiePajamaMan = 23
+}
+
+public static class UnlockableExtensions
+{
+    public static UnlockableItem GetItem(this Unlockable unlockable)
     {
-        /**USELESS
-        OrangeSuit = 0,
-        Cupboard = 7,
-        FileCabinet = 8,
-        LightSwitch = 11,
-        Bunkbeds = 15,
-        Terminal = 16,
-        **/
-
-
-        GreenSuit = 1,
-        HazardSuit = 2,
-        PajamaSuit = 3,
-        CozyLights = 4,
-        Teleporter = 5,
-        Television = 6,
-        Toilet = 9,
-        Shower = 10,
-        RecordPlayer = 12,
-        Table = 13,
-        RomanticTable = 14,
-        SignalTranslator = 17,
-        LoudHorn = 18,
-        InverseYeleporter = 19,
-        JackOLantern = 20,
-        WelcomeMat = 21,
-        Goldfish = 22,
-        PlushiePajamaMan = 23,
+        return StartOfRound.Instance.unlockablesList.unlockables[(int)unlockable];
     }
 
-    public static class UnlockableExtensions
+    public static void SetLocked(this Unlockable unlockable)
     {
-        public static UnlockableItem GetItem(this Unlockable unlockable)
-        {
-            return StartOfRound.Instance.unlockablesList.unlockables[(int)unlockable];
-        }
+        var item = unlockable.GetItem();
+        item.alreadyUnlocked = false;
+        item.hasBeenUnlockedByPlayer = false;
+    }
 
-        public static void SetLocked(this Unlockable unlockable)
-        {
-            UnlockableItem item = unlockable.GetItem();
-            item.alreadyUnlocked = false;
-            item.hasBeenUnlockedByPlayer = false;
-        }
+    public static void Buy(this Unlockable unlockable, int credits)
+    {
+        var item = unlockable.GetItem();
 
-        public static void Buy(this Unlockable unlockable, int credits)
-        {
-            UnlockableItem item = unlockable.GetItem();
+        unlockable.SetLocked();
 
-            unlockable.SetLocked();
-
-            StartOfRound.Instance.BuyShipUnlockableServerRpc((int) unlockable, credits);
-        }
+        StartOfRound.Instance.BuyShipUnlockableServerRpc((int)unlockable, credits);
     }
 }

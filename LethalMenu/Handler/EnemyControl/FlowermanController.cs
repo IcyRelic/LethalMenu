@@ -1,36 +1,53 @@
-﻿namespace LethalMenu.Handler.EnemyControl
+﻿namespace LethalMenu.Handler.EnemyControl;
+
+internal enum FlowermanState
 {
+    SCOUTING,
+    STAND,
+    ANGER
+}
 
-    enum FlowermanState
+internal class FlowermanController : IEnemyController<FlowermanAI>
+{
+    public void UsePrimarySkill(FlowermanAI enemy)
     {
-        SCOUTING,
-        STAND,
-        ANGER
+        if (!enemy.carryingPlayerBody) enemy.SetBehaviourState(FlowermanState.ANGER);
+
+        enemy.DropPlayerBodyServerRpc();
     }
-    internal class FlowermanController : IEnemyController<FlowermanAI>
+
+    public void UseSecondarySkill(FlowermanAI enemy)
     {
-        public void UsePrimarySkill(FlowermanAI enemy)
-        {
-            if (!enemy.carryingPlayerBody)
-            {
-                enemy.SetBehaviourState(FlowermanState.ANGER);
-            }
+        enemy.SetBehaviourState(FlowermanState.STAND);
+    }
 
-            enemy.DropPlayerBodyServerRpc();
-        }
+    public void ReleaseSecondarySkill(FlowermanAI enemy)
+    {
+        enemy.SetBehaviourState(FlowermanState.SCOUTING);
+    }
 
-        public void UseSecondarySkill(FlowermanAI enemy) => enemy.SetBehaviourState(FlowermanState.STAND);
+    public bool IsAbleToMove(FlowermanAI enemy)
+    {
+        return !enemy.inSpecialAnimation;
+    }
 
-        public void ReleaseSecondarySkill(FlowermanAI enemy) => enemy.SetBehaviourState(FlowermanState.SCOUTING);
+    public string GetPrimarySkillName(FlowermanAI enemy)
+    {
+        return enemy.carryingPlayerBody ? "Drop body" : "";
+    }
 
-        public bool IsAbleToMove(FlowermanAI enemy) => !enemy.inSpecialAnimation;
+    public string GetSecondarySkillName(FlowermanAI _)
+    {
+        return "Stand";
+    }
 
-        public string GetPrimarySkillName(FlowermanAI enemy) => enemy.carryingPlayerBody ? "Drop body" : "";
+    public float InteractRange(FlowermanAI _)
+    {
+        return 1.5f;
+    }
 
-        public string GetSecondarySkillName(FlowermanAI _) => "Stand";
-
-        public float InteractRange(FlowermanAI _) => 1.5f;
-
-        public bool SyncAnimationSpeedEnabled(FlowermanAI _) => false;
+    public bool SyncAnimationSpeedEnabled(FlowermanAI _)
+    {
+        return false;
     }
 }

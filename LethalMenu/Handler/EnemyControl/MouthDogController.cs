@@ -1,32 +1,41 @@
-﻿namespace LethalMenu.Handler.EnemyControl
-{
-    enum DogState
-    {
-        ROAMING,
-        SUSPICIOUS,
-        CHASE,
-        LUNGE
-    }
-    internal class MouthDogController : IEnemyController<MouthDogAI>
-    {
-        public void OnMovement(MouthDogAI enemy, bool isMoving, bool isSprinting)
-        {
-            if (!isSprinting)
-            {
-                if (!isMoving) return;
-                enemy.SetBehaviourState(DogState.ROAMING);
-            }
+﻿namespace LethalMenu.Handler.EnemyControl;
 
-            else
-            {
-                enemy.SetBehaviourState(DogState.CHASE);
-            }
+internal enum DogState
+{
+    ROAMING,
+    SUSPICIOUS,
+    CHASE,
+    LUNGE
+}
+
+internal class MouthDogController : IEnemyController<MouthDogAI>
+{
+    public void OnMovement(MouthDogAI enemy, bool isMoving, bool isSprinting)
+    {
+        if (!isSprinting)
+        {
+            if (!isMoving) return;
+            enemy.SetBehaviourState(DogState.ROAMING);
         }
 
-        public void UseSecondarySkill(MouthDogAI enemy) => enemy.SetBehaviourState(DogState.LUNGE);
+        else
+        {
+            enemy.SetBehaviourState(DogState.CHASE);
+        }
+    }
 
-        public string GetSecondarySkillName(MouthDogAI _) => "Lunge";
+    public void UseSecondarySkill(MouthDogAI enemy)
+    {
+        enemy.SetBehaviourState(DogState.LUNGE);
+    }
 
-        public float InteractRange(MouthDogAI _) => 2.5f;
+    public string GetSecondarySkillName(MouthDogAI _)
+    {
+        return "Lunge";
+    }
+
+    public float InteractRange(MouthDogAI _)
+    {
+        return 2.5f;
     }
 }

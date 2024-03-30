@@ -1,91 +1,90 @@
-﻿using GameNetcodeStuff;
+﻿using System;
 using LethalMenu.Components;
 using LethalMenu.Manager;
 using LethalMenu.Util;
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace LethalMenu.Cheats
+namespace LethalMenu.Cheats;
+
+internal class Freecam : Cheat
 {
-    internal class Freecam : Cheat
+    //FreeCam
+    public static Camera Camera;
+    private static Light _light;
+    private static MouseInput _mouse;
+    private static KbInput _movement;
+    private static bool _isStatic;
+
+    public static void Reset()
     {
-        //FreeCam
-        public static Camera camera = null;
-        private static Light light = null;
-        public static MouseInput mouse = null;
-        public static KBInput movement = null;
-        public static bool isStatic = false;
+        if (Camera != null) Destroy(Camera.gameObject);
+        if (_light != null) Destroy(_light.gameObject);
+
+        Camera = null;
+        _light = null;
+
+        Hack.FreeCam.SetToggle(false);
+        Stop();
+    }
 
 
-        public override void Update()
+    public override void Update()
+    {
+        try
         {
-            try
-            {
-                Stop();
-
-                if (!Hack.FreeCam.IsEnabled()) return;
-                isStatic = Hack.EnemyControl.IsEnabled();
-                LethalMenu.localPlayer.enabled = false;
-                LethalMenu.localPlayer.isFreeCamera = true;
-                CreateIfNull();
-                light.intensity = Settings.f_nvIntensity;
-                light.range = Settings.f_nvRange;
-                GameUtil.RenderPlayerModels();
-                if(!isStatic) camera.transform.SetPositionAndRotation(movement.transform.position, mouse.transform.rotation);
-            }
-            catch (Exception e)
-            {
-                LethalMenu.debugMessage = e.Message + "\n" + e.StackTrace;
-            }
-        }
-
-        private void CreateIfNull()
-        {
-            if (camera == null)
-            {
-                camera = GameObjectUtil.CreateCamera("FreeCam", CameraManager.GetBaseCamera().transform);
-                camera.enabled = true;
-                mouse = camera.gameObject.AddComponent<MouseInput>();
-                movement = camera.gameObject.AddComponent<KBInput>();
-                light = GameObjectUtil.CreateLight();
-                light.transform.SetParent(camera.transform, false);
-                CameraManager.GetBaseCamera().enabled = false;
-                CameraManager.ActiveCamera = camera;
-            }
-        }
-
-        public static void Reset()
-        {
-            if (camera != null) Destroy(camera.gameObject);
-            if (light != null) Destroy(light.gameObject);
-
-            camera = null;
-            light = null;
-
-            Hack.FreeCam.SetToggle(false);
             Stop();
-        }
 
-        public static void Stop()
-        {
-            if (!(bool) StartOfRound.Instance || Hack.FreeCam.IsEnabled() || camera == null) return;
-            CameraManager.ActiveCamera = SpectatePlayer.spectatingPlayer == -1 ? CameraManager.GetBaseCamera() : SpectatePlayer.camera;
-            CameraManager.GetBaseCamera().enabled = true;
-
-            camera.enabled = false;
-            Destroy(camera.gameObject);
-            camera = null;
-            mouse = null;
-            movement = null;
-
-
-            Destroy(light.gameObject);
-            light = null;
-
-            LethalMenu.localPlayer.enabled = true;
-            LethalMenu.localPlayer.isFreeCamera = false;
+            if (!Hack.FreeCam.IsEnabled()) return;
+            _isStatic = Hack.EnemyControl.IsEnabled();
+            LethalMenu.LocalPlayer.enabled = false;
+            LethalMenu.LocalPlayer.isFreeCamera = true;
+            CreateIfNull();
+            _light.intensity = Settings.f_nvIntensity;
+            _light.range = Settings.f_nvRange;
             GameUtil.RenderPlayerModels();
+            if (!_isStatic)
+                Camera.transform.SetPositionAndRotation(_movement.transform.position, _mouse.transform.rotation);
         }
+        catch (Exception e)
+        {
+            LethalMenu.DebugMessage = e.Message + "\n" + e.StackTrace;
+        }
+    }
+
+    private static void CreateIfNull()
+    {
+        if (Camera) return;
+
+        Camera = GameObjectUtil.CreateCamera("FreeCam", CameraManager.GetBaseCamera().transform);
+        Camera.enabled = true;
+        _mouse = Camera.gameObject.AddComponent<MouseInput>();
+        _movement = Camera.gameObject.AddComponent<KbInput>();
+        _light = GameObjectUtil.CreateLight();
+        _light.transform.SetParent(Camera.transform, false);
+        CameraManager.GetBaseCamera().enabled = false;
+        CameraManager.ActiveCamera = Camera;
+    }
+
+    private static void Stop()
+    {
+        if (!(bool)StartOfRound.Instance || Hack.FreeCam.IsEnabled() || !Camera) return;
+        CameraManager.ActiveCamera = SpectatePlayer.spectatingPlayer == -1
+            ? CameraManager.GetBaseCamera()
+            : SpectatePlayer.camera;
+        CameraManager.GetBaseCamera().enabled = true;
+
+        Camera.enabled = false;
+        Destroy(Camera.gameObject);
+        Camera = null;
+        _mouse = null;
+        _movement = null;
+
+
+        Destroy(_light.gameObject);
+        _light = null;
+
+        LethalMenu.LocalPlayer.enabled = true;
+        LethalMenu.LocalPlayer.isFreeCamera = false;
+        GameUtil.RenderPlayerModels();
     }
 }

@@ -1,13 +1,24 @@
-﻿namespace LethalMenu.Handler.EnemyControl
+﻿namespace LethalMenu.Handler.EnemyControl;
+
+internal class CrawlerController : IEnemyController<CrawlerAI>
 {
-    internal class CrawlerController : IEnemyController<CrawlerAI>
+    public float InteractRange(CrawlerAI _)
     {
-        public float InteractRange(CrawlerAI _) => 1.5f;
+        return 1.5f;
+    }
 
-        public bool SyncAnimationSpeedEnabled(CrawlerAI _) => false;
+    public bool SyncAnimationSpeedEnabled(CrawlerAI _)
+    {
+        return false;
+    }
 
-        public void UseSecondarySkill(CrawlerAI enemy) => enemy.MakeScreechNoiseServerRpc();
+    public void UseSecondarySkill(CrawlerAI enemy)
+    {
+        enemy.MakeScreechNoiseServerRpc();
+    }
 
-        public void UsePrimarySkill(CrawlerAI enemy) => enemy.CollideWithWallServerRpc(); 
+    public void UsePrimarySkill(CrawlerAI enemy)
+    {
+        enemy.CollideWithWallServerRpc();
     }
 }

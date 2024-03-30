@@ -1,18 +1,15 @@
 ﻿using UnityEngine;
 
-namespace LethalMenu.Cheats
+namespace LethalMenu.Cheats;
+
+internal class NoFog : Cheat
 {
-    internal class NoFog : Cheat
+    public override void Update()
     {
+        var systems = GameObject.Find("Systems");
 
-        public override void Update()
-        {
-            GameObject gameObject = GameObject.Find("Systems");
+        if (!systems) return;
 
-            if (gameObject == null) return;
-
-            gameObject.transform.Find("Rendering").Find("VolumeMain").gameObject.SetActive(!Hack.NoFog.IsEnabled());
-        }
-
+        systems.transform.Find("Rendering").Find("VolumeMain").gameObject.SetActive(!Hack.NoFog.IsEnabled());
     }
 }

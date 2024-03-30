@@ -1,50 +1,36 @@
-﻿using GameNetcodeStuff;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace LethalMenu.Manager
+namespace LethalMenu.Manager;
+
+public static class CameraManager
 {
-    public class CameraManager
+    private static Camera _camera;
+
+    public static Camera ActiveCamera
     {
-        private static Camera _camera = null;
-        public static Camera ActiveCamera
+        get
         {
-            get
-            {
-                if (!(bool)StartOfRound.Instance) _camera = null;
+            if (!(bool)StartOfRound.Instance) _camera = null;
 
-                PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-                
-                if(_camera == null || UsingBaseCamera()) _camera = GetBaseCamera();
+            if (!_camera || UsingBaseCamera()) _camera = GetBaseCamera();
 
-                
-
-                return _camera;
-            }
-            set
-            {
-                _camera = value;
-            }
+            return _camera;
         }
-        
-        public static Camera GetBaseCamera()
-        {
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+        set => _camera = value;
+    }
 
-            return player.isPlayerDead ? StartOfRound.Instance.spectateCamera : player.gameplayCamera;
-        }
+    public static Camera GetBaseCamera()
+    {
+        var player = GameNetworkManager.Instance.localPlayerController;
 
-        public static bool UsingBaseCamera()
-        {
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+        return player.isPlayerDead ? StartOfRound.Instance.spectateCamera : player.gameplayCamera;
+    }
 
-            return _camera.GetInstanceID() == player.gameplayCamera.GetInstanceID() 
-                || _camera.GetInstanceID() == StartOfRound.Instance.spectateCamera.GetInstanceID();
-        }
-        
+    private static bool UsingBaseCamera()
+    {
+        var player = GameNetworkManager.Instance.localPlayerController;
+
+        return _camera.GetInstanceID() == player.gameplayCamera.GetInstanceID()
+               || _camera.GetInstanceID() == StartOfRound.Instance.spectateCamera.GetInstanceID();
     }
 }
