@@ -111,10 +111,13 @@ namespace LethalMenu.Menu.Core
             {
                 GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
                 windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
-                unlockableManagerWindow.Draw();
-                itemManagerWindow.Draw();
-                moonManagerWindow.Draw();
-                LootManager.Draw();
+                if (LethalMenu.localPlayer != null)
+                {
+                    unlockableManagerWindow.Draw();
+                    itemManagerWindow.Draw();
+                    moonManagerWindow.Draw();
+                    LootManager.Draw();
+                }
                 GUI.color = Color.white;
             }
         }
