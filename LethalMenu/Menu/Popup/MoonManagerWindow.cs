@@ -39,7 +39,7 @@ namespace LethalMenu.Menu.Popup
 
 
 
-                foreach (SelectableLevel x in StartOfRound.Instance.levels.OrderBy(x => order[x.levelID]))
+                               foreach (SelectableLevel x in StartOfRound.Instance.levels.OrderBy(x => order.ContainsKey(x.levelID) ? order[x.levelID] : int.MaxValue))
                 {
                     if (x.levelID == StartOfRound.Instance.currentLevel.levelID) continue;
 
