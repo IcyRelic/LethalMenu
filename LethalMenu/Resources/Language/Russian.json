@@ -234,6 +234,7 @@
 	"SettingsTab.SliderSize": "Размер слайдеров",
 	"SettingsTab.TextboxSize": "Размер полей для ввода",
 	"SettingsTab.ResetMenu": "Сбросить размеры окна",
+	"SettingsTab.MenuAlpha": "Прозрачность меню",
 	"MoonManager.Title": "Меню луны",
 	"MoonManager.CurrentMoon": "Текущая луна",
 	"MoonManager.Moon": "Луна:",
