@@ -36,6 +36,10 @@ namespace LethalMenu.Types
         WelcomeMat = 21,
         Goldfish = 22,
         PlushiePajamaMan = 23,
+        PurpleSuit = 24,
+        BeeSuit = 25,
+        BunnySuit = 26,
+        DiscoBall = 27,
     }
 
     public static class UnlockableExtensions
