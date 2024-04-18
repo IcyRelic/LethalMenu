@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using LethalMenu.Language;
 using UnityEngine;
 
 namespace LethalMenu.Cheats
@@ -10,14 +11,14 @@ namespace LethalMenu.Cheats
         {
             String info = "";
 
-            if (Hack.DisplayBodyCount.IsEnabled()) info += "Dead Body Count: " + GetBodyCount() + "\n";
-            if (Hack.DisplayEnemyCount.IsEnabled()) info += "Enemy Count: " + GetEnemyCount() + "\n";
-            if (Hack.DisplayObjectScan.IsEnabled()) info += "Object Count: " + GetObjectCount() + "\n";
-            if (Hack.DisplayObjectScan.IsEnabled()) info += "Object Value: " + GetObjectValue() + "\n";
-            if (Hack.DisplayShipScan.IsEnabled()) info += "Ship Value: " + GetShipValue() + "\n";
-            if (Hack.DisplayQuota.IsEnabled()) info += "Quota: " + GetQuota() + "\n";
-            if (Hack.DisplayQuota.IsEnabled()) info += "Days Left: " + GetDaysLeft() + "\n";
-            if (Hack.DisplayBuyingRate.IsEnabled()) info += "Company Buys At: " + GetBuyingRate() + "%\n";
+            if (Hack.DisplayBodyCount.IsEnabled()) info += Localization.Localize(["Cheats.Info.BodyCount"], true) + ": " + GetBodyCount() + "\n";
+            if (Hack.DisplayEnemyCount.IsEnabled()) info += Localization.Localize(["Cheats.Info.EnemyCount"], true) + ": " + GetEnemyCount() + "\n";
+            if (Hack.DisplayObjectScan.IsEnabled()) info += Localization.Localize(["Cheats.Info.ObjectCount"], true) + ": " + GetObjectCount() + "\n";
+            if (Hack.DisplayObjectScan.IsEnabled()) info += Localization.Localize(["Cheats.Info.ObjectValue"], true) + ": " + GetObjectValue() + "\n";
+            if (Hack.DisplayShipScan.IsEnabled()) info += Localization.Localize(["Cheats.Info.ShipValue"], true) + ": " + GetShipValue() + "\n";
+            if (Hack.DisplayQuota.IsEnabled()) info += Localization.Localize(["Cheats.Info.Quota"], true) + ": " + GetQuota() + "\n";
+            if (Hack.DisplayQuota.IsEnabled()) info += Localization.Localize(["Cheats.Info.DaysLeft"], true) + ": " + GetDaysLeft() + "\n";
+            if (Hack.DisplayBuyingRate.IsEnabled()) info += Localization.Localize(["Cheats.Info.BuyingRate"], true) + ": " + GetBuyingRate() + "%\n";
 
             GUI.color = Color.white;
             GUI.Label(new Rect(Screen.width - 160 - 0, 0, 160f, 180f), info, new GUIStyle(GUI.skin.label) { fontSize = 14 }); ;
