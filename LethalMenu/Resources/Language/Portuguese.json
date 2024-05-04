@@ -236,6 +236,7 @@
 	"SettingsTab.SliderSize": "Tamanho do Slider",
 	"SettingsTab.TextboxSize": "Tamanho da Caixa de Texto",
 	"SettingsTab.ResetMenu": "Redefinir Menu",
+	"SettingsTab.MenuAlpha": "Opacidade do Menu:",
 	"MoonManager.Title": "Gerenciador de Luas",
 	"MoonManager.CurrentMoon": "Lua Atual:",
 	"MoonManager.Moon": "Lua:",
