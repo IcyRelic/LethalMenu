@@ -1,10 +1,10 @@
-﻿using LethalMenu.Menu.Core;
+using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
+using Steamworks.Ugc;
 using System;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace LethalMenu.Menu.Popup
 {
@@ -17,8 +17,6 @@ namespace LethalMenu.Menu.Popup
 
         public override void DrawContent(int windowID)
         {
-            if(!(bool)StartOfRound.Instance) return;
-
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             var unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().ToList();
@@ -29,13 +27,10 @@ namespace LethalMenu.Menu.Popup
             UI.Button("UnlockableManager.UnlockAll", () => unlockables.ForEach(x => Hack.UnlockUnlockable.Execute(x)));
             GUILayout.EndHorizontal();
 
-            
             UI.ButtonGrid(unlockables, (u) => u.GetItem().unlockableName, s_search, (u) => Hack.UnlockUnlockable.Execute(u), 3);
-
+   
             GUILayout.EndScrollView();
             GUI.DragWindow();
         }
-
-
     }
 }

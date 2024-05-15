@@ -9,6 +9,7 @@ namespace LethalMenu.Types
     public enum MapObject
     {
         TurretContainer,
-        Landmine
+        Landmine,
+        SpikeRoofTrapHazard
     }
 }

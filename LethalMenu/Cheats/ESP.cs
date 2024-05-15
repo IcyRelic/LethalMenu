@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System.Reflection;
 using Object = UnityEngine.Object;
 
 
@@ -21,7 +22,7 @@ namespace LethalMenu.Cheats
             PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
 
             if (player == null) return;
-            
+
             try
             {
                 if (Hack.ObjectESP.IsEnabled()) this.DisplayScrap();
@@ -35,14 +36,12 @@ namespace LethalMenu.Cheats
                 if (Hack.SteamHazardESP.IsEnabled()) this.DisplaySteamHazards();
                 if (Hack.DoorLockESP.IsEnabled()) this.DisplayDoorLocks();
                 if (Hack.BreakerESP.IsEnabled()) this.DisplayBreaker();
+                if (Hack.SpikeRoofTrapESP.IsEnabled()) this.DisplaySpikeRoofTraps();
             }
             catch (Exception e)
             {
                 LethalMenu.debugMessage = e.Message + "\n" + e.StackTrace;
             }
-
-            
-
         }
 
         public override void Update() => this.DisplayChams();
@@ -73,11 +72,12 @@ namespace LethalMenu.Cheats
             DisplayChams(LethalMenu.steamValves, _ => Settings.c_chams);
             DisplayChams(LethalMenu.bigDoors, _ => Settings.c_chams);
             DisplayChams(LethalMenu.doorLocks, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.spikeRoofTraps, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
         }
 
-        
+
 
         private void DisplayObjects<T>(IEnumerable<T> objects, Func<T, string> labelSelector, Func<T, RGBAColor> colorSelector) where T : Component
         {
@@ -87,7 +87,7 @@ namespace LethalMenu.Cheats
                 {
                     float distance = GetDistanceToPlayer(obj.transform.position);
 
-                    if(distance > Settings.f_espDistance || !WorldToScreen(obj.transform.position, out Vector3 screen)) continue;
+                    if (distance > Settings.f_espDistance || !WorldToScreen(obj.transform.position, out Vector3 screen)) continue;
 
                     VisualUtil.DrawDistanceString(screen, labelSelector(obj), colorSelector(obj), distance);
                 }
@@ -97,7 +97,7 @@ namespace LethalMenu.Cheats
         private void DisplayTurrets()
         {
             DisplayObjects(
-                LethalMenu.turrets.Where(t => t != null && t.IsSpawned), 
+                LethalMenu.turrets.Where(t => t != null && t.IsSpawned),
                 turret => "Turret [ " + turret.GetComponent<TerminalAccessibleObject>().objectCode + " ]",
                 turret => Settings.c_turretESP
             );
@@ -142,9 +142,8 @@ namespace LethalMenu.Cheats
         private void DisplayPlayers()
         {
             DisplayObjects(
-                LethalMenu.players
-                    .Where(p => p != null && !p.isPlayerDead && !p.IsLocalPlayer && !p.disconnectedMidGame && p.playerClientId != LethalMenu.localPlayer.playerClientId),
-                player => $"{(Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{player.playerUsername}",
+                LethalMenu.players.Where(p => p != null && !p.isPlayerDead && !p.IsLocalPlayer && !p.disconnectedMidGame && p.playerClientId != LethalMenu.localPlayer.playerClientId),
+                player => $"{(Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_HPDisplay ? $"[HP:{player.health}] " : "")}{player.playerUsername}",
                 player => Settings.c_playerESP
             );
         }
@@ -158,34 +157,35 @@ namespace LethalMenu.Cheats
             );
         }
 
-        private void DisplayDeadBody()
-        {
-            DisplayObjects(
-                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.IsSpawned && i.itemProperties != null && i is RagdollGrabbableObject),
-                item =>
-                {
-                    RagdollGrabbableObject body = item as RagdollGrabbableObject;
-                    PlayerControllerB player = StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId];
-                    return player.playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
-                },
-                _ => Settings.c_playerESP
-            );
-        }
         private void DisplayScrap()
         {
             DisplayObjects(
-                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && i is not RagdollGrabbableObject),
-                item => item.itemProperties.itemName + $" ({item.scrapValue}) ",
+                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null),
                 item =>
                 {
-                    if(!Settings.b_useScrapTiers) return Settings.c_objectESP;
+                    if (item is GiftBoxItem giftBox && giftBox.Reflect().GetValue<Item>("objectInPresentItem") is Item objectInPresentItem && giftBox.Reflect().GetValue<int>("objectInPresentValue") is int objectInPresentValue)
+                    {
+                        return $"{item.itemProperties.itemName} ({item.scrapValue}) - {objectInPresentItem.itemName} ({objectInPresentValue})";
+                    }
+                    if (item is RagdollGrabbableObject)
+                    {
+                        RagdollGrabbableObject body = item as RagdollGrabbableObject;
+                        PlayerControllerB player = StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId];
+                        return player.playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
+                    }
+                    return item.itemProperties.itemName + $" ({item.scrapValue}) ";
+                },
+                item =>
+                {
+                    if (!Settings.b_useScrapTiers) return Settings.c_objectESP;
+                    if (item is RagdollGrabbableObject) return Settings.c_deadPlayer;
                     int index = Array.FindLastIndex<int>(Settings.i_scrapValueThresholds, x => x <= item.scrapValue);
                     return index > -1 ? Settings.c_scrapValueColors[index] : Settings.c_objectESP;
                 }
             );
         }
 
-        public void DisplaySteamHazards()
+        private void DisplaySteamHazards()
         {
             DisplayObjects(
                 LethalMenu.steamValves.Where(v => v != null && v.triggerScript.interactable),
@@ -194,16 +194,16 @@ namespace LethalMenu.Cheats
             );
         }
 
-        public void DisplayBigDoors()
+        private void DisplayBigDoors()
         {
             DisplayObjects(
-                LethalMenu.bigDoors,
+                LethalMenu.bigDoors.Where(d => d != null && d.isBigDoor),
                 door => "Big Door [ " + door.objectCode + " ]",
                 door => Settings.c_bigDoorESP
             );
         }
 
-        public void DisplayDoorLocks()
+        private void DisplayDoorLocks()
         {
             DisplayObjects(
                 LethalMenu.doorLocks.Where(d => d != null && d.isLocked),
@@ -211,6 +211,13 @@ namespace LethalMenu.Cheats
                 door => Settings.c_doorLockESP
             );
         }
-
+        private void DisplaySpikeRoofTraps()
+        {
+            DisplayObjects(
+                LethalMenu.spikeRoofTraps.Where(trap => trap != null && trap.trapActive),
+                trap => "Spike Roof Trap",
+                trap => Settings.c_spikeRoofTrapESP
+            );
+        }
     }
 }

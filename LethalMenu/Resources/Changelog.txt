@@ -1,3 +1,61 @@
+v1.4.3
+- Added Super Knife - Instant kill with knife
+- Added No Quicksand - No falling into quicksand 
+- Added No Camera Shake - No camera shake from Giants or Radmechs
+- Added Teleport With Items - Teleport with items on inverse or teleporter
+- Added Drop All Items - Drop all items the local player has
+- Added Berserk All Turrets - Berserk all turrets like you hit them
+- Added Unlock All Doors - Unlock all doors on the map
+- Added Open Ship Door Space - Open the door while in space
+- Added Drop All Players Items - Drop all items all players have
+- Added Show Offensive Lobby Names - Show offensive lobby names that get removed
+- Added Disconnect - Instantly disconnect  
+- Added Bridge Never Falls - Bridges on maps like Vow and Adamance never fall 
+- Added Force Small Bridge Fall - Force Small Bridge on Adamance to fall
+- Added Unlimited Oxygen - Unlimited Oxygen in water
+- Added Spawn Spike Roof Trap - Spawn Spike Roof Traps 
+- Added Enable Shop Items - See and teleport items from the ship in the Item Manager
+- Added Weather Manager - Change the Weather of a moon
+- Added HP Display - See the Health of other players on ESP
+- Added GiftBox Item ESP - See the item inside a GiftBox
+- Added GiftBox Iem value ESP - See the value of the item in a GiftBox
+- Added Unlimited Presents - Open GiftBoxes forever 
+- Added Extra Slots - Change how many slots you have (LOBBY REJOIN REQUIRED)
+- Added Spike Roof Trap ESP - See Spike Roof Traps on ESP
+- Added Spike Roof Trap Chams - See Spike Roof Traps on Chams
+- Added Dot Crosshair - New Dot Crosshair 
+- Added Vote Ship Leave Early - Vote for the ship to leave early instantly
+- Added RadMech to Godmode - RadMech can't kill you by picking you up
+- Added Translations to Info Display - Info Display is now translated for other languages
+- Added Display Ship Object Count - Display how many items are on the ship
+- Added Display Ship Object Value - Display the value of all the items on the ship
+- Added Hear All Alive People - Hear all people who are alive
+- Added Hear All Dead People - Hear all people who died
+- Added Display Object Count - Display how many items on the map excluding ship items 
+- Added Display Object Value - Display the value of the items on the map excluding ship items
+- Added Display Deadline - Display how many days you have left before quota
+- Added Notifications for Managers - Added notifications when you do actions in the managers
+- Added New Unlockables - New Unlockables for v50 are in the Unlockable Manager now
+- Fixed Loader so you can't inject LethalMenu twice - You can't bug LethalMenu by injecting it twice 
+- Fixed Error from leaving with LethalMenu open - Error you can't see but existed in the console
+- Fixed Cursor getting stuck when leaving with LethalMenu open - You couldn't move the mouse with LethalMenu closed on the main menu 
+- Fixed Managers becoming small after leaving - It didn't check if they were in a game
+- Fixed Build everywhere - You can now build anywhere it was broken after a update
+- Fixed Baboon Bird Controller - You can pick up items again
+- Fixed Translations - Translated everything except General tab
+- Fixed Server Tab Scrolling - You couldn't scroll all the way down in the Server Tab
+- Fixed Moon Manager - Now works for v50
+- Fixed Never Lose Scrap - Now works for v50 
+- Removed Display Ship Object Scan - Changed it into Display Ship Object Count and Display Ship Object Value
+- Removed Display Object Scan - Changed it into Display Object Count and Display Object Value
+- Removed Display Deadline from Display Quota - Made Display Deadline its own option instead of being in Display Quota
+- Removed Default Ship Items - Default ship items don't count in Display Object Count, Display Object Value, Display Ship Object Count, or Display Ship Object Value
+- Removed Hear Everyone - Changed it into Hear All Dead People and Hear All Alive People
+
+v1.4.2
+- EnemyControl 2.0 - Control enemies with more options
+- Fixed some bugs with EnemyControl
+
 v1.4.1
 - Added Shoplifter - All shop items are free
 - Fixed ServerTab Manager translations not working

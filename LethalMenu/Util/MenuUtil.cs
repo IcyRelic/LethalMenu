@@ -1,9 +1,4 @@
 ﻿using LethalMenu.Menu.Core;
-using System;
-using System.Collections;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -86,6 +81,11 @@ namespace LethalMenu.Util
             LethalMenu.localPlayer?.playerActions.Enable();
             Cursor.visible = false;
             Cursor.lockState = Settings.clm_lastCursorState;
+            if (LethalMenu.localPlayer == null)
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
         }
     }
 }

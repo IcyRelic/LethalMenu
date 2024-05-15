@@ -28,6 +28,7 @@ namespace LethalMenu
         public static List<DoorLock> doorLocks = new List<DoorLock>();
         public static List<ShipTeleporter> teleporters = new List<ShipTeleporter>();
         public static List<InteractTrigger> interactTriggers = new List<InteractTrigger>();
+        public static List<SpikeRoofTrap> spikeRoofTraps = new List<SpikeRoofTrap>();
         public static HangarShipDoor shipDoor;
         public static BreakerBox breaker;
         public static PlayerControllerB localPlayer;
@@ -49,7 +50,6 @@ namespace LethalMenu
                 return LethalMenu.instance;
             }
         }
-
 
         public void Start()
         {
@@ -77,7 +77,6 @@ namespace LethalMenu
 
         private void LoadCheats()
         {
-            
             try
             {
                 Settings.Changelog.ReadChanges();
@@ -87,7 +86,6 @@ namespace LethalMenu
                 {
                     cheats.Add((Cheat)Activator.CreateInstance(type));
                 }
-
                 Settings.Config.SaveDefaultConfig();
                 Settings.Config.LoadConfig();
             }
@@ -100,7 +98,6 @@ namespace LethalMenu
 
         public void FixedUpdate()
         {
-
             try
             {
                 if ((bool) StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
@@ -110,28 +107,19 @@ namespace LethalMenu
                 debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
             }
         }
+
         public void Update()
         {
             if (!(bool)StartOfRound.Instance || StartOfRound.Instance.inShipPhase) Settings.v_savedLocation = Vector3.zero;
-
             try
             {
-
                 foreach (Hack hack in Enum.GetValues(typeof(Hack)))
                 {
                     if ((bool) StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
-
-                    
-
                     if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsAnyHackWaiting()) hack.Execute();
                 }
-
                 if (!(bool)StartOfRound.Instance) return;
-
                 cheats.ForEach(cheat => cheat.Update());
-
-
-
             }
             catch (Exception e)
             {
@@ -139,13 +127,10 @@ namespace LethalMenu
             }
         }
 
-
         public void OnGUI()
         {
             try
-            {
-                
-                
+            {             
                 if (Event.current.type == EventType.Repaint)
                 {
                     VisualUtil.DrawString(new Vector2(5f, 2f), "Lethal Menu " + Settings.version + " By IcyRelic, and Dustin", Settings.c_primary,
@@ -156,11 +141,9 @@ namespace LethalMenu
                         string rTitle = "SettingsTab.ResizeTitle";
                         string rConfirm = "SettingsTab.ResizeConfirm";
                         string rSize = $"{HackMenu.Instance.windowRect.width}x{HackMenu.Instance.windowRect.height}";
-
                         VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f), Localization.Localize([rTitle, rConfirm, rSize], true), Settings.c_playerESP, true, true, true, 22);
                         MenuUtil.ResizeMenu();
                     }
-
 
                     if (Settings.isDebugMode)
                     {
@@ -168,11 +151,8 @@ namespace LethalMenu
                         VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage), false, false, false, 22);
                         VisualUtil.DrawString(new Vector2(10f, 125f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage2), false, false, false, 22);
                     }
-
                     if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.OnGui());
                 }
-
-
                 menu.Draw();
             }             
             catch (Exception e)
@@ -198,6 +178,7 @@ namespace LethalMenu
                 CollectObjects(interactTriggers);
                 CollectObjects(bigDoors, obj => obj.isBigDoor); 
                 CollectObjects(doorLocks);
+                CollectObjects(spikeRoofTraps);
 
                 shipDoor = Object.FindObjectOfType<HangarShipDoor>();
                 breaker = Object.FindObjectOfType<BreakerBox>();
@@ -218,8 +199,5 @@ namespace LethalMenu
             Loader.Unload();
             this.StopCoroutine(this.CollectObjects());
         }
-
-
-
     }
 }

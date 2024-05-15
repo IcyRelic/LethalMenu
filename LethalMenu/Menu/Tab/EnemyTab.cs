@@ -5,7 +5,6 @@ using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -69,7 +68,7 @@ namespace LethalMenu.Menu.Tab
             float height = HackMenu.Instance.contentHeight - 45;
 
             Rect rect = new Rect(0, 30, width, height);
-            GUI.Box(rect, title);
+            GUI.Box(rect, Localization.Localize(title));
 
             GUILayout.BeginVertical(GUILayout.Width(width), GUILayout.Height(height));
             GUILayout.Space(25);
@@ -99,18 +98,14 @@ namespace LethalMenu.Menu.Tab
             {
                 case 0:
                     if (!LethalMenu.enemies.Exists(e => e.GetInstanceID() == selectedEnemy)) selectedEnemy = -1;
-                    DrawList<EnemyAI>("Enemy List", LethalMenu.enemies, e => e.isEnemyDead, e => e.enemyType.name, ref scrollPos, ref selectedEnemy);
+                    DrawList<EnemyAI>("EnemyTab.EnemyList", LethalMenu.enemies, e => e.isEnemyDead, e => e.enemyType.name, ref scrollPos, ref selectedEnemy);
                     break;
                 case 1:
                     if(!GameUtil.GetEnemyTypes().Exists(e => e.GetInstanceID() == selectedEnemyType)) selectedEnemyType = -1;
-                    DrawList<EnemyType>("Enemy Types", GameUtil.GetEnemyTypes(), _ => false, e => e.name, ref scrollPos3, ref selectedEnemyType);
+                    DrawList<EnemyType>("EnemyTab.EnemyTypes", GameUtil.GetEnemyTypes(), _ => false, e => e.name, ref scrollPos3, ref selectedEnemyType);
                     break;
-            }
-
-                
+            }          
         }
-        
-
 
         private void GeneralActions()
         {
@@ -119,13 +114,11 @@ namespace LethalMenu.Menu.Tab
             UI.HackSlider(Hack.KillNearbyEnemies, "EnemyTab.KillNearbyEnemies", Settings.f_enemyKillDistance.ToString("0") + "m", ref Settings.f_enemyKillDistance, 5, 50, (int) Settings.f_enemyKillDistance);
             UI.Hack(Hack.StunAllEnemies, "EnemyTab.StunAllEnemies");
 
-            if(LethalMenu.enemies.Exists(e => e is SandSpiderAI))
+            if (LethalMenu.enemies.Exists(e => e is SandSpiderAI))
                 UI.Hack(Hack.BreakAllWebs, "EnemyTab.BreakAllSpiderWeb");
 
             if (Hack.EnemyControl.IsEnabled())
                 UI.Button("EnemyTab.StopEnemyControl", () => { Hack.EnemyControl.SetToggle(false); });
-
-
         }
 
         private void EnemyActions()
@@ -133,7 +126,6 @@ namespace LethalMenu.Menu.Tab
             UI.Header("EnemyTab.EnemyStatus", true);
 
             if (selectedEnemy == -1) { UI.Label(Settings.c_error.AsString("EnemyTab.NoEnemy")); return; }
-
 
             PlayerControllerB selectedPlayer = LethalMenu.players.Find(p => (int)p.playerClientId == PlayersTab.selectedPlayer);
             EnemyAI enemy = GetSelectedEnemy();
@@ -155,7 +147,6 @@ namespace LethalMenu.Menu.Tab
             if (enemy is HoarderBugAI bug) UI.Button("EnemyTab.StealItems", () => { bug.StealAllItems(); });
             if (enemy is SandSpiderAI spider) UI.Button("EnemyTab.SpawnWeb", () => { spider.SpawnWeb(spider.abdomen.position); });
 
-
             UI.Button("EnemyTab.KillEnemy", () => { enemy.Handle().Kill(); });
             UI.Button("EnemyTab.TargetSelectedPlayer", () => { enemy.Handle().TargetPlayer(selectedPlayer); });
             
@@ -165,8 +156,6 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayer", selectedPlayer, enemy);
             UI.Hack(Hack.EnemyControl, "EnemyTab.ControlEnemy", enemy);
             UI.Button("EnemyTab.Control", () => { Hack.EnemyControl.Execute(enemy); });
-
-
         }
         
         private void EnemySpawnerContent()

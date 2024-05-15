@@ -209,5 +209,24 @@ namespace LethalMenu.Util
         {
             DrawBoxOutline(Point, width, height, color.GetColor(), thickness);
         }
+
+        public static void DrawDot(Vector2 position, Color color, float radius)
+        {
+            Color Color = GUI.color;
+            Vector2 center = position;
+            for (float angle = 0; angle < 360; angle += 1)
+            {
+                float x = center.x + Mathf.Cos(Mathf.Deg2Rad * angle) * radius;
+                float y = center.y + Mathf.Sin(Mathf.Deg2Rad * angle) * radius;
+                Vector2 pointOnCircle = new Vector2(x, y);
+                GUI.DrawTexture(new Rect(pointOnCircle.x, pointOnCircle.y, 1f, 1f), Texture2D.whiteTexture);
+            }
+            GUI.color = Color;
+        }
+
+        public static void DrawDot(Vector2 position, RGBAColor color, float radius)
+        {
+            DrawDot(position, color.GetColor(), radius);
+        }
     }
 }

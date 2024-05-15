@@ -13,19 +13,16 @@ namespace LethalMenu.Cheats
 {
     internal class EnemyControl : Cheat
     {
-
         private static EnemyAI enemy = null;
         private static GameObject ControllerInstance = null;
         private static MouseInput mouse = null;
         private static AIMovement movement = null;
         private static bool IsAIControlled = false;
         private static bool NoClipEnabled = false;
-
-
-        const float TeleportDoorCooldown = 2.5f;
-        const float DoorInteractionCooldown = 0.7f;
-        float DoorCooldownRemaining  = 0.0f;
-        float TeleportCooldownRemaining = 0.0f;
+        private const float TeleportDoorCooldown = 2.5f;
+        private const float DoorInteractionCooldown = 0.7f;
+        private float DoorCooldownRemaining  = 0.0f;
+        private float TeleportCooldownRemaining = 0.0f;
 
         private static Dictionary<Type, IController> EnemyControllers { get; } = new() {
             { typeof(CentipedeAI), new CentipedeController() },
@@ -45,7 +42,13 @@ namespace LethalMenu.Cheats
             { typeof(LassoManAI), new LassoManController() },
             { typeof(CrawlerAI), new CrawlerController() },
             { typeof(SandSpiderAI), new SandSpiderController() },
-            { typeof(RedLocustBees), new RedLocustBeesController() }
+            { typeof(RedLocustBees), new RedLocustBeesController() },
+            { typeof(RadMechAI), new RadMechController() },
+            { typeof(ButlerEnemyAI), new ButlerController() },
+            { typeof(ButlerBeesEnemyAI), new ButlerBeesController() },
+            { typeof(FlowerSnakeEnemy), new FlowerSnakeController() },
+            { typeof(DoublewingAI), new DoublewingController() },
+            { typeof(DressGirlAI), new DressGirlController() },
         };
 
 
@@ -205,17 +208,17 @@ namespace LethalMenu.Cheats
             }
         }
 
-        static float InteractRange() =>
+        public static float InteractRange() =>
             EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
                 ? value.InteractRange(enemy)
                 : IController.DefaultInteractRange;
 
-        static float SprintMultiplier() =>
+        public static float SprintMultiplier() =>
             EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
                 ? value.SprintMultiplier(enemy)
                 : IController.DefaultSprintMultiplier;
 
-        void ToggleAIControl()
+        public void ToggleAIControl()
         {
             if (enemy?.agent is null || movement is null || mouse is null) return;
 
@@ -223,6 +226,7 @@ namespace LethalMenu.Cheats
             SetAIControl(IsAIControlled);
             //this.SendPossessionNotifcation($"AI Control: {(this.IsAIControlled ? "Enabled" : "Disabled")}");
         }
+        
         private static void SetAIControl(bool enableAI)
         {
             if (movement is null || enemy is null || enemy.agent is null) return;
@@ -246,7 +250,7 @@ namespace LethalMenu.Cheats
             movement.enabled = !enableAI;
         }
 
-        void HandleEntranceDoors(EnemyAI enemy, RaycastHit hit)
+        public void HandleEntranceDoors(EnemyAI enemy, RaycastHit hit)
         {
             if (this.TeleportCooldownRemaining > 0.0f) return;
             if (!hit.collider.gameObject.TryGetComponent(out EntranceTeleport entrance)) return;
@@ -255,7 +259,7 @@ namespace LethalMenu.Cheats
             this.TeleportCooldownRemaining = EnemyControl.TeleportDoorCooldown;
         }
 
-        void InteractWithAmbient(EnemyAI enemy, IController controller)
+        public void InteractWithAmbient(EnemyAI enemy, IController controller)
         {
             if (!Physics.Raycast(enemy.transform.position, enemy.transform.forward, out RaycastHit hit, InteractRange())) return;
             if (hit.collider.gameObject.TryGetComponent(out DoorLock doorLock) && this.DoorCooldownRemaining <= 0.0f)
@@ -271,14 +275,14 @@ namespace LethalMenu.Cheats
                 return;
             }
         }
-        void OpenDoorAsEnemy(DoorLock door)
+        
+        public void OpenDoorAsEnemy(DoorLock door)
         {
             if (door.Reflect().GetValue<bool>("isDoorOpened")) return;
             if (door.gameObject.TryGetComponent(out AnimatedObjectTrigger trigger))
             {
                 trigger.TriggerAnimationNonPlayer(false, true, false);
             }
-
             door.OpenDoorAsEnemyServerRpc();
         }
 
@@ -287,7 +291,7 @@ namespace LethalMenu.Cheats
                 teleport.entranceId == entrance.entranceId && teleport.isEntranceToBuilding != entrance.isEntranceToBuilding
             )?.entrancePoint;
 
-        void InteractWithTeleport(EnemyAI enemy, EntranceTeleport teleport)
+        public void InteractWithTeleport(EnemyAI enemy, EntranceTeleport teleport)
         {
             if (movement is not AIMovement aiMovement) return;
             if (this.GetExitPointFromDoor(teleport) is not Transform exitPoint) return;
@@ -296,17 +300,14 @@ namespace LethalMenu.Cheats
             enemy.EnableEnemyMesh(true, false);
         }
 
-
-
-
-        void ToggleNoClip()
+        public void ToggleNoClip()
         {
             NoClipEnabled = !NoClipEnabled;
             movement.SetNoClipMode(NoClipEnabled);
             //this.SendPossessionNotifcation($"NoClip: {(NoClipEnabled ? "Enabled" : "Disabled")}");
         }
 
-        void UsePrimarySkill()
+        public void UsePrimarySkill()
         {
             if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
 
@@ -320,19 +321,18 @@ namespace LethalMenu.Cheats
             controller.UseSecondarySkill(enemy);
         }
 
-        void OnSecondarySkillHold()
+        public void OnSecondarySkillHold()
         {
             if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
 
             controller.OnSecondarySkillHold(enemy);
         }
 
-        void ReleaseSecondarySkill()
+        public void ReleaseSecondarySkill()
         {
             if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
 
             controller.ReleaseSecondarySkill(enemy);
         }
-
     }
 }

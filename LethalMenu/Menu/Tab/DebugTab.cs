@@ -6,24 +6,21 @@ using Steamworks;
 using Steamworks.Data;
 using System.Linq;
 using UnityEngine;
-using Vector2 = UnityEngine.Vector2;
-
+using UnityEngine.UI;
 
 
 namespace LethalMenu.Menu.Tab
 {
     internal class DebugTab : MenuTab
     {
-        public DebugTab() : base("Debug") { }
-
         private Vector2 scrollPos = Vector2.zero;
+        public DebugTab() : base("Debug") { }
 
         public override void Draw()
         {
             GUILayout.BeginVertical();
             MenuContent();
             GUILayout.EndVertical();
-
         }
 
         private async void Leaderboard()
@@ -35,8 +32,6 @@ namespace LethalMenu.Menu.Tab
             LeaderboardUpdate? nullable = await leaderboardAsync.Value.ReplaceScore(int.MaxValue);
 
             LethalMenu.debugMessage = nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank;
-
-
         }
 
         private int selectedMode = 0;

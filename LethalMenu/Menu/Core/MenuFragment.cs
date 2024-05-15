@@ -1,19 +1,25 @@
-﻿using System.Collections;
+﻿using System;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace LethalMenu.Menu.Core
 {
     internal class MenuFragment
     {
-        [System.Obsolete]
-        public Texture2D GetImage(string url)
+        public void GetImage(string url, Action<Texture2D> Action)
         {
-            Texture2D texture = new Texture2D(1, 1);
-            WWW www = new WWW(url);
-            while (!www.isDone) { }
-            www.LoadImageIntoTexture(texture);
-            return texture;
+            UnityWebRequest www = UnityWebRequestTexture.GetTexture(url);
+            AsyncOperation operation = www.SendWebRequest();
+            operation.completed += (op) =>
+            {
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogError($"Failed to load image from {url}: {www.error}");
+                    return;
+                }
+                Texture2D texture = DownloadHandlerTexture.GetContent(www);
+                Action?.Invoke(texture);
+            };
         }
-        
     }
 }

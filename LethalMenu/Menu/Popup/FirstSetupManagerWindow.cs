@@ -22,7 +22,7 @@ namespace LethalMenu.Menu.Popup
         private GUIStyle style;
         private bool disableBtns = false;
 
-        public FirstSetupManagerWindow(int id) : base("FirstSetup.Title", new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100f, 300f, 250f), id) 
+        public FirstSetupManagerWindow(int id) : base("FirstSetupWindow.Title", new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100f, 300f, 250f), id) 
         {
             languages = Localization.GetLanguages();
             isOpen = true; 
@@ -32,7 +32,6 @@ namespace LethalMenu.Menu.Popup
             if (disableBtns) GUI.enabled = false;
             SetupContent();
             if (disableBtns) GUI.enabled = true;
-            //GUI.DragWindow(new Rect(0.0f, 0.0f, 10000f, 45f));
         }
 
         private void SetupContent()

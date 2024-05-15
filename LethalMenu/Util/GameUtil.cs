@@ -27,18 +27,23 @@ namespace LethalMenu.Util
 
             return types;
         }
-
         public static List<SpawnableMapObject> GetSpawnableMapObjects()
         {
             List<SpawnableMapObject> types = new List<SpawnableMapObject>();
 
-            if (!(bool)StartOfRound.Instance) return types;
+            if (StartOfRound.Instance == null || StartOfRound.Instance.levels == null) return types;
 
             foreach (var level in StartOfRound.Instance.levels)
             {
-                level.spawnableMapObjects.ToList().ForEach(o => { if (!types.Any(x => x.prefabToSpawn.name == o.prefabToSpawn.name)) types.Add(o); });
+                if (level.spawnableMapObjects == null) continue;
+                foreach (var spawnableObject in level.spawnableMapObjects)
+                {
+                    if (!types.Any(x => x.prefabToSpawn.name == spawnableObject.prefabToSpawn.name))
+                    {
+                        types.Add(spawnableObject);
+                    }
+                }
             }
-
             return types;
         }
 

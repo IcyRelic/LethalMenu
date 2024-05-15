@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 namespace LethalMenu.Util
 {
@@ -150,7 +152,7 @@ namespace LethalMenu.Util
             GUILayout.FlexibleSpace();
 
             GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.i_sliderWidth };
-            
+
 
             value = GUILayout.HorizontalSlider(value, min, max, slider, GUI.skin.horizontalSliderThumb);
 
@@ -218,6 +220,19 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
+        public static void SliderAction(string header, string displayValue, ref int value, int min, int max, int defaultValue)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
+            GUILayout.FlexibleSpace();
+            value = Mathf.RoundToInt(GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth)));
+            if (GUILayout.Button(Localization.Localize("General.Reset")))
+            {
+                value = defaultValue;
+            }
+            GUILayout.EndHorizontal();
+        }
+
         public static void NumSelect(string header, ref int value, int min, int max)
         {
             GUILayout.BeginHorizontal();
@@ -255,8 +270,8 @@ namespace LethalMenu.Util
             GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
             bool modifiedValue = GUILayout.Toggle(isChecked, "");
-            
-            if(modifiedValue != isChecked) onChanged.Invoke();
+
+            if (modifiedValue != isChecked) onChanged.Invoke();
             GUILayout.EndHorizontal();
         }
 
@@ -295,7 +310,7 @@ namespace LethalMenu.Util
 
             GUILayout.EndHorizontal();
         }
-        
+
         public static void Select(string header, ref int index, params UIOption[] options)
         {
             GUILayout.BeginHorizontal();
@@ -304,8 +319,8 @@ namespace LethalMenu.Util
 
             options[index].Draw();
 
-            if (GUILayout.Button("-")) index = Mathf.Clamp(index-1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = Mathf.Clamp(index+1, 0, options.Length - 1);
+            if (GUILayout.Button("-")) index = Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = Mathf.Clamp(index + 1, 0, options.Length - 1);
 
 
             GUILayout.EndHorizontal();
@@ -315,7 +330,7 @@ namespace LethalMenu.Util
         {
             List<T> filtered = objects.FindAll(x => textSelector(x).ToLower().Contains(search.ToLower()));
 
-            int rows = Mathf.CeilToInt(filtered.Count / (float) numPerRow);
+            int rows = Mathf.CeilToInt(filtered.Count / (float)numPerRow);
 
             for (int i = 0; i < rows; i++)
             {
@@ -329,7 +344,7 @@ namespace LethalMenu.Util
                     if (GUILayout.Button(textSelector((T)obj), GUILayout.Width(btnWidth))) action((T)obj);
                 }
                 GUILayout.EndHorizontal();
-            }   
+            }
         }
     }
 }

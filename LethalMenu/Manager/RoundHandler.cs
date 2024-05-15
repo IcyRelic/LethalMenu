@@ -12,7 +12,6 @@ using Random = UnityEngine.Random;
 
 namespace LethalMenu.Manager
 {
-
     public enum ActionType {
         Add = 0,
         Remove = 1,
@@ -92,8 +91,8 @@ namespace LethalMenu.Manager
         public static void BuyUnlockable(Unlockable unlockable)
         {
             if (!(bool)StartOfRound.Instance) return;
-
             unlockable.Buy(GetTerminal().groupCredits);
+            HUDManager.Instance.DisplayTip("Lethal Menu", $"Unlocked Cosmetics: {unlockable}!");
         }
 
         public static void SpawnScrap()
@@ -124,20 +123,25 @@ namespace LethalMenu.Manager
         public static void ForceBridgeFall()
         {
             BridgeTrigger trigger = Object.FindObjectOfType(typeof(BridgeTrigger)) as BridgeTrigger;
-
             if (trigger == null) return;
-
             trigger.BridgeFallServerRpc();
+        }
+
+        public static void ForceSmallBridgeFall()
+        {
+            BridgeTriggerType2 trigger = Object.FindObjectOfType(typeof(BridgeTriggerType2)) as BridgeTriggerType2;
+            if (trigger == null) return;
+            for (int i = 0; i < 4; i++)
+            {
+                trigger.AddToBridgeInstabilityServerRpc();
+            }
         }
 
         public static void TeleportAllItems()
         {
-            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-
             LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).ForEach(i =>
             {
-                Vector3 point = new Ray(localPlayer.gameplayCamera.transform.position, localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
-
+                Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
                 i.gameObject.transform.position = point;
                 i.startFallingPosition = point;
                 i.targetFloorPosition = point;
@@ -146,21 +150,33 @@ namespace LethalMenu.Manager
 
         public static void TeleportOneItem()
         {
-            PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
-
-            GrabbableObject itemToTeleport = LethalMenu.items
-                .Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom)
-                .OrderBy(_ => UnityEngine.Random.value) 
-                .FirstOrDefault();
-
+            GrabbableObject itemToTeleport = LethalMenu.items.Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).OrderBy(i => Random.value) .FirstOrDefault();
             if (itemToTeleport != null)
             {
-                Vector3 point = new Ray(localPlayer.gameplayCamera.transform.position, localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
-
+                Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
                 itemToTeleport.gameObject.transform.position = point;
                 itemToTeleport.startFallingPosition = point;
                 itemToTeleport.targetFloorPosition = point;
             }
+        }
+
+        public static void DropAllPlayersItems()
+        {
+            Settings.b_DropItems = true;
+            if (Settings.b_DropItems)
+            {
+                LethalMenu.players.ToList().FindAll(player => player != null && !player.isPlayerDead).ForEach(player => player.DropAllHeldItemsServerRpc());
+            }
+            Settings.b_DropItems = false;
+        }
+        public static void DropAllItems()
+        {
+            Settings.b_DropItems = true;
+            if (Settings.b_DropItems)
+            {
+                LethalMenu.localPlayer.DropAllHeldItemsServerRpc();
+            }
+            Settings.b_DropItems = false;
         }
 
         public static void ToggleShipHorn()
@@ -205,16 +221,19 @@ namespace LethalMenu.Manager
 
         public static void SpawnMapObject(MapObject type)
         {
-            Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
+            if (LethalMenu.localPlayer == null || RoundManager.Instance.AnomalyRandom == null) return;
 
+            Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
             SpawnableMapObject spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
             GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
             gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
             gameObject.GetComponent<NetworkObject>().Spawn(true);
         }
-        
+
         public static void SpawnMapObjects(MapObject type)
         {
+            if (LethalMenu.localPlayer == null || RoundManager.Instance.AnomalyRandom == null) return;
+
             RandomMapObject[] randomObjects = Object.FindObjectsOfType<RandomMapObject>();
 
             SpawnableMapObject spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
@@ -227,7 +246,6 @@ namespace LethalMenu.Manager
             for (int i = 0; i < num; i++)
             {
                 var node = RoundManager.Instance.insideAINodes[Random.Range(0, RoundManager.Instance.insideAINodes.Length)];
-
                 Vector3 pos = RoundManager.Instance.GetRandomNavMeshPositionInRadius(node.transform.position, 30);
                 GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
                 gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
@@ -258,6 +276,7 @@ namespace LethalMenu.Manager
         public static void FixAllValves() => LethalMenu.steamValves.ForEach(v => v.FixValveServerRpc());
         public static void ToggleAllLandmines() => LethalMenu.landmines.ForEach(mine => mine.ToggleMine(!Hack.ToggleAllLandmines.IsEnabled()));
         public static void ToggleAllTurrets() => LethalMenu.turrets.ForEach(turret => turret.turretActive = !Hack.ToggleAllTurrets.IsEnabled());
+        public static void BerserkAllTurrets() => LethalMenu.turrets.ForEach(turret => turret.turretMode = Hack.BerserkAllTurrets.IsEnabled() ? TurretMode.Berserk : TurretMode.Detection);
         public static void BlowUpAllLandmines() => LethalMenu.landmines.ForEach(mine => mine.ExplodeMineServerRpc());
         public static Terminal GetTerminal() => Object.FindObjectOfType(typeof(Terminal)) as Terminal;
     }

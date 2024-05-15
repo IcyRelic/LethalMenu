@@ -16,6 +16,7 @@ namespace LethalMenu.Handler
         Aggravated = 2,
         Unknown = 3
     }
+    
     public class EnemyHandler
     {
         private EnemyAI enemy;
@@ -306,6 +307,9 @@ namespace LethalMenu.Handler
                         || enemy.GetType() == typeof(RedLocustBees)
                         || enemy.GetType() == typeof(LassoManAI)
                         || enemy.GetType() == typeof(JesterAI)
+                        || enemy.GetType() == typeof(RedPillAnomaly)
+                        || enemy.GetType() == typeof(ButlerBeesEnemyAI)
+                        || enemy.GetType() == typeof(RadMechAI)
                         ) forceDespawn = true;
 
             enemy.KillEnemyServerRpc(forceDespawn ? forceDespawn : despawn);

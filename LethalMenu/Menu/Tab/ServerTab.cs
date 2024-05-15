@@ -1,10 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using UnityEngine;
 using LethalMenu.Util;
 using LethalMenu.Types;
-using LethalMenu.Language;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -14,8 +13,8 @@ namespace LethalMenu.Menu.Tab
         private string s_quota = "";
         private string s_scrapAmount = "1";
         private string s_scrapValue = "1";
-
         private Vector2 scrollPos = Vector2.zero;
+        private Vector2 scrollPos2 = Vector2.zero;
 
         public ServerTab() : base("ServerTab.Title") { }
 
@@ -34,12 +33,20 @@ namespace LethalMenu.Menu.Tab
         private void InfoMenuContent()
         {
             UI.Header("ServerTab.InfoDisplay");
-            UI.Hack(Hack.DisplayBodyCount, "ServerTab.BodyCount");
-            UI.Hack(Hack.DisplayEnemyCount, "ServerTab.EnemyCount");
-            UI.Hack(Hack.DisplayObjectScan, "ServerTab.ObjectScan");
-            UI.Hack(Hack.DisplayShipScan, "ServerTab.ShipScan");
-            UI.Hack(Hack.DisplayQuota, "ServerTab.Quota");
-            UI.Hack(Hack.DisplayBuyingRate, "ServerTab.BuyingRate");
+
+            scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
+
+            UI.Hack(Hack.DisplayBodyCount, "ServerTab.DisplayBodyCount");
+            UI.Hack(Hack.DisplayEnemyCount, "ServerTab.DisplayEnemyCount");
+            UI.Hack(Hack.DisplayObjectCount, "ServerTab.DisplayObjectCount");
+            UI.Hack(Hack.DisplayObjectValue, "ServerTab.DisplayObjectValue");
+            UI.Hack(Hack.DisplayShipObjectCount, "ServerTab.DisplayShipObjectCount");
+            UI.Hack(Hack.DisplayShipObjectValue, "ServerTab.DisplayShipObjectValue");
+            UI.Hack(Hack.DisplayQuota, "ServerTab.DisplayQuota");
+            UI.Hack(Hack.DisplayDeadline, "ServerTab.DisplayDeadline");
+            UI.Hack(Hack.DisplayBuyingRate, "ServerTab.DisplayBuyingRate");
+
+            GUILayout.EndScrollView();
         }
 
         private void ServerMenuContent()
@@ -68,25 +75,28 @@ namespace LethalMenu.Menu.Tab
 
             UI.Hack(Hack.StartGame, "ServerTab.ForceLand");
             UI.Hack(Hack.EndGame, "ServerTab.ForceLeave");
+            UI.Hack(Hack.Disconnect, "ServerTab.Disconnect");
+            UI.Hack(Hack.ShowOffensiveLobbyNames, "ServerTab.ShowOffensiveLobbyNames");
             UI.Hack(Hack.NeverLoseScrap, "ServerTab.NeverLoseScrap");
+            UI.Hack(Hack.Shoplifter, "ServerTab.Shoplifter");
             UI.Hack(Hack.SpawnMoreScrap, ["ServerTab.SpawnScrap", "General.HostTag"]);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandMines", "General.HostTag"], MapObject.Landmine);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandTurrets", "General.HostTag"], MapObject.TurretContainer);
             UI.Hack(Hack.SpawnLandmine, ["ServerTab.SpawnLandmine", "General.HostTag"]);
             UI.Hack(Hack.SpawnTurret, ["ServerTab.SpawnTurret", "General.HostTag"]);
-            UI.Hack(Hack.Shoplifter, "ServerTab.Shoplifter");
-            
+            UI.Hack(Hack.SpawnSpikeRoofTrap, ["ServerTab.SpawnSpikeRoofTrap", "General.HostTag"]);
+
             GUILayout.EndScrollView();
         }
 
         private void ManagersContent()
         {
             UI.Header("ServerTab.Managers");
-            UI.Toggle("MoonManager.Title", ref HackMenu.Instance.moonManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("UnlockableManager.Title", ref HackMenu.Instance.unlockableManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("ItemManager.Title", ref HackMenu.Instance.itemManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("LootManager.Title", ref HackMenu.Instance.LootManager.isOpen, "General.Close", "General.Open");
-
-        }
+            UI.Toggle("MoonManager.Title", ref HackMenu.Instance.MoonManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("UnlockableManager.Title", ref HackMenu.Instance.UnlockableManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("ItemManager.Title", ref HackMenu.Instance.ItemManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("LootManager.Title", ref HackMenu.Instance.LootManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("WeatherManager.Title", ref HackMenu.Instance.WeatherManagerWindow.isOpen, "General.Close", "General.Open");
+        } 
     }
 }

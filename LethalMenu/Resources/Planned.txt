@@ -1,9 +1,4 @@
-OneShot/Instakill
 Respawn after death
-Spawning items
-Kill nearby enemies
 Settings to customize what objects/enemies ect are seen on ESP
-Current Object List
-Item Rarity ESP Colors
 Spectate/MiniCam audio
 Unlimited Zap gun

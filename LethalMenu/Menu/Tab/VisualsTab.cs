@@ -8,7 +8,6 @@ namespace LethalMenu.Menu.Tab
     internal class VisualsTab : MenuTab
     {
         private Vector2 scrollPos = Vector2.zero;
-
         public VisualsTab() : base("VisualsTab.Title") { }
 
         public override void Draw()
@@ -30,6 +29,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.ToggleAllESP, "VisualsTab.ToggleAll");
             UI.Toggle("VisualsTab.UseScrapTiers", ref Settings.b_useScrapTiers, "General.Disable", "General.Enable");
             UI.Toggle("VisualsTab.VCDisplay", ref Settings.b_VCDisplay, "General.Disable", "General.Enable");
+            UI.Toggle("VisualsTab.HPDisplay", ref Settings.b_HPDisplay, "General.Disable", "General.Enable");
             UI.Hack(Hack.ObjectESP, "VisualsTab.ObjectESP");
             UI.Hack(Hack.EnemyESP, "VisualsTab.EnemyESP");
             UI.Hack(Hack.PlayerESP, "VisualsTab.PlayerESP");
@@ -41,6 +41,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.BigDoorESP, "VisualsTab.BigDoorESP");
             UI.Hack(Hack.DoorLockESP, "VisualsTab.LockedDoorESP");
             UI.Hack(Hack.BreakerESP, "VisualsTab.BreakerESP");
+            UI.Hack(Hack.SpikeRoofTrapESP, "VisualsTab.SpikeRoofTrapESP"); 
 
             GUILayout.EndScrollView();
         }
