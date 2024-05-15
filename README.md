@@ -61,7 +61,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Super Jump:** Adjustable jump height for enhanced mobility.
   - **Fast Climb:** Variable climbing speed for quick ascents.
   - **Movement Speed:** Customizable character speed for swift traversal.
- - **No Clip:** Pass through solid objects for unrestricted exploration.
+  - **No Clip:** Pass through solid objects for unrestricted exploration.
   - **Item Slots (Rejoin Required):** Change how many item slots your player has.
   - **Extra Items Slots:** More item slots for your player.
   - **Night Vision:** Enhanced visibility in low-light environments.
@@ -103,7 +103,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Teleport To Saved Location:** Teleport your player to your saved location.
   - **Save Position:** Save your position for teleport to saved location.
 
-    #### Visuals Tab
+  #### Visuals Tab
   - **Toggle All:** Toggle on or off all ESPs.
   - **Use Scrap Tiers:** Different scrap colors for different scrap tiers/values.
   - **Show Voice Chat:** Show VC when a player talks on ESP.
@@ -155,7 +155,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Unlock All Doors:** Unlock all doors on the map.
   - **Drop All Players Items** Make all players drop their items.
 
-    #### Player Tab
+  #### Player Tab
   - **Player List:** Shows all the players in a lobby.
   - **Death Notifications:** Notifies you when a player dies.
   - **Free Camera Mode:** Fly around the map like a spectator.
@@ -178,7 +178,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - **Lure All Enemies:** Lure all enemies to a player.
   - **Explode Closest Landmine:** Explode the closest landmine to their player.
 
-    #### Enemy Tab
+  #### Enemy Tab
   - **Kill All Enemies:** Annihilate all enemy entities in the game.
   - **Kill Neaby Enemies:** Annihilates all near by enemies.
   - **Stun All Enemies:** Stun all enemies in the game temporarily.
@@ -290,6 +290,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
 - Fixed Baboon Bird Controller 
 - Fixed Translations 
 - Fixed Server Tab Scrolling
+- Fixed Never Lose Scrap
 - Removed Display Ship Object Scan 
 - Removed Display Object Scan
 - Removed Display Deadline from Display Quota 
