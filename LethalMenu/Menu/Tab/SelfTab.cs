@@ -68,7 +68,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.NoQuicksand, "SelfTab.NoQuicksand");
             UI.Hack(Hack.NoCameraShake, "SelfTab.NoCameraShake");
             UI.Hack(Hack.TeleportWithItems, "SelfTab.TeleportWithItems");
-            UI.Hack(Hack.BridgeNeverFalls, "SelfTab.BridgeNeverFalls");
+            UI.Hack(Hack.BridgeNeverFalls, ["SelfTab.BridgeNeverFalls", "General.Vow/Adamance"]);
             UI.Hack(Hack.DropAllItems, "SelfTab.DropAllItems");
             UI.Hack(Hack.DeleteHeldItem, "SelfTab.DeleteHeldItem");
             UI.Hack(Hack.VoteShipLeaveEarly, "SelfTab.VoteShipLeaveEarly");
