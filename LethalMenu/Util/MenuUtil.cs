@@ -1,6 +1,8 @@
 ﻿using LethalMenu.Menu.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace LethalMenu.Util
 {
@@ -14,7 +16,6 @@ namespace LethalMenu.Util
         public static float maxWidth = Screen.width - (Screen.width * 0.1f);
         public static float maxHeight = Screen.height - (Screen.height * 0.1f);
         private static int oldWidth, oldHeight;
-
 
         public static void BeginResizeMenu()
         {
@@ -77,7 +78,7 @@ namespace LethalMenu.Util
         }
 
         public static void HideCursor()
-        {
+        { 
             LethalMenu.localPlayer?.playerActions.Enable();
             Cursor.visible = false;
             Cursor.lockState = Settings.clm_lastCursorState;
@@ -85,6 +86,38 @@ namespace LethalMenu.Util
             {
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
+            }
+        }
+
+        public static void LMUser()
+        {
+            if (HUDManager.Instance == null) return;
+            if (LethalMenu.localPlayer == null) return;
+
+            HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}</size>");
+
+            var steamidregex = new Regex(@"\b\d{17,19}\b");
+            var removemessages = new List<string>();
+
+            foreach (var messages in HUDManager.Instance.ChatMessageHistory)
+            {
+                if (messages == null) return;
+                string steamid = steamidregex.Match(messages).Value;
+                if (steamid == null) return;
+                if (!LethalMenu.Instance.LMUsers.Contains(steamid))
+                {
+                    LethalMenu.Instance.LMUsers.Add(steamid);
+                }
+                if (LethalMenu.Instance.LMUsers.Contains(steamid))
+                { 
+                    removemessages.Add(messages);
+                }
+            }
+
+            foreach (var message in removemessages)
+            {
+                if (message == null) return;
+                HUDManager.Instance.ChatMessageHistory.Remove(message);
             }
         }
     }

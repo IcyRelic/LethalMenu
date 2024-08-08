@@ -11,7 +11,6 @@ namespace LethalMenu.Util
 {
     public static class GameUtil
     {
-
         public static List<EnemyType> GetEnemyTypes()
         {
             List<EnemyType> types = new List<EnemyType>();

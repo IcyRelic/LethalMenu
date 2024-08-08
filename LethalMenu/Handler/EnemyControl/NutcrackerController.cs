@@ -48,5 +48,7 @@
         public string GetSecondarySkillName(NutcrackerEnemyAI _) => "(HOLD) Sentry mode";
 
         public float InteractRange(NutcrackerEnemyAI _) => 1.5f;
+
+        public bool CanUseEntranceDoors(NutcrackerEnemyAI _) => false;
     }
 }

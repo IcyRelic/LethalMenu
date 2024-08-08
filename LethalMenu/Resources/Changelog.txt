@@ -1,3 +1,17 @@
+v1.4.4 Beta
+- Added Peer 2 peer communication - Lets you see other users using LethalMenu (only this version) (Rather buggy)
+- Fixed kill all enemy and kill on unkillable enemies
+- Fixed teleport all enemies
+- Removed drop all player items due to bugs I can't fix 
+- Changed Never Lose Scrap to Scrap Never Scraps and fixed it being on 24/7 even when disabled
+- Added FPS Counter - displays your fps!! Updates every 0.5 seconds! toggle in settings
+- Fixed countlessss bugs! Sorry this isn't much! This was just the list of bugs sent to me!
+- Added Vehicle Godmode
+- Fixed themes so they now save
+- Added color customization to info display color
+- Fixed First setup manager buttons overlapping themselves!
+
+
 v1.4.3
 - Added Super Knife - Instant kill with knife
 - Added No Quicksand - No falling into quicksand 

@@ -24,7 +24,7 @@ namespace LethalMenu.Menu.Tab
             scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
             GeneralActions();
             PlayerActions();
-            GUILayout.EndScrollView();
+            GUILayout.EndScrollView(); 
             GUILayout.EndVertical();
         }
 
@@ -49,7 +49,14 @@ namespace LethalMenu.Menu.Tab
 
                 if (selectedPlayer == (int)player.playerClientId) GUI.contentColor = Settings.c_playerESP.GetColor();
 
-                if (GUILayout.Button(player.playerUsername, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
+                name = player.playerUsername;
+
+                if (LethalMenu.Instance.LMUsers.Contains(player.playerSteamId.ToString()) && Settings.b_DisplayLMUsers)
+                {
+                    name = $"[LethalMenu] {player.playerUsername}";
+                }
+
+                if (GUILayout.Button(name, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
 
                 GUI.contentColor = Settings.c_menuText.GetColor();
             }
@@ -64,14 +71,14 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.DeathNotifications, "PlayerTab.DeathNotifications");
             UI.Hack(Hack.FreeCam, "PlayerTab.FreeCam");
 
-            if(Hack.SpectatePlayer.IsEnabled())
+            if (Hack.SpectatePlayer.IsEnabled())
                 UI.Button("PlayerTab.StopSpectating", () => Hack.SpectatePlayer.SetToggle(false), "General.Stop");
 
             if (Hack.MiniCam.IsEnabled())
                 UI.Button("PlayerTab.StopMiniCam", () => Hack.MiniCam.SetToggle(false), "General.Stop");
 
             UI.Button("PlayerTab.KillEveryone", () => LethalMenu.players.ForEach(p => Hack.KillPlayer.Execute(p)));
-            UI.Button("PlayerTab.KillEveryoneElse", () => LethalMenu.players.FindAll(p => p.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId).ForEach(p => Hack.KillPlayer.Execute(p)));      
+            UI.Button("PlayerTab.KillEveryoneElse", () => LethalMenu.players.FindAll(p => p.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId).ForEach(p => Hack.KillPlayer.Execute(p)));
         }
 
         private void PlayerActions()

@@ -43,7 +43,6 @@ namespace LethalMenu.Menu.Core
         public HackMenu()
         {
             instance = this;
-            if (Settings.isDebugMode) menuTabs.Add(new DebugTab());
             menuTabs.Add(new SettingsTab());
             menuTabs.Add(new GeneralTab());
             menuTabs.Add(new SelfTab());
@@ -52,6 +51,7 @@ namespace LethalMenu.Menu.Core
             menuTabs.Add(new PlayersTab());
             menuTabs.Add(new EnemyTab());
             menuTabs.Add(new ServerTab());
+            if (Settings.DebugMode) menuTabs.Add(new DebugTab());
 
 
             Resize();
@@ -109,14 +109,12 @@ namespace LethalMenu.Menu.Core
             {
                 GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
                 windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
-                if (LethalMenu.localPlayer != null)
-                {
-                    UnlockableManagerWindow.Draw();
-                    ItemManagerWindow.Draw();
-                    MoonManagerWindow.Draw();
-                    LootManagerWindow.Draw();
-                    WeatherManagerWindow.Draw();
-                }
+                if (LethalMenu.localPlayer == null) return;
+                UnlockableManagerWindow.Draw();
+                ItemManagerWindow.Draw();
+                MoonManagerWindow.Draw();
+                LootManagerWindow.Draw();
+                WeatherManagerWindow.Draw();
                 GUI.color = Color.white;
             }
         }

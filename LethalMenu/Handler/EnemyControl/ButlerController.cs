@@ -16,7 +16,7 @@ namespace LethalMenu.Handler.EnemyControl
 
         public string GetSecondarySkillName(ButlerEnemyAI _) => "Sweep";
 
-        public bool CanUseEntranceDoors(ButlerEnemyAI _) => true;
+        public bool CanUseEntranceDoors(ButlerEnemyAI _) => false;
 
         public float InteractRange(ButlerEnemyAI _) => 5f;
     }

@@ -12,6 +12,28 @@ namespace LethalMenu.Util
         private static string DefaultThemeName = "Default";
         private static AssetBundle AssetBundle;
 
+        public static void SetTheme(string name)
+        {
+            if (ThemeExists(name))
+            {
+                ApplyTheme(name);
+            }
+            else
+            {
+                ApplyTheme("Default");
+            }
+        }
+
+        private static bool ThemeExists(string themename)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            using (Stream themestream = assembly.GetManifestResourceStream($"LethalMenu.Resources.Theme.{themename}.skin"))
+            {
+                return themestream != null;
+            }
+        }
+
+
         public static void LoadTheme(string themeName)
         {
             if (AssetBundle != null)

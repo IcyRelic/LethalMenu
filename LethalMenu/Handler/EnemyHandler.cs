@@ -84,8 +84,6 @@ namespace LethalMenu.Handler
             bool clingingToCeiling = (bool)centipede.Reflect().GetValue("clingingToCeiling");
 
             if(clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
-
-           
         }
 
         private void HandleLureFlowerman()
@@ -279,7 +277,10 @@ namespace LethalMenu.Handler
                 typeof(JesterAI),
                 typeof(SandWormAI),
                 typeof(BlobAI),
-                typeof(CentipedeAI)
+                typeof(CentipedeAI),
+                typeof(BushWolfEnemy),
+                typeof(ClaySurgeonAI),
+                typeof(RadMechAI)
             };
                 
             return types.Contains(enemy.GetType());
@@ -297,23 +298,24 @@ namespace LethalMenu.Handler
             bool forceDespawn = false;
 
             if (enemy.GetType() == typeof(ForestGiantAI)
-                        || enemy.GetType() == typeof(SandWormAI)
-                        || enemy.GetType() == typeof(BlobAI)
-                        || enemy.GetType() == typeof(DressGirlAI)
-                        || enemy.GetType() == typeof(PufferAI)
-                        || enemy.GetType() == typeof(SpringManAI)
-                        || enemy.GetType() == typeof(DocileLocustBeesAI)
-                        || enemy.GetType() == typeof(DoublewingAI)
-                        || enemy.GetType() == typeof(RedLocustBees)
-                        || enemy.GetType() == typeof(LassoManAI)
-                        || enemy.GetType() == typeof(JesterAI)
-                        || enemy.GetType() == typeof(RedPillAnomaly)
-                        || enemy.GetType() == typeof(ButlerBeesEnemyAI)
-                        || enemy.GetType() == typeof(RadMechAI)
-                        ) forceDespawn = true;
+                           || enemy.GetType() == typeof(SandWormAI)
+                           || enemy.GetType() == typeof(BlobAI)
+                           || enemy.GetType() == typeof(DressGirlAI)
+                           || enemy.GetType() == typeof(PufferAI)
+                           || enemy.GetType() == typeof(SpringManAI)
+                           || enemy.GetType() == typeof(DocileLocustBeesAI)
+                           || enemy.GetType() == typeof(DoublewingAI)
+                           || enemy.GetType() == typeof(RedLocustBees)
+                           || enemy.GetType() == typeof(LassoManAI)
+                           || enemy.GetType() == typeof(JesterAI)
+                           || enemy.GetType() == typeof(RedPillAnomaly)
+                           || enemy.GetType() == typeof(ButlerBeesEnemyAI)
+                           || enemy.GetType() == typeof(RadMechAI)
+                           || enemy.GetType() == typeof(ClaySurgeonAI)
+                           ) forceDespawn = true;
 
+            enemy.enemyType.canDie = true;
             enemy.KillEnemyServerRpc(forceDespawn ? forceDespawn : despawn);
-            
         }
 
         public void Stun()
@@ -324,13 +326,10 @@ namespace LethalMenu.Handler
 
         public void Teleport(PlayerControllerB player)
         {
-            if (enemy.GetType() != typeof(MaskedPlayerEnemy) && (enemy.isOutside && player.isInsideFactory || !enemy.isOutside && !player.isInsideFactory)) return;
-
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             enemy.transform.position = player.transform.position;
             enemy.SyncPositionToClients();
         }
-
 
         public void TargetPlayer(PlayerControllerB player)
         {

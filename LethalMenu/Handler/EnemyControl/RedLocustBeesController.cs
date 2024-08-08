@@ -9,7 +9,7 @@
 
     internal class RedLocustBeesController : IEnemyController<RedLocustBees>
     {
-        public bool CanUseEntranceDoors(RedLocustBees _) => true;
+        public bool CanUseEntranceDoors(RedLocustBees _) => false;
 
         public float InteractRange(RedLocustBees _) => 2.5f;
 

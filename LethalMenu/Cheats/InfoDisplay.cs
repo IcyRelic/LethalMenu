@@ -21,7 +21,7 @@ namespace LethalMenu.Cheats
             if (Hack.DisplayDeadline.IsEnabled()) info += Localization.Localize("Cheats.Info.DisplayDeadline") + " " + GetDeadline() + "\n";
             if (Hack.DisplayBuyingRate.IsEnabled()) info += Localization.Localize("Cheats.Info.DisplayBuyingRate") + " " + GetBuyingRate() + "%\n";
 
-            GUI.color = Color.magenta;
+            GUI.color = Settings.c_primary.GetColor();
             GUI.Label(new Rect(Screen.width - 200 - 0, 0, 200f, 180f), info, new GUIStyle(GUI.skin.label) { fontSize = 14 }); ;
         }
 
@@ -74,6 +74,7 @@ namespace LethalMenu.Cheats
         }
         private bool GetDefaultShipItem(GrabbableObject item)
         {
+            if (item == null) return false;
             string[] Items = ["ClipboardManual", "StickyNoteItem"];
             return Items.Contains(item.name);
         }

@@ -38,15 +38,26 @@ namespace LethalMenu.Menu.Popup
 
         private void TeleportItem(string itemname)
         {
-            GrabbableObject i = LethalMenu.items.Where(item => (Settings.b_ShowShipItems || !item.isInShipRoom) && !item.isHeld && !item.isPocketed && item.name == itemname).OrderBy(item => UnityEngine.Random.value).FirstOrDefault();
+            GrabbableObject i = LethalMenu.items.FirstOrDefault(item => item.name == itemname && (Settings.b_ShowShipItems || !item.isInShipRoom) && !item.isHeld && !item.isPocketed);
             if (i != null)
             {
-                static string Item(string itemname) => itemname.Replace("(Clone)", "");
-                HUDManager.Instance.DisplayTip("Lethal Menu", $"Teleported Item: {Item(itemname)}! Item Worth: {i.scrapValue}!");
+                string itemName = itemname.Replace("(Clone)", ""); ;
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"Teleported Item: {itemName}! Item Worth: {i.scrapValue}!");
                 Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
                 i.gameObject.transform.position = point;
                 i.startFallingPosition = point;
-                i.targetFloorPosition = point;
+                if (!i.isInShipRoom)
+                {
+                    i.targetFloorPosition = point;
+                }
+                else if (i.isInShipRoom)
+                {
+                    i.targetFloorPosition = point + new Vector3(0, 0, 7);
+                }
+                else if (i.name == "LungApparatus(Clone)")
+                {
+                    i.targetFloorPosition = point + new Vector3(14, 29, -13);
+                }
                 if (items.ContainsKey(itemname))
                 {
                     items[itemname] = items[itemname] - 1;
@@ -59,4 +70,3 @@ namespace LethalMenu.Menu.Popup
         }
     }
 }
-    

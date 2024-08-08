@@ -6,10 +6,16 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using UnityEngine.Rendering;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
+using UnityEngine.Rendering.HighDefinition;
+using Random = UnityEngine.Random;
 
 namespace LethalMenu
 {
@@ -29,14 +35,20 @@ namespace LethalMenu
         public static List<ShipTeleporter> teleporters = new List<ShipTeleporter>();
         public static List<InteractTrigger> interactTriggers = new List<InteractTrigger>();
         public static List<SpikeRoofTrap> spikeRoofTraps = new List<SpikeRoofTrap>();
+        public static List<MoldSpore> vainShrouds = new List<MoldSpore>();
         public static HangarShipDoor shipDoor;
         public static BreakerBox breaker;
         public static PlayerControllerB localPlayer;
+        public static VehicleController vehicle;
+        public static Volume volume;
+        public List<string> LMUsers = new List<string>();
         public static int selectedPlayer = -1;
+        public int fps;
+        public Stopwatch stopwatch = new Stopwatch();
 
-        
         public static string debugMessage = "";
         public static string debugMessage2 = "";
+
 
         private Harmony harmony;
         private HackMenu menu;
@@ -45,9 +57,9 @@ namespace LethalMenu
         {
             get
             {
-                if (LethalMenu.instance == null)
-                    LethalMenu.instance = new LethalMenu();
-                return LethalMenu.instance;
+                if (instance == null)
+                    instance = new LethalMenu();
+                return instance;
             }
         }
 
@@ -57,11 +69,13 @@ namespace LethalMenu
             try
             {
                 Localization.Initialize();
-                ThemeUtil.LoadTheme("Default");
+                ThemeUtil.LoadTheme(string.IsNullOrEmpty(ThemeUtil.ThemeName) ? "Default" : ThemeUtil.ThemeName);
                 LoadCheats();
                 DoPatching();
-                this.StartCoroutine(this.CollectObjects());                
-            } catch
+                MenuUtil.LMUser();
+                this.StartCoroutine(this.CollectObjects());
+            }
+            catch
             (Exception e)
             {
                 debugMessage = e.Message + "\n" + e.StackTrace;
@@ -100,7 +114,7 @@ namespace LethalMenu
         {
             try
             {
-                if ((bool) StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
+                if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
             }
             catch (Exception e)
             {
@@ -115,7 +129,7 @@ namespace LethalMenu
             {
                 foreach (Hack hack in Enum.GetValues(typeof(Hack)))
                 {
-                    if ((bool) StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
+                    if ((bool)StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
                     if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsAnyHackWaiting()) hack.Execute();
                 }
                 if (!(bool)StartOfRound.Instance) return;
@@ -127,16 +141,36 @@ namespace LethalMenu
             }
         }
 
+        public int GetFPS()
+        {
+            if (!stopwatch.IsRunning)
+            {
+                stopwatch.Start();
+            }
+            if (stopwatch.Elapsed.TotalSeconds >= 0.5)
+            {
+                stopwatch.Reset();
+                stopwatch.Start();
+                fps = (int)(1.0f / Time.deltaTime);
+            }
+            return fps;
+        }
+
         public void OnGUI()
         {
             try
             {             
                 if (Event.current.type == EventType.Repaint)
                 {
-                    VisualUtil.DrawString(new Vector2(5f, 2f), "Lethal Menu " + Settings.version + " By IcyRelic, and Dustin", Settings.c_primary,
-                        centered: false, bold: true, fontSize: 14);
-
-                   if(MenuUtil.resizing)
+                    if (Settings.b_FPSCounter == true)
+                    {
+                        VisualUtil.DrawString(new Vector2(5f, 2f), $"Lethal Menu {Settings.version} By IcyRelic, and Dustin! FPS: {GetFPS()}", Settings.c_primary, centered: false, bold: true, fontSize: 14);
+                    }
+                    else
+                    {
+                        VisualUtil.DrawString(new Vector2(5f, 2f), $"Lethal Menu {Settings.version} By IcyRelic, and Dustin!", Settings.c_primary, centered: false, bold: true, fontSize: 14);
+                    }
+                    if (MenuUtil.resizing)
                     {
                         string rTitle = "SettingsTab.ResizeTitle";
                         string rConfirm = "SettingsTab.ResizeConfirm";
@@ -145,7 +179,7 @@ namespace LethalMenu
                         MenuUtil.ResizeMenu();
                     }
 
-                    if (Settings.isDebugMode)
+                    if (Settings.DebugMode)
                     {
                         VisualUtil.DrawString(new Vector2(5f, 20f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, 10);
                         VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage), false, false, false, 22);

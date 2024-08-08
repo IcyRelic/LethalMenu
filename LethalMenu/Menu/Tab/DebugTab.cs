@@ -6,7 +6,6 @@ using Steamworks;
 using Steamworks.Data;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 namespace LethalMenu.Menu.Tab
@@ -23,22 +22,9 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndVertical();
         }
 
-        private async void Leaderboard()
-        {
-            int weekNum = GameNetworkManager.Instance.GetWeekNumber();
-            Leaderboard? leaderboardAsync = await SteamUserStats.FindOrCreateLeaderboardAsync(
-                string.Format("challenge{0}", weekNum), LeaderboardSort.Descending, LeaderboardDisplay.Numeric);
-
-            LeaderboardUpdate? nullable = await leaderboardAsync.Value.ReplaceScore(int.MaxValue);
-
-            LethalMenu.debugMessage = nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank;
-        }
-
-        private int selectedMode = 0;
-        private string[] modes = new string[] { "Mode 1", "Mode 2", "Mode 3" };
         private void MenuContent()
         {
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
+            scrollPos = GUILayout.BeginScrollView(scrollPos); 
 
             if (GUILayout.Button("Clear Debug Message"))
             {
@@ -47,10 +33,6 @@ namespace LethalMenu.Menu.Tab
             }
             GUILayout.TextArea(LethalMenu.debugMessage, GUILayout.Height(50));
             GUILayout.TextArea(LethalMenu.debugMessage2, GUILayout.Height(50));
-
-            UI.IndexSelect("Message Mode: ", ref selectedMode, modes);
-            UI.Label("Selected Mode: " + modes[selectedMode]);
-
 
             UI.Button("LookAt Closest Item", () =>
             {
@@ -63,7 +45,6 @@ namespace LethalMenu.Menu.Tab
                 LethalMenu.localPlayer.transform.LookAt(item.transform.position);
             });
 
-
             UI.Button("LookAt Closest Player", () =>
             {
                 PlayerControllerB player = LethalMenu.players.Where(p => p != LethalMenu.localPlayer).OrderBy(
@@ -74,8 +55,6 @@ namespace LethalMenu.Menu.Tab
 
                 LethalMenu.localPlayer.transform.LookAt(player.transform.position);
             });
-
-
 
             GUILayout.Label("Debug Menu");
 
@@ -122,25 +101,21 @@ namespace LethalMenu.Menu.Tab
 
                     t.randomChancePercentage = 100;
                     t.Interact(LethalMenu.localPlayer.transform);
-
                 });
             }
             GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Sell All");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                
-
-            }
-            GUILayout.EndHorizontal();
-
-
-
-            GUILayout.EndScrollView();
+            GUILayout.EndScrollView(); 
         }
 
+        private async void Leaderboard()
+        {
+            int weekNum = GameNetworkManager.Instance.GetWeekNumber();
+            Leaderboard? leaderboardAsync = await SteamUserStats.FindOrCreateLeaderboardAsync(
+                string.Format("challenge{0}", weekNum), LeaderboardSort.Descending, LeaderboardDisplay.Numeric);
+
+            LeaderboardUpdate? nullable = await leaderboardAsync.Value.ReplaceScore(int.MaxValue);
+
+            LethalMenu.debugMessage = nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank;
+        }
     }
 }

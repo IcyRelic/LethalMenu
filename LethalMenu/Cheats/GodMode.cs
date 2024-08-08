@@ -10,9 +10,8 @@ namespace LethalMenu.Cheats
         public override void Update()
         {
             if(!Hack.GodMode.IsEnabled()) return;
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-            if (player == null) return;
-            player.health = 100;
+            if (LethalMenu.localPlayer == null) return;
+            LethalMenu.localPlayer.health = 100;
         }
 
         [HarmonyPrefix]
@@ -93,6 +92,17 @@ namespace LethalMenu.Cheats
         [HarmonyPrefix]
         [HarmonyPatch(typeof(RadMechAI), nameof(RadMechAI.OnCollideWithPlayer))]
         public static bool PrefixRadMechKill(RadMechAI __instance, Collider other)
+        {
+            PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
+
+            if (LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+
+            return !Hack.GodMode.IsEnabled();
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(BushWolfEnemy), nameof(BushWolfEnemy.OnCollideWithPlayer))]
+        public static bool PrefixBushWolfEnemyKill(BushWolfEnemy __instance, Collider other)
         {
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 

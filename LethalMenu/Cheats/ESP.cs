@@ -50,13 +50,16 @@ namespace LethalMenu.Cheats
         {
             objects.ToList().ForEach(o =>
             {
+                if (o == null) return;
+
                 Transform transform;
 
                 if (o is Component component) transform = component.transform;
                 else if (o is GameObject gameObject) transform = gameObject.transform;
                 else return;
 
-                if (o == null) return;
+                if (transform == null) return;
+
                 float distance = GetDistanceToPlayer(transform.position);
                 o.GetChamHandler().ProcessCham(distance);
             });
@@ -143,7 +146,13 @@ namespace LethalMenu.Cheats
         {
             DisplayObjects(
                 LethalMenu.players.Where(p => p != null && !p.isPlayerDead && !p.IsLocalPlayer && !p.disconnectedMidGame && p.playerClientId != LethalMenu.localPlayer.playerClientId),
-                player => $"{(Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_HPDisplay ? $"[HP:{player.health}] " : "")}{player.playerUsername}",
+                player =>
+                {
+                    var labels = new List<string>();
+                    if (Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking) labels.Add("[VC] ");
+                    if (Settings.b_HPDisplay) labels.Add($"[HP:{player.health}] ");
+                    return $"{string.Join("", labels)}{player.playerUsername}";
+                },
                 player => Settings.c_playerESP
             );
         }
@@ -211,6 +220,7 @@ namespace LethalMenu.Cheats
                 door => Settings.c_doorLockESP
             );
         }
+
         private void DisplaySpikeRoofTraps()
         {
             DisplayObjects(

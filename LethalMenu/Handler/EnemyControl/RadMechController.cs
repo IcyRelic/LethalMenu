@@ -6,7 +6,7 @@ namespace LethalMenu.Handler.EnemyControl
 
         public string GetSecondarySkillName(RadMechAI _) => "Aim Gun";
 
-        public bool CanUseEntranceDoors(RadMechAI _) => true;
+        public bool CanUseEntranceDoors(RadMechAI _) => false;
 
         public float InteractRange(RadMechAI _) => 10f;
     }

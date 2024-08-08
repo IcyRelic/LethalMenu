@@ -13,8 +13,6 @@ namespace LethalMenu.Menu.Tab
 {
     internal class SettingsTab : MenuTab
     {
-        private int selectedMode = 0;
-        private readonly string[] modes = { "Default", "Green", "Blue" };
         private string s_kbError = "";
         private string s_tierColorError = "";
         private string s_kbSearch = "";
@@ -89,7 +87,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("SettingsTab.General");
 
-            UI.IndexSelectAction($"Theme:", ref selectedMode, modes);
+            UI.IndexSelectAction("SettingsTab.Theme", ref Settings.selectedmode, Settings.modes);
             UI.Select("SettingsTab.Language", ref i_languageIndex, Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
             UI.NumSelect("SettingsTab.FontSize", ref Settings.i_menuFontSize, 5, 30);
             UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);
@@ -97,7 +95,9 @@ namespace LethalMenu.Menu.Tab
             UI.Slider("SettingsTab.MenuAlpha", Settings.f_menuAlpha.ToString("0.00"), ref Settings.f_menuAlpha, 0.1f, 1f);  
             UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
             UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
-            UI.Toggle("SettingsTab.DebugMode", ref Settings.isDebugMode, "General.Disable", "General.Enable" );
+            UI.Toggle("SettingsTab.FPSCounter", ref Settings.b_FPSCounter, "General.Disable", "General.Enable");
+            UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Disable", "General.Enable");
+            UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable" );
         }
 
         private void ControlSettingsContent()
