@@ -66,6 +66,7 @@ namespace LethalMenu
         ExtraItemSlots,
         UnlimitedPresents,
         VoteShipLeaveEarly,
+        VehicleGodMode,
 
         /** Server Tab **/
         DisplayBodyCount,
@@ -84,7 +85,7 @@ namespace LethalMenu
         SpawnMoreScrap,
         UnlockUnlockable,
         Shoplifter,
-        NeverLoseScrap,
+        ScrapNeverDespawns,
         ShowOffensiveLobbyNames,
         Disconnect,
 
@@ -92,6 +93,7 @@ namespace LethalMenu
         ToggleShipLights,
         ToggleFactoryLights,
         ToggleShipHorn,
+        ToggleCarHorn,
         ForceBridgeFall,
         ForceSmallBridgeFall,
         BlowUpAllLandmines,
@@ -116,7 +118,6 @@ namespace LethalMenu
         EjectEveryone,
         OpenShipDoorSpace,
         UnlockAllDoors,
-        DropAllPlayersItems,
         BerserkAllTurrets,
 
         /** Visuals Tab **/
@@ -226,6 +227,7 @@ namespace LethalMenu
             {Hack.ToggleAllLandmines, false},
             {Hack.ToggleAllTurrets, false},
             {Hack.ToggleShipHorn, false},
+            {Hack.ToggleCarHorn, false},
             {Hack.Breadcrumbs, false},
             {Hack.DeathNotifications, false},
             {Hack.NoFog, false},
@@ -248,7 +250,7 @@ namespace LethalMenu
             {Hack.HearAllDeadPeople, false},
             {Hack.NoVisor, false},
             {Hack.NoFieldOfDepth, false},
-            {Hack.NeverLoseScrap, false},
+            {Hack.ScrapNeverDespawns, false},
             {Hack.NoFlash, false},
             {Hack.ExtraItemSlots, false},
             {Hack.TeleportWithItems, false},
@@ -260,6 +262,7 @@ namespace LethalMenu
             {Hack.NoQuicksand, false},
             {Hack.BerserkAllTurrets, false},
             {Hack.BridgeNeverFalls, false},
+            {Hack.VehicleGodMode, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -278,6 +281,7 @@ namespace LethalMenu
             {Hack.EndGame, (Action) HackExecutor.EndGame},
             {Hack.StartGame, (Action) HackExecutor.StartGame},
             {Hack.ToggleShipLights, (Action) HackExecutor.ToggleShipLights},
+            {Hack.ToggleCarHorn, (Action) HackExecutor.ToggleCarHorn},
             {Hack.ToggleFactoryLights, (Action) HackExecutor.ToggleFactoryLights},
             {Hack.ToggleShipHorn, (Action) HackExecutor.ToggleShipHorn},
             {Hack.ForceBridgeFall, (Action) HackExecutor.ForceBridgeFall},
@@ -318,7 +322,6 @@ namespace LethalMenu
             {Hack.EjectEveryone, (Action) HackExecutor.EjectEveryone},
             {Hack.Disconnect, (Action) HackExecutor.Disconnect},
             {Hack.VoteShipLeaveEarly, (Action) HackExecutor.VoteShipLeaveEarly},
-            {Hack.DropAllPlayersItems, (Action) HackExecutor.DropAllPlayersItems},
             {Hack.UnlockAllDoors, (Action) HackExecutor.UnlockAllDoors},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
             {Hack.DropAllItems, (Action) HackExecutor.DropAllItems},
@@ -573,6 +576,7 @@ namespace LethalMenu
         public static void KillAllEnemies() => LethalMenu.enemies.ForEach(enemy => enemy.Handle().Kill());
         public static void KillNearbyEnemies(int distance = -1) => LethalMenu.enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance).ForEach(enemy => enemy.Handle().Kill());
         public static void ToggleShipLights() => RoundHandler.ToggleShipLights();
+        public static void ToggleCarHorn() => RoundHandler.ToggleCarHorn();
         public static void ToggleFactoryLights() => RoundHandler.ToggleFactoryLights();
         public static void TeleportAllItems() => RoundHandler.TeleportAllItems();
         public static void TeleportOneItem() => RoundHandler.TeleportOneItem();
@@ -581,7 +585,6 @@ namespace LethalMenu
         public static void VoteShipLeaveEarly() => TimeOfDay.Instance.VoteShipToLeaveEarly();
         public static void DeleteHeldItem() => LethalMenu.localPlayer.DespawnHeldObject();
         public static void BerserkAllTurrets() => RoundHandler.BerserkAllTurrets();
-        public static void DropAllPlayersItems() => RoundHandler.DropAllPlayersItems();
         public static void DropAllItems() => RoundHandler.DropAllItems();
     }
 }

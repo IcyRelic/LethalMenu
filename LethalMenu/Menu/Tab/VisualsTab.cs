@@ -41,7 +41,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.BigDoorESP, "VisualsTab.BigDoorESP");
             UI.Hack(Hack.DoorLockESP, "VisualsTab.LockedDoorESP");
             UI.Hack(Hack.BreakerESP, "VisualsTab.BreakerESP");
-            UI.Hack(Hack.SpikeRoofTrapESP, "VisualsTab.SpikeRoofTrapESP"); 
+            UI.Hack(Hack.SpikeRoofTrapESP, "VisualsTab.SpikeRoofTrapESP");
 
             GUILayout.EndScrollView();
         }

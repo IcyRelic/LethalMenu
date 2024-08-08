@@ -16,7 +16,7 @@ namespace LethalMenu.Menu.Popup
         private string s_scrapValue = "1000";
         private string s_search = "";
 
-        public ItemManagerWindow(int id) : base("ItemManager.Title", new Rect(50f, 50f, 577f, 300f), id) {}
+        public ItemManagerWindow(int id) : base("ItemManager.Title", new Rect(50f, 50f, 577f, 300f), id) { }
 
         public override void DrawContent(int windowID)
         {

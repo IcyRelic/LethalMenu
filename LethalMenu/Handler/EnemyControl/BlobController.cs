@@ -21,5 +21,7 @@ namespace LethalMenu.Handler.EnemyControl
         public float InteractRange(BlobAI _) => 3.5f;
 
         public float SprintMultiplier(BlobAI _) => 9.8f;
+
+        public bool CanUseEntranceDoors(BlobAI _) => false;
     }
 }

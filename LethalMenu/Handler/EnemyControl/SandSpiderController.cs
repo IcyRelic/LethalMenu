@@ -44,5 +44,7 @@ namespace LethalMenu.Handler.EnemyControl
             Vector3 floorPosition = groundHit.point + (Vector3.up * 0.2f);
             enemy.SpawnWebTrapServerRpc(floorPosition, raycastHit.point);
         }
+
+        public bool CanUseEntranceDoors(SandSpiderAI _) => false;
     }
 }

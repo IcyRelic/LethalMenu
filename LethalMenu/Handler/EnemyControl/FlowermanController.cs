@@ -32,5 +32,7 @@
         public float InteractRange(FlowermanAI _) => 1.5f;
 
         public bool SyncAnimationSpeedEnabled(FlowermanAI _) => false;
+
+        public bool CanUseEntranceDoors(FlowermanAI _) => false;
     }
 }

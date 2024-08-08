@@ -34,6 +34,8 @@ namespace LethalMenu.Types
         ButlerBees,
         RadMech,
         FlowerSnake,
+        BushWolf,
+        ClaySurgeon
     }
 
     public static class EnemyAITypeExtensions
@@ -64,7 +66,9 @@ namespace LethalMenu.Types
             { EnemyAIType.Butler, true },
             { EnemyAIType.ButlerBees, true },
             { EnemyAIType.RadMech, true },
-            { EnemyAIType.FlowerSnake, true }
+            { EnemyAIType.FlowerSnake, true },
+            { EnemyAIType.BushWolf, true },
+            { EnemyAIType.ClaySurgeon, true }
         };
 
         public static void ToggleESP(this EnemyAIType type)

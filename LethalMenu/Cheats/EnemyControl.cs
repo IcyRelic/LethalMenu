@@ -2,6 +2,7 @@
 using LethalMenu.Handler;
 using LethalMenu.Handler.EnemyControl;
 using LethalMenu.Util;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -23,6 +24,8 @@ namespace LethalMenu.Cheats
         private const float DoorInteractionCooldown = 0.7f;
         private float DoorCooldownRemaining  = 0.0f;
         private float TeleportCooldownRemaining = 0.0f;
+
+        private static readonly IController DefaultEnemyController = new DefaultEnemyController();
 
         private static Dictionary<Type, IController> EnemyControllers { get; } = new() {
             { typeof(CentipedeAI), new CentipedeController() },
@@ -106,9 +109,13 @@ namespace LethalMenu.Cheats
             if(enemy == null) return;            
             if(!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
             if (Freecam.camera == null) return;
-            
 
             if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
+            {
+                controller = GetControllerForEnemy(enemy);
+            }
+
+            if (controller == null)
             {
                 if (!IsAIControlled)
                 {
@@ -120,7 +127,7 @@ namespace LethalMenu.Cheats
             }
 
 
-            if(!(bool) enemy.agent) return;
+            if (!(bool) enemy.agent) return;
 
             UpdateCooldowns();
 
@@ -151,6 +158,8 @@ namespace LethalMenu.Cheats
             UpdateEnemyPosition();
             controller.OnMovement(enemy, movement.IsMoving, movement.IsSprinting);            
         }
+
+        private static IController GetControllerForEnemy(EnemyAI enemy) => EnemyControllers.TryGetValue(enemy.GetType(), out IController controller) ? controller : DefaultEnemyController;
 
         private void UpdateCooldowns()
         {
@@ -208,15 +217,9 @@ namespace LethalMenu.Cheats
             }
         }
 
-        public static float InteractRange() =>
-            EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
-                ? value.InteractRange(enemy)
-                : IController.DefaultInteractRange;
+        public static float InteractRange() => GetControllerForEnemy(enemy).InteractRange(enemy);
 
-        public static float SprintMultiplier() =>
-            EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
-                ? value.SprintMultiplier(enemy)
-                : IController.DefaultSprintMultiplier;
+        public static float SprintMultiplier() => GetControllerForEnemy(enemy).SprintMultiplier(enemy);
 
         public void ToggleAIControl()
         {
@@ -304,35 +307,38 @@ namespace LethalMenu.Cheats
         {
             NoClipEnabled = !NoClipEnabled;
             movement.SetNoClipMode(NoClipEnabled);
-            //this.SendPossessionNotifcation($"NoClip: {(NoClipEnabled ? "Enabled" : "Disabled")}");
         }
 
         public void UsePrimarySkill()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.UsePrimarySkill(enemy);
+            GetControllerForEnemy(enemy).UsePrimarySkill(enemy);
         }
 
-        void UseSecondarySkill()
+        public void UseSecondarySkill()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.UseSecondarySkill(enemy);
+            GetControllerForEnemy(enemy).UseSecondarySkill(enemy);
         }
 
         public void OnSecondarySkillHold()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.OnSecondarySkillHold(enemy);
+            GetControllerForEnemy(enemy).OnSecondarySkillHold(enemy);
         }
 
         public void ReleaseSecondarySkill()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.ReleaseSecondarySkill(enemy);
+            GetControllerForEnemy(enemy).ReleaseSecondarySkill(enemy);
         }
     }
 }

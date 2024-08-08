@@ -2,14 +2,12 @@ using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch(typeof(Terminal))]
+    [HarmonyPatch(typeof(Terminal), "Update")]
     internal class Shoplifter : Cheat
     {
-        private static float[] originalCreditsWorths;
-
-        [HarmonyPatch("Update")]
+        public static float[] originalCreditsWorths;
         [HarmonyPrefix]
-        private static void CostPatch(ref Item[] ___buyableItemsList)
+        public static void Prefix(ref Item[] ___buyableItemsList)
         {
             if (Hack.Shoplifter.IsEnabled())
             {

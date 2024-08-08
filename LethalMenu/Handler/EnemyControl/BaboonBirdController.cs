@@ -59,5 +59,7 @@ namespace LethalMenu.Handler.EnemyControl
             enemy.SwitchToBehaviourServerRpc(1);
             enemy.Reflect().Invoke("GrabItemAndSync", netItem);
         }
+
+        public bool CanUseEntranceDoors(BaboonBirdAI _) => false;
     }
 }

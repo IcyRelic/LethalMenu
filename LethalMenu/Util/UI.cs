@@ -220,15 +220,15 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void SliderAction(string header, string displayValue, ref int value, int min, int max, int defaultValue)
+        public static void SliderAction(string header, string displayvalue, ref int value, int min, int max, int defaultvalue)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
+            GUILayout.Label($"{Localization.Localize(header)} {displayvalue}");
             GUILayout.FlexibleSpace();
             value = Mathf.RoundToInt(GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth)));
             if (GUILayout.Button(Localization.Localize("General.Reset")))
             {
-                value = defaultValue;
+                value = defaultvalue;
             }
             GUILayout.EndHorizontal();
         }
@@ -293,7 +293,7 @@ namespace LethalMenu.Util
         public static void IndexSelectAction(string header, ref int index, params string[] options)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header + " " + options[index]));
+            GUILayout.Label($"{Localization.Localize(header)} {options[index]}");
             GUILayout.FlexibleSpace();
 
             if (GUILayout.Button("-"))

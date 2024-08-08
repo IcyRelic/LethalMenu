@@ -15,6 +15,12 @@ namespace LethalMenu.Menu.Popup
 
         public override void DrawContent(int windowID)
         {
+            if (!LethalMenu.localPlayer.IsHost)
+            {
+                UI.Label("General.HostRequired", Settings.c_error);
+                return;
+            }
+
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             if ((bool)StartOfRound.Instance)

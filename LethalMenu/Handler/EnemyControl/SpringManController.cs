@@ -15,5 +15,7 @@ namespace LethalMenu.Handler.EnemyControl
         public bool IsAbleToRotate(SpringManAI enemy) => !this.GetStoppingMovement(enemy);
 
         public float InteractRange(SpringManAI _) => 1.5f;
+
+        public bool CanUseEntranceDoors(SpringManAI _) => false;
     }
 }

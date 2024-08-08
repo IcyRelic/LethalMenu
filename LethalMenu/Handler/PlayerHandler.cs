@@ -67,12 +67,6 @@ namespace LethalMenu.Handler
             if ((bool)RoundManager.Instance) RoundManager.Instance.LightningStrikeServerRpc(player.transform.position);
         }
 
-        public void TeleportEnemies(EnemyAI[] enemies = null)
-        {
-            if(enemies == null) enemies = LethalMenu.enemies.ToArray();
-            enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));
-        }
-
         public void Spectate() => Cheats.SpectatePlayer.spectatingPlayer = (int)player.playerClientId;
         public void MiniCam() => Cheats.SpectatePlayer.camPlayer = (int)player.playerClientId;
 

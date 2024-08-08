@@ -160,15 +160,6 @@ namespace LethalMenu.Manager
             }
         }
 
-        public static void DropAllPlayersItems()
-        {
-            Settings.b_DropItems = true;
-            if (Settings.b_DropItems)
-            {
-                LethalMenu.players.ToList().FindAll(player => player != null && !player.isPlayerDead).ForEach(player => player.DropAllHeldItemsServerRpc());
-            }
-            Settings.b_DropItems = false;
-        }
         public static void DropAllItems()
         {
             Settings.b_DropItems = true;
@@ -183,6 +174,12 @@ namespace LethalMenu.Manager
         {
             if (Hack.ToggleShipHorn.IsEnabled()) Object.FindObjectOfType<ShipAlarmCord>().PullCordServerRpc(-1);
             else Object.FindObjectOfType<ShipAlarmCord>().StopPullingCordServerRpc(-1);
+        }
+
+        public static void ToggleCarHorn()
+        {
+            if (Hack.ToggleCarHorn.IsEnabled()) Object.FindObjectOfType<VehicleController>().SetHonkServerRpc(true, -1);
+            else Object.FindObjectOfType<VehicleController>().SetHonkServerRpc(false, -1);
         }
 
         public static void SpawnMimicFromMasks()
@@ -205,8 +202,8 @@ namespace LethalMenu.Manager
 
         public static void SpawnEnemy(EnemyType type, int num, bool outside)
         {
+            if (StartOfRound.Instance.inShipPhase) return;
             SelectableLevel level = StartOfRound.Instance.currentLevel;
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
 
             level.maxEnemyPowerCount = Int32.MaxValue;
 

@@ -17,8 +17,8 @@ namespace LethalMenu
 {
     internal class Settings
     {
-        public static string version = "v1.4.3";
-        public static bool isDebugMode = false;
+        public static string version = "v1.4.4";
+        public static bool DebugMode = false;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen
         {
@@ -35,6 +35,8 @@ namespace LethalMenu
         public static int i_sliderWidth = 100;
         public static int i_textboxWidth = 85;
         public static float f_menuAlpha = 1f;
+        public static int selectedmode = 0;
+        public static readonly string[] modes = { "Default", "Green", "Blue" };
 
         /* * * * * * * * * *
          *  Color Settings *
@@ -92,12 +94,18 @@ namespace LethalMenu
         public static float f_fov = 66f;
         public static float f_mouseSensitivity = 0.15f;
         public static float f_inputMovementSpeed = 15f;
+        public static float f_carAcceleration = 5f;
+        public static float f_carMaxSpeed = 7f;
+        public static float f_brakeSpeed = 7f;
+
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
         public static bool b_VCDisplay = false;
         public static bool b_HPDisplay = false;
         public static bool b_ShowShipItems = false;
         public static bool b_DropItems = false;
+        public static bool b_FPSCounter = false;
+        public static bool b_DisplayLMUsers = false;
 
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
 
@@ -223,12 +231,14 @@ namespace LethalMenu
                 hackSettings["CrosshairScale"] = f_crosshairScale.ToString();
                 hackSettings["ESPDistance"] = f_espDistance.ToString();
                 hackSettings["DisableSpectatorModels"] = b_disableSpectatorModels.ToString();
-                hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
                 hackSettings["VCDisplay"] = b_VCDisplay.ToString();
                 hackSettings["UseScrapTiers"] = b_useScrapTiers.ToString();
                 hackSettings["HPDisplay"] = b_HPDisplay.ToString();
                 hackSettings["ShowShipItems"] = b_ShowShipItems.ToString();
+                hackSettings["FPSCounter"] = b_FPSCounter.ToString();
+                hackSettings["DisplayLMUsers"] = b_DisplayLMUsers.ToString();
                 hackSettings["FOV"] = f_fov.ToString();
+                hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
                 chams["Enemy"] = b_chamsEnemy.ToString();
@@ -269,9 +279,10 @@ namespace LethalMenu
                 settings["SliderWidth"] = i_sliderWidth.ToString();
                 settings["TextboxWidth"] = i_textboxWidth.ToString();
                 settings["MenuAlpha"] = f_menuAlpha.ToString();
-                settings["DebugMode"] = isDebugMode.ToString();
+                settings["Theme"] = ThemeUtil.ThemeName;
+                settings["Language"] = Localization.Language.Name;
+                settings["DebugMode"] = DebugMode.ToString();
 
-                json["Language"] = Localization.Language.Name;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
                 json["MenuSettings"] = settings;
@@ -290,8 +301,8 @@ namespace LethalMenu
 
                 JObject json = JObject.Parse(jsonStr);
 
-                if(json.TryGetValue("Language", out JToken languageToken))
-                    Localization.SetLanguage(languageToken.ToString());
+                if (json.TryGetValue("Theme", out JToken themeToken))
+                    ThemeUtil.SetTheme(themeToken.ToString());
 
                 if (json.TryGetValue("HackSettings", out JToken hackSettingsToken))
                 {
@@ -331,10 +342,13 @@ namespace LethalMenu
                         b_HPDisplay = bool.Parse(HPDisplayToken.ToString());
                     if (hackSettings.TryGetValue("ShowShipItems", out JToken ShowShipItemsToken))
                         b_ShowShipItems = bool.Parse(ShowShipItemsToken.ToString());
+                    if (hackSettings.TryGetValue("FPSCounter", out JToken FPSCounterToken))
+                        b_FPSCounter = bool.Parse(FPSCounterToken.ToString());
+                    if (hackSettings.TryGetValue("DisplayLMUsers", out JToken DisplayLMUsersToken))
+                        b_DisplayLMUsers = bool.Parse(DisplayLMUsersToken.ToString());
                     if (hackSettings.TryGetValue("FOV", out JToken fovToken))
                         f_fov = float.Parse(fovToken.ToString());
-                    if (hackSettings.TryGetValue("DebugMode", out JToken isDebugModeToken))
-                        isDebugMode = bool.Parse(isDebugModeToken.ToString());
+
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {
@@ -441,6 +455,10 @@ namespace LethalMenu
                         i_textboxWidth = int.Parse(textboxWidthToken.ToString());
                     if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
                         f_menuAlpha = float.Parse(menuAlphaToken.ToString());
+                    if (settings.TryGetValue("Language", out JToken languageToken))
+                        Localization.SetLanguage(languageToken.ToString());
+                    if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
+                        DebugMode = bool.Parse(debugModeToken.ToString());
 
                 }
 

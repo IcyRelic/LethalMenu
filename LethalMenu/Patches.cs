@@ -1,25 +1,37 @@
-﻿using GameNetcodeStuff;
-using HarmonyLib;
+﻿using HarmonyLib;
 using LethalMenu.Cheats;
 using LethalMenu.Util;
-using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Reflection.Emit;
-using UnityEngine;
+using System.Threading.Tasks;
 
 namespace LethalMenu
 {
     [HarmonyPatch]
     internal class Patches
     {
-
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
         public static void Disconnect(GameNetworkManager __instance)
         {
             SpectatePlayer.Reset();
             Freecam.Reset();
+            LethalMenu.Instance.LMUsers.Clear();
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GameNetworkManager), "JoinLobby")]
+        public static void JoinLobby(GameNetworkManager __instance)
+        {
+            MenuUtil.LMUser();
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(StartOfRound), "OnClientConnect")]
+        public static void OnClientConnect(StartOfRound __instance)
+        {
+
+            MenuUtil.LMUser();
         }
 
         [HarmonyPrefix]
