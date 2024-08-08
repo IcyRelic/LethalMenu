@@ -148,10 +148,7 @@ namespace LethalMenu.Cheats
                 LethalMenu.players.Where(p => p != null && !p.isPlayerDead && !p.IsLocalPlayer && !p.disconnectedMidGame && p.playerClientId != LethalMenu.localPlayer.playerClientId),
                 player =>
                 {
-                    var labels = new List<string>();
-                    if (Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking) labels.Add("[VC] ");
-                    if (Settings.b_HPDisplay) labels.Add($"[HP:{player.health}] ");
-                    return $"{string.Join("", labels)}{player.playerUsername}";
+                    player => $"{(Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_HPDisplay ? $"[HP:{player.health}] " : "")}{player.playerUsername}",
                 },
                 player => Settings.c_playerESP
             );
