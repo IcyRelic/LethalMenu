@@ -72,7 +72,7 @@ namespace LethalMenu.Cheats
             DisplayChams(LethalMenu.steamValves, _ => Settings.c_chams);
             DisplayChams(LethalMenu.bigDoors, _ => Settings.c_chams);
             DisplayChams(LethalMenu.doorLocks, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.spikeRoofTraps, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.spikeRoofTraps.ConvertAll(t => t.gameObject.transform.parent.gameObject), _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
         }

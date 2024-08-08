@@ -77,7 +77,6 @@ namespace LethalMenu.Handler
 
             if (@object is GrabbableObject) e = Settings.b_chamsObject;
             if (@object is Landmine) e = Settings.b_chamsLandmine;
-            if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
             if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
             if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
             if (@object is SteamValveHazard) e = Settings.b_chamsSteamHazard;
@@ -86,7 +85,9 @@ namespace LethalMenu.Handler
             if (@object is HangarShipDoor) e = Settings.b_chamsShip;
             if (@object is BreakerBox) e = Settings.b_chamsBreaker;
             if (@object is SpikeRoofTrap) e = Settings.b_chamsSpikeRoofTrap;
-
+   
+            if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap; //SpikeRoofTrap
+            if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
             if (e && distance >= Settings.f_chamDistance) ApplyCham();
             else RemoveCham();
 
