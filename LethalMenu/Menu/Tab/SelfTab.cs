@@ -1,4 +1,4 @@
-﻿using GameNetcodeStuff;
+using GameNetcodeStuff;
 using LethalMenu.Language;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
@@ -72,6 +72,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.DropAllItems, "SelfTab.DropAllItems");
             UI.Hack(Hack.DeleteHeldItem, "SelfTab.DeleteHeldItem");
             UI.Hack(Hack.VoteShipLeaveEarly, "SelfTab.VoteShipLeaveEarly");
+            UI.Hack(Hack.VehicleGodMode, "SelfTab.VehicleGodMode");
 
             GUILayout.EndScrollView();
         }
