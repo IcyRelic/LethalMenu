@@ -1,5 +1,4 @@
 ﻿using GameNetcodeStuff;
-using LethalMenu.Cheats;
 using LethalMenu.Language;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
@@ -70,7 +69,6 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.NoCameraShake, "SelfTab.NoCameraShake");
             UI.Hack(Hack.TeleportWithItems, "SelfTab.TeleportWithItems");
             UI.Hack(Hack.BridgeNeverFalls, ["SelfTab.BridgeNeverFalls", "General.Vow/Adamance"]);
-            UI.Hack(Hack.VehicleGodMode, "VehicleManagerWindow.VehicleGodMode");
             UI.Hack(Hack.DropAllItems, "SelfTab.DropAllItems");
             UI.Hack(Hack.DeleteHeldItem, "SelfTab.DeleteHeldItem");
             UI.Hack(Hack.VoteShipLeaveEarly, "SelfTab.VoteShipLeaveEarly");

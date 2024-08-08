@@ -305,7 +305,6 @@ Thank you for contributing to the development of this mod by sharing your feedba
     - Additionally adopted several style/techniques from him
   - [Project Apparatus](https://github.com/KaylinOwO/Project-Apparatus/) - Inspiration/code style
   - [TeaMod](https://thunderstore.io/c/lethal-company/p/TeaMods/TeaMod/) - Extra Item Slots Hack
-  - [Open Doors In Space](https://thunderstore.io/c/lethal-company/p/TDHTeam/OpenShipDoorsInSpace/) - Open Door in Space Hack
 
 ## Helpful Links
   - [HTML Color Wheel (With Alpha Support)](https://rgbacolorpicker.com/color-wheel-picker)
