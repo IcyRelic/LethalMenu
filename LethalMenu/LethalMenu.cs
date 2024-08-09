@@ -44,7 +44,7 @@ namespace LethalMenu
         public List<string> LMUsers = new List<string>();
         public static int selectedPlayer = -1;
         public int fps;
-        public Stopwatch stopwatch = new Stopwatch();
+
 
         public static string debugMessage = "";
         public static string debugMessage2 = "";
@@ -74,6 +74,7 @@ namespace LethalMenu
                 DoPatching();
                 MenuUtil.LMUser();
                 this.StartCoroutine(this.CollectObjects());
+                this.StartCoroutine(this.FPSCounter());
             }
             catch
             (Exception e)
@@ -102,6 +103,8 @@ namespace LethalMenu
                 }
                 Settings.Config.SaveDefaultConfig();
                 Settings.Config.LoadConfig();
+
+
             }
             catch (Exception e)
             {
@@ -140,20 +143,14 @@ namespace LethalMenu
                 debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
             }
         }
-
-        public int GetFPS()
+        
+        public IEnumerator FPSCounter()
         {
-            if (!stopwatch.IsRunning)
+            while(true)
             {
-                stopwatch.Start();
-            }
-            if (stopwatch.Elapsed.TotalSeconds >= 0.5)
-            {
-                stopwatch.Reset();
-                stopwatch.Start();
                 fps = (int)(1.0f / Time.deltaTime);
+                yield return new WaitForSeconds(1f);
             }
-            return fps;
         }
 
         public void OnGUI()
@@ -164,7 +161,7 @@ namespace LethalMenu
                 {
                     if (Settings.b_FPSCounter == true)
                     {
-                        VisualUtil.DrawString(new Vector2(5f, 2f), $"Lethal Menu {Settings.version} By IcyRelic, and Dustin! FPS: {GetFPS()}", Settings.c_primary, centered: false, bold: true, fontSize: 14);
+                        VisualUtil.DrawString(new Vector2(5f, 2f), $"Lethal Menu {Settings.version} By IcyRelic, and Dustin! FPS: {fps}", Settings.c_primary, centered: false, bold: true, fontSize: 14);
                     }
                     else
                     {
