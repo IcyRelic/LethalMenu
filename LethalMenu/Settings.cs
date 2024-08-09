@@ -13,6 +13,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using static IngamePlayerSettings;
 
 namespace LethalMenu
 {
@@ -280,13 +281,13 @@ namespace LethalMenu
                 settings["SliderWidth"] = i_sliderWidth.ToString();
                 settings["TextboxWidth"] = i_textboxWidth.ToString();
                 settings["MenuAlpha"] = f_menuAlpha.ToString();
-                settings["Theme"] = ThemeUtil.ThemeName;
-                settings["Language"] = Localization.Language.Name;
                 settings["DebugMode"] = DebugMode.ToString();
 
-                json["MenuSettings"] = settings;
+                json["Theme"] = ThemeUtil.ThemeName;
+                json["Language"] = Localization.Language.Name;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
+                json["MenuSettings"] = settings;
                 json["KeyBinds"] = JObject.FromObject(keybinds);
                 json["Toggles"] = JObject.FromObject(toggles);
 
@@ -302,12 +303,15 @@ namespace LethalMenu
 
                 JObject json = JObject.Parse(jsonStr);
 
+                if (json.TryGetValue("Language", out JToken languageToken))
+                    Localization.SetLanguage(languageToken.ToString());
+                if (json.TryGetValue("Theme", out JToken themeToken))
+                    ThemeUtil.SetTheme(themeToken.ToString());
+
                 if (json.TryGetValue("MenuSettings", out JToken settingsToken))
                 {
                     JObject settings = settingsToken.ToObject<JObject>();
 
-                    if (settings.TryGetValue("Theme", out JToken themeToken))
-                        ThemeUtil.SetTheme(themeToken.ToString());
                     if (settings.TryGetValue("FirstLaunch", out JToken firstLaunchToken))
                         isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
                     if (settings.TryGetValue("MenuFontSize", out JToken menuFontSizeToken))
@@ -322,8 +326,6 @@ namespace LethalMenu
                         i_textboxWidth = int.Parse(textboxWidthToken.ToString());
                     if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
                         f_menuAlpha = float.Parse(menuAlphaToken.ToString());
-                    if (settings.TryGetValue("Language", out JToken languageToken))
-                        Localization.SetLanguage(languageToken.ToString());
                     if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
                     {
                         DebugMode = bool.Parse(debugModeToken.ToString());
