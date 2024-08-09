@@ -8,7 +8,7 @@ namespace LethalMenu.Menu.Tab
         Vector2 scrollPos;
         private Texture2D avatar;
 
-        public GeneralTab() : base("General")
+        public GeneralTab() : base("GeneralTab.Title")
         {
             GetImage("https://icyrelic.com/img/Avatar2.jpg", Avatar);
         }
