@@ -89,7 +89,12 @@ namespace LethalMenu.Util
             }
         }
 
-        public static void LMUser()
+        public static async void RunLMUser()
+        {
+            await LMUser();
+        }
+
+        public static async Task LMUser()
         {
             if (HUDManager.Instance == null) return;
             if (LethalMenu.localPlayer == null) return;
