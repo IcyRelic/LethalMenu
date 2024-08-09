@@ -1,5 +1,6 @@
 ﻿using LethalMenu.Cheats;
 using LethalMenu.Language;
+using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using Newtonsoft.Json;
@@ -458,7 +459,11 @@ namespace LethalMenu
                     if (settings.TryGetValue("Language", out JToken languageToken))
                         Localization.SetLanguage(languageToken.ToString());
                     if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
+                    {
                         DebugMode = bool.Parse(debugModeToken.ToString());
+                        HackMenu.Instance.ToggleDebugTab(DebugMode);
+                    }
+                        
 
                 }
 

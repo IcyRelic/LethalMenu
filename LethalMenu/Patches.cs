@@ -3,7 +3,7 @@ using LethalMenu.Cheats;
 using LethalMenu.Util;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using System.Threading.Tasks;
+
 
 namespace LethalMenu
 {
@@ -17,6 +17,7 @@ namespace LethalMenu
             SpectatePlayer.Reset();
             Freecam.Reset();
             LethalMenu.Instance.LMUsers.Clear();
+            Shoplifter.Clear();
         }
 
         [HarmonyPostfix]
@@ -59,6 +60,6 @@ namespace LethalMenu
                 yield return instruction.opcode == OpCodes.Ldc_I4_S && instruction.operand.ToString().Equals("12") ?
                     new CodeInstruction(OpCodes.Ldc_I4, int.MaxValue) : instruction;
             }
-        }
+        } 
     }
 }
