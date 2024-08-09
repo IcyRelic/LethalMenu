@@ -74,6 +74,7 @@ namespace LethalMenu.Cheats
         {
             nodeCosts.Clear();
             itemCosts = null;
+            vehicleCosts = null;
         }
 
         [HarmonyPrefix]
