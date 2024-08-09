@@ -1,4 +1,4 @@
-﻿using LethalMenu.Cheats;
+using LethalMenu.Cheats;
 using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Types;
@@ -284,9 +284,9 @@ namespace LethalMenu
                 settings["Language"] = Localization.Language.Name;
                 settings["DebugMode"] = DebugMode.ToString();
 
+                json["MenuSettings"] = settings;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
-                json["MenuSettings"] = settings;
                 json["KeyBinds"] = JObject.FromObject(keybinds);
                 json["Toggles"] = JObject.FromObject(toggles);
 
@@ -302,8 +302,34 @@ namespace LethalMenu
 
                 JObject json = JObject.Parse(jsonStr);
 
-                if (json.TryGetValue("Theme", out JToken themeToken))
-                    ThemeUtil.SetTheme(themeToken.ToString());
+                if (json.TryGetValue("MenuSettings", out JToken settingsToken))
+                {
+                    JObject settings = settingsToken.ToObject<JObject>();
+
+                    if (settings.TryGetValue("Theme", out JToken themeToken))
+                        ThemeUtil.SetTheme(themeToken.ToString());
+                    if (settings.TryGetValue("FirstLaunch", out JToken firstLaunchToken))
+                        isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
+                    if (settings.TryGetValue("MenuFontSize", out JToken menuFontSizeToken))
+                        i_menuFontSize = int.Parse(menuFontSizeToken.ToString());
+                    if (settings.TryGetValue("MenuWidth", out JToken menuWidthToken))
+                        i_menuWidth = int.Parse(menuWidthToken.ToString());
+                    if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
+                        i_menuHeight = int.Parse(menuHeightToken.ToString());
+                    if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
+                        i_sliderWidth = int.Parse(sliderWidthToken.ToString());
+                    if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
+                        i_textboxWidth = int.Parse(textboxWidthToken.ToString());
+                    if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
+                        f_menuAlpha = float.Parse(menuAlphaToken.ToString());
+                    if (settings.TryGetValue("Language", out JToken languageToken))
+                        Localization.SetLanguage(languageToken.ToString());
+                    if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
+                    {
+                        DebugMode = bool.Parse(debugModeToken.ToString());
+                        HackMenu.Instance.ToggleDebugTab(DebugMode);
+                    }
+                }
 
                 if (json.TryGetValue("HackSettings", out JToken hackSettingsToken))
                 {
@@ -438,35 +464,6 @@ namespace LethalMenu
                         c_causeOfDeath = JsonConvert.DeserializeObject<RGBAColor>(causeOfDeath.ToString());
                 }
 
-                if (json.TryGetValue("MenuSettings", out JToken settingsToken))
-                {
-                    JObject settings = settingsToken.ToObject<JObject>();
-
-                    if (settings.TryGetValue("FirstLaunch", out JToken firstLaunchToken))
-                        isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
-                    if (settings.TryGetValue("MenuFontSize", out JToken menuFontSizeToken))
-                        i_menuFontSize = int.Parse(menuFontSizeToken.ToString());
-                    if (settings.TryGetValue("MenuWidth", out JToken menuWidthToken))
-                        i_menuWidth = int.Parse(menuWidthToken.ToString());
-                    if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
-                        i_menuHeight = int.Parse(menuHeightToken.ToString());
-                    if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
-                        i_sliderWidth = int.Parse(sliderWidthToken.ToString());
-                    if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
-                        i_textboxWidth = int.Parse(textboxWidthToken.ToString());
-                    if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
-                        f_menuAlpha = float.Parse(menuAlphaToken.ToString());
-                    if (settings.TryGetValue("Language", out JToken languageToken))
-                        Localization.SetLanguage(languageToken.ToString());
-                    if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
-                    {
-                        DebugMode = bool.Parse(debugModeToken.ToString());
-                        HackMenu.Instance.ToggleDebugTab(DebugMode);
-                    }
-                        
-
-                }
-
                 if (json.TryGetValue("KeyBinds", out JToken keybindsToken))
                 {
                     HackExtensions.KeyBinds.Clear();
@@ -512,4 +509,3 @@ namespace LethalMenu
         }
     }
 }
-
