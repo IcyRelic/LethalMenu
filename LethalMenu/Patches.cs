@@ -21,18 +21,17 @@ namespace LethalMenu
         }
 
         [HarmonyPostfix]
-        [HarmonyPatch(typeof(GameNetworkManager), "JoinLobby")]
-        public static void JoinLobby(GameNetworkManager __instance)
+        [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc")]
+        public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
         {
-            MenuUtil.LMUser();
+            MenuUtil.RunLMUser();
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(StartOfRound), "OnClientConnect")]
         public static void OnClientConnect(StartOfRound __instance)
         {
-
-            MenuUtil.LMUser();
+            MenuUtil.RunLMUser();
         }
 
         [HarmonyPrefix]
