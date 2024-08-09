@@ -135,12 +135,17 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Toggle(string header, ref bool value, string enabled, string disabled)
+        public static void Toggle(string header, ref bool value, string enabled, string disabled, params Action<bool>[] action)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button(Localization.Localize(value ? enabled : disabled))) value = !value;
+            bool newValue = !value;
+            if (GUILayout.Button(Localization.Localize(value ? enabled : disabled)))
+            {
+                value = newValue;
+                action.ToList().ForEach(a => a.Invoke(newValue));
+            }
             GUILayout.EndHorizontal();
         }
 

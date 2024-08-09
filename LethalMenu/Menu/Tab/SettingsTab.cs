@@ -97,7 +97,7 @@ namespace LethalMenu.Menu.Tab
             UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
             UI.Toggle("SettingsTab.FPSCounter", ref Settings.b_FPSCounter, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Disable", "General.Enable");
-            UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable" );
+            UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable", HackMenu.Instance.ToggleDebugTab);
         }
 
         private void ControlSettingsContent()

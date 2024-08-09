@@ -56,7 +56,20 @@ namespace LethalMenu.Menu.Core
 
             Resize();
 
-            selectedTab = menuTabs.IndexOf(menuTabs.Find(x => x.name == "General"));
+            selectedTab = menuTabs.IndexOf(menuTabs.Find(x => x is GeneralTab));
+        }
+
+        private bool HasDebugTab()
+        {
+            return menuTabs.Find(t => t is DebugTab) != null;
+        }
+
+        public void ToggleDebugTab(bool enabled)
+        {
+            Debug.LogWarning($"Toggling Debug Mode: {enabled}");
+
+            if (enabled && !HasDebugTab()) menuTabs.Add(new DebugTab());
+            else menuTabs.FindAll(t => t is DebugTab).ForEach(t => menuTabs.Remove(t));
         }
 
 
