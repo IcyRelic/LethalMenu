@@ -72,7 +72,7 @@ namespace LethalMenu
                 ThemeUtil.LoadTheme(string.IsNullOrEmpty(ThemeUtil.ThemeName) ? "Default" : ThemeUtil.ThemeName);
                 LoadCheats();
                 DoPatching();
-                MenuUtil.LMUser();
+                MenuUtil.RunLMUser();
                 this.StartCoroutine(this.CollectObjects());
                 this.StartCoroutine(this.FPSCounter());
             }
