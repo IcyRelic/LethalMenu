@@ -10,6 +10,7 @@ namespace LethalMenu.Cheats
     {
         public static Dictionary<string, int> nodeCosts = new Dictionary<string, int>();
         public static int[] itemCosts;
+        public static int[] vehicleCosts;
 
 
         public override void Update()
@@ -28,7 +29,7 @@ namespace LethalMenu.Cheats
                     n.result.itemCost = 0;
                 });
 
-                if(itemCosts is null)
+                if (itemCosts is null)
                 {
                     itemCosts = new int[term.buyableItemsList.Length];
                     for (int i = 0; i < term.buyableItemsList.Length; i++)
@@ -37,6 +38,16 @@ namespace LethalMenu.Cheats
                     }
                 }
 
+                if (vehicleCosts is null)
+                {
+                    vehicleCosts = new int[term.buyableVehicles.Length];
+                    for (int i = 0; i < term.buyableVehicles.Length; i++)
+                    {
+                        vehicleCosts[i] = term.buyableVehicles[i].creditsWorth;
+                    }
+                }
+
+                term.buyableVehicles.ToList().ForEach(i => i.creditsWorth = 0);
                 term.buyableItemsList.ToList().ForEach(i => i.creditsWorth = 0);
             }
             else if(nodeCosts.Count > 0)
@@ -46,6 +57,11 @@ namespace LethalMenu.Cheats
                 for (int i = 0; i < term.buyableItemsList.Length; i++)
                 {
                     term.buyableItemsList[i].creditsWorth = itemCosts[i];
+                }
+
+                for (int i = 0; i < term.buyableVehicles.Length; i++)
+                {
+                    term.buyableVehicles[i].creditsWorth = vehicleCosts[i];
                 }
 
                 Clear();
