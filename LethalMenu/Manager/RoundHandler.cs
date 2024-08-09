@@ -26,6 +26,8 @@ namespace LethalMenu.Manager
         {
             Terminal terminal = GetTerminal();
 
+            if (terminal == null) return;
+            
             int newAmt = amount;
 
             if(type == ActionType.Add) newAmt = terminal.groupCredits + amount;
