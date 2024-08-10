@@ -1,15 +1,17 @@
 v1.4.4 
-- Added Peer 2 peer communication - Lets you see other users using LethalMenu (only this version) (Rather buggy)
-- Fixed kill all enemy and kill on unkillable enemies
-- Fixed teleport all enemies
-- Removed drop all player items due to bugs I can't fix 
+- Added Peer 2 peer communication - Lets you see other users using LethalMenu (1.4.4+) 
+- Fixed Kill all enemy (Host Only)
+- Fixed Enemy killing (Host only)
+- Fixed Teleport all enemies 
+- Removed drop all player items - I can't fix the bugs with it
 - Changed Never Lose Scrap to Scrap Never Scraps and fixed it being on 24/7 even when disabled
-- Added FPS Counter - displays your fps!! Updates every 0.5 seconds! toggle in settings
-- Fixed a ton of bugss
-- Added Vehicle Godmode
-- Fixed themes so they now save
-- Added color customization to info display color
-- Fixed First setup manager buttons overlapping themselves!
+- Added FPS Counter - Displays your FPS
+- Added Vehicle Godmode - Cruiser doesn't take damage
+- Fixed Themes so they now save
+- Added Color Customization to info display
+- Fixed First Setup Manager - The buttons were overlapping themselves
+- Fixed Spike Roof Trap Chams - For some reason it wasn't working
+- Removed ThemeUtil - Replaced it with better Theme loading
 
 
 v1.4.3
