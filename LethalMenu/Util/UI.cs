@@ -15,8 +15,8 @@ namespace LethalMenu.Util
         public string label;
         public Action action;
         private GUIStyle style = null;
-
-        public UIButton(string label, Action action, GUIStyle style = null)
+     
+    public UIButton(string label, Action action, GUIStyle style = null)
         {
             this.label = Localization.Localize(label);
             this.action = action;
@@ -92,10 +92,12 @@ namespace LethalMenu.Util
 
         public static void Hack(Hack hack, string header, params object[] param)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
+            GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
-            if (hack.Button()) hack.Execute(param);
+            if (hack.Button()) hack.Execute(param); 
             GUILayout.EndHorizontal();
         }
 
@@ -137,8 +139,10 @@ namespace LethalMenu.Util
 
         public static void Toggle(string header, ref bool value, string enabled, string disabled, params Action<bool>[] action)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = value ? Settings.c_hackhighlight.GetColor() : GUI.skin.button.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
+            GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
             bool newValue = !value;
             if (GUILayout.Button(Localization.Localize(value ? enabled : disabled)))

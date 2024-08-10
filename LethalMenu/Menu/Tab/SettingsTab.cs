@@ -24,6 +24,7 @@ namespace LethalMenu.Menu.Tab
         private string s_bgColor = Settings.c_background.GetHexCode();
         private string s_primaryColor = Settings.c_primary.GetHexCode();
         private string s_crosshairColor = Settings.c_crosshair.GetHexCode();
+        private string s_hackhighlightColor = Settings.c_hackhighlight.GetHexCode();
         private string s_menuText = Settings.c_menuText.GetHexCode();
 
         //esp colors
@@ -99,6 +100,7 @@ namespace LethalMenu.Menu.Tab
             UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
             UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
             UI.Toggle("SettingsTab.FPSCounter", ref Settings.b_FPSCounter, "General.Disable", "General.Enable");
+            UI.Toggle("SettingsTab.HackHighlight", ref Settings.b_HackHighlight, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable", HackMenu.Instance.ToggleDebugTab);
         }
@@ -194,6 +196,9 @@ namespace LethalMenu.Menu.Tab
             );
             UI.TextboxAction("SettingsTab.Crosshair", ref s_crosshairColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("General.Set", () => SetColor(ref Settings.c_crosshair, s_crosshairColor))
+            );
+            UI.TextboxAction("SettingsTab.HackHighlight", ref s_hackhighlightColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_hackhighlight, s_hackhighlightColor))
             );
 
             UI.Header("SettingsTab.ESPColors", true);

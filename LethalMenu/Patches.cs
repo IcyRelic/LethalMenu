@@ -3,7 +3,6 @@ using HarmonyLib;
 using LethalMenu.Cheats;
 using LethalMenu.Util;
 using System.Collections.Generic;
-using GameNetcodeStuff;
 using System.Reflection.Emit;
 
 

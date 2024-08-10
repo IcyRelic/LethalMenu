@@ -3,6 +3,8 @@ using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
+using System.Linq;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace LethalMenu.Menu.Tab
@@ -51,9 +53,11 @@ namespace LethalMenu.Menu.Tab
 
                 name = player.playerUsername;
 
-                if (LethalMenu.Instance.LMUsers.Contains(player.playerSteamId.ToString()) && Settings.b_DisplayLMUsers)
+
+                if (LethalMenu.Instance.LMUsers.Any(u => u.SteamId == player.playerSteamId.ToString()) && Settings.b_DisplayLMUsers)
                 {
-                    name = $"[LethalMenu] {player.playerUsername}";
+                    var user = LethalMenu.Instance.LMUsers.FirstOrDefault(u => u.SteamId == player.playerSteamId.ToString());
+                    name = $"[LethalMenu {user.Version}] {player.playerUsername}";
                 }
 
                 if (GUILayout.Button(name, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;

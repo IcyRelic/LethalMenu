@@ -106,30 +106,47 @@ namespace LethalMenu.Util
                 await Task.Delay(10000);
             }
 
-            HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}</size>");
+            HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}, {Settings.version}</size>");
 
             var steamidregex = new Regex(@"\b\d{17,19}\b");
             var removemessages = new List<string>();
 
             foreach (var messages in HUDManager.Instance.ChatMessageHistory)
             {
-                if (messages == null) return;
+                if (messages == null) continue;
                 string steamid = steamidregex.Match(messages).Value;
-                if (steamid == null) return;
-                if (!LethalMenu.Instance.LMUsers.Contains(steamid))
+                if (string.IsNullOrEmpty(steamid)) continue;
+
+                var user = LethalMenu.Instance.LMUsers.Find(u => u.SteamId == steamid);
+
+                if (user == null)
                 {
-                    LethalMenu.Instance.LMUsers.Add(steamid);
+                    LethalMenu.Instance.LMUsers.Add(new LMUserList(steamid, Settings.version));
                 }
-                if (LethalMenu.Instance.LMUsers.Contains(steamid))
+                else
                 {
-                    removemessages.Add(messages);
+                    user.Version = Settings.version;
                 }
+
+                removemessages.Add(messages);
             }
 
             foreach (var message in removemessages)
             {
-                if (message == null) return;
+                if (message == null) continue;
                 HUDManager.Instance.ChatMessageHistory.Remove(message);
+            }
+        }
+
+        public class LMUserList
+        {
+            public string SteamId { get; set; }
+            public string Version { get; set; }
+
+            public LMUserList(string steamId, string version)
+            {
+                SteamId = steamId;
+                Version = version;
             }
         }
     }

@@ -45,6 +45,7 @@ namespace LethalMenu
         public static RGBAColor c_primary = new RGBAColor(165, 55, 253, 1f);
         public static RGBAColor c_menuText = new RGBAColor(255, 255, 255, 1f);
         public static RGBAColor c_crosshair = new RGBAColor(255, 43, 43, 1f);
+        public static RGBAColor c_hackhighlight = new RGBAColor(165, 55, 253, 1f);
 
         /* * *  * * * *
          * ESP Colors *
@@ -104,7 +105,8 @@ namespace LethalMenu
         public static bool b_HPDisplay = false;
         public static bool b_ShowShipItems = false;
         public static bool b_DropItems = false;
-        public static bool b_FPSCounter = false;
+        public static bool b_HackHighlight = false;
+        public static bool b_FPSCounter = false; 
         public static bool b_DisplayLMUsers = false;
 
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
@@ -237,6 +239,7 @@ namespace LethalMenu
                 hackSettings["ShowShipItems"] = b_ShowShipItems.ToString();
                 hackSettings["FPSCounter"] = b_FPSCounter.ToString();
                 hackSettings["DisplayLMUsers"] = b_DisplayLMUsers.ToString();
+                hackSettings["HackHighlight"] = b_HackHighlight.ToString();
                 hackSettings["FOV"] = f_fov.ToString();
                 hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
                 chams["Distance"] = f_chamDistance.ToString();
@@ -257,6 +260,7 @@ namespace LethalMenu
                 colors["Primary"] = JsonConvert.SerializeObject(c_primary);
                 colors["MenuText"] = JsonConvert.SerializeObject(c_menuText);
                 colors["Crosshair"] = JsonConvert.SerializeObject(c_crosshair);
+                colors["HackHighlightColor"] = JsonConvert.SerializeObject(c_hackhighlight);
                 colors["Chams"] = JsonConvert.SerializeObject(c_chams);
                 colors["ObjectESP"] = JsonConvert.SerializeObject(c_objectESP);
                 colors["PlayerESP"] = JsonConvert.SerializeObject(c_playerESP);
@@ -371,6 +375,8 @@ namespace LethalMenu
                         b_ShowShipItems = bool.Parse(ShowShipItemsToken.ToString());
                     if (hackSettings.TryGetValue("FPSCounter", out JToken FPSCounterToken))
                         b_FPSCounter = bool.Parse(FPSCounterToken.ToString());
+                    if (hackSettings.TryGetValue("HackHighlight", out JToken HackHighlightToken))
+                        b_HackHighlight = bool.Parse(HackHighlightToken.ToString());
                     if (hackSettings.TryGetValue("DisplayLMUsers", out JToken DisplayLMUsersToken))
                         b_DisplayLMUsers = bool.Parse(DisplayLMUsersToken.ToString());
                     if (hackSettings.TryGetValue("FOV", out JToken fovToken))
@@ -434,6 +440,8 @@ namespace LethalMenu
                         c_menuText = JsonConvert.DeserializeObject<RGBAColor>(menuTextToken.ToString());
                     if (colors.TryGetValue("Crosshair", out JToken crosshairToken))
                         c_crosshair = JsonConvert.DeserializeObject<RGBAColor>(crosshairToken.ToString());
+                    if (colors.TryGetValue("HackHighlightColor", out JToken hackhighlightToken))
+                        c_hackhighlight = JsonConvert.DeserializeObject<RGBAColor>(hackhighlightToken.ToString());
                     if (colors.TryGetValue("Chams", out JToken chams))
                         c_chams = JsonConvert.DeserializeObject<RGBAColor>(chams.ToString());
                     if (colors.TryGetValue("ObjectESP", out JToken objectESP))
