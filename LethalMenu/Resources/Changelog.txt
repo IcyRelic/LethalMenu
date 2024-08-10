@@ -12,6 +12,7 @@ v1.4.4
 - Fixed First Setup Manager - The buttons were overlapping themselves
 - Fixed Spike Roof Trap Chams - For some reason it wasn't working
 - Removed ThemeUtil - Replaced it with better Theme loading
+- Added Hack Highlight
 
 
 v1.4.3
