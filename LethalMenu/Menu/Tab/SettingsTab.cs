@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
+using LethalMenu.Themes;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -46,6 +47,7 @@ namespace LethalMenu.Menu.Tab
 
         private int i_selectedCrosshairIndex = -1;
         private int i_languageIndex = -1;
+        private int i_themeIndex = -1;
 
         public SettingsTab() : base("SettingsTab.Title") { }
 
@@ -57,6 +59,7 @@ namespace LethalMenu.Menu.Tab
 
             if(i_selectedCrosshairIndex == -1) i_selectedCrosshairIndex = (int) Settings.ct_crosshairType;
             if(i_languageIndex == -1) i_languageIndex = Array.IndexOf(Localization.GetLanguages(), Localization.Language.Name);
+            if (i_themeIndex == -1) i_themeIndex = Array.IndexOf(Theme.GetThemes(), Theme.name);
 
             GUILayout.BeginVertical(GUILayout.Width(f_leftWidth));
 
@@ -87,7 +90,7 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("SettingsTab.General");
 
-            UI.IndexSelectAction("SettingsTab.Theme", ref Settings.selectedmode, Settings.modes);
+            UI.Select("SettingsTab.Theme", ref i_themeIndex, Theme.GetThemes().Select(x => new UIOption(x, () => Theme.SetTheme(x))).ToArray());
             UI.Select("SettingsTab.Language", ref i_languageIndex, Localization.GetLanguages().Select(x => new UIOption(x, () => Localization.SetLanguage(x))).ToArray());
             UI.NumSelect("SettingsTab.FontSize", ref Settings.i_menuFontSize, 5, 30);
             UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);

@@ -6,16 +6,13 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using UnityEngine.Rendering;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
-using UnityEngine.Rendering.HighDefinition;
-using Random = UnityEngine.Random;
+using LethalMenu.Themes;
 
 namespace LethalMenu
 {
@@ -69,7 +66,7 @@ namespace LethalMenu
             try
             {
                 Localization.Initialize();
-                ThemeUtil.LoadTheme(string.IsNullOrEmpty(ThemeUtil.ThemeName) ? "Default" : ThemeUtil.ThemeName);
+                Theme.SetTheme(string.IsNullOrEmpty(Theme.name) ? "Default" : Theme.name);  
                 LoadCheats();
                 DoPatching();
                 MenuUtil.RunLMUser();

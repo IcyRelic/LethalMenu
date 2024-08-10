@@ -13,7 +13,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using static IngamePlayerSettings;
+using LethalMenu.Themes;
 
 namespace LethalMenu
 {
@@ -37,8 +37,6 @@ namespace LethalMenu
         public static int i_sliderWidth = 100;
         public static int i_textboxWidth = 85;
         public static float f_menuAlpha = 1f;
-        public static int selectedmode = 0;
-        public static readonly string[] modes = { "Default", "Green", "Blue" };
 
         /* * * * * * * * * *
          *  Color Settings *
@@ -283,7 +281,7 @@ namespace LethalMenu
                 settings["MenuAlpha"] = f_menuAlpha.ToString();
                 settings["DebugMode"] = DebugMode.ToString();
 
-                json["Theme"] = ThemeUtil.ThemeName;
+                json["Theme"] = Theme.name;
                 json["Language"] = Localization.Language.Name;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
@@ -306,7 +304,7 @@ namespace LethalMenu
                 if (json.TryGetValue("Language", out JToken languageToken))
                     Localization.SetLanguage(languageToken.ToString());
                 if (json.TryGetValue("Theme", out JToken themeToken))
-                    ThemeUtil.SetTheme(themeToken.ToString());
+                    Theme.SetTheme(themeToken.ToString());
 
                 if (json.TryGetValue("MenuSettings", out JToken settingsToken))
                 {

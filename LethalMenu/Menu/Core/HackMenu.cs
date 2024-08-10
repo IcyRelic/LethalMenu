@@ -1,9 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using LethalMenu.Menu.Popup;
 using LethalMenu.Menu.Tab;
-using LethalMenu.Util;
+using LethalMenu.Themes;
 using System.Linq;
 
 namespace LethalMenu.Menu.Core
@@ -93,7 +92,7 @@ namespace LethalMenu.Menu.Core
 
         public void Stylize()
         {
-            GUI.skin = ThemeUtil.Skin;
+            GUI.skin = Theme.Skin;
             GUI.color = Color.white;
 
             GUI.skin.label.fontSize = Settings.i_menuFontSize;

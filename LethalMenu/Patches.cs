@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
 using LethalMenu.Cheats;
 using LethalMenu.Util;
 using System.Collections.Generic;
