@@ -1,8 +1,9 @@
-﻿using LethalMenu.Menu.Core;
+using LethalMenu.Menu.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace LethalMenu.Util
 {
@@ -36,10 +37,10 @@ namespace LethalMenu.Util
 
 
         }
-        
+
         public static void ResizeMenu()
         {
-            if(!resizing) return;
+            if (!resizing) return;
 
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
@@ -48,7 +49,7 @@ namespace LethalMenu.Util
                 return;
             }
 
-            if(Mouse.current.rightButton.wasPressedThisFrame)
+            if (Mouse.current.rightButton.wasPressedThisFrame)
             {
                 resizing = false;
                 Settings.i_menuWidth = oldWidth;
@@ -58,17 +59,17 @@ namespace LethalMenu.Util
                 return;
             }
 
-            
+
 
 
             float currentX = HackMenu.Instance.windowRect.x + HackMenu.Instance.windowRect.width;
             float currentY = HackMenu.Instance.windowRect.y + HackMenu.Instance.windowRect.height;
 
-            Settings.i_menuWidth = (int) Mathf.Clamp(MouseX - HackMenu.Instance.windowRect.x, 500, maxWidth);
-            Settings.i_menuHeight = (int) Mathf.Clamp(MouseY - HackMenu.Instance.windowRect.y, 250, maxHeight);
+            Settings.i_menuWidth = (int)Mathf.Clamp(MouseX - HackMenu.Instance.windowRect.x, 500, maxWidth);
+            Settings.i_menuHeight = (int)Mathf.Clamp(MouseY - HackMenu.Instance.windowRect.y, 250, maxHeight);
             HackMenu.Instance.Resize();
         }
-    
+
         public static void ShowCursor()
         {
             LethalMenu.localPlayer?.playerActions.Disable();
@@ -78,7 +79,7 @@ namespace LethalMenu.Util
         }
 
         public static void HideCursor()
-        { 
+        {
             LethalMenu.localPlayer?.playerActions.Enable();
             Cursor.visible = false;
             Cursor.lockState = Settings.clm_lastCursorState;
@@ -96,8 +97,14 @@ namespace LethalMenu.Util
 
         public static async Task LMUser()
         {
-            if (HUDManager.Instance == null) return;
-            if (LethalMenu.localPlayer == null) return;
+            while (HUDManager.Instance == null)
+            {
+                await Task.Delay(10000);
+            }
+            while (LethalMenu.localPlayer == null)
+            {
+                await Task.Delay(10000);
+            }
 
             HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}</size>");
 
@@ -114,7 +121,7 @@ namespace LethalMenu.Util
                     LethalMenu.Instance.LMUsers.Add(steamid);
                 }
                 if (LethalMenu.Instance.LMUsers.Contains(steamid))
-                { 
+                {
                     removemessages.Add(messages);
                 }
             }
