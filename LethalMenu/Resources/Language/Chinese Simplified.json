@@ -123,8 +123,6 @@
 	"ServerTab.ForceLand": "强制飞船落地",
 	"ServerTab.ForceLeave": "强制开船",
 	"ServerTab.SpawnScrap": "生成更多物品",
-	"ServerTab.SpawnRandMines": "随机生成地雷",
-	"ServerTab.SpawnRandTurrets": "随机生成机枪",
 	"ServerTab.SpawnLandmine": "生成地雷",
 	"ServerTab.SpawnTurret": "生成机枪",
 	"ServerTab.Shoplifter": "商店零元购",
