@@ -112,8 +112,6 @@
 	"ServerTab.ForceLand": "Forzar la nave a aterrizar",
 	"ServerTab.ForceLeave": "Forzar la nave a irse",
 	"ServerTab.SpawnScrap": "Generar más chatarra",
-	"ServerTab.SpawnRandMines": "Generar minas al azar",
-	"ServerTab.SpawnRandTurrets": "Generar torretas al azar",
 	"ServerTab.SpawnLandmine": "Generar mina",
 	"ServerTab.SpawnTurret": "Generar Torreta",
 	"ServerTab.Managers": "Gestores",
