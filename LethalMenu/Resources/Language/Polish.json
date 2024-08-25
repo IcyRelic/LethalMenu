@@ -112,8 +112,6 @@
 	"ServerTab.ForceLand": "Wymuś Lądowanie Statku",
 	"ServerTab.ForceLeave": "Wymuś Opuszczenie Statku",
 	"ServerTab.SpawnScrap": "Zresp więcej złomu",
-	"ServerTab.SpawnRandMines": "Zresp losowe miny",
-	"ServerTab.SpawnRandTurrets": "Zresp losowe Wieżyczki",
 	"ServerTab.SpawnLandmine": "Zresp Minę",
 	"ServerTab.SpawnTurret": "Zresp Wieżyczke",
 	"ServerTab.Managers": "Menedżerzy",
