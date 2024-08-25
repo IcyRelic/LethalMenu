@@ -112,8 +112,6 @@
 	"ServerTab.ForceLand": "Lande das Schiff",
 	"ServerTab.ForceLeave": "Starte das Schiff",
 	"ServerTab.SpawnScrap": "Spawn mehr Items",
-	"ServerTab.SpawnRandMines": "Spawn Minen zufällig",
-	"ServerTab.SpawnRandTurrets": "Spawn Geschütze zufällig",
 	"ServerTab.SpawnLandmine": "Spawn Mine",
 	"ServerTab.SpawnTurret": "Spawn Geschützt",
 	"ServerTab.Managers": "Manager",
