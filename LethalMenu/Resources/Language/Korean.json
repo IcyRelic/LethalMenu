@@ -112,8 +112,6 @@
 	"ServerTab.ForceLand": "함선 강제 착륙",
 	"ServerTab.ForceLeave": "함선 강제 이륙",
 	"ServerTab.SpawnScrap": "더 많은 폐품",
-	"ServerTab.SpawnRandMines": "랜덤 지뢰 소환",
-	"ServerTab.SpawnRandTurrets": "랜덤 터렛 소환",
 	"ServerTab.SpawnLandmine": "지뢰 소환",
 	"ServerTab.SpawnTurret": "터렛 소환",
 	"ServerTab.Managers": "관리자",
