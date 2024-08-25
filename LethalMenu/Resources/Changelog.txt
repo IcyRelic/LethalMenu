@@ -7,15 +7,10 @@ v1.4.4
 - Added Discord Link to Watermark 
 - Added FPS Counter - Displays your FPS
 - Added Vehicle Godmode - Cruiser doesn't take damage
-<<<<<<< Updated upstream
 - Fixed Themes so they now save
 - Added Color Customization to info display
 - Fixed First Setup Manager - The buttons were overlapping themselves
 - Fixed Spike Roof Trap Chams - For some reason it wasn't working
-- Removed ThemeUtil - Replaced it with better Theme loading
-- Added Hack Highlight
-
-=======
 - Added Hack Highlight - Hacks are highlighted
 - Added Hack Highlight Customization - Set the color of the highlighted hacks 
 - Added Transmitt - You can send messages as the signal transmitter
@@ -50,7 +45,6 @@ v1.4.4
 - Changed Item ESP - Made it less messy
 - Changed Info Display - Added a method to make it less messy
 - Removed Drop All Player Items - I can't fix the syncing issue
->>>>>>> Stashed changes
 
 v1.4.3
 - Added Super Knife - Instant kill with knife
