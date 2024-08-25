@@ -8,7 +8,6 @@ v1.4.4
 - Added FPS Counter - Displays your FPS
 - Added Vehicle Godmode - Cruiser doesn't take damage
 - Added Color Customization to info display
-- Fixed First Setup Manager - The buttons were overlapping themselves
 - Added Hack Highlight - Hacks are highlighted
 - Added Hack Highlight Customization - Set the color of the highlighted hacks 
 - Added Transmitt - You can send messages as the signal transmitter
