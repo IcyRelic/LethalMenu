@@ -122,8 +122,6 @@
 	"ServerTab.ForceLand": "Forcer le vaisseau à atterrir",
 	"ServerTab.ForceLeave": "Forcer le départ du vaisseau",
 	"ServerTab.SpawnScrap": "Apparaitre plus de Scraps",
-	"ServerTab.SpawnRandMines": "Apparaitre des Mines Aléatoires",
-	"ServerTab.SpawnRandTurrets": "Apparaitre des Tourelles Aléatoires",
 	"ServerTab.SpawnLandmine": "Apparaitre des Mines Aléatoires",
 	"ServerTab.SpawnTurret": "Apparaître des Tourelles",
 	"ServerTab.Shoplifter": "Achat gratuit",
