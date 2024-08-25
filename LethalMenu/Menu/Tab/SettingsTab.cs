@@ -9,6 +9,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 using LethalMenu.Themes;
+using LethalMenu.Manager;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -103,6 +104,7 @@ namespace LethalMenu.Menu.Tab
             UI.Toggle("SettingsTab.HackHighlight", ref Settings.b_HackHighlight, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable", HackMenu.Instance.ToggleDebugTab);
+            UI.Toggle("SettingsTab.Panic", ref Settings.b_Panic, "General.Disable", "General.Enable", RoundHandler.Panic);
         }
 
         private void ControlSettingsContent()

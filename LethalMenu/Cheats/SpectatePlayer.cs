@@ -36,7 +36,7 @@ namespace LethalMenu.Cheats
             }
             catch (Exception e)
             {
-                LethalMenu.debugMessage = e.Message + "\n" + e.StackTrace;
+                Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
             }
         }
 

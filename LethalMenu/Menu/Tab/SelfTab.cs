@@ -47,6 +47,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.UnlimitedBattery, "SelfTab.UnlimitedBattery");
             UI.Hack(Hack.UnlimitedAmmo, "SelfTab.UnlimitedAmmo");
             UI.Hack(Hack.UnlimitedOxygen, "SelfTab.UnlimitedOxygen");
+            UI.Hack(Hack.UnlimitedZapGun, "SelfTab.UnlimitedZapGun");
             UI.Hack(Hack.UnlimitedPresents, "SelfTab.UnlimitedPresents");
             UI.Hack(Hack.LootThroughWalls, "SelfTab.LootThroughWalls");
             UI.Hack(Hack.InteractThroughWalls, "SelfTab.InteractThroughWalls");
@@ -73,6 +74,9 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.DeleteHeldItem, "SelfTab.DeleteHeldItem");
             UI.Hack(Hack.VoteShipLeaveEarly, "SelfTab.VoteShipLeaveEarly");
             UI.Hack(Hack.VehicleGodMode, "SelfTab.VehicleGodMode");
+            UI.Hack(Hack.EggsNeverExplode, "SelfTab.EggsNeverExplode");
+            UI.Hack(Hack.UnlockAllDoors, "SelfTab.UnlockAllDoors");
+            UI.Hack(Hack.GrabItemsBeforeGame, "SelfTab.GrabItemsBeforeGame");
 
             GUILayout.EndScrollView();
         }

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Unity.Netcode;
+using UnityEngine;
 
 namespace LethalMenu.Types
 {
@@ -17,7 +15,8 @@ namespace LethalMenu.Types
         Terminal = 16,
         **/
 
-
+        Terminal = 16,
+        OrangeSuit = 0,
         GreenSuit = 1,
         HazardSuit = 2,
         PajamaSuit = 3,
@@ -49,20 +48,45 @@ namespace LethalMenu.Types
             return StartOfRound.Instance.unlockablesList.unlockables[(int)unlockable];
         }
 
-        public static void SetLocked(this Unlockable unlockable)
+        public static void SetLocked(this Unlockable unlockable, bool locked)
         {
             UnlockableItem item = unlockable.GetItem();
-            item.alreadyUnlocked = false;
-            item.hasBeenUnlockedByPlayer = false;
+            item.alreadyUnlocked = locked;
+            item.hasBeenUnlockedByPlayer = locked;
         }
 
         public static void Buy(this Unlockable unlockable, int credits)
         {
-            UnlockableItem item = unlockable.GetItem();
+            unlockable.SetLocked(false);
+            StartOfRound.Instance.BuyShipUnlockableServerRpc((int)unlockable, credits);
+            StartOfRound.Instance.SyncShipUnlockablesServerRpc();
+        }
 
-            unlockable.SetLocked();
+        public static void Return(this Unlockable unlockable)
+        {
+            StartOfRound.Instance.ReturnUnlockableFromStorageServerRpc((int)unlockable);
+        }
 
-            StartOfRound.Instance.BuyShipUnlockableServerRpc((int) unlockable, credits);
+        public static void Store(this Unlockable unlockable, bool clone)
+        {
+            if (GameObject.Find(unlockable + (clone ? "(Clone)" : ""))?.GetComponent<NetworkObject>() is NetworkObject networkObject) ShipBuildModeManager.Instance.StoreObjectServerRpc(new NetworkObjectReference(networkObject), (int)LethalMenu.localPlayer.actualClientId);
+        }
+
+        public static void Move(this Unlockable unlockable, Vector3 Position, Vector3 Rotation, bool clone)
+        {
+            if (GameObject.Find(unlockable + (clone ? "(Clone)" : ""))?.GetComponent<NetworkObject>() is NetworkObject networkObject) ShipBuildModeManager.Instance.PlaceShipObjectServerRpc(Position, Rotation, new NetworkObjectReference(networkObject), (int)LethalMenu.localPlayer.actualClientId);
+        }
+
+        public static Vector3 GetPosition(this Unlockable unlockable, bool clone)
+        {
+            if (GameObject.Find(unlockable + (clone ? "(Clone)" : ""))?.GetComponent<NetworkObject>() is NetworkObject networkObject) return networkObject.transform.position;
+            return Vector3.zero;
+        }
+
+        public static Vector3 GetRotation(this Unlockable unlockable, bool clone)
+        {
+            if (GameObject.Find(unlockable + (clone ? "(Clone)" : ""))?.GetComponent<NetworkObject>() is NetworkObject networkObject) return networkObject.transform.rotation.eulerAngles;
+            return Vector3.zero;
         }
     }
 }

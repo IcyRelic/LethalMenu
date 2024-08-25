@@ -17,9 +17,10 @@ namespace LethalMenu.Menu.Core
         public PopupMenu ItemManagerWindow = new ItemManagerWindow(3);
         public PopupMenu FirstSetupManagerWindow = new FirstSetupManagerWindow(4);
         public PopupMenu LootManagerWindow = new LootManagerWindow(5);
-        public PopupMenu WeatherManagerWindow = new WeatherManagerWindow(5);
+        public PopupMenu WeatherManagerWindow = new WeatherManagerWindow(6);
+        public PopupMenu SuitManagerWindow = new SuitManagerWindow(7);
 
-        private List<MenuTab> menuTabs = new List<MenuTab>();
+        public static List<MenuTab> menuTabs = new List<MenuTab>();
         private int selectedTab = 0;
 
         public float contentWidth;
@@ -58,17 +59,10 @@ namespace LethalMenu.Menu.Core
             selectedTab = menuTabs.IndexOf(menuTabs.Find(x => x is GeneralTab));
         }
 
-        private bool HasDebugTab()
-        {
-            return menuTabs.Find(t => t is DebugTab) != null;
-        }
-
         public void ToggleDebugTab(bool enabled)
         {
-            Debug.LogWarning($"Toggling Debug Mode: {enabled}");
-
-            if (enabled && !HasDebugTab()) menuTabs.Add(new DebugTab());
-            else menuTabs.FindAll(t => t is DebugTab).ForEach(t => menuTabs.Remove(t));
+            if (enabled && !menuTabs.Any(t => t is DebugTab)) menuTabs.Add(new DebugTab());
+            else menuTabs.RemoveAll(t => t is DebugTab);
         }
 
 
@@ -127,6 +121,7 @@ namespace LethalMenu.Menu.Core
                 MoonManagerWindow.Draw();
                 LootManagerWindow.Draw();
                 WeatherManagerWindow.Draw();
+                SuitManagerWindow.Draw();
                 GUI.color = Color.white;
             }
         }

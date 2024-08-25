@@ -12,9 +12,9 @@ namespace LethalMenu.Cheats
 
             if (gameObject == null) return;
 
-            gameObject.transform.Find("Rendering").Find("VolumeMain")?.gameObject.SetActive(!Hack.NoFog.IsEnabled());
-
             if (LethalMenu.volume?.sharedProfile?.TryGet(out Fog fog) == true) fog.active = !Hack.NoFog.IsEnabled();
+            gameObject.transform.Find("Rendering").Find("VolumeMain")?.gameObject.SetActive(!Hack.NoFog.IsEnabled());
+            gameObject.transform.Find("Rendering").Find("VolumeMain (1)")?.gameObject.SetActive(!Hack.NoFog.IsEnabled());
         }
     }
 }

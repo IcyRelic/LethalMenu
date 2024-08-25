@@ -1,4 +1,2 @@
 Respawn after death
-Settings to customize what objects/enemies ect are seen on ESP
 Spectate/MiniCam audio
-Unlimited Zap gun

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Reflection;
-using System.Xml.Linq;
 using UnityEngine;
 
 namespace LethalMenu.Themes
@@ -22,9 +21,10 @@ namespace LethalMenu.Themes
             AssetBundle = null;
             Skin = null;
             AssetBundle = LoadAssetBundle($"LethalMenu.Resources.Theme.{t}.skin");
-            if (AssetBundle == null) return;
+            if (AssetBundle == null) Debug.LogError($"[ERROR] Failed to load theme file => {$"LethalMenu.Resources.Theme.{t}.skin"}");
             Skin = AssetBundle.LoadAllAssets<GUISkin>().FirstOrDefault();
             if (Skin == null) return;
+            Debug.Log($"Loaded Theme {t}");
         }
     }
 }

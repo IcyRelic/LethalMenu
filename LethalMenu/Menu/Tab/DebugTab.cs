@@ -2,10 +2,12 @@
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
-using Steamworks;
-using Steamworks.Data;
 using System.Linq;
 using UnityEngine;
+using Steamworks;
+using Steamworks.Data;
+using Unity.Netcode;
+using Object = UnityEngine.Object;
 
 
 namespace LethalMenu.Menu.Tab
@@ -24,15 +26,10 @@ namespace LethalMenu.Menu.Tab
 
         private void MenuContent()
         {
-            scrollPos = GUILayout.BeginScrollView(scrollPos); 
+            scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            if (GUILayout.Button("Clear Debug Message"))
-            {
-                LethalMenu.debugMessage = "";
-                LethalMenu.debugMessage2 = "";
-            }
-            GUILayout.TextArea(LethalMenu.debugMessage, GUILayout.Height(50));
-            GUILayout.TextArea(LethalMenu.debugMessage2, GUILayout.Height(50));
+            if (GUILayout.Button("Clear Debug Message")) Settings.debugMessage = "";
+            GUILayout.TextArea(Settings.debugMessage, GUILayout.Height(50));
 
             UI.Button("LookAt Closest Item", () =>
             {
@@ -68,6 +65,15 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Debug NetworkObjectReferences");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                foreach (var k in NetworkManager.Singleton.SpawnManager.SpawnedObjects) Debug.Log($"Name: {k.Value.gameObject.name} ID: {k.Key}");
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Goto Not Spawned");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
@@ -84,8 +90,7 @@ namespace LethalMenu.Menu.Tab
                 foreach (RaycastHit hit in CameraManager.ActiveCamera.transform.SphereCastForward())
                 {
                     Collider collider = hit.collider;
-
-                    LethalMenu.debugMessage += "Hit: " + collider.name + " =>" + collider.gameObject.name + "\n";
+                    Settings.debugMessage = ("Hit: " + collider.name + " =>" + collider.gameObject.name + "\n");
                 }
             }
             GUILayout.EndHorizontal();
@@ -115,7 +120,7 @@ namespace LethalMenu.Menu.Tab
 
             LeaderboardUpdate? nullable = await leaderboardAsync.Value.ReplaceScore(int.MaxValue);
 
-            LethalMenu.debugMessage = nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank;
+            Settings.debugMessage = (nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank);
         }
     }
 }

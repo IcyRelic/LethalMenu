@@ -24,6 +24,7 @@ namespace LethalMenu.Menu.Tab
             
             UI.Hack(Hack.ToggleShipHorn, "TrollTab.ShipHorn");
             UI.Hack(Hack.ToggleCarHorn, "TrollTab.CarHorn");
+            UI.Hack(Hack.ToggleTerminalSound, "TrollTab.TerminalSound");
             UI.Hack(Hack.ToggleShipLights, "TrollTab.ShipLights");
             UI.Hack(Hack.ToggleFactoryLights, ["TrollTab.FactoryLights","General.HostTag"]);
             UI.Hack(Hack.FlickerLights, ["TrollTab.FlickerFactoryLights", "General.HostTag"]);
@@ -41,7 +42,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportAllItems, "TrollTab.TeleportAllItems");
             UI.Hack(Hack.TeleportOneItem, "TrollTab.TeleportOneItem");
             UI.Hack(Hack.EjectEveryone, ["TrollTab.EjectEveryone", "General.HostTag"]);
-            UI.Hack(Hack.UnlockAllDoors, "TrollTab.UnlockAllDoors");
+            UI.Hack(Hack.DeleteTerminal, "TrollTab.DeleteTerminal");
 
             GUILayout.EndScrollView();
         }

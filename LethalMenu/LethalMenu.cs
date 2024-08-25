@@ -8,9 +8,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.IO;
 using UnityEngine.Rendering;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 using LethalMenu.Themes;
 
@@ -38,13 +38,10 @@ namespace LethalMenu
         public static PlayerControllerB localPlayer;
         public static VehicleController vehicle;
         public static Volume volume;
-        public List<MenuUtil.LMUserList> LMUsers { get; set; } = new List<MenuUtil.LMUserList>();
+        public static PatcherTool ZapGun;
         public static int selectedPlayer = -1;
         public int fps;
-
-
-        public static string debugMessage = "";
-        public static string debugMessage2 = "";
+        public List<MenuUtil.LMUserList> LMUsers { get; set; } = [];
 
 
         private Harmony harmony;
@@ -68,19 +65,18 @@ namespace LethalMenu
                 Localization.Initialize();
                 Theme.Initialize();
                 LoadCheats();
-                DoPatching();
+                HarmonyPatching();
                 MenuUtil.RunLMUser();
                 this.StartCoroutine(this.CollectObjects());
                 this.StartCoroutine(this.FPSCounter());
             }
-            catch
-            (Exception e)
+            catch (Exception e)
             {
-                debugMessage = e.Message + "\n" + e.StackTrace;
+                Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
             }
         }
 
-        private void DoPatching()
+        private void HarmonyPatching()
         {
             harmony = new Harmony("LethalMenu");
             Harmony.DEBUG = false;
@@ -100,13 +96,10 @@ namespace LethalMenu
                 }
                 Settings.Config.SaveDefaultConfig();
                 Settings.Config.LoadConfig();
-
-
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
-                Debug.LogException(e);
+                Settings.debugMessage = (e.Message);
             }
         }
 
@@ -118,7 +111,7 @@ namespace LethalMenu
             }
             catch (Exception e)
             {
-                debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
@@ -137,7 +130,7 @@ namespace LethalMenu
             }
             catch (Exception e)
             {
-                debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
         
@@ -156,8 +149,9 @@ namespace LethalMenu
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin!";
+                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin | Discord.gg/HzxykGKA6P |";
                     LethalMenuTitle += Settings.b_FPSCounter ? $" FPS: {fps}" : "";
+                    if (Settings.b_Panic) LethalMenuTitle = "";
                     VisualUtil.DrawString(new Vector2(5f, 2f), LethalMenuTitle, Settings.c_primary, centered: false, bold: true, fontSize: 14);
                     if (MenuUtil.resizing)
                     {
@@ -167,8 +161,7 @@ namespace LethalMenu
                     if (Settings.DebugMode)
                     {
                         VisualUtil.DrawString(new Vector2(5f, 20f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, 10);
-                        VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage), false, false, false, 22);
-                        VisualUtil.DrawString(new Vector2(10f, 125f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage2), false, false, false, 22);
+                        VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(Settings.debugMessage), false, false, false, 22);
                     }
                     if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.OnGui());
                 }
@@ -176,7 +169,7 @@ namespace LethalMenu
             }
             catch (Exception e)
             {
-                debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
@@ -214,8 +207,8 @@ namespace LethalMenu
 
         public void Unload()
         {
+            this.StopAllCoroutines();
             Loader.Unload();
-            this.StopCoroutine(this.CollectObjects());
         }
     }
 }

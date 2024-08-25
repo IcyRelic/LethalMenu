@@ -1,12 +1,13 @@
 v1.4.4 
-- Added Peer 2 peer communication - Lets you see other users using LethalMenu (1.4.4+) 
-- Fixed Kill all enemy (Host Only)
-- Fixed Enemy killing (Host only)
-- Fixed Teleport all enemies 
-- Removed drop all player items - I can't fix the bugs with it
-- Changed Never Lose Scrap to Scrap Never Scraps and fixed it being on 24/7 even when disabled
+- Added Peer 2 Peer Communication - Adds [LethalMenu {version}] before their names in players tab (1.4.4+) 
+- Added New Enemies To Cham Toggles 
+- Added Grab Objects Before Game - You can pick up items
+- Added Toggle All For Displays - Added a toggle to enable and disable all display options
+- Added Toggle Terminal Sound - Spam the terminal sound
+- Added Discord Link to Watermark 
 - Added FPS Counter - Displays your FPS
 - Added Vehicle Godmode - Cruiser doesn't take damage
+<<<<<<< Updated upstream
 - Fixed Themes so they now save
 - Added Color Customization to info display
 - Fixed First Setup Manager - The buttons were overlapping themselves
@@ -14,6 +15,42 @@ v1.4.4
 - Removed ThemeUtil - Replaced it with better Theme loading
 - Added Hack Highlight
 
+=======
+- Added Hack Highlight - Hacks are highlighted
+- Added Hack Highlight Customization - Set the color of the highlighted hacks 
+- Added Transmitt - You can send messages as the signal transmitter
+- Added Message Prefixes - [System], [Server], [Broadcast] - You can send messages in chat as these prefixes like [Prefix] {message}
+- Added Message as other players 
+- Added Suit Manager - View all suits with buy all and wear on buy
+- Added Unlock All Suits - Unlocks all suits
+- Added Wear On Buy to suit manager - Buys the suit and wears 
+- Added Eggs Never Explode - Easter Eggs never explode when you throw them
+- Added Force Bleed - Force others players to bleed 
+- Added Unlimited Zap Gun - You can shock forever
+- Added Delete Terminal - Teleports terminal to -1000, -1000, -1000
+- Added Reset Ship (Host Only) - Resets everything about the ship
+- Added BushWolf, RadMach, and Cave Dweller to lure
+- Added Panic - Disables all hacks and hides the watermark
+- Added Copy Lobby ID - Copy a lobby id (Its just the hosts steam id)
+- Added Join Lobby - Join using the lobby id
+- Added Color Customization To Info Display - It changes based on your c_primary color
+- Fixed Themes - They now save in settings and load properly 
+- Fixed Never Lose Scrap - I forgot to add the check for the hack being enabled but its fixed now
+- Fixed First Setup Manager - The buttons were overlapping themselves from a style
+- Fixed Spike Roof Trap Chams - They had to be converted to game objects -- Thanks IcyRelic
+- Fixed No Fog - Experimentation used a volume fog and its now included 
+- Fixed Player ESP Error 
+- Fixed Unlimited Presents - It doesn't make it impossible to drop the present now
+- Fixed SpawnScrap Error - Added a check for spawnEnemiesAndScrap
+- Fixed Kill all enemy (Host Only) - By fixing Enemy killing it fixed this aswell
+- Fixed Enemy killing (Host Only) - Zeekers added a candie bool which can only be changed on host
+- Fixed Teleport all enemies 
+- Changed ThemeUtil - It is now just called Theme, way less messy, and better theme loading
+- Changed Shop Lifter - It has much better code and now makes crusier free -- Thanks IcyRelic
+- Changed Item ESP - Made it less messy
+- Changed Info Display - Added a method to make it less messy
+- Removed Drop All Player Items - I can't fix the syncing issue
+>>>>>>> Stashed changes
 
 v1.4.3
 - Added Super Knife - Instant kill with knife

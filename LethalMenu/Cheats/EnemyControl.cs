@@ -22,10 +22,8 @@ namespace LethalMenu.Cheats
         private static bool NoClipEnabled = false;
         private const float TeleportDoorCooldown = 2.5f;
         private const float DoorInteractionCooldown = 0.7f;
-        private float DoorCooldownRemaining  = 0.0f;
+        private float DoorCooldownRemaining = 0.0f;
         private float TeleportCooldownRemaining = 0.0f;
-
-        private static readonly IController DefaultEnemyController = new DefaultEnemyController();
 
         private static Dictionary<Type, IController> EnemyControllers { get; } = new() {
             { typeof(CentipedeAI), new CentipedeController() },
@@ -66,7 +64,7 @@ namespace LethalMenu.Cheats
 
             mouse = ControllerInstance.AddComponent<MouseInput>();
             movement = ControllerInstance.AddComponent<AIMovement>();
-            
+
             movement.Init();
             movement.CalibrateCollision(enemy);
             movement.CharacterSprintSpeed = 5.0f;
@@ -80,18 +78,13 @@ namespace LethalMenu.Cheats
         {
             if (Hack.EnemyControl.IsEnabled() || enemy is null) return;
             Hack.FreeCam.SetToggle(false);
-            if(enemy?.agent is not null)
+            if (enemy?.agent is not null)
             {
                 enemy.agent.updatePosition = true;
                 enemy.agent.updateRotation = true;
                 enemy.agent.isStopped = false;
                 UpdateEnemyPosition();
                 enemy.agent.Warp(enemy.transform.position);
-            }
-
-            if (EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
-            {
-                controller.OnReleaseControl(enemy);
             }
 
             IsAIControlled = false;
@@ -105,15 +98,12 @@ namespace LethalMenu.Cheats
         public override void Update()
         {
             StopControl();
-            if(!Hack.EnemyControl.IsEnabled()) return;
-            if(enemy == null) return;            
-            if(!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
+            if (!Hack.EnemyControl.IsEnabled()) return;
+            if (enemy == null) return;
+            if (!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
             if (Freecam.camera == null) return;
 
             if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
-            {
-                controller = GetControllerForEnemy(enemy);
-            }
 
             if (controller == null)
             {
@@ -126,8 +116,13 @@ namespace LethalMenu.Cheats
                 return;
             }
 
+            if (!EnemyControllers.ContainsKey(enemy.GetType()))
+            {
+                StopControl();
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"No Controller for enemy :C");
+            }
 
-            if (!(bool) enemy.agent) return;
+            if (!(bool)enemy.agent) return;
 
             UpdateCooldowns();
 
@@ -156,11 +151,10 @@ namespace LethalMenu.Cheats
             if (controller.IsAbleToRotate(enemy)) UpdateEnemyRotation();
 
             UpdateEnemyPosition();
-            controller.OnMovement(enemy, movement.IsMoving, movement.IsSprinting);            
+            controller.OnMovement(enemy, movement.IsMoving, movement.IsSprinting);
         }
 
-        private static IController GetControllerForEnemy(EnemyAI enemy) => EnemyControllers.TryGetValue(enemy.GetType(), out IController controller) ? controller : DefaultEnemyController;
-
+        private static IController GetControllerForEnemy(EnemyAI enemy) => enemy != null && EnemyControllers.TryGetValue(enemy.GetType(), out var controller) ? controller : null;
         private void UpdateCooldowns()
         {
             DoorCooldownRemaining = Mathf.Clamp(
@@ -195,7 +189,7 @@ namespace LethalMenu.Cheats
 
         private static void UpdateEnemyRotation()
         {
-            if(movement == null) return;
+            if (movement == null) return;
             movement.transform.rotation = mouse.transform.rotation;
         }
 
@@ -206,10 +200,9 @@ namespace LethalMenu.Cheats
             if (Mouse.current.rightButton.isPressed) OnSecondarySkillHold();
             if (Mouse.current.rightButton.wasReleasedThisFrame) ReleaseSecondarySkill();
 
- 
-            if(Keyboard.current.f9Key.wasPressedThisFrame) ToggleAIControl();
-            if(Keyboard.current.f10Key.wasPressedThisFrame) ToggleNoClip();
-            if(Keyboard.current.f11Key.wasPressedThisFrame) Hack.EnemyControl.SetToggle(false);
+            if (Keyboard.current.f9Key.wasPressedThisFrame) ToggleAIControl();
+            if (Keyboard.current.f10Key.wasPressedThisFrame) ToggleNoClip();
+            if (Keyboard.current.f11Key.wasPressedThisFrame) Hack.EnemyControl.SetToggle(false);
             if (Keyboard.current.f12Key.wasPressedThisFrame)
             {
                 Hack.EnemyControl.SetToggle(false);
@@ -229,7 +222,7 @@ namespace LethalMenu.Cheats
             SetAIControl(IsAIControlled);
             //this.SendPossessionNotifcation($"AI Control: {(this.IsAIControlled ? "Enabled" : "Disabled")}");
         }
-        
+
         private static void SetAIControl(bool enableAI)
         {
             if (movement is null || enemy is null || enemy.agent is null) return;
@@ -278,7 +271,7 @@ namespace LethalMenu.Cheats
                 return;
             }
         }
-        
+
         public void OpenDoorAsEnemy(DoorLock door)
         {
             if (door.Reflect().GetValue<bool>("isDoorOpened")) return;

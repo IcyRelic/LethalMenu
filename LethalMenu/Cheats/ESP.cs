@@ -40,7 +40,7 @@ namespace LethalMenu.Cheats
             }
             catch (Exception e)
             {
-                LethalMenu.debugMessage = e.Message + "\n" + e.StackTrace;
+                Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
             }
         }
 
@@ -69,13 +69,13 @@ namespace LethalMenu.Cheats
         {
             DisplayChams(LethalMenu.items, _ => Settings.c_chams);
             DisplayChams(LethalMenu.landmines, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.turrets.ConvertAll(t => t.gameObject.transform.parent.gameObject), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.turrets.ConvertAll(t => t?.gameObject?.transform?.parent?.gameObject).Where(t => t != null), _ => Settings.c_chams);
             DisplayChams(LethalMenu.players.Where(p => p.playerClientId != LethalMenu.localPlayer.playerClientId), _ => Settings.c_chams);
             DisplayChams(LethalMenu.enemies, _ => Settings.c_chams);
             DisplayChams(LethalMenu.steamValves, _ => Settings.c_chams);
             DisplayChams(LethalMenu.bigDoors, _ => Settings.c_chams);
             DisplayChams(LethalMenu.doorLocks, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.spikeRoofTraps.ConvertAll(t => t.gameObject.transform.parent.gameObject), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.spikeRoofTraps.ConvertAll(s => s?.gameObject?.transform?.parent?.gameObject).Where(s => s != null), _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
         }
@@ -148,7 +148,7 @@ namespace LethalMenu.Cheats
                 LethalMenu.players.Where(p => p != null && !p.isPlayerDead && !p.IsLocalPlayer && !p.disconnectedMidGame && p.playerClientId != LethalMenu.localPlayer.playerClientId),
                 player =>
                 {
-                    return $"{(Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_HPDisplay ? $"[HP:{player.health}] " : "")}{player.playerUsername}";
+                    return $"{(Settings.b_VCDisplay && player.voicePlayerState != null && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_HPDisplay ? $"[HP: {player.health}] " : "")}{(player.playerUsername ?? "Unknown")}";
                 },
                 player => Settings.c_playerESP
             );
@@ -166,27 +166,19 @@ namespace LethalMenu.Cheats
         private void DisplayScrap()
         {
             DisplayObjects(
-                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null),
+                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated),
                 item =>
                 {
-                    if (item is GiftBoxItem giftBox && giftBox.Reflect().GetValue<Item>("objectInPresentItem") is Item objectInPresentItem && giftBox.Reflect().GetValue<int>("objectInPresentValue") is int objectInPresentValue)
-                    {
-                        return $"{item.itemProperties.itemName} ({item.scrapValue}) - {objectInPresentItem.itemName} ({objectInPresentValue})";
-                    }
-                    if (item is RagdollGrabbableObject)
-                    {
-                        RagdollGrabbableObject body = item as RagdollGrabbableObject;
-                        PlayerControllerB player = StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId];
-                        return player.playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
-                    }
-                    return item.itemProperties.itemName + $" ({item.scrapValue}) ";
+                    if (item is GiftBoxItem giftBox && giftBox.Reflect().GetValue<Item>("objectInPresentItem") is Item objectInPresentItem && giftBox.Reflect().GetValue<int>("objectInPresentValue") is int objectInPresentValue) return $"{item.itemProperties.itemName} ({item.scrapValue}) - {objectInPresentItem.itemName} ({objectInPresentValue})";
+                    if (item is RagdollGrabbableObject body) return StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId].playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
+                    return ($"{item.itemProperties.itemName} ({item.scrapValue})");
                 },
                 item =>
                 {
                     if (!Settings.b_useScrapTiers) return Settings.c_objectESP;
                     if (item is RagdollGrabbableObject) return Settings.c_deadPlayer;
-                    int index = Array.FindLastIndex<int>(Settings.i_scrapValueThresholds, x => x <= item.scrapValue);
-                    return index > -1 ? Settings.c_scrapValueColors[index] : Settings.c_objectESP;
+                    int i = Array.FindLastIndex<int>(Settings.i_scrapValueThresholds, x => x <= item.scrapValue);
+                    return i > -1 ? Settings.c_scrapValueColors[i] : Settings.c_objectESP;
                 }
             );
         }

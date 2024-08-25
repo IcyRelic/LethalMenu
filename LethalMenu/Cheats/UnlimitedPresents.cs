@@ -1,22 +1,34 @@
 using HarmonyLib;
-using GameNetcodeStuff;
-using System.Reflection;
-using LethalMenu.Util;
 using UnityEngine;
-using System.Linq;
+using LethalMenu.Util;
+using UnityEngine.InputSystem;
+using System.Reflection;
+using System;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     [HarmonyPatch(typeof(GiftBoxItem), nameof(GiftBoxItem.Start))]
     [HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.DestroyObjectInHand))]
     internal class UnlimitedPresents : Cheat
     {
         private static bool stuckpresent = false;
 
-        [HarmonyPrefix]
-        public static bool PlayerDiscardHeldObject(GrabbableObject __instance)
+        public override void Update()
         {
-            if (Hack.UnlimitedPresents.IsEnabled() && __instance.GetType() == typeof(GiftBoxItem))
+            GiftBoxItem __instance = new();
+            if (Hack.UnlimitedPresents.IsEnabled() && LethalMenu.localPlayer.currentlyHeldObjectServer is GiftBoxItem && stuckpresent && Keyboard.current.gKey.isPressed)
+            {
+                Hack.DeleteHeldItem.Execute();
+                Hack.DropAllItems.Execute();
+                stuckpresent = false;
+            }
+        }
+
+        [HarmonyPrefix]
+        public static bool DestroyObjectInHand()
+        {
+            if (Hack.UnlimitedPresents.IsEnabled() && LethalMenu.localPlayer.currentlyHeldObjectServer is GiftBoxItem)
             {
                 stuckpresent = true;
                 return false;
@@ -24,19 +36,10 @@ namespace LethalMenu.Cheats
             return true;
         }
 
-
-        [HarmonyPrefix]
-        public static void Prefix(GiftBoxItem __instance)
+        [HarmonyPostfix]
+        public static void Start(GiftBoxItem __instance)
         {
-            if (Hack.UnlimitedPresents.IsEnabled() && __instance.GetType() == typeof(GiftBoxItem))
-            {
-                FieldInfo field = typeof(GiftBoxItem).GetField("hasUsedGift", BindingFlags.NonPublic | BindingFlags.Instance);
-                if (field != null && stuckpresent == true)
-                {
-                    field.SetValue(__instance, false);
-                }
-            }
-
+            if (Hack.UnlimitedPresents.IsEnabled() && LethalMenu.localPlayer.currentlyHeldObjectServer is GiftBoxItem && stuckpresent) __instance.Reflect().SetValue("hasUsedGift", false);
         }
     }
 }

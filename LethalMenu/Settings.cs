@@ -14,6 +14,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using LethalMenu.Themes;
+using Steamworks;
 
 namespace LethalMenu
 {
@@ -108,6 +109,8 @@ namespace LethalMenu
         public static bool b_HackHighlight = false;
         public static bool b_FPSCounter = false; 
         public static bool b_DisplayLMUsers = false;
+        public static bool b_WearBuy = false;
+        public static bool b_Panic = false;
 
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
 
@@ -134,6 +137,8 @@ namespace LethalMenu
         public static int i_slots = 4;
         public static int[] i_scrapValueThresholds = new int[] { 30,50,75,100 };
 
+        public static SteamId s_lobbyid;
+
         public static RGBAColor[] c_scrapValueColors = new RGBAColor[] 
         { 
             new RGBAColor(0.5f, 0.5f, 0.5f, 1f),
@@ -143,7 +148,9 @@ namespace LethalMenu
         };
 
         public static CursorLockMode clm_lastCursorState = Cursor.lockState;
-        
+
+        public static string debugMessage = "";
+
         internal class Changelog
         {
             public static List<string> changes;
@@ -163,8 +170,9 @@ namespace LethalMenu
 
         internal class Config
         {
-            private static string config = "lethelmenu.config.json";
-            private static string defaultConf = "lethalmenu.default.config.json";
+            public static string config = "lethelmenu.config.json";
+            public static string defaultConf = "lethalmenu.default.config.json";
+
             public static void CreateConfigIfNotExists()
             {
                 if (HasConfig()) return;
@@ -175,6 +183,7 @@ namespace LethalMenu
             {
                 SaveConfig(defaultConf);
             }
+
             public static bool HasConfig()
             {
                 return config != null && File.Exists(config);

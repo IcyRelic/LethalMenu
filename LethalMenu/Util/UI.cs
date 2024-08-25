@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UnityEditor;
 using UnityEngine;
-using System.IO;
 
 namespace LethalMenu.Util
 {
@@ -30,12 +28,12 @@ namespace LethalMenu.Util
         }
     }
 
+
     public class UIOption
     {
         public string label;
         public object value;
         public Action action;
-
 
         public UIOption(string label, object value)
         {
@@ -45,7 +43,7 @@ namespace LethalMenu.Util
 
         public UIOption(string label, Action action)
         {
-            this.label = label;
+            this.label = Localization.Localize(label);
             this.action = action;
         }
 
@@ -56,7 +54,7 @@ namespace LethalMenu.Util
 
         public void Draw()
         {
-            if (GUILayout.Button(label)) action.Invoke();
+            if (GUILayout.Button(label)) action?.Invoke();
         }
     }
 
@@ -103,8 +101,10 @@ namespace LethalMenu.Util
 
         public static void Hack(Hack hack, string[] header, params object[] param)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
+            GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
             if (hack.Button()) hack.Execute(param);
             GUILayout.EndHorizontal();
@@ -189,6 +189,7 @@ namespace LethalMenu.Util
             buttons.ToList().ForEach(btn => btn.Draw());
             GUILayout.EndHorizontal();
         }
+
         public static void TextboxAction(string label, ref string value, string regex, int length, params UIButton[] buttons)
         {
             GUILayout.BeginHorizontal();
@@ -284,21 +285,6 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void IndexSelect(string header, ref int index, params string[] options)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
-            GUILayout.FlexibleSpace();
-
-            GUILayout.Label(Localization.Localize(options[index]));
-
-            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
-
-
-            GUILayout.EndHorizontal();
-        }
-
         public static void Select(string header, ref int index, params UIOption[] options)
         {
             GUILayout.BeginHorizontal();
@@ -307,9 +293,27 @@ namespace LethalMenu.Util
 
             options[index].Draw();
 
-            if (GUILayout.Button("-")) index = Mathf.Clamp(index - 1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = Mathf.Clamp(index + 1, 0, options.Length - 1);
+            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
 
+
+            GUILayout.EndHorizontal();
+        }
+
+
+        public static void Select(string header, ref int index, ref string value, string regex, int length, params UIOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+
+            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.i_textboxWidth));
+            value = Regex.Replace(value, regex, "");
+
+            options[index].Draw();
+
+            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
 
             GUILayout.EndHorizontal();
         }

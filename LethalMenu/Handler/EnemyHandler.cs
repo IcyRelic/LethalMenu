@@ -162,9 +162,30 @@ namespace LethalMenu.Handler
             SandWormAI worm = enemy as SandWormAI;
             worm.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
+
+        private void HandleLureBushWolf()
+        {
+            BushWolfEnemy bushwolf = enemy as BushWolfEnemy;
+            bushwolf.Reflect().SetValue("isHiding", false);
+            bushwolf.Reflect().SetValue("staringAtPlayer", true);
+            bushwolf.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        }
+
+        private void HandleLureRadMech()
+        {
+            RadMechAI radmach = enemy as RadMechAI;
+            radmach.SetChargingForwardClientRpc(true);
+            radmach.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        }
+
+        private void HandleLureCaveDweller()
+        {
+            CaveDwellerAI cavedweller = enemy as CaveDwellerAI;
+            cavedweller.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        }
+
         private void HandleLureEnemyByType()
         {
-
             switch (enemy)
             {
                 case CrawlerAI:
@@ -211,6 +232,15 @@ namespace LethalMenu.Handler
                     break;
                 case SandWormAI:
                     HandleLureSandWorm();
+                    break;
+                case BushWolfEnemy:
+                    HandleLureBushWolf();
+                    break;
+                case RadMechAI:
+                    HandleLureRadMech();
+                    break;
+                case CaveDwellerAI:
+                    HandleLureCaveDweller();
                     break;
                 default:
                     enemy.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
@@ -280,7 +310,8 @@ namespace LethalMenu.Handler
                 typeof(CentipedeAI),
                 typeof(BushWolfEnemy),
                 typeof(ClaySurgeonAI),
-                typeof(RadMechAI)
+                typeof(RadMechAI),
+                typeof(CaveDwellerAI)
             };
                 
             return types.Contains(enemy.GetType());
@@ -312,6 +343,7 @@ namespace LethalMenu.Handler
                            || enemy.GetType() == typeof(ButlerBeesEnemyAI)
                            || enemy.GetType() == typeof(RadMechAI)
                            || enemy.GetType() == typeof(ClaySurgeonAI)
+                           || enemy.GetType() == typeof(CaveDwellerAI)
                            ) forceDespawn = true;
 
             enemy.enemyType.canDie = true;

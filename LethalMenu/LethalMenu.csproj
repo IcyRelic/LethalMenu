@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <ErrorReport>none</ErrorReport>
     <LangVersion>12.0</LangVersion>
-  </PropertyGroup>
+    </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
@@ -75,6 +75,9 @@
     </Reference>
     <Reference Include="UnityEngine.AnimationModule">
       <HintPath>Resources\BaseGame\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>Resources\BaseGame\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
       <HintPath>Resources\BaseGame\UnityEngine.AssetBundleModule.dll</HintPath>

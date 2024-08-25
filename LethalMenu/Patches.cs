@@ -1,9 +1,16 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMenu.Cheats;
+using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
+using Steamworks;
 using System.Collections.Generic;
 using System.Reflection.Emit;
+using System.Text;
+using UnityEngine;
+using UnityEngine.InputSystem.HID;
+using UnityEngine.Rendering;
+using Debug = UnityEngine.Debug;
 
 
 namespace LethalMenu
@@ -11,10 +18,11 @@ namespace LethalMenu
     [HarmonyPatch]
     internal class Patches
     {
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
         public static void Disconnect(GameNetworkManager __instance)
         {
+            ServerTab.ClearPlayerOptions();
             SpectatePlayer.Reset();
             Freecam.Reset();
             LethalMenu.Instance.LMUsers.Clear();
@@ -33,6 +41,13 @@ namespace LethalMenu
         public static void OnClientConnect(StartOfRound __instance)
         {
             MenuUtil.RunLMUser();
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GameNetworkManager), "StartClient")]
+        public static void StartClient(SteamId id)
+        {
+            Settings.s_lobbyid = id;
         }
 
         [HarmonyPrefix]

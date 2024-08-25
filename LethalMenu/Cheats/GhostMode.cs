@@ -4,21 +4,17 @@ using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.PlayerIsTargetable))]
     internal class GhostMode : Cheat
     {
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(EnemyAI), nameof(EnemyAI.PlayerIsTargetable))]
-        public static bool PlayerIsTargetablePrefix(ref bool __result, EnemyAI __instance, PlayerControllerB playerScript, bool cannotBeInShip = false, bool overrideInsideFactoryCheck = false)
+        public static bool Prefix(PlayerControllerB playerScript, bool cannotBeInShip = false, bool overrideInsideFactoryCheck = false)
         {
-            if (LethalMenu.localPlayer != null && LethalMenu.localPlayer.playerClientId == playerScript.playerClientId && Hack.GhostMode.IsEnabled())
+            if (Hack.GhostMode.IsEnabled() && LethalMenu.localPlayer != null && LethalMenu.localPlayer.playerClientId == playerScript.playerClientId)
             {
-                __result = false;
                 return false;
             }
             return true;
         }
-
-
     }
 }

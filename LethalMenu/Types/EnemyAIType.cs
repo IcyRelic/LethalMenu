@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+
 
 namespace LethalMenu.Types
 {
@@ -35,7 +32,8 @@ namespace LethalMenu.Types
         RadMech,
         FlowerSnake,
         BushWolf,
-        ClaySurgeon
+        ClaySurgeon,
+        CaveDweller
     }
 
     public static class EnemyAITypeExtensions
@@ -68,7 +66,8 @@ namespace LethalMenu.Types
             { EnemyAIType.RadMech, true },
             { EnemyAIType.FlowerSnake, true },
             { EnemyAIType.BushWolf, true },
-            { EnemyAIType.ClaySurgeon, true }
+            { EnemyAIType.ClaySurgeon, true },
+            { EnemyAIType.CaveDweller, true }
         };
 
         public static void ToggleESP(this EnemyAIType type)

@@ -6,7 +6,7 @@ namespace LethalMenu.Menu.Tab
     internal class GeneralTab : MenuTab
     {
         Vector2 scrollPos;
-        private Texture2D avatar;
+        Texture2D avatar;
 
         public GeneralTab() : base("GeneralTab.Title")
         {
@@ -33,11 +33,9 @@ namespace LethalMenu.Menu.Tab
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            string intoText = "Thank you for using Lethal Menu.\n\nIf you have any suggestions please leave a comment on the forum post.\nAny bugs you find please provide some steps to recreate the issue and leave a comment.";
-
             GUILayout.BeginHorizontal();
             GUILayout.Label(avatar, GUILayout.Width(100), GUILayout.Height(100));
-            GUILayout.Label(intoText);
+            GUILayout.Label("Thank you for using Lethal Menu.\n\nIf you have any suggestions please leave a comment on the forum post.\nAny bugs you find please provide some steps to recreate the issue and leave a comment.");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(20);

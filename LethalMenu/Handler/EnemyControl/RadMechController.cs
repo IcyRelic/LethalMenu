@@ -2,9 +2,9 @@ namespace LethalMenu.Handler.EnemyControl
 {
     internal class RadMechController : IEnemyController<RadMechAI>
     {
-        public string GetPrimarySkillName(RadMechAI _) => "Shoot Gun";
+        public string GetPrimarySkillName(RadMechAI _) => "";
 
-        public string GetSecondarySkillName(RadMechAI _) => "Aim Gun";
+        public string GetSecondarySkillName(RadMechAI _) => "";
 
         public bool CanUseEntranceDoors(RadMechAI _) => false;
 

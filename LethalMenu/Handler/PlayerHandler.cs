@@ -1,6 +1,8 @@
 ﻿using GameNetcodeStuff;
 using System.Linq;
 using UnityEngine;
+using LethalMenu.Util;
+
 namespace LethalMenu.Handler
 {
     public class PlayerHandler
@@ -87,6 +89,32 @@ namespace LethalMenu.Handler
         {
             Landmine mine = LethalMenu.landmines.OrderBy(m => Vector3.Distance(m.transform.position, player.transform.position)).FirstOrDefault();
             mine.ExplodeMineServerRpc();
+        }
+
+        public void ForceBleed()
+        {
+            if (Hack.ForceBleed.IsEnabled())
+            {
+                player.hasBeenCriticallyInjured = false;
+                player.criticallyInjured = false;
+                player.playerBodyAnimator.SetBool("Limp", false);
+                if (LethalMenu.localPlayer.IsHost)
+                {
+                    player.MakeCriticallyInjuredServerRpc();
+                    return;
+                }
+                player.MakeCriticallyInjured(true);
+            }
+            else
+            {
+                player.hasBeenCriticallyInjured = false;
+                if (LethalMenu.localPlayer.IsHost)
+                {
+                    player.HealServerRpc();
+                    return;
+                }
+                player.MakeCriticallyInjured(false);
+            }
         }
 
         public void LureAllEnemies() => LethalMenu.enemies.FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().TargetPlayer(player));

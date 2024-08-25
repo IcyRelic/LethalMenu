@@ -9,8 +9,7 @@ namespace LethalMenu.Cheats
     {
         public override void Update()
         {
-            if(!Hack.GodMode.IsEnabled()) return;
-            if (LethalMenu.localPlayer == null) return;
+            if(!Hack.GodMode.IsEnabled() || LethalMenu.localPlayer == null) return;
             LethalMenu.localPlayer.health = 100;
         }
 
@@ -30,7 +29,7 @@ namespace LethalMenu.Cheats
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(FlowermanAI), nameof(FlowermanAI.KillPlayerAnimationServerRpc))]
-        public static bool PrefixFlowermanKill(int playerObjectId)
+        public static bool PrefixFlowerman(int playerObjectId)
         {
             if (LethalMenu.localPlayer == null || playerObjectId != (int) LethalMenu.localPlayer.playerClientId) return true;
 
@@ -39,7 +38,7 @@ namespace LethalMenu.Cheats
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(ForestGiantAI), nameof(ForestGiantAI.GrabPlayerServerRpc))]
-        public static bool PrefixGiantKill(int playerId)
+        public static bool PrefixGiant(int playerId)
         {
             if (LethalMenu.localPlayer == null || playerId != (int)LethalMenu.localPlayer.playerClientId) return true;
 
@@ -48,7 +47,7 @@ namespace LethalMenu.Cheats
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(JesterAI), nameof(JesterAI.KillPlayerServerRpc))]
-        public static bool PrefixJesterKill(int playerId)
+        public static bool PrefixJester(int playerId)
         {
             if (LethalMenu.localPlayer == null || playerId != (int)LethalMenu.localPlayer.playerClientId) return true;
 
@@ -57,7 +56,7 @@ namespace LethalMenu.Cheats
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MaskedPlayerEnemy), nameof(MaskedPlayerEnemy.KillPlayerAnimationServerRpc))]
-        public static bool PrefixMaskedPlayerKill(int playerObjectId)
+        public static bool PrefixMaskedPlayer(int playerObjectId)
         {
             if (LethalMenu.localPlayer == null || playerObjectId != (int)LethalMenu.localPlayer.playerClientId) return true;
 
@@ -66,7 +65,7 @@ namespace LethalMenu.Cheats
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(MouthDogAI), nameof(MouthDogAI.OnCollideWithPlayer))]
-        public static bool PrefixDogKill(MouthDogAI __instance, Collider other)
+        public static bool PrefixDog(MouthDogAI __instance, Collider other)
         {
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
@@ -78,7 +77,7 @@ namespace LethalMenu.Cheats
         
         [HarmonyPrefix]
         [HarmonyPatch(typeof(CentipedeAI), nameof(CentipedeAI.OnCollideWithPlayer))]
-        public static bool PrefixCentipedeCling(CentipedeAI __instance, Collider other)
+        public static bool PrefixCentipede(CentipedeAI __instance, Collider other)
         {
             if(other == null) return true;
 
@@ -102,7 +101,18 @@ namespace LethalMenu.Cheats
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(BushWolfEnemy), nameof(BushWolfEnemy.OnCollideWithPlayer))]
-        public static bool PrefixBushWolfEnemyKill(BushWolfEnemy __instance, Collider other)
+        public static bool PrefixBushWolfEnemy(BushWolfEnemy __instance, Collider other)
+        {
+            PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
+
+            if (LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+
+            return !Hack.GodMode.IsEnabled();
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(CaveDwellerAI), nameof(CaveDwellerAI.OnCollideWithPlayer))]
+        public static bool PrefixCaveDwellerAI(CaveDwellerAI __instance, Collider other)
         {
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 

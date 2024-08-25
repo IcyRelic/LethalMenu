@@ -127,6 +127,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportEnemy, "PlayerTab.TeleportAllEnemies", player, LethalMenu.enemies.ToArray());
             UI.Hack(Hack.LureAllEnemies, "PlayerTab.Lure", player);
             UI.Hack(Hack.ExplodeClosestMine, "PlayerTab.ExplodeMine", player);
+            UI.Hack(Hack.ForceBleed, "PlayerTab.ForceBleed", player);
 
             if (player.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
             {

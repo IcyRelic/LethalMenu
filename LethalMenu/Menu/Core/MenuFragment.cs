@@ -12,11 +12,7 @@ namespace LethalMenu.Menu.Core
             AsyncOperation operation = www.SendWebRequest();
             operation.completed += (op) =>
             {
-                if (www.result != UnityWebRequest.Result.Success)
-                {
-                    Debug.LogError($"Failed to load image from {url}: {www.error}");
-                    return;
-                }
+                if (www.result != UnityWebRequest.Result.Success) return;
                 Texture2D texture = DownloadHandlerTexture.GetContent(www);
                 Action?.Invoke(texture);
             };

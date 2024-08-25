@@ -4,6 +4,7 @@ using LethalMenu.Language;
 using LethalMenu.Manager;
 using LethalMenu.Types;
 using LethalMenu.Util;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace LethalMenu
         UnlimitedStamina,
         UnlimitedBattery,
         UnlimitedOxygen,
+        UnlimitedZapGun,
         LootThroughWalls,
         InteractThroughWalls,
         Reach,
@@ -67,8 +69,12 @@ namespace LethalMenu
         UnlimitedPresents,
         VoteShipLeaveEarly,
         VehicleGodMode,
+        EggsNeverExplode,
+        UnlockAllDoors,
+        GrabItemsBeforeGame,
 
         /** Server Tab **/
+        ToggleAllDisplays,
         DisplayBodyCount,
         DisplayEnemyCount,
         DisplayObjectCount,
@@ -84,16 +90,21 @@ namespace LethalMenu
         StartGame,
         SpawnMoreScrap,
         UnlockUnlockable,
+        UnlockUnlockableSuit,
         Shoplifter,
-        ScrapNeverDespawns,
+        NeverLoseScrap,
         ShowOffensiveLobbyNames,
+        JoinLobby,
         Disconnect,
+        Message,
+        ResetShip,
 
         /** Troll Tab **/
         ToggleShipLights,
         ToggleFactoryLights,
         ToggleShipHorn,
         ToggleCarHorn,
+        ToggleTerminalSound,
         ForceBridgeFall,
         ForceSmallBridgeFall,
         BlowUpAllLandmines,
@@ -116,8 +127,8 @@ namespace LethalMenu
         TeleportAllItems,
         TeleportOneItem,
         EjectEveryone,
+        DeleteTerminal,
         OpenShipDoorSpace,
-        UnlockAllDoors,
         BerserkAllTurrets,
 
         /** Visuals Tab **/
@@ -154,6 +165,7 @@ namespace LethalMenu
         SpiderWebPlayer,
         LureAllEnemies,
         ExplodeClosestMine,
+        ForceBleed,
         EnemyControl,
     }
 
@@ -173,11 +185,13 @@ namespace LethalMenu
             Hack.MiniCam,
             Hack.UnlockUnlockable,
             Hack.ModifyScrap,
+            Hack.Message,
             Hack.SpiderWebPlayer,
             Hack.TeleportEnemy,
             Hack.EnemyControl,
             Hack.LureAllEnemies,
             Hack.ExplodeClosestMine,
+            Hack.ForceBleed,
             Hack.SpawnMapObjects,
         };
 
@@ -250,7 +264,7 @@ namespace LethalMenu
             {Hack.HearAllDeadPeople, false},
             {Hack.NoVisor, false},
             {Hack.NoFieldOfDepth, false},
-            {Hack.ScrapNeverDespawns, false},
+            {Hack.NeverLoseScrap, false},
             {Hack.NoFlash, false},
             {Hack.ExtraItemSlots, false},
             {Hack.TeleportWithItems, false},
@@ -263,6 +277,11 @@ namespace LethalMenu
             {Hack.BerserkAllTurrets, false},
             {Hack.BridgeNeverFalls, false},
             {Hack.VehicleGodMode, false},
+            {Hack.EggsNeverExplode, false},
+            {Hack.ForceBleed, false},
+            {Hack.UnlimitedZapGun, false},
+            {Hack.ToggleTerminalSound, false},
+            {Hack.GrabItemsBeforeGame, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -277,6 +296,7 @@ namespace LethalMenu
             {Hack.SaveTeleportPosition, (Action) HackExecutor.SaveTeleportPosition},
             {Hack.ModifyCredits, (Action<int, ActionType>) HackExecutor.ModCredits},
             {Hack.ModifyQuota, (Action<int>) HackExecutor.ModQuota},
+            {Hack.Message, (Action<string, int, int>) HackExecutor.Message},
             {Hack.SpawnMoreScrap, (Action) HackExecutor.SpawnMoreScrap},
             {Hack.EndGame, (Action) HackExecutor.EndGame},
             {Hack.StartGame, (Action) HackExecutor.StartGame},
@@ -301,7 +321,8 @@ namespace LethalMenu
             {Hack.DeathNotify, (Action<PlayerControllerB, CauseOfDeath>) HackExecutor.NotifyDeath},
             {Hack.SpectatePlayer, (Action<PlayerControllerB>) HackExecutor.SpectatePlayer},
             {Hack.MiniCam, (Action<PlayerControllerB>) HackExecutor.MiniCam},
-            {Hack.UnlockUnlockable, (Action<Unlockable>) HackExecutor.UnlockUnlockable},
+            {Hack.UnlockUnlockable, (Action<Unlockable, bool, bool>) HackExecutor.UnlockUnlockable},
+            {Hack.UnlockUnlockableSuit, (Action<Unlockable, bool, bool, bool>) HackExecutor.UnlockUnlockableSuit},
             {Hack.FlickerLights, (Action) HackExecutor.FlickerLights},
             {Hack.FixAllValves, (Action) HackExecutor.FixAllValves},
             {Hack.ModifyScrap, (Action<int, int>) HackExecutor.ModScrap},
@@ -316,16 +337,22 @@ namespace LethalMenu
             {Hack.SpawnTurret, (Action) HackExecutor.SpawnTurret},
             {Hack.SpawnSpikeRoofTrap, (Action) HackExecutor.SpawnSpikeRoofTrap},
             {Hack.ExplodeClosestMine, (Action<PlayerControllerB>) HackExecutor.ExplodeClosestMine},
+            {Hack.ForceBleed, (Action<PlayerControllerB>) HackExecutor.ForceBleed},
             {Hack.SellEverything, (Action) HackExecutor.SellEverything},
             {Hack.TeleportAllItems, (Action) HackExecutor.TeleportAllItems},
             {Hack.TeleportOneItem, (Action) HackExecutor.TeleportOneItem},
             {Hack.EjectEveryone, (Action) HackExecutor.EjectEveryone},
+            {Hack.JoinLobby, (Action<SteamId>) HackExecutor.JoinLobby},
             {Hack.Disconnect, (Action) HackExecutor.Disconnect},
             {Hack.VoteShipLeaveEarly, (Action) HackExecutor.VoteShipLeaveEarly},
             {Hack.UnlockAllDoors, (Action) HackExecutor.UnlockAllDoors},
-            {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
             {Hack.DropAllItems, (Action) HackExecutor.DropAllItems},
             {Hack.BerserkAllTurrets, (Action) HackExecutor.BerserkAllTurrets},
+            {Hack.DeleteTerminal, (Action) HackExecutor.DeleteTerminal},
+            {Hack.ResetShip, (Action) HackExecutor.ResetShip},
+            {Hack.ToggleAllDisplays, (Action) HackExecutor.ToggleAllDisplays},
+            {Hack.ToggleTerminalSound, (Action) HackExecutor.ToggleTerminalSound},
+            {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -390,11 +417,6 @@ namespace LethalMenu
             if (KeyBindIgnore.Contains(hack) || btn == null) return;
             if (KeyBinds.ContainsKey(hack)) KeyBinds[hack] = btn;
             else KeyBinds.Add(hack, btn);
-        }
-
-        public static bool Button(this Hack hack, string text)
-        {
-            return GUILayout.Button(Localization.Localize(text));
         }
 
         public static bool Button(this Hack hack)
@@ -464,6 +486,19 @@ namespace LethalMenu
             Hack.DoorLockESP.Execute();
             Hack.BreakerESP.Execute();
             Hack.SpikeRoofTrapESP.Execute();
+        }
+
+        public static void ToggleAllDisplays()
+        {
+            Hack.DisplayBodyCount.Execute();
+            Hack.DisplayBuyingRate.Execute();
+            Hack.DisplayDeadline.Execute();
+            Hack.DisplayEnemyCount.Execute();
+            Hack.DisplayObjectCount.Execute();
+            Hack.DisplayObjectValue.Execute();
+            Hack.DisplayQuota.Execute();
+            Hack.DisplayShipObjectCount.Execute();
+            Hack.DisplayShipObjectValue.Execute();
         }
 
         public static void UnlockDoor()
@@ -547,10 +582,14 @@ namespace LethalMenu
         public static void ModScrap(int value, int type) => RoundHandler.ModScrap(value, type);
         public static void FlickerLights() => RoundHandler.FlickerLights();
         public static void SpawnMoreScrap() => RoundHandler.SpawnScrap();
-        public static void UnlockUnlockable(Unlockable unlockable) => RoundHandler.BuyUnlockable(unlockable);
+        public static void DeleteTerminal() => RoundHandler.DeleteTerminal();
+        public static void ResetShip() => RoundHandler.ResetShip();
+        public static void UnlockUnlockable(Unlockable unlockable, bool all, bool enabled) => RoundHandler.BuyUnlockable(unlockable, all, enabled);
+        public static void UnlockUnlockableSuit(Unlockable unlockablesuit, bool wearbuy, bool buy, bool sound) => RoundHandler.BuyUnlockableSuit(unlockablesuit, wearbuy, buy, sound);
         public static void EndGame() => RoundHandler.EndGame();
         public static void StartGame() => RoundHandler.StartGame();
         public static void ModQuota(int amt) => RoundHandler.SetQuota(amt);
+        public static void Message(string msg, int type, int id) => RoundHandler.Message(msg, type, id);
         public static void ModCredits(int amt, ActionType type) => RoundHandler.ModCredits(amt, type);
         public static void BreakAllWebs() => RoundHandler.BreakAllWebs();
         public static void SpawnLandmine() => RoundHandler.SpawnMapObject(MapObject.Landmine);
@@ -559,6 +598,7 @@ namespace LethalMenu
         public static void SpawnMapObjects(MapObject type) => RoundHandler.SpawnMapObjects(type);
         public static void SellEverything() => LethalMenu.localPlayer.Handle().PlaceEverythingOnDesk();
         public static void ExplodeClosestMine(PlayerControllerB player) => player.Handle().ExplodeClosestLandmine();
+        public static void ForceBleed(PlayerControllerB player) => player.Handle().ForceBleed();
         public static void LureAllEnemies(PlayerControllerB player) => player.Handle().LureAllEnemies();
         public static void SpiderWebPlayer(PlayerControllerB player) => player.Handle().SpawnSpiderWebs(6);
         public static void SpectatePlayer(PlayerControllerB player) => player.Handle().Spectate();
@@ -581,10 +621,12 @@ namespace LethalMenu
         public static void TeleportAllItems() => RoundHandler.TeleportAllItems();
         public static void TeleportOneItem() => RoundHandler.TeleportOneItem();
         public static void EjectEveryone() => StartOfRound.Instance.ManuallyEjectPlayersServerRpc();
-        public static void Disconnect() => GameNetworkManager.Instance.Disconnect();
+        public static void JoinLobby(SteamId id) => RoundHandler.JoinLobby(id);
+        public static void Disconnect() => RoundHandler.Disconnect();
         public static void VoteShipLeaveEarly() => TimeOfDay.Instance.VoteShipToLeaveEarly();
-        public static void DeleteHeldItem() => LethalMenu.localPlayer.DespawnHeldObject();
         public static void BerserkAllTurrets() => RoundHandler.BerserkAllTurrets();
         public static void DropAllItems() => RoundHandler.DropAllItems();
+        public static void ToggleTerminalSound() => RoundHandler.ToggleTerminalSound();
+        public static void DeleteHeldItem() => RoundHandler.DeleteHeldItem();
     }
 }

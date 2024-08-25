@@ -8,6 +8,9 @@ using Unity.Netcode;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
+using Steamworks;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 
 namespace LethalMenu.Manager
@@ -19,9 +22,6 @@ namespace LethalMenu.Manager
     }
     public class RoundHandler
     {
-
-        
-
         public static void ModCredits(int amount, ActionType type)
         {
             Terminal terminal = GetTerminal();
@@ -41,6 +41,28 @@ namespace LethalMenu.Manager
         {
             Object.FindObjectOfType<TimeOfDay>().profitQuota = amount;
             TimeOfDay.Instance.SyncNewProfitQuotaClientRpc(TimeOfDay.Instance.profitQuota, 0, TimeOfDay.Instance.timesFulfilledQuota);
+        }
+
+        public static void Message(string msg, int type, int id)
+        {
+            if (HUDManager.Instance == null) return;
+            if (type == 4)
+            {
+                if (HUDManager.Instance.lastChatMessage == msg) msg += "\u200B";
+                HUDManager.Instance.AddTextToChatOnServer(msg, id);
+            }
+            if (type == 3 && !Unlockable.SignalTranslator.GetItem().hasBeenUnlockedByPlayer)
+            {
+                BuyUnlockable(Unlockable.SignalTranslator, false, false);
+                HUDManager.Instance.UseSignalTranslatorServerRpc(msg);
+                Unlockable.SignalTranslator.Move(new Vector3(-1000, -1000, -1000), new Vector3(0, 0, 0), true);
+            }
+            else if (type == 3) HUDManager.Instance.UseSignalTranslatorServerRpc(msg);
+            if (type > 2) return;
+            string[] prefixes = { "[System]", "[Server]", "[Broadcast]" };
+            string fmsg = $"{prefixes[type]} {msg}";
+            if (HUDManager.Instance.lastChatMessage == fmsg) fmsg += "\u200B";
+            HUDManager.Instance.AddTextToChatOnServer(fmsg);
         }
 
         public static bool ToggleShipLights()
@@ -87,30 +109,99 @@ namespace LethalMenu.Manager
 
         public static void EndGame()
         {
-            if ((bool)StartOfRound.Instance) StartOfRound.Instance.EndGameServerRpc(0);
+            if ((bool)StartOfRound.Instance) StartOfRound.Instance.EndGameServerRpc(-1);
         }
-
-        public static void BuyUnlockable(Unlockable unlockable)
+        
+        public static void BuyUnlockable(Unlockable unlockable, bool all, bool enabled)
         {
             if (!(bool)StartOfRound.Instance) return;
             unlockable.Buy(GetTerminal().groupCredits);
-            HUDManager.Instance.DisplayTip("Lethal Menu", $"Unlocked Cosmetics: {unlockable}!");
+            if (all)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"Unlocked All Cosmetics!");
+                return;
+            }
+            if (enabled)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"Unlocked Cosmetic: {unlockable}!");
+                return;
+            }
+        }
+
+        public static void BuyUnlockableSuit(Unlockable unlockablesuit, bool wearbuy, bool buy, bool sound)
+        {
+            if (!(bool)StartOfRound.Instance) return;
+            if (buy && !unlockablesuit.GetItem().hasBeenUnlockedByPlayer)
+            {
+                unlockablesuit.Buy(GetTerminal().groupCredits);
+                unlockablesuit.SetLocked(true);
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"Unlocked Suit: {unlockablesuit}!");
+            }
+            if (wearbuy) UnlockableSuit.SwitchSuitForPlayer(LethalMenu.localPlayer, (int)unlockablesuit, sound);
+        }
+
+        public static void DeleteTerminal()
+        {
+            if (!(bool)StartOfRound.Instance) return;
+            Unlockable.Terminal.Move(new Vector3(-1000, -1000, -1000), new Vector3(0, 0, 0), false);
+        }
+
+        public static void ResetShip()
+        {
+            if (!(bool)StartOfRound.Instance) return;
+            if (!StartOfRound.Instance.inShipPhase)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"You must be in orbit!");
+                return;
+            }
+            StartOfRound.Instance.ResetShip();
         }
 
         public static void SpawnScrap()
         {
+            if (!RoundManager.Instance.currentLevel.spawnEnemiesAndScrap) return;
             if ((bool)RoundManager.Instance) RoundManager.Instance.SpawnScrapInLevel();
+        }
+
+        public static async void Panic(bool e) => await RPanic();
+
+        public static async Task RPanic()
+        {
+            float f_chamDistance = Settings.f_chamDistance;
+            bool DebugMode = Settings.DebugMode;
+            Dictionary<Hack, bool> StoredFlags = new Dictionary<Hack, bool>();
+            if (Settings.b_Panic && !StoredFlags.Any())
+            {
+                foreach (Hack hack in Enum.GetValues(typeof(Hack)))
+                {
+                    if (HackExtensions.ToggleFlags.ContainsKey(hack) && !StoredFlags.ContainsKey(hack))
+                    {
+                        StoredFlags[hack] = HackExtensions.ToggleFlags[hack];
+                        hack.SetToggle(false);
+                        Settings.f_chamDistance = float.MaxValue;
+                        Settings.DebugMode = false;
+                    }
+                }
+            }
+            while (true)
+            {
+                if (!Settings.b_Panic && StoredFlags.Any())
+                {
+                    foreach (var k in StoredFlags) HackExtensions.ToggleFlags[k.Key] = k.Value;
+                    Settings.f_chamDistance = f_chamDistance;
+                    Settings.DebugMode = DebugMode;
+                    StoredFlags.Clear();
+                }
+                if (Settings.b_Panic && HackExtensions.ToggleFlags.Where(k => k.Key != Hack.ToggleCursor).Count(k => k.Value) >= 1) Settings.b_Panic = false;
+                await Task.Delay(2500);
+            }
         }
 
         public static void ModScrap(int value, int type)
         {
             if (!(bool)StartOfRound.Instance || !(bool)RoundManager.Instance) return;
-
-            if (type == 0)
-                RoundManager.Instance.scrapAmountMultiplier = value;
-
-            if (type == 1)
-                RoundManager.Instance.scrapValueMultiplier = value;
+            if (type == 0)RoundManager.Instance.scrapAmountMultiplier = value;
+            if (type == 1) RoundManager.Instance.scrapValueMultiplier = value;
         }
         
         public static void ForceTentacleAttack()
@@ -162,14 +253,29 @@ namespace LethalMenu.Manager
             }
         }
 
+        public static void JoinLobby(SteamId id)
+        {
+            GameNetworkManager.Instance.StartClient(id);
+        }
+
+        public static void Disconnect()
+        {
+            GameNetworkManager.Instance.Disconnect();
+        }
+
         public static void DropAllItems()
         {
             Settings.b_DropItems = true;
             if (Settings.b_DropItems)
             {
-                LethalMenu.localPlayer.DropAllHeldItemsServerRpc();
+                LethalMenu.localPlayer.DropAllHeldItemsAndSync();
             }
             Settings.b_DropItems = false;
+        }
+
+        public static void DeleteHeldItem()
+        {
+            LethalMenu.localPlayer.DespawnHeldObject();
         }
 
         public static void ToggleShipHorn()
@@ -239,8 +345,7 @@ namespace LethalMenu.Manager
 
             int num = Random.Range(5, 15);
 
-            Debug.LogError("Spawning " + num + " " + spawnable.prefabToSpawn.name);
-
+            Debug.Log("Spawning " + num + " " + spawnable.prefabToSpawn.name);
 
             for (int i = 0; i < num; i++)
             {
@@ -250,6 +355,11 @@ namespace LethalMenu.Manager
                 gameObject.transform.eulerAngles = !spawnable.spawnFacingAwayFromWall ? new Vector3(gameObject.transform.eulerAngles.x, (float)RoundManager.Instance.AnomalyRandom.Next(0, 360), gameObject.transform.eulerAngles.z) : new Vector3(0.0f, RoundManager.Instance.YRotationThatFacesTheFarthestFromPosition(pos + Vector3.up * 0.2f), 0.0f);
                 gameObject.GetComponent<NetworkObject>().Spawn(true);
             }
+        }
+
+        public static void ToggleTerminalSound()
+        {
+            if (Hack.ToggleTerminalSound.IsEnabled()) Object.FindObjectOfType<Terminal>().PlayTerminalAudioServerRpc(1);
         }
 
         public static void BreakAllWebs()
