@@ -22,7 +22,7 @@ namespace LethalMenu.Menu.Popup
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            var suitunlockables = new List<Unlockable>
+            List<Unlockable> suitunlockables = new List<Unlockable>
             {
                 Unlockable.OrangeSuit,
                 Unlockable.GreenSuit,
@@ -40,7 +40,7 @@ namespace LethalMenu.Menu.Popup
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
 
-            var suits = suitunlockables.Where(u => u.GetItem().unlockableName.Contains(s_search, StringComparison.OrdinalIgnoreCase)).ToList();
+            List<Unlockable> suits = suitunlockables.Where(u => u.GetItem().unlockableName.Contains(s_search, StringComparison.OrdinalIgnoreCase)).ToList();
 
             UI.ButtonGrid(suits, (x) => x.GetItem().unlockableName, s_search, (x) => Hack.UnlockUnlockableSuit.Execute(x, Settings.b_WearBuy, true, true), 3);
 

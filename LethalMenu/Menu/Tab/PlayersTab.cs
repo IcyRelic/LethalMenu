@@ -53,12 +53,8 @@ namespace LethalMenu.Menu.Tab
 
                 name = player.playerUsername;
 
-
-                if (LethalMenu.Instance.LMUsers.Any(u => u.SteamId == player.playerSteamId.ToString()) && Settings.b_DisplayLMUsers)
-                {
-                    var user = LethalMenu.Instance.LMUsers.FirstOrDefault(u => u.SteamId == player.playerSteamId.ToString());
-                    name = $"[LethalMenu {user.Version}] {player.playerUsername}";
-                }
+                if (LethalMenu.Instance.LMUsers.ContainsKey(player.playerSteamId.ToString()) && Settings.b_DisplayLMUsers)
+                    name = $"[LethalMenu {LethalMenu.Instance.LMUsers[player.playerSteamId.ToString()]}] {player.playerUsername}";
 
                 if (GUILayout.Button(name, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
 
@@ -108,14 +104,11 @@ namespace LethalMenu.Menu.Tab
             UI.Label("PlayerTab.IsInShip", player.isInHangarShipRoom.ToString());
             UI.Label("PlayerTab.Insanity", player.insanityLevel.ToString());
 
-            GrabbableObject[] items = player.ItemSlots;
-
             UI.Header("PlayerTab.Inventory", true);
-            foreach (GrabbableObject item in items)
+            foreach (GrabbableObject item in player.ItemSlots)
             {
                 if (item == null) continue;
-
-                UI.Label("", item.name);
+                UI.Label("", $"Name: {item.name} | Value: {item.scrapValue} | Weight: {item.itemProperties.weight} | Pocketed: {item.isPocketed} | Deactivated: {item.deactivated}");
             }
 
             UI.Header("General.GeneralActions", true);

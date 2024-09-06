@@ -75,7 +75,7 @@ namespace LethalMenu.Handler
 
             bool e = false;
 
-            if (@object is GrabbableObject) e = Settings.b_chamsObject;
+            if (@object is GrabbableObject) e = Settings.b_chamsObject; 
             if (@object is Landmine) e = Settings.b_chamsLandmine;
             if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
             if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
@@ -86,14 +86,13 @@ namespace LethalMenu.Handler
             if (@object is BreakerBox) e = Settings.b_chamsBreaker;
             if (@object is SpikeRoofTrap) e = Settings.b_chamsSpikeRoofTrap;
    
-            if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap; //SpikeRoofTrap
+            if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap; 
             if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
             if (e && distance >= Settings.f_chamDistance) ApplyCham();
             else RemoveCham();
 
-            if (   (@object is GrabbableObject && ((GrabbableObject)@object).isHeld)
-                || (@object is SteamValveHazard && !((SteamValveHazard)@object).triggerScript.interactable)
-                
+            if ((@object is GrabbableObject && ((GrabbableObject)@object).isHeld) 
+            || (@object is SteamValveHazard && !((SteamValveHazard)@object).triggerScript.interactable)
             ) RemoveCham();
         }
 
@@ -118,8 +117,21 @@ namespace LethalMenu.Handler
 
         private void UpdateChamColor(Renderer r)
         {
-            if(r == null || r.materials == null) return;
-            r.materials.ToList().ForEach(m => m.SetColor(_color, Settings.c_chams.GetColor()));
+            if(r == null || r.materials == null || @object == null) return;
+            Color color = Settings.c_chams.GetColor();
+            if (@object is GrabbableObject) color = Settings.c_objectChams.GetColor();
+            if (@object is Landmine) color = Settings.c_landmineChams.GetColor();
+            if (@object is EnemyAI) color = Settings.c_enemyChams.GetColor();
+            if (@object is SteamValveHazard) color = Settings.c_steamHazardChams.GetColor();
+            if (@object is TerminalAccessibleObject) color = Settings.c_bigDoorChams.GetColor();
+            if (@object is DoorLock) color = Settings.c_doorLockChams.GetColor();
+            if (@object is HangarShipDoor) color = Settings.c_shipChams.GetColor();
+            if (@object is BreakerBox) color = Settings.c_breakerChams.GetColor();
+            if (@object is SpikeRoofTrap) color = Settings.c_spikeRoofTrapChams.GetColor();
+            if (@object is GameObject && @object.name.StartsWith("AnimContainer")) color = Settings.c_spikeRoofTrapChams.GetColor();
+            if (@object is GameObject && @object.name.StartsWith("TurretContainer")) color = Settings.c_turretChams.GetColor();
+            if (Settings.b_UseDefaultChams) color = Settings.c_chams.GetColor();
+            r.materials.ToList().ForEach(m => m.SetColor(_color, color));
         }
 
 

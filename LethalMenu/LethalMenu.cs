@@ -8,11 +8,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.IO;
 using UnityEngine.Rendering;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using LethalMenu.Themes;
+using Unity.Netcode;
 
 namespace LethalMenu
 {
@@ -41,7 +41,7 @@ namespace LethalMenu
         public static PatcherTool ZapGun;
         public static int selectedPlayer = -1;
         public int fps;
-        public List<MenuUtil.LMUserList> LMUsers { get; set; } = [];
+        public Dictionary<string, string> LMUsers { get; set; } = [];
 
 
         private Harmony harmony;
@@ -62,18 +62,23 @@ namespace LethalMenu
             instance = this;
             try
             {
-                Localization.Initialize();
-                Theme.Initialize();
-                LoadCheats();
-                HarmonyPatching();
-                MenuUtil.RunLMUser();
-                this.StartCoroutine(this.CollectObjects());
-                this.StartCoroutine(this.FPSCounter());
+                Initialize();
             }
             catch (Exception e)
             {
                 Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
             }
+        }
+
+        private void Initialize()
+        {
+            Localization.Initialize();
+            Theme.Initialize();
+            HarmonyPatching();
+            LoadCheats();
+            MenuUtil.LMUser();
+            this.StartCoroutine(this.CollectObjects());
+            this.StartCoroutine(this.FPSCounter());
         }
 
         private void HarmonyPatching()
@@ -149,10 +154,8 @@ namespace LethalMenu
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin";
-
-                    if (Settings.b_FPSCounter) LethalMenuTitle += $" | FPS: {fps}";
-                    if (Settings.b_Panic) LethalMenuTitle = "";
+                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin | Discord.gg/HzxykGKA6P |";
+                    LethalMenuTitle += Settings.b_FPSCounter ? $" FPS: {fps}" : "";
                     VisualUtil.DrawString(new Vector2(5f, 2f), LethalMenuTitle, Settings.c_primary, centered: false, bold: true, fontSize: 14);
                     if (MenuUtil.resizing)
                     {

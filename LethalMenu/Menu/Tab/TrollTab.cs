@@ -42,7 +42,6 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportAllItems, "TrollTab.TeleportAllItems");
             UI.Hack(Hack.TeleportOneItem, "TrollTab.TeleportOneItem");
             UI.Hack(Hack.EjectEveryone, ["TrollTab.EjectEveryone", "General.HostTag"]);
-            UI.Hack(Hack.DeleteTerminal, "TrollTab.DeleteTerminal");
 
             GUILayout.EndScrollView();
         }

@@ -63,8 +63,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.StrongHands, "SelfTab.StrongHands");
             UI.Hack(Hack.Invisibility, "SelfTab.Invisibility");
             UI.Hack(Hack.NoFallDamage, "SelfTab.NoFallDamage");
-            UI.Hack(Hack.HearAllAlivePeople, "SelfTab.HearAllAlivePeople"); 
-            UI.Hack(Hack.HearAllDeadPeople, "SelfTab.HearAllDeadPeople"); 
+            UI.Hack(Hack.HearAllAlivePeople, "SelfTab.HearAllAlivePeople");
+            UI.Hack(Hack.HearAllDeadPeople, "SelfTab.HearAllDeadPeople");
             UI.Hack(Hack.NoFlash, "SelfTab.NoFlash");
             UI.Hack(Hack.NoQuicksand, "SelfTab.NoQuicksand");
             UI.Hack(Hack.NoCameraShake, "SelfTab.NoCameraShake");

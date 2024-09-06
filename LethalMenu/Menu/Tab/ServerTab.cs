@@ -1,5 +1,4 @@
-﻿
-using LethalMenu.Manager;
+﻿using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using UnityEngine;
 using LethalMenu.Util;
@@ -99,7 +98,7 @@ namespace LethalMenu.Menu.Tab
                 new UIButton("General.Execute", () => GUIUtility.systemCopyBuffer = lobbyid)
             );
 
-            UI.TextboxAction("ServerTab.JoinLobby", ref s_joinlobbyid, @"", 20,
+            UI.TextboxAction("ServerTab.JoinLobby", ref s_joinlobbyid, @"[^0-9]", 20,
                 new UIButton("General.Execute", () => { if (ulong.TryParse(s_joinlobbyid, out var id)) Hack.JoinLobby.Execute(new SteamId { Value = id });
             }));
 

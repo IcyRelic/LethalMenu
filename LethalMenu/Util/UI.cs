@@ -156,8 +156,10 @@ namespace LethalMenu.Util
 
         public static void HackSlider(Hack hack, string header, string displayValue, ref float value, float min, float max, params object[] param)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
+            GUILayout.Label($"{Localization.Localize(header)} ({displayValue})", style);
             GUILayout.FlexibleSpace();
 
             GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.i_sliderWidth };
@@ -168,6 +170,24 @@ namespace LethalMenu.Util
             if (hack.Button()) hack.Execute(param);
             GUILayout.EndHorizontal();
         }
+
+        public static void HackSlider(Hack hack, string[] header, string displayValue, ref float value, float min, float max, params object[] param)
+        {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"{Localization.Localize(header)} ({displayValue})", style);
+            GUILayout.FlexibleSpace();
+
+            GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.i_sliderWidth };
+
+
+            value = GUILayout.HorizontalSlider(value, min, max, slider, GUI.skin.horizontalSliderThumb);
+
+            if (hack.Button()) hack.Execute(param);
+            GUILayout.EndHorizontal();
+        }
+
 
         public static void Textbox(string label, ref string value, string regex = "", bool big = true)
         {
@@ -214,32 +234,6 @@ namespace LethalMenu.Util
             GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
             value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth));
-            GUILayout.EndHorizontal();
-        }
-
-        public static void SliderAction(string header, string displayValue, ref float value, float min, float max, float defaultValue)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
-            GUILayout.FlexibleSpace();
-            value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth));
-            if (GUILayout.Button(Localization.Localize("General.Reset")))
-            {
-                value = defaultValue;
-            }
-            GUILayout.EndHorizontal();
-        }
-
-        public static void SliderAction(string header, string displayvalue, ref int value, int min, int max, int defaultvalue)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label($"{Localization.Localize(header)} {displayvalue}");
-            GUILayout.FlexibleSpace();
-            value = Mathf.RoundToInt(GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth)));
-            if (GUILayout.Button(Localization.Localize("General.Reset")))
-            {
-                value = defaultvalue;
-            }
             GUILayout.EndHorizontal();
         }
 

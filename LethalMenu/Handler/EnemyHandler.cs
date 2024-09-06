@@ -3,8 +3,10 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 using Random = UnityEngine.Random;
 
 namespace LethalMenu.Handler
@@ -324,28 +326,29 @@ namespace LethalMenu.Handler
             Cheats.EnemyControl.Control(enemy);
         }
 
+        private List<Type> forceDespawnEnemies = new List<Type>
+        {
+           typeof(ForestGiantAI),
+           typeof(SandWormAI),
+           typeof(BlobAI),
+           typeof(DressGirlAI),
+           typeof(PufferAI),
+           typeof(SpringManAI),
+           typeof(DocileLocustBeesAI),
+           typeof(DoublewingAI),
+           typeof(RedLocustBees),
+           typeof(LassoManAI),
+           typeof(JesterAI),
+           typeof(RedPillAnomaly),
+           typeof(ButlerBeesEnemyAI),
+           typeof(RadMechAI),
+           typeof(ClaySurgeonAI),
+           typeof(CaveDwellerAI)
+        };
+
         public void Kill(bool despawn = false)
         {
-            bool forceDespawn = false;
-
-            if (enemy.GetType() == typeof(ForestGiantAI)
-                           || enemy.GetType() == typeof(SandWormAI)
-                           || enemy.GetType() == typeof(BlobAI)
-                           || enemy.GetType() == typeof(DressGirlAI)
-                           || enemy.GetType() == typeof(PufferAI)
-                           || enemy.GetType() == typeof(SpringManAI)
-                           || enemy.GetType() == typeof(DocileLocustBeesAI)
-                           || enemy.GetType() == typeof(DoublewingAI)
-                           || enemy.GetType() == typeof(RedLocustBees)
-                           || enemy.GetType() == typeof(LassoManAI)
-                           || enemy.GetType() == typeof(JesterAI)
-                           || enemy.GetType() == typeof(RedPillAnomaly)
-                           || enemy.GetType() == typeof(ButlerBeesEnemyAI)
-                           || enemy.GetType() == typeof(RadMechAI)
-                           || enemy.GetType() == typeof(ClaySurgeonAI)
-                           || enemy.GetType() == typeof(CaveDwellerAI)
-                           ) forceDespawn = true;
-
+            bool forceDespawn = forceDespawnEnemies.Contains(enemy.GetType());
             enemy.enemyType.canDie = true;
             enemy.KillEnemyServerRpc(forceDespawn ? forceDespawn : despawn);
         }
@@ -358,6 +361,7 @@ namespace LethalMenu.Handler
 
         public void Teleport(PlayerControllerB player)
         {
+            if (LethalMenu.localPlayer == null || enemy == null) return;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             enemy.transform.position = player.transform.position;
             enemy.SyncPositionToClients();
@@ -365,6 +369,7 @@ namespace LethalMenu.Handler
 
         public void TargetPlayer(PlayerControllerB player)
         {
+            if (LethalMenu.localPlayer == null || enemy == null) return;
             target = player;
             enemy.targetPlayer = player;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
@@ -374,6 +379,7 @@ namespace LethalMenu.Handler
 
         public void KillPlayer(PlayerControllerB player)
         {
+            if (LethalMenu.localPlayer == null || enemy == null) return;
             target = player;
             enemy.targetPlayer = player;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
@@ -416,16 +422,12 @@ namespace LethalMenu.Handler
         public static void StealAllItems(this HoarderBugAI bug)
         {
             bug.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-
             LethalMenu.Instance.StartCoroutine(StealItems(bug));
-
-            
         }
 
         private static IEnumerator StealItems(HoarderBugAI bug)
         {
             List<NetworkObject> items = LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom && i.isInFactory).ConvertAll(i => i.NetworkObject);
-
             foreach (var obj in items)
             {
                 yield return new WaitForSeconds(0.2f);

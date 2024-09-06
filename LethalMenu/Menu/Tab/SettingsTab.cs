@@ -29,7 +29,6 @@ namespace LethalMenu.Menu.Tab
         private string s_menuText = Settings.c_menuText.GetHexCode();
 
         //esp colors
-        private string s_chamsColor = Settings.c_chams.GetHexCode();
         private string s_objectESPColor = Settings.c_objectESP.GetHexCode();
         private string s_playerESPColor = Settings.c_playerESP.GetHexCode();
         private string s_enemyESPColor = Settings.c_enemyESP.GetHexCode();
@@ -42,6 +41,21 @@ namespace LethalMenu.Menu.Tab
         private string s_shipESPColor = Settings.c_shipESP.GetHexCode();
         private string s_breakerESPColor = Settings.c_breakerESP.GetHexCode();
         private string s_spikeRoofTrapESPColor = Settings.c_spikeRoofTrapESP.GetHexCode();
+
+        //cham colors
+        private string s_chamsColor = Settings.c_chams.GetHexCode();
+        private string s_objectChamsColor = Settings.c_objectChams.GetHexCode();
+        private string s_playerChamsColor = Settings.c_playerChams.GetHexCode();
+        private string s_enemyChamsColor = Settings.c_enemyChams.GetHexCode();
+        private string s_landmineChamsColor = Settings.c_landmineChams.GetHexCode();
+        private string s_turretChamsColor = Settings.c_turretChams.GetHexCode();
+        private string s_doorLockChamsColor = Settings.c_doorLockChams.GetHexCode();
+        private string s_valveChamsColor = Settings.c_steamHazardChams.GetHexCode();
+        private string s_bigDoorChamsColor = Settings.c_bigDoorChams.GetHexCode();
+        private string s_shipChamsColor = Settings.c_shipChams.GetHexCode();
+        private string s_breakerChamsColor = Settings.c_breakerChams.GetHexCode();
+        private string s_spikeRoofTrapChamsColor = Settings.c_spikeRoofTrapChams.GetHexCode();
+
         private string s_causeOfDeath = Settings.c_causeOfDeath.GetHexCode();
 
         private string s_lootTierColors = string.Join(",", Array.ConvertAll(Settings.c_scrapValueColors, x => x.GetHexCode()));
@@ -104,7 +118,6 @@ namespace LethalMenu.Menu.Tab
             UI.Toggle("SettingsTab.HackHighlight", ref Settings.b_HackHighlight, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable", HackMenu.Instance.ToggleDebugTab);
-            UI.Toggle("SettingsTab.Panic", ref Settings.b_Panic, "General.Disable", "General.Enable", RoundHandler.Panic);
         }
 
         private void ControlSettingsContent()
@@ -204,10 +217,6 @@ namespace LethalMenu.Menu.Tab
             );
 
             UI.Header("SettingsTab.ESPColors", true);
-            UI.TextboxAction("SettingsTab.Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
-                new UIButton("General.Set", () => SetColor(ref Settings.c_chams, s_chamsColor))
-            );
-
             UI.TextboxAction("SettingsTab.Objects", ref s_objectESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("General.Set", () => SetColor(ref Settings.c_objectESP, s_objectESPColor))
             );
@@ -241,9 +250,47 @@ namespace LethalMenu.Menu.Tab
             UI.TextboxAction("SettingsTab.Breaker", ref s_doorLockESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("General.Set", () => SetColor(ref Settings.c_breakerESP, s_breakerESPColor))
             );
-
             UI.TextboxAction("SettingsTab.SpikeRoofTrap", ref s_bigDoorESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("General.Set", () => SetColor(ref Settings.c_spikeRoofTrapESP, s_spikeRoofTrapESPColor))
+            );
+
+            UI.Header("SettingsTab.ChamColors", true);
+            UI.Toggle("SettingsTab.UseDefaultChams", ref Settings.b_UseDefaultChams, "General.Disable", "General.Enable");
+            UI.TextboxAction("SettingsTab.Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_chams, s_chamsColor))
+            );
+            UI.TextboxAction("SettingsTab.ObjectsChams", ref s_objectChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_objectChams, s_objectChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.EnemiesChams", ref s_enemyChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_enemyChams, s_enemyChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.PlayersChams", ref s_playerChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_playerChams, s_playerChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.LandminesChams", ref s_landmineChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_landmineChams, s_landmineChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.TurretsChams", ref s_turretChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_turretChams, s_turretChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.ShipChams", ref s_shipChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_shipChams, s_shipChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.SteamValvesChams", ref s_valveChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_steamHazardChams, s_valveChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.BigDoorsChams", ref s_bigDoorChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_bigDoorChams, s_bigDoorChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.LockedDoorsChams", ref s_doorLockChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_doorLockChams, s_doorLockChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.BreakerChams", ref s_doorLockChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_breakerChams, s_breakerChamsColor))
+            );
+            UI.TextboxAction("SettingsTab.SpikeRoofTrapChams", ref s_bigDoorChamsColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_spikeRoofTrapChams, s_spikeRoofTrapChamsColor))
             );
 
             UI.Header("SettingsTab.TieredLootHeader", true);
