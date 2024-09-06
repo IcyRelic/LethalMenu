@@ -308,6 +308,7 @@
 	"SettingsTab.DisplayLMUsers": "Display LM Users",
 	"SettingsTab.DebugMode": "Debug Mode",
 	"SettingsTab.HackHighlight": "Hack Highlight",
+	"SettingsTab.ToggleTip": "Toggle Tip",
 	"MoonManager.Title": "Moon Manager",
 	"MoonManager.CurrentMoon": "Current Moon",
 	"MoonManager.Moon": "Moon:",

@@ -172,6 +172,9 @@ namespace LethalMenu
         ExplodeClosestMine,
         ForceBleed,
         EnemyControl,
+
+        /** Player Tab **/
+        ToggleTip,
     }
 
     public static class HackExtensions
@@ -290,6 +293,7 @@ namespace LethalMenu
             {Hack.PJSpammer, false},
             {Hack.ItemSlots, false},
             {Hack.FOV, false},
+            {Hack.ToggleTip, true},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()

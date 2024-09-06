@@ -118,6 +118,7 @@ namespace LethalMenu.Menu.Tab
             UI.Toggle("SettingsTab.HackHighlight", ref Settings.b_HackHighlight, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Disable", "General.Enable");
             UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable", HackMenu.Instance.ToggleDebugTab);
+            UI.Hack(Hack.ToggleTip, "SettingsTab.ToggleTip");
         }
 
         private void ControlSettingsContent()
