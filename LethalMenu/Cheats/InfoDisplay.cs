@@ -12,6 +12,8 @@ namespace LethalMenu.Cheats
 
         public override void OnGui()
         {
+            info = ""; 
+            
             if (Hack.DisplayBodyCount.IsEnabled()) Info("Cheats.Info.DisplayBodyCount", GetBodyCount().ToString());
             if (Hack.DisplayEnemyCount.IsEnabled()) Info("Cheats.Info.DisplayEnemyCount", GetEnemyCount().ToString());
             if (Hack.DisplayObjectCount.IsEnabled()) Info("Cheats.Info.DisplayObjectCount", GetObjectCount().ToString());
