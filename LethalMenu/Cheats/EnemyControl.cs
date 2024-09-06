@@ -63,6 +63,7 @@ namespace LethalMenu.Cheats
                 Hack.EnemyControl.SetToggle(false);
                 StopControl();
                 HUDManager.Instance.DisplayTip("Lethal Menu", $"No Controller for enemy :C");
+                return;
             }
 
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
