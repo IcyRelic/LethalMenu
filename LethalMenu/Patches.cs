@@ -21,12 +21,12 @@ namespace LethalMenu
         [HarmonyPostfix]
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
         public static void Disconnect(GameNetworkManager __instance)
-        {
-            ServerTab.ClearPlayerOptions();
+        {   
             SpectatePlayer.Reset();
             Freecam.Reset();
             LethalMenu.Instance.LMUsers.Clear();
             Shoplifter.Clear();
+            ServerTab.ClearPlayerOptions();
         }
 
         [HarmonyPostfix]
@@ -41,6 +41,7 @@ namespace LethalMenu
         public static void OnClientConnect(StartOfRound __instance)
         {
             MenuUtil.RunLMUser();
+            
         }
 
         [HarmonyPostfix]
