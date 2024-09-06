@@ -132,6 +132,7 @@ namespace LethalMenu
         DeleteTerminal,
         OpenShipDoorSpace,
         BerserkAllTurrets,
+        PJSpammer,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -284,7 +285,8 @@ namespace LethalMenu
             {Hack.UnlimitedZapGun, false},
             {Hack.ToggleTerminalSound, false},
             {Hack.GrabItemsBeforeGame, false},
-            {Hack.ClickTeleport, false}
+            {Hack.ClickTeleport, false},
+            {Hack.PJSpammer, false}
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
