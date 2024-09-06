@@ -48,9 +48,9 @@ namespace LethalMenu
         public static RGBAColor c_crosshair = new RGBAColor(255, 43, 43, 1f);
         public static RGBAColor c_hackhighlight = new RGBAColor(165, 55, 253, 1f);
 
-        /* * *  * * * *
-         * ESP Colors *
-         * * * ** * * */
+        /* * * * * * * *
+         * ESP  Colors *
+         * * * * * * * */
         public static RGBAColor c_objectESP = new RGBAColor(255, 255, 255, 1f);
         public static RGBAColor c_playerESP = new RGBAColor(0, 255, 0, 1f);
         public static RGBAColor c_enemyESP = new RGBAColor(255, 0, 0, 1f);
@@ -61,9 +61,23 @@ namespace LethalMenu
         public static RGBAColor c_doorLockESP = new RGBAColor(0.5f, 0.5f, 0.5f, 1f);
         public static RGBAColor c_entranceExitESP = new RGBAColor(0, 0, 255, 1f);
         public static RGBAColor c_steamHazardESP = new RGBAColor(255, 0, 255, 1f);
-        public static RGBAColor c_causeOfDeath = new RGBAColor(1f, 47f / 51f, 0.0156862754f, 1f);
         public static RGBAColor c_breakerESP = new RGBAColor(255, 0, 116, 1f);
         public static RGBAColor c_spikeRoofTrapESP = new RGBAColor(139, 69, 19, 1f);
+
+        /* * * * * * * * *
+         * Chams  Colors *
+         * * * * * * * * */
+        public static RGBAColor c_objectChams = new RGBAColor(255, 255, 255, 0.1f);
+        public static RGBAColor c_playerChams = new RGBAColor(0, 255, 0, 0.1f);
+        public static RGBAColor c_enemyChams = new RGBAColor(255, 0, 0, 0.1f);
+        public static RGBAColor c_shipChams = new RGBAColor(0, 0, 255, 0.1f);
+        public static RGBAColor c_landmineChams = new RGBAColor(255, 0, 0, 0.1f);
+        public static RGBAColor c_turretChams = new RGBAColor(255, 0, 0, 0.1f);
+        public static RGBAColor c_bigDoorChams = new RGBAColor(0, 255, 255, 0.1f);
+        public static RGBAColor c_doorLockChams = new RGBAColor(0.5f, 0.5f, 0.5f, 0.1f);
+        public static RGBAColor c_steamHazardChams = new RGBAColor(255, 0, 255, 0.1f);
+        public static RGBAColor c_breakerChams = new RGBAColor(255, 0, 116, 0.1f);
+        public static RGBAColor c_spikeRoofTrapChams = new RGBAColor(139, 69, 19, 0.1f);
         public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
 
         /* * * * * * * * *
@@ -71,10 +85,11 @@ namespace LethalMenu
          * * * * * * * * */
         public static RGBAColor c_error = new RGBAColor(221, 11, 11, 1f);
         public static RGBAColor c_deadPlayer = new RGBAColor(255, 0, 0, 1);
+        public static RGBAColor c_causeOfDeath = new RGBAColor(1f, 47f / 51f, 0.0156862754f, 1f);
 
-       /* * * * * *
-        * Vectors *
-        * * * * * */
+        /* * * * * *
+         * Vectors *
+         * * * * * */
         public static Vector3 v_savedLocation = Vector3.zero;
 
         /* * * * * * * * *
@@ -112,7 +127,6 @@ namespace LethalMenu
         public static bool b_FPSCounter = false; 
         public static bool b_DisplayLMUsers = false;
         public static bool b_WearBuy = false;
-        public static bool b_Panic = false;
 
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
 
@@ -127,6 +141,7 @@ namespace LethalMenu
         public static bool b_chamsBreaker = false;
         public static bool b_chamsShip = false;
         public static bool b_chamsSpikeRoofTrap = false;
+        public static bool b_UseDefaultChams = false;
 
         public static float f_defaultGrabDistance = -1f;
         public static float f_defaultClimbSpeed = 3f;
@@ -135,8 +150,8 @@ namespace LethalMenu
         public static float f_defaultNightVisionIntensity = 360f;
         public static float f_defaultNightVisionRange = 12f;
         public static float f_defaultFOV = 66f;
+        public static float f_slots = 4f;
 
-        public static int i_slots = 4;
         public static int[] i_scrapValueThresholds = new int[] { 30,50,75,100 };
 
         public static SteamId s_lobbyid;
@@ -267,6 +282,7 @@ namespace LethalMenu
                 chams["Breaker"] = b_chamsBreaker.ToString();
                 chams["Ship"] = b_chamsShip.ToString();
                 chams["SpikeRoofTrap"] = b_chamsSpikeRoofTrap.ToString();
+                chams["UseDefaultChams"] = b_UseDefaultChams.ToString();
                 hackSettings["Chams"] = chams;   
 
                 colors["Background"] = JsonConvert.SerializeObject(c_background);
@@ -275,6 +291,17 @@ namespace LethalMenu
                 colors["Crosshair"] = JsonConvert.SerializeObject(c_crosshair);
                 colors["HackHighlightColor"] = JsonConvert.SerializeObject(c_hackhighlight);
                 colors["Chams"] = JsonConvert.SerializeObject(c_chams);
+                colors["ObjectChams"] = JsonConvert.SerializeObject(c_objectChams);
+                colors["PlayerChams"] = JsonConvert.SerializeObject(c_playerChams);
+                colors["EnemyChams"] = JsonConvert.SerializeObject(c_enemyChams);
+                colors["ShipChams"] = JsonConvert.SerializeObject(c_shipChams);
+                colors["BreakerChams"] = JsonConvert.SerializeObject(c_breakerChams);
+                colors["LandmineChams"] = JsonConvert.SerializeObject(c_landmineChams);
+                colors["TurretChams"] = JsonConvert.SerializeObject(c_turretChams);
+                colors["BigDoorChams"] = JsonConvert.SerializeObject(c_bigDoorChams);
+                colors["DoorLockChams"] = JsonConvert.SerializeObject(c_doorLockChams);
+                colors["SteamHazardChams"] = JsonConvert.SerializeObject(c_steamHazardChams);
+                colors["SpikeRoofTrapChams"] = JsonConvert.SerializeObject(c_spikeRoofTrapChams);
                 colors["ObjectESP"] = JsonConvert.SerializeObject(c_objectESP);
                 colors["PlayerESP"] = JsonConvert.SerializeObject(c_playerESP);
                 colors["EnemyESP"] = JsonConvert.SerializeObject(c_enemyESP);
@@ -286,7 +313,7 @@ namespace LethalMenu
                 colors["DoorLockESP"] = JsonConvert.SerializeObject(c_doorLockESP);
                 colors["EntranceExitESP"] = JsonConvert.SerializeObject(c_entranceExitESP);
                 colors["SteamHazardESP"] = JsonConvert.SerializeObject(c_steamHazardESP);
-                colors["SpikeRoofTrap"] = JsonConvert.SerializeObject(c_spikeRoofTrapESP);
+                colors["SpikeRoofTrapESP"] = JsonConvert.SerializeObject(c_spikeRoofTrapESP);
                 colors["CauseOfDeath"] = JsonConvert.SerializeObject(c_causeOfDeath);
 
                 settings["FirstLaunch"] = isFirstLaunch.ToString();
@@ -481,7 +508,7 @@ namespace LethalMenu
                         c_entranceExitESP = JsonConvert.DeserializeObject<RGBAColor>(entranceExitESP.ToString());
                     if(colors.TryGetValue("SteamHazardESP", out JToken steamHazardESP))
                         c_steamHazardESP = JsonConvert.DeserializeObject<RGBAColor>(steamHazardESP.ToString());
-                    if (colors.TryGetValue("RoofSpikeTrapESP", out JToken roofSpikeTrapESP))
+                    if (colors.TryGetValue("SpikeRoofTrapESP", out JToken roofSpikeTrapESP))
                         c_spikeRoofTrapESP = JsonConvert.DeserializeObject<RGBAColor>(roofSpikeTrapESP.ToString());
                     if (colors.TryGetValue("CauseOfDeath", out JToken causeOfDeath))
                         c_causeOfDeath = JsonConvert.DeserializeObject<RGBAColor>(causeOfDeath.ToString());

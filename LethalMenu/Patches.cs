@@ -1,16 +1,16 @@
-﻿using GameNetcodeStuff;
+using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMenu.Cheats;
+using UnityEngine;
 using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
 using Steamworks;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using System.Text;
-using UnityEngine;
-using UnityEngine.InputSystem.HID;
-using UnityEngine.Rendering;
 using Debug = UnityEngine.Debug;
+using Object = UnityEngine.Object;
+using System.Linq;
+using System.Reflection;
 
 
 namespace LethalMenu
@@ -33,15 +33,14 @@ namespace LethalMenu
         [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc")]
         public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
         {
-            MenuUtil.RunLMUser();
+            MenuUtil.LMUser();
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(StartOfRound), "OnClientConnect")]
         public static void OnClientConnect(StartOfRound __instance)
         {
-            MenuUtil.RunLMUser();
-            
+            MenuUtil.LMUser();
         }
 
         [HarmonyPostfix]
@@ -60,6 +59,30 @@ namespace LethalMenu
             ___inGrabbingObjectsAnimation = false;
         }
 
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.AllowPlayerDeath))]
+        public static bool AllowPlayerDeath(ref bool __result)
+        {
+            if (Settings.DebugMode)
+            {
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(QuickMenuManager), "CanEnableDebugMenu")]
+        public static bool CanEnableDebugMenu(ref bool __result)
+        {
+            if (Settings.DebugMode)
+            {
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc))]
         public static void CompanyAttackPostfix(ref bool ___inGrabbingObjectsAnimation, ref bool __state)
@@ -76,6 +99,6 @@ namespace LethalMenu
                 yield return instruction.opcode == OpCodes.Ldc_I4_S && instruction.operand.ToString().Equals("12") ?
                     new CodeInstruction(OpCodes.Ldc_I4, int.MaxValue) : instruction;
             }
-        } 
+        }
     }
 }

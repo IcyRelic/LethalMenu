@@ -2,6 +2,7 @@ using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace LethalMenu.Menu.Popup
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            var unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().Where(u => u != Unlockable.Terminal || u != Unlockable.OrangeSuit).ToList();
+            List<Unlockable> unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().Where(u => u != Unlockable.OrangeSuit).ToList();
 
             GUILayout.BeginHorizontal();
             UI.Textbox("General.Search", ref s_search);

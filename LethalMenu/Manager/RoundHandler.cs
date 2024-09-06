@@ -9,8 +9,8 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using Steamworks;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 
 namespace LethalMenu.Manager
@@ -20,22 +20,19 @@ namespace LethalMenu.Manager
         Remove = 1,
         Set = 2
     }
+
     public class RoundHandler
     {
+        public static Dictionary<Hack, bool> StoredFlags = new Dictionary<Hack, bool>();
+
         public static void ModCredits(int amount, ActionType type)
         {
-            Terminal terminal = GetTerminal();
-
-            if (terminal == null) return;
-            
+            if (GetTerminal() == null) return;           
             int newAmt = amount;
-
-            if(type == ActionType.Add) newAmt = terminal.groupCredits + amount;
-            if(type == ActionType.Remove) newAmt = terminal.groupCredits - amount;
-
-            terminal.SyncGroupCreditsServerRpc(newAmt, terminal.numberOfItemsInDropship);
+            if(type == ActionType.Add) newAmt = GetTerminal().groupCredits + amount;
+            if(type == ActionType.Remove) newAmt = GetTerminal().groupCredits - amount;
+            GetTerminal().SyncGroupCreditsServerRpc(newAmt, GetTerminal().numberOfItemsInDropship);
         }
-
 
         public static void SetQuota(int amount)
         {
@@ -55,9 +52,8 @@ namespace LethalMenu.Manager
             {
                 BuyUnlockable(Unlockable.SignalTranslator, false, false);
                 HUDManager.Instance.UseSignalTranslatorServerRpc(msg);
-                Unlockable.SignalTranslator.Move(new Vector3(-1000, -1000, -1000), new Vector3(0, 0, 0), true);
             }
-            else if (type == 3) HUDManager.Instance.UseSignalTranslatorServerRpc(msg);
+            else if (type == 3 && Unlockable.SignalTranslator.GetItem().hasBeenUnlockedByPlayer) HUDManager.Instance.UseSignalTranslatorServerRpc(msg);
             if (type > 2) return;
             string[] prefixes = { "[System]", "[Server]", "[Broadcast]" };
             string fmsg = $"{prefixes[type]} {msg}";
@@ -68,10 +64,8 @@ namespace LethalMenu.Manager
         public static bool ToggleShipLights()
         {
             if (!(bool)StartOfRound.Instance) return false;
-
             ShipLights lights = Object.FindObjectOfType<ShipLights>();
             lights.ToggleShipLights();
-
             return lights.areLightsOn;
         }
 
@@ -140,12 +134,6 @@ namespace LethalMenu.Manager
             if (wearbuy) UnlockableSuit.SwitchSuitForPlayer(LethalMenu.localPlayer, (int)unlockablesuit, sound);
         }
 
-        public static void DeleteTerminal()
-        {
-            if (!(bool)StartOfRound.Instance) return;
-            Unlockable.Terminal.Move(new Vector3(-1000, -1000, -1000), new Vector3(0, 0, 0), false);
-        }
-
         public static void ResetShip()
         {
             if (!(bool)StartOfRound.Instance) return;
@@ -161,40 +149,6 @@ namespace LethalMenu.Manager
         {
             if (!RoundManager.Instance.currentLevel.spawnEnemiesAndScrap) return;
             if ((bool)RoundManager.Instance) RoundManager.Instance.SpawnScrapInLevel();
-        }
-
-        public static async void Panic(bool e) => await RPanic();
-
-        public static async Task RPanic()
-        {
-            float f_chamDistance = Settings.f_chamDistance;
-            bool DebugMode = Settings.DebugMode;
-            Dictionary<Hack, bool> StoredFlags = new Dictionary<Hack, bool>();
-            if (Settings.b_Panic && !StoredFlags.Any())
-            {
-                foreach (Hack hack in Enum.GetValues(typeof(Hack)))
-                {
-                    if (HackExtensions.ToggleFlags.ContainsKey(hack) && !StoredFlags.ContainsKey(hack))
-                    {
-                        StoredFlags[hack] = HackExtensions.ToggleFlags[hack];
-                        hack.SetToggle(false);
-                        Settings.f_chamDistance = float.MaxValue;
-                        Settings.DebugMode = false;
-                    }
-                }
-            }
-            while (true)
-            {
-                if (!Settings.b_Panic && StoredFlags.Any())
-                {
-                    foreach (var k in StoredFlags) HackExtensions.ToggleFlags[k.Key] = k.Value;
-                    Settings.f_chamDistance = f_chamDistance;
-                    Settings.DebugMode = DebugMode;
-                    StoredFlags.Clear();
-                }
-                if (Settings.b_Panic && HackExtensions.ToggleFlags.Where(k => k.Key != Hack.ToggleCursor).Count(k => k.Value) >= 1) Settings.b_Panic = false;
-                await Task.Delay(2500);
-            }
         }
 
         public static void ModScrap(int value, int type)
@@ -266,10 +220,7 @@ namespace LethalMenu.Manager
         public static void DropAllItems()
         {
             Settings.b_DropItems = true;
-            if (Settings.b_DropItems)
-            {
-                LethalMenu.localPlayer.DropAllHeldItemsAndSync();
-            }
+            if (Settings.b_DropItems) LethalMenu.localPlayer.DropAllHeldItemsAndSync();
             Settings.b_DropItems = false;
         }
 
@@ -296,15 +247,9 @@ namespace LethalMenu.Manager
             LethalMenu.items.FindAll(i => i.GetType() == typeof(HauntedMaskItem)).Cast<HauntedMaskItem>().ToList().ForEach(m =>
             {
                 m.ChangeOwnershipOfProp(GameNetworkManager.Instance.localPlayerController.actualClientId);
-
                 m.Reflect().SetValue("previousPlayerHeldBy", alivePlayer);
-
-
-
                 bool factory = m.transform.position.y < LethalMenu.shipDoor.transform.position.y - 10f;
-
                 m.CreateMimicServerRpc(factory, m.transform.position);
-
             });
         }
 
@@ -312,22 +257,20 @@ namespace LethalMenu.Manager
         {
             if (StartOfRound.Instance.inShipPhase) return;
             SelectableLevel level = StartOfRound.Instance.currentLevel;
-
             level.maxEnemyPowerCount = Int32.MaxValue;
-
-            var nodes = outside ? RoundManager.Instance.outsideAINodes : RoundManager.Instance.insideAINodes;
-
+            GameObject[] gameobject = outside ? RoundManager.Instance.outsideAINodes : RoundManager.Instance.insideAINodes;
+            List<Transform> nodes = new List<Transform>();
+            Array.ForEach(gameobject, obj => nodes.Add(obj.transform));
             for (int i = 0; i < num; i++)
             {
-                var node = nodes[Random.Range(0, nodes.Length)];
-                RoundManager.Instance.SpawnEnemyGameObject(node.transform.position, 0.0f, -1, type);
+                Transform node = nodes[Random.Range(0, nodes.Count)];
+                RoundManager.Instance.SpawnEnemyGameObject(node.position, 0.0f, -1, type);
             }
         }
 
         public static void SpawnMapObject(MapObject type)
         {
             if (LethalMenu.localPlayer == null || RoundManager.Instance.AnomalyRandom == null) return;
-
             Vector3 pos = LethalMenu.localPlayer.transform.position + LethalMenu.localPlayer.transform.forward * 2f;
             SpawnableMapObject spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
             GameObject gameObject = Object.Instantiate<GameObject>(spawnable.prefabToSpawn, pos, Quaternion.identity, RoundManager.Instance.mapPropsContainer.transform);
@@ -338,15 +281,10 @@ namespace LethalMenu.Manager
         public static void SpawnMapObjects(MapObject type)
         {
             if (LethalMenu.localPlayer == null || RoundManager.Instance.AnomalyRandom == null) return;
-
             RandomMapObject[] randomObjects = Object.FindObjectsOfType<RandomMapObject>();
-
             SpawnableMapObject spawnable = GameUtil.GetSpawnableMapObjects().FirstOrDefault(o => o.prefabToSpawn.name == type.ToString());
-
             int num = Random.Range(5, 15);
-
             Debug.Log("Spawning " + num + " " + spawnable.prefabToSpawn.name);
-
             for (int i = 0; i < num; i++)
             {
                 var node = RoundManager.Instance.insideAINodes[Random.Range(0, RoundManager.Instance.insideAINodes.Length)];
@@ -356,25 +294,38 @@ namespace LethalMenu.Manager
                 gameObject.GetComponent<NetworkObject>().Spawn(true);
             }
         }
-
-        public static void ToggleTerminalSound()
+        public static async void ToggleTerminalSound() => await SpamTerminalSound();
+        public static async Task SpamTerminalSound()
         {
-            if (Hack.ToggleTerminalSound.IsEnabled()) Object.FindObjectOfType<Terminal>().PlayTerminalAudioServerRpc(1);
+            while (Hack.ToggleTerminalSound.IsEnabled())
+            {
+                if (GetTerminal() == null) await Task.Delay(10000);
+                GetTerminal().PlayTerminalAudioServerRpc(1);
+                await Task.Delay(100);
+            }
         }
 
         public static void BreakAllWebs()
         {
             LethalMenu.enemies.FindAll(e => e.GetType() == typeof(SandSpiderAI)).Cast<SandSpiderAI>().ToList().ForEach(s => s.BreakAllWebs());
         }
+
         public static void UnlockAllDoors()
         {
             LethalMenu.doorLocks.FindAll(door => door.isLocked).ForEach(door => door.UnlockDoorServerRpc());
+            HUDManager.Instance.DisplayTip("Lethal Menu", "All Doors Unlocked");
+        }
+
+        public static void OpenAllBigDoors()
+        {
             LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(true));
+            HUDManager.Instance.DisplayTip("Lethal Menu", "All Big Doors Opened");
         }
 
         public static void CloseAllBigDoors()
         {
             LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(false));
+            HUDManager.Instance.DisplayTip("Lethal Menu", "All Big Doors Closed");
         }
 
         public static void ChangeMoon(int levelID)

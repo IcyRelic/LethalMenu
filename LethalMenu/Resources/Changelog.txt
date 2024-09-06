@@ -6,8 +6,8 @@ v1.4.4
 - Added Grab Objects Before Game - You can pick up items
 - Added Toggle All For Displays - Added a toggle to enable and disable all display options
 - Added Toggle Terminal Sound - Spam the terminal sound
-- Added Discord Link to Watermark 
 - Added FPS Counter - Displays your FPS
+- Added Toggle Menu Tip - Adds a Toggle Menu: (Menu Key) to control tips
 - Added Vehicle Godmode - Cruiser doesn't take damage
 - Added Color Customization to info display
 - Added Hack Highlight - Hacks are highlighted
@@ -21,13 +21,13 @@ v1.4.4
 - Added Eggs Never Explode - Easter Eggs never explode when you throw them
 - Added Force Bleed - Force others players to bleed 
 - Added Unlimited Zap Gun - You can shock forever
-- Added Delete Terminal - Teleports terminal to -1000, -1000, -1000
 - Added Reset Ship (Host Only) - Resets everything about the ship
 - Added BushWolf, RadMach, and Cave Dweller to lure
-- Added Panic - Disables all hacks and hides the watermark
 - Added Copy Lobby ID - Copy a lobby id (Its just the hosts steam id)
 - Added Join Lobby - Join using the lobby id
 - Added Color Customization To Info Display - It changes based on your c_primary color
+- Added Open All Big Doors - Opens all big doors
+- Added Close All Big Doors - Closes all big doors
 - Fixed Themes - They now save in settings and load properly 
 - Fixed Never Lose Scrap - I forgot to add the check for the hack being enabled but its fixed now
 - Fixed First Setup Manager - The buttons were overlapping themselves from a style
@@ -39,10 +39,12 @@ v1.4.4
 - Fixed Kill all enemy (Host Only) - By fixing Enemy killing it fixed this aswell
 - Fixed Enemy killing (Host Only) - Zeekers added a candie bool which can only be changed on host
 - Fixed Teleport all enemies 
+- Changed Player Info - Added more info about the items in their inventory
 - Changed ThemeUtil - It is now just called Theme, way less messy, and better theme loading
 - Changed Shop Lifter - It has much better code and now makes crusier free -- Thanks IcyRelic
 - Changed Item ESP - Made it less messy
 - Changed Info Display - Added a method to make it less messy
+- Changed Item Manager - Made it bigger because the search translation was being cut off
 - Removed Drop All Player Items - I can't fix the syncing issue
 
 v1.4.3

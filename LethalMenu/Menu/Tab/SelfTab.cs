@@ -41,8 +41,7 @@ namespace LethalMenu.Menu.Tab
             UI.HackSlider(Hack.SuperSpeed, "SelfTab.SuperSpeed", Settings.f_movementSpeed.ToString("0.0"), ref Settings.f_movementSpeed, Settings.f_defaultMovementSpeed, Settings.f_defaultMovementSpeed + 20);
             UI.HackSlider(Hack.NoClip, "SelfTab.NoClip", Settings.f_noclipSpeed.ToString("0.0"), ref Settings.f_noclipSpeed, 10f, 30f);
             UI.Hack(Hack.ClickTeleport, "SelfTab.ClickTeleport");
-            UI.SliderAction("SelfTab.ItemSlots", Settings.i_slots.ToString(), ref Settings.i_slots, 1, 32, 4);
-            UI.Hack(Hack.ExtraItemSlots, ["SelfTab.ExtraItemSlots", "General.RejoinRequired"]);
+            UI.HackSlider(Hack.ItemSlots, ["SelfTab.ItemSlots", "General.RejoinRequired"], Settings.f_slots.ToString("0.0"), ref Settings.f_slots, 1f, 20f);
             UI.Hack(Hack.NightVision, "SelfTab.NightVision");
             UI.Hack(Hack.UnlimitedStamina, "SelfTab.UnlimitedStamina");
             UI.Hack(Hack.UnlimitedBattery, "SelfTab.UnlimitedBattery");
@@ -64,8 +63,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.StrongHands, "SelfTab.StrongHands");
             UI.Hack(Hack.Invisibility, "SelfTab.Invisibility");
             UI.Hack(Hack.NoFallDamage, "SelfTab.NoFallDamage");
-            UI.Hack(Hack.HearAllAlivePeople, "SelfTab.HearAllAlivePeople"); 
-            UI.Hack(Hack.HearAllDeadPeople, "SelfTab.HearAllDeadPeople"); 
+            UI.Hack(Hack.HearAllAlivePeople, "SelfTab.HearAllAlivePeople");
+            UI.Hack(Hack.HearAllDeadPeople, "SelfTab.HearAllDeadPeople");
             UI.Hack(Hack.NoFlash, "SelfTab.NoFlash");
             UI.Hack(Hack.NoQuicksand, "SelfTab.NoQuicksand");
             UI.Hack(Hack.NoCameraShake, "SelfTab.NoCameraShake");

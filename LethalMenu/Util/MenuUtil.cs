@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System;
 
 namespace LethalMenu.Util
 {
@@ -90,56 +91,21 @@ namespace LethalMenu.Util
             }
         }
 
-        public static async void RunLMUser()
-        {
-            await LMUser();
-        }
+        public static async void LMUser() => await RunLMUser();
 
-        public static async Task LMUser()
+        public static async Task RunLMUser()
         {
             while (HUDManager.Instance == null) await Task.Delay(10000);
             while (LethalMenu.localPlayer == null) await Task.Delay(10000);
             HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}, {Settings.version}</size>");
+            Regex r = new Regex(@"\b\d{17,19}\b");
             while (true)
             {
-                CheckForLMUser();
+                foreach (var m in HUDManager.Instance.ChatMessageHistory)
+                {
+                    if (!string.IsNullOrEmpty(r.Match(m)?.Value)) LethalMenu.Instance.LMUsers[r.Match(m)?.Value] = Settings.version;
+                }
                 await Task.Delay(15000);
-            }
-        }
-
-        public static void CheckForLMUser()
-        {
-            if (HUDManager.Instance == null) return;
-            if (LethalMenu.localPlayer == null) return;
-            var regex = new Regex(@"\b\d{17,19}\b");
-            var removemessages = new List<string>();
-            foreach (var messages in HUDManager.Instance.ChatMessageHistory)
-            {
-                if (messages == null) continue;
-                string steamid = regex.Match(messages).Value;
-                if (string.IsNullOrEmpty(steamid)) continue;
-                var user = LethalMenu.Instance.LMUsers.Find(u => u.SteamId == steamid);
-                if (user == null) LethalMenu.Instance.LMUsers.Add(new LMUserList(steamid, Settings.version));
-                else user.Version = Settings.version;
-                removemessages.Add(messages);
-            }
-
-            foreach (var message in removemessages)
-            {
-                if (message == null) continue;
-                HUDManager.Instance.ChatMessageHistory.Remove(message);
-            }
-        }
-
-        public class LMUserList
-        {
-            public string SteamId { get; set; }
-            public string Version { get; set; }
-
-            public LMUserList(string steamId, string version)
-            {
-                SteamId = steamId;
-                Version = version;
             }
         }
     }

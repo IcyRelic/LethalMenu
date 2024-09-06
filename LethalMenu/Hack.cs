@@ -65,12 +65,13 @@ namespace LethalMenu
         BridgeNeverFalls,
         DeleteHeldItem,
         DropAllItems,
-        ExtraItemSlots,
         UnlimitedPresents,
         VoteShipLeaveEarly,
         VehicleGodMode,
         EggsNeverExplode,
         UnlockAllDoors,
+        OpenAllBigDoors,
+        CloseAllBigDoors,
         GrabItemsBeforeGame,
         ClickTeleport,
         ClickTeleportAction,
@@ -100,6 +101,7 @@ namespace LethalMenu
         Disconnect,
         Message,
         ResetShip,
+        ItemSlots,
 
         /** Troll Tab **/
         ToggleShipLights,
@@ -129,7 +131,6 @@ namespace LethalMenu
         TeleportAllItems,
         TeleportOneItem,
         EjectEveryone,
-        DeleteTerminal,
         OpenShipDoorSpace,
         BerserkAllTurrets,
         PJSpammer,
@@ -155,6 +156,7 @@ namespace LethalMenu
         NoFog,
         NoVisor,
         NoFieldOfDepth,
+        FOV,
 
         /** Player Tab **/
         KillPlayer,
@@ -269,7 +271,6 @@ namespace LethalMenu
             {Hack.NoFieldOfDepth, false},
             {Hack.NeverLoseScrap, false},
             {Hack.NoFlash, false},
-            {Hack.ExtraItemSlots, false},
             {Hack.TeleportWithItems, false},
             {Hack.OpenShipDoorSpace, false},
             {Hack.UnlimitedPresents, false},
@@ -353,12 +354,10 @@ namespace LethalMenu
             {Hack.UnlockAllDoors, (Action) HackExecutor.UnlockAllDoors},
             {Hack.DropAllItems, (Action) HackExecutor.DropAllItems},
             {Hack.BerserkAllTurrets, (Action) HackExecutor.BerserkAllTurrets},
-            {Hack.DeleteTerminal, (Action) HackExecutor.DeleteTerminal},
             {Hack.ResetShip, (Action) HackExecutor.ResetShip},
             {Hack.ToggleAllDisplays, (Action) HackExecutor.ToggleAllDisplays},
             {Hack.ToggleTerminalSound, (Action) HackExecutor.ToggleTerminalSound},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
-            {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport}
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -544,27 +543,6 @@ namespace LethalMenu
             }
         }
 
-        public static void UnlockAllDoors()
-        {
-            foreach (var door in Object.FindObjectsOfType<DoorLock>().Where(doorLock => doorLock != null && doorLock.isLocked && !doorLock.isPickingLock).ToList())
-            {
-                door.UnlockDoorSyncWithServer();
-            }
-            HUDManager.Instance.DisplayTip("Lethal Menu", "All Doors Unlocked");
-        }
-
-        public static void ClickTeleport()
-        {
-            if (!Hack.ClickTeleport.IsEnabled()) return;
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-
-            RaycastHit hitInfo;
-            if (Physics.Raycast(new Ray(CameraManager.ActiveCamera.transform.position, CameraManager.ActiveCamera.transform.forward), out hitInfo, 1000f, LayerMask.GetMask("Room")))
-            {
-                player.TeleportPlayer(hitInfo.point);
-            }
-        }
-
         public static void ModExperience(int amt, ActionType type)
         {
             int newAmt = amt;
@@ -601,7 +579,6 @@ namespace LethalMenu
         public static void ModScrap(int value, int type) => RoundHandler.ModScrap(value, type);
         public static void FlickerLights() => RoundHandler.FlickerLights();
         public static void SpawnMoreScrap() => RoundHandler.SpawnScrap();
-        public static void DeleteTerminal() => RoundHandler.DeleteTerminal();
         public static void ResetShip() => RoundHandler.ResetShip();
         public static void UnlockUnlockable(Unlockable unlockable, bool all, bool enabled) => RoundHandler.BuyUnlockable(unlockable, all, enabled);
         public static void UnlockUnlockableSuit(Unlockable unlockablesuit, bool wearbuy, bool buy, bool sound) => RoundHandler.BuyUnlockableSuit(unlockablesuit, wearbuy, buy, sound);
@@ -647,5 +624,8 @@ namespace LethalMenu
         public static void DropAllItems() => RoundHandler.DropAllItems();
         public static void ToggleTerminalSound() => RoundHandler.ToggleTerminalSound();
         public static void DeleteHeldItem() => RoundHandler.DeleteHeldItem();
+        public static void UnlockAllDoors() => RoundHandler.UnlockAllDoors();
+        public static void OpenAllBigDoors() => RoundHandler.OpenAllBigDoors();
+        public static void CloseAllBigDoors() => RoundHandler.CloseAllBigDoors();
     }
 }

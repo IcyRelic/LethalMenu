@@ -57,6 +57,15 @@ namespace LethalMenu.Cheats
         {
             if (enemy.isEnemyDead) return;
             EnemyControl.enemy = enemy;
+
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller) || controller == null)
+            {
+                Hack.EnemyControl.SetToggle(false);
+                StopControl();
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"No Controller for enemy :C");
+                return;
+            }
+
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             ControllerInstance = new GameObject("EnemyController");
             ControllerInstance.transform.position = enemy.transform.position;
@@ -102,7 +111,7 @@ namespace LethalMenu.Cheats
             if (enemy == null) return;
             if (!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
             if (Freecam.camera == null) return;
-
+            if (HUDManager.Instance == null) return;
             if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
 
             if (controller == null)
@@ -116,11 +125,10 @@ namespace LethalMenu.Cheats
                 return;
             }
 
-            if (!EnemyControllers.ContainsKey(enemy.GetType()))
-            {
-                StopControl();
-                HUDManager.Instance.DisplayTip("Lethal Menu", $"No Controller for enemy :C");
-            }
+            HUDManager.Instance.Reflect().SetValue("holdButtonToEndGameEarlyHoldTime", 0f);
+            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(value: false);
+            HUDManager.Instance.holdButtonToEndGameEarlyText.text = "";
+            HUDManager.Instance.holdButtonToEndGameEarlyVotesText.text = "";
 
             if (!(bool)enemy.agent) return;
 
@@ -180,9 +188,9 @@ namespace LethalMenu.Cheats
 
         private static void UpdateEnemyPosition()
         {
+            if (enemy == null || movement == null || mouse == null) return;
             Vector3 euler = enemy.transform.eulerAngles;
             euler.y = mouse.transform.eulerAngles.y;
-
             enemy.transform.eulerAngles = euler;
             enemy.transform.position = movement.transform.position;
         }

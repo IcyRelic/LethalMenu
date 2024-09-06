@@ -13,6 +13,8 @@ namespace LethalMenu.Menu.Popup
     {
         private Vector2 scrollPos = Vector2.zero;
 
+        public static ButtonControl bind = Hack.OpenMenu.GetKeyBind();
+        public static string kb = Hack.OpenMenu.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
         private int selectedLanguage = -1;
         private string[] languages;
         private bool disableBtns = false;
@@ -32,9 +34,7 @@ namespace LethalMenu.Menu.Popup
             GUILayout.Space(20f);
             GUILayout.BeginVertical();
             UI.Label("FirstSetup.SelectKeybind");
-            ButtonControl bind = Hack.OpenMenu.GetKeyBind();
-            string kb = Hack.OpenMenu.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
-
+         
             UI.Label("FirstSetup.Keybind", $"{kb}");
             GUILayout.Space(20f);
 

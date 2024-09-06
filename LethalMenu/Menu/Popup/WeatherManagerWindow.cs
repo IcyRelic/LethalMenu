@@ -25,19 +25,17 @@ namespace LethalMenu.Menu.Popup
 
             if ((bool)StartOfRound.Instance)
             {
-                SelectableLevel level = StartOfRound.Instance.currentLevel;
                 UI.Header("MoonManager.CurrentMoon");
                 UI.Label("MoonManager.Moon", StartOfRound.Instance.currentLevel.PlanetName);
                 UI.Label("MoonManager.Weather", StartOfRound.Instance.currentLevel.currentWeather.ToString());
-                LevelWeatherType[] weathers = (LevelWeatherType[])Enum.GetValues(typeof(LevelWeatherType));
-                List<LevelWeatherType> weathertypes = new List<LevelWeatherType>(weathers);
-                foreach (var weather in weathertypes)
+                List<LevelWeatherType> weathertypes = new((LevelWeatherType[])Enum.GetValues(typeof(LevelWeatherType))); 
+                weathertypes.ForEach(weather =>
                 {
                     UI.Button(weather.ToString(), () => {
-                        level.currentWeather = weather;
-                        HUDManager.Instance.DisplayTip($"Lethal Menu", $"Weather will be {level.currentWeather} next moon!");
-                    }, "WeatherManager.Change");
-                }
+                        StartOfRound.Instance.currentLevel.currentWeather = weather;
+                        HUDManager.Instance.DisplayTip($"Lethal Menu", $"{StartOfRound.Instance.currentLevel.PlanetName} weather set to {StartOfRound.Instance.currentLevel.currentWeather}!");
+                    }, "General.Set");
+                });
             }
             GUILayout.EndScrollView();
             GUI.DragWindow();
