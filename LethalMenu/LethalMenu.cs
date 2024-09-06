@@ -33,6 +33,7 @@ namespace LethalMenu
         public static List<InteractTrigger> interactTriggers = new List<InteractTrigger>();
         public static List<SpikeRoofTrap> spikeRoofTraps = new List<SpikeRoofTrap>();
         public static List<MoldSpore> vainShrouds = new List<MoldSpore>();
+        public static List<AnimatedObjectTrigger> animatedTriggers = new List<AnimatedObjectTrigger>();
         public static HangarShipDoor shipDoor;
         public static BreakerBox breaker;
         public static PlayerControllerB localPlayer;
@@ -194,6 +195,7 @@ namespace LethalMenu
                 CollectObjects(bigDoors, obj => obj.isBigDoor); 
                 CollectObjects(doorLocks);
                 CollectObjects(spikeRoofTraps);
+                CollectObjects(animatedTriggers);
 
                 shipDoor = Object.FindObjectOfType<HangarShipDoor>();
                 breaker = Object.FindObjectOfType<BreakerBox>();

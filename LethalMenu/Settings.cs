@@ -114,6 +114,8 @@ namespace LethalMenu
         public static float f_carAcceleration = 5f;
         public static float f_carMaxSpeed = 7f;
         public static float f_brakeSpeed = 7f;
+        public static float f_pjSpamSpeed = 0.5f;
+
 
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
@@ -266,6 +268,8 @@ namespace LethalMenu
                 hackSettings["HackHighlight"] = b_HackHighlight.ToString();
                 hackSettings["FOV"] = f_fov.ToString();
                 hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
+                hackSettings["PJSpamSpeed"] = f_pjSpamSpeed.ToString();
+
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
                 chams["Enemy"] = b_chamsEnemy.ToString();
@@ -320,6 +324,7 @@ namespace LethalMenu
                 settings["TextboxWidth"] = i_textboxWidth.ToString();
                 settings["MenuAlpha"] = f_menuAlpha.ToString();
                 settings["DebugMode"] = DebugMode.ToString();
+
 
                 json["Theme"] = Theme.name;
                 json["Language"] = Localization.Language.Name;
@@ -417,7 +422,8 @@ namespace LethalMenu
                         b_DisplayLMUsers = bool.Parse(DisplayLMUsersToken.ToString());
                     if (hackSettings.TryGetValue("FOV", out JToken fovToken))
                         f_fov = float.Parse(fovToken.ToString());
-
+                    if (hackSettings.TryGetValue("PJSpamSpeed", out JToken pjSpamSpeedToken))
+                        f_pjSpamSpeed = float.Parse(pjSpamSpeedToken.ToString());
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {

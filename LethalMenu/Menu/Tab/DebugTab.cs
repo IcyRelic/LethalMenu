@@ -111,6 +111,27 @@ namespace LethalMenu.Menu.Tab
                     t.Interact(LethalMenu.localPlayer.transform);
                 });
             }
+
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("PJ Plushie");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                string objName = "PlushiePJManContainer(Clone)";
+                GameObject obj = GameObject.Find(objName);
+
+                AnimatedObjectTrigger trigger = obj.GetComponentInChildren<AnimatedObjectTrigger>();
+
+                trigger.TriggerAnimation(LethalMenu.localPlayer);
+
+                Debug.Log("Triggered Animation");
+                Debug.Log(trigger.transform.parent.gameObject.name);
+
+                
+
+            }
+
             GUILayout.EndHorizontal();
             GUILayout.EndScrollView(); 
         }
