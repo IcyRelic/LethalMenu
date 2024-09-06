@@ -11,7 +11,7 @@ namespace LethalMenu.Cheats
             if (HUDManager.Instance == null || !Hack.ToggleTip.IsEnabled()) return;
             string ToggleKey = $"Toggle Menu : {FirstSetupManagerWindow.kb}";
             TextMeshProUGUI ToggleTipLine = HUDManager.Instance.controlTipLines.FirstOrDefault(l => l.text.Contains(ToggleKey));
-            if (ToggleTipLine != null) ToggleTipLine.text = "";
+            if (ToggleTipLine != null || !Hack.ToggleTip.IsEnabled()) ToggleTipLine.text = "";
             TextMeshProUGUI FirstEmptyLine = HUDManager.Instance.controlTipLines.FirstOrDefault(l => string.IsNullOrEmpty(l.text));
             if (FirstEmptyLine != null) FirstEmptyLine.text = ToggleKey;
         }
