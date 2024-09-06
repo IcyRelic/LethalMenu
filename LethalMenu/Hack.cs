@@ -287,7 +287,9 @@ namespace LethalMenu
             {Hack.ToggleTerminalSound, false},
             {Hack.GrabItemsBeforeGame, false},
             {Hack.ClickTeleport, false},
-            {Hack.PJSpammer, false}
+            {Hack.PJSpammer, false},
+            {Hack.ItemSlots, false},
+            {Hack.FOV, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -358,6 +360,7 @@ namespace LethalMenu
             {Hack.ToggleAllDisplays, (Action) HackExecutor.ToggleAllDisplays},
             {Hack.ToggleTerminalSound, (Action) HackExecutor.ToggleTerminalSound},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
+            {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -540,6 +543,18 @@ namespace LethalMenu
                         HUDManager.Instance.DisplayTip("Lethal Menu", type + " ( " + obj.objectCode + " ) has been called from the terminal.");
                     }
                 }
+            }
+        }
+
+        public static void ClickTeleport()
+        {
+            if (!Hack.ClickTeleport.IsEnabled()) return;
+            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+
+            RaycastHit hitInfo;
+            if (Physics.Raycast(new Ray(CameraManager.ActiveCamera.transform.position, CameraManager.ActiveCamera.transform.forward), out hitInfo, 1000f, LayerMask.GetMask("Room")))
+            {
+                player.TeleportPlayer(hitInfo.point);
             }
         }
 

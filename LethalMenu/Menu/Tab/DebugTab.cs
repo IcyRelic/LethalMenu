@@ -112,7 +112,7 @@ namespace LethalMenu.Menu.Tab
                 });
             }
 
-
+            GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Label("PJ Plushie");
             GUILayout.FlexibleSpace();

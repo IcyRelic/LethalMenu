@@ -35,6 +35,8 @@ namespace LethalMenu.Manager
         {
             PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
 
+            if (player.gameplayCamera is null) return Camera.main;
+
             return player.isPlayerDead ? StartOfRound.Instance.spectateCamera : player.gameplayCamera;
         }
 
