@@ -100,7 +100,7 @@ namespace LethalMenu.Cheats
         {
             DisplayObjects(
                 LethalMenu.turrets.Where(t => t != null && t.IsSpawned),
-                turret => "Turret [ " + turret.GetComponent<TerminalAccessibleObject>().objectCode + " ]",
+                turret => $"Turret [ {turret.GetComponent<TerminalAccessibleObject>().objectCode} ]",
                 turret => Settings.c_turretESP
             );
         }
@@ -136,7 +136,7 @@ namespace LethalMenu.Cheats
         {
             DisplayObjects(
                 LethalMenu.landmines.Where(m => m != null && m.IsSpawned && !m.hasExploded),
-                mine => "Landmine [ " + mine.GetComponent<TerminalAccessibleObject>().objectCode + " ]",
+                mine => $"Landmine [ {mine.GetComponent<TerminalAccessibleObject>().objectCode} ]",
                 mine => Settings.c_landmineESP
             );
         }
