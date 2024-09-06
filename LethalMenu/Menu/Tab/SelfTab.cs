@@ -40,6 +40,7 @@ namespace LethalMenu.Menu.Tab
             UI.HackSlider(Hack.FastClimb, "SelfTab.FastClimb", Settings.f_climbSpeed.ToString("0.0"), ref Settings.f_climbSpeed, Settings.f_defaultClimbSpeed, Settings.f_defaultClimbSpeed + 20);
             UI.HackSlider(Hack.SuperSpeed, "SelfTab.SuperSpeed", Settings.f_movementSpeed.ToString("0.0"), ref Settings.f_movementSpeed, Settings.f_defaultMovementSpeed, Settings.f_defaultMovementSpeed + 20);
             UI.HackSlider(Hack.NoClip, "SelfTab.NoClip", Settings.f_noclipSpeed.ToString("0.0"), ref Settings.f_noclipSpeed, 10f, 30f);
+            UI.Hack(Hack.ClickTeleport, "SelfTab.ClickTeleport");
             UI.SliderAction("SelfTab.ItemSlots", Settings.i_slots.ToString(), ref Settings.i_slots, 1, 32, 4);
             UI.Hack(Hack.ExtraItemSlots, ["SelfTab.ExtraItemSlots", "General.RejoinRequired"]);
             UI.Hack(Hack.NightVision, "SelfTab.NightVision");

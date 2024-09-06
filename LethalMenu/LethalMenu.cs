@@ -149,8 +149,9 @@ namespace LethalMenu
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin | Discord.gg/HzxykGKA6P |";
-                    LethalMenuTitle += Settings.b_FPSCounter ? $" FPS: {fps}" : "";
+                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin";
+
+                    if (Settings.b_FPSCounter) LethalMenuTitle += $" | FPS: {fps}";
                     if (Settings.b_Panic) LethalMenuTitle = "";
                     VisualUtil.DrawString(new Vector2(5f, 2f), LethalMenuTitle, Settings.c_primary, centered: false, bold: true, fontSize: 14);
                     if (MenuUtil.resizing)

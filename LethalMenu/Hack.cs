@@ -72,6 +72,8 @@ namespace LethalMenu
         EggsNeverExplode,
         UnlockAllDoors,
         GrabItemsBeforeGame,
+        ClickTeleport,
+        ClickTeleportAction,
 
         /** Server Tab **/
         ToggleAllDisplays,
@@ -282,6 +284,7 @@ namespace LethalMenu
             {Hack.UnlimitedZapGun, false},
             {Hack.ToggleTerminalSound, false},
             {Hack.GrabItemsBeforeGame, false},
+            {Hack.ClickTeleport, false}
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -353,6 +356,7 @@ namespace LethalMenu
             {Hack.ToggleAllDisplays, (Action) HackExecutor.ToggleAllDisplays},
             {Hack.ToggleTerminalSound, (Action) HackExecutor.ToggleTerminalSound},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
+            {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport}
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -360,7 +364,8 @@ namespace LethalMenu
             {Hack.OpenMenu, Keyboard.current.insertKey},
             {Hack.ToggleCursor, Keyboard.current.leftAltKey},
             {Hack.UnloadMenu, Keyboard.current.pauseKey},
-            {Hack.UnlockDoorAction, Keyboard.current.f1Key}
+            {Hack.UnlockDoorAction, Keyboard.current.f1Key},
+            {Hack.ClickTeleportAction, Mouse.current.middleButton}
         };
 
         public static void Execute(this Hack hack, params object[] param)
@@ -544,6 +549,18 @@ namespace LethalMenu
                 door.UnlockDoorSyncWithServer();
             }
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Doors Unlocked");
+        }
+
+        public static void ClickTeleport()
+        {
+            if (!Hack.ClickTeleport.IsEnabled()) return;
+            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
+
+            RaycastHit hitInfo;
+            if (Physics.Raycast(new Ray(CameraManager.ActiveCamera.transform.position, CameraManager.ActiveCamera.transform.forward), out hitInfo, 1000f, LayerMask.GetMask("Room")))
+            {
+                player.TeleportPlayer(hitInfo.point);
+            }
         }
 
         public static void ModExperience(int amt, ActionType type)

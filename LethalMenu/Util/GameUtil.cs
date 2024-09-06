@@ -101,6 +101,13 @@ namespace LethalMenu.Util
             }
         }
 
+        public static RaycastHit StraightCastForward(this Transform transform, float distance = 1000f)
+        {
+            RaycastHit hit;
+            Physics.Raycast(transform.position, transform.forward, out hit, distance);
+            return hit;
+        }
+
         public static void RenderPlayerModels()
         {
             PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;

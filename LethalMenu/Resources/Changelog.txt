@@ -1,4 +1,5 @@
 v1.4.4 
+- Added Click Teleport - Teleport to where you click
 - Added Peer 2 Peer Communication - Adds [LethalMenu {version}] before their names in players tab (1.4.4+) 
 - Added New Enemies To Cham Toggles 
 - Added Grab Objects Before Game - You can pick up items
