@@ -145,10 +145,7 @@ namespace LethalMenu.Cheats
         {
             DisplayObjects(
                 LethalMenu.players.Where(p => p != null && !p.isPlayerDead && !p.IsLocalPlayer && !p.disconnectedMidGame && p.playerClientId != LethalMenu.localPlayer.playerClientId),
-                player =>
-                {
-                    return $"{(Settings.b_VCDisplay && player.voicePlayerState != null && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_HPDisplay ? $"[HP: {player.health}] " : "")}{(player.playerUsername ?? "Unknown")}";
-                },
+                player => $"{(Settings.b_VCDisplay && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_HPDisplay ? $"[HP: {player.health}] " : "")}{player.playerUsername}",
                 player => Settings.c_playerESP
             );
         }
@@ -195,7 +192,7 @@ namespace LethalMenu.Cheats
         {
             DisplayObjects(
                 LethalMenu.bigDoors.Where(d => d != null && d.isBigDoor),
-                door => "Big Door [ " + door.objectCode + " ]",
+                door => $"Big Door [ {door.objectCode} ]",
                 door => Settings.c_bigDoorESP
             );
         }
