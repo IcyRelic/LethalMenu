@@ -86,8 +86,10 @@ namespace LethalMenu.Menu.Tab
             UI.TextboxAction(["ServerTab.ScrapValue", "General.HostTag"], ref s_scrapValue, @"[^0-9]", 3,
                 new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapValue), 1))
             );
-            UpdatePlayerOptions();
-            UI.Select("ServerTab.Message", ref i_messageindex, ref s_message, @"", 50, options.ToArray());            
+
+            UpdatePlayerOptions(false);
+
+            UI.Select("ServerTab.Message", ref i_messageindex, ref s_message, @"", 50, options.ToArray());
 
             UI.Hack(Hack.StartGame, "ServerTab.ForceLand");
             UI.Hack(Hack.EndGame, "ServerTab.ForceLeave");
@@ -128,18 +130,16 @@ namespace LethalMenu.Menu.Tab
             UI.Toggle("SuitManager.Title", ref HackMenu.Instance.SuitManagerWindow.isOpen, "General.Close", "General.Open");
         }
 
-        public static void ClearPlayerOptions()
-        {
-            i_messageindex = 0;
-            options = options.Take(4).ToList();
-        }
-
-        public static void UpdatePlayerOptions()
+        public static void UpdatePlayerOptions(bool clear)
         {
             options = options.Take(4).ToList();
-            options.AddRange(LethalMenu.players.Select(player =>
-                new UIOption(player.playerUsername, () => Hack.Message.Execute(s_message, 4, (int)player.actualClientId)))
-            );
+            if (clear) i_messageindex = 0;
+            if (!clear)
+            {
+                options.AddRange(LethalMenu.players.Select(player =>
+                    new UIOption(player.playerUsername, () => Hack.Message.Execute(s_message, 4, (int)player.actualClientId)))
+                );
+            }
         }
     }
 }

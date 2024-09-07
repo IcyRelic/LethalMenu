@@ -11,6 +11,7 @@ using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 using System.Linq;
 using System.Reflection;
+using Unity.Netcode;
 
 
 namespace LethalMenu
@@ -26,7 +27,7 @@ namespace LethalMenu
             Freecam.Reset();
             LethalMenu.Instance.LMUsers.Clear();
             Shoplifter.Clear();
-            ServerTab.ClearPlayerOptions();
+            ServerTab.UpdatePlayerOptions(true);
         }
 
         [HarmonyPostfix]
