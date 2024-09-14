@@ -175,9 +175,9 @@ namespace LethalMenu.Handler
 
         private void HandleLureRadMech()
         {
-            RadMechAI radmach = enemy as RadMechAI;
-            radmach.SetChargingForwardClientRpc(true);
-            radmach.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+            RadMechAI radmech = enemy as RadMechAI;
+            radmech.SetChargingForwardClientRpc(true);
+            radmech.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
 
         private void HandleLureCaveDweller()

@@ -2,7 +2,20 @@ namespace LethalMenu.Handler.EnemyControl
 {
     internal class RadMechController : IEnemyController<RadMechAI>
     {
-        public string GetPrimarySkillName(RadMechAI _) => "";
+        // This isn't possible atm
+        public void OnTakeControl(RadMechAI enemy)
+        {
+        }
+
+        public void OnReleaseControl(RadMechAI enemy)
+        {
+        }
+
+        public string GetPrimarySkillName(RadMechAI _) => "Fire";
+
+        public void UsePrimarySkill(RadMechAI enemy)
+        {
+        }
 
         public string GetSecondarySkillName(RadMechAI _) => "";
 

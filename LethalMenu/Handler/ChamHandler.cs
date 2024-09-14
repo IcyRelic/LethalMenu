@@ -17,6 +17,7 @@ namespace LethalMenu.Handler
         private static Dictionary<int, Material[]> materials = new Dictionary<int, Material[]>();
         private static Material m_chamMaterial;
         private static int _color;
+        public static bool chamsenabled = false;
 
         private Object @object;
 
@@ -88,7 +89,7 @@ namespace LethalMenu.Handler
    
             if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap; 
             if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
-            if (e && distance >= Settings.f_chamDistance) ApplyCham();
+            if (chamsenabled && e && distance >= Settings.f_chamDistance) ApplyCham();
             else RemoveCham();
 
             if ((@object is GrabbableObject && ((GrabbableObject)@object).isHeld) 
@@ -150,6 +151,11 @@ namespace LethalMenu.Handler
                 Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
                 materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => { materials.Remove(k); cnt++; }) ;
             }
+        }
+
+        public static void ChamsSetEnabled(bool enabled)
+        {
+            chamsenabled = enabled;
         }
     }
 

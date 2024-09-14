@@ -114,9 +114,11 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(CaveDwellerAI), nameof(CaveDwellerAI.OnCollideWithPlayer))]
         public static bool PrefixCaveDwellerAI(CaveDwellerAI __instance, Collider other)
         {
+            if (LethalMenu.localPlayer == null) return true;
+
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-            if (LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+            if (player == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
 
             return !Hack.GodMode.IsEnabled();
         }

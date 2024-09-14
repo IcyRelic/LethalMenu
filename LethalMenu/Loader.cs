@@ -2,6 +2,8 @@ using System.IO;
 using System.Reflection;
 using System;
 using UnityEngine;
+using System.Linq;
+using LethalMenu.Handler;
 using Object = UnityEngine.Object;
 
 
@@ -16,6 +18,7 @@ namespace LethalMenu
         {
             if (Load == null)
             {
+                ChamHandler.ChamsSetEnabled(true);
                 LoadHarmony();
                 Loader.Load = new GameObject();
                 Load.AddComponent<LethalMenu>();
@@ -34,6 +37,13 @@ namespace LethalMenu
             harmonyLoaded = true;
         }
 
-        public static void Unload() => Object.Destroy(Load);
+        public static void Unload()
+        {
+            HackExtensions.ToggleFlags.Keys.ToList().ForEach(h => HackExtensions.ToggleFlags[h] = false);
+            ChamHandler.ChamsSetEnabled(false);
+            if (Cursor.visible) Hack.ToggleCursor.Execute();
+            LethalMenu.harmony.UnpatchAll("LethalMenu");
+            Object.Destroy(Load);
+        }
     }
 }

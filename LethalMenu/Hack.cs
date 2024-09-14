@@ -35,6 +35,7 @@ namespace LethalMenu
         LootThroughWalls,
         InteractThroughWalls,
         Reach,
+        AntiGhostGirl,
         UnlockDoors,
         UnlockDoorAction,
         SuperSpeed,
@@ -172,9 +173,6 @@ namespace LethalMenu
         ExplodeClosestMine,
         ForceBleed,
         EnemyControl,
-
-        /** Player Tab **/
-        ToggleTip,
     }
 
     public static class HackExtensions
@@ -293,7 +291,7 @@ namespace LethalMenu
             {Hack.PJSpammer, false},
             {Hack.ItemSlots, false},
             {Hack.FOV, false},
-            {Hack.ToggleTip, true},
+            {Hack.AntiGhostGirl, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()

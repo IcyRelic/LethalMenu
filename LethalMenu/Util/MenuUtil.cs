@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace LethalMenu.Util
 {
@@ -31,12 +32,8 @@ namespace LethalMenu.Util
         public static void WarpCursor()
         {
             float currentX = HackMenu.Instance.windowRect.x + HackMenu.Instance.windowRect.width;
-            //get an inverted screen position for the height
             float currentY = Screen.height - (HackMenu.Instance.windowRect.y + HackMenu.Instance.windowRect.height);
-
             Mouse.current.WarpCursorPosition(new Vector2(currentX, currentY));
-
-
         }
 
         public static void ResizeMenu()
@@ -98,13 +95,13 @@ namespace LethalMenu.Util
             while (HUDManager.Instance == null) await Task.Delay(10000);
             while (LethalMenu.localPlayer == null) await Task.Delay(10000);
             HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}, {Settings.version}</size>");
-            Regex r = new Regex(@"\b\d{17,19}\b");
+            Regex r = new(@"\b\d{17,19}\b");
             while (true)
             {
-                foreach (var m in HUDManager.Instance.ChatMessageHistory)
-                {
-                    if (!string.IsNullOrEmpty(r.Match(m)?.Value)) LethalMenu.Instance.LMUsers[r.Match(m)?.Value] = Settings.version;
-                }
+                HUDManager.Instance.ChatMessageHistory.ToList().ForEach(m =>
+                { 
+                    if (!string.IsNullOrEmpty(r.Match(m)?.Value)) LethalMenu.Instance.LMUsers[r.Match(m).Value] = Settings.version; 
+                });
                 await Task.Delay(15000);
             }
         }

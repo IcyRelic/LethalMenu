@@ -1,17 +1,14 @@
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMenu.Cheats;
-using UnityEngine;
 using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
 using Steamworks;
 using System.Collections.Generic;
+using LethalMenu.Menu.Core;
 using System.Reflection.Emit;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
-using System.Linq;
-using System.Reflection;
-using Unity.Netcode;
 
 
 namespace LethalMenu
@@ -28,6 +25,7 @@ namespace LethalMenu
             LethalMenu.Instance.LMUsers.Clear();
             Shoplifter.Clear();
             ServerTab.UpdatePlayerOptions(true);
+            MenuFragment.SetEnabled(false);
         }
 
         [HarmonyPostfix]
@@ -35,6 +33,7 @@ namespace LethalMenu
         public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
         {
             MenuUtil.LMUser();
+            MenuFragment.SetEnabled(true);
         }
 
         [HarmonyPostfix]

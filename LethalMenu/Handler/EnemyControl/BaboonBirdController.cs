@@ -29,22 +29,11 @@ namespace LethalMenu.Handler.EnemyControl
 
         public void UsePrimarySkill(BaboonBirdAI enemy)
         {
-            if (enemy.heldScrap is null && enemy.FindNearbyItem() is GrabbableObject grabbable)
-            {
-                GrabItemAndSync(enemy, grabbable);
-                return;
-            }
-            if (enemy.heldScrap is ShotgunItem shotgun)
-            {
-               shotgun.ShootGunAsEnemy(enemy);
-            }
+            if (enemy.heldScrap == null && enemy.FindNearbyItem() is GrabbableObject grabbable) GrabItemAndSync(enemy, grabbable);
+            if (enemy.heldScrap is ShotgunItem shotgun) shotgun.ShootGunAsEnemy(enemy);
         }
 
-        public void UseSecondarySkill(BaboonBirdAI enemy)
-        {
-            if (enemy.heldScrap is null) return;
-            enemy.Reflect().Invoke("DropHeldItemAndSync");
-        }
+        public void UseSecondarySkill(BaboonBirdAI enemy) => enemy.heldScrap?.Reflect().Invoke("DropHeldItemAndSync");
 
         public string GetPrimarySkillName(BaboonBirdAI enemy) => enemy.heldScrap is not null ? "Use item" : "Grab Item";
 
@@ -54,10 +43,9 @@ namespace LethalMenu.Handler.EnemyControl
 
         public void GrabItemAndSync(BaboonBirdAI enemy, GrabbableObject item)
         {
-            NetworkObject netItem = item.GetComponent<NetworkObject>();
-            if (enemy.heldScrap != null || item == null || netItem == null) return;
+            if (enemy.heldScrap != null || item?.GetComponent<NetworkObject>() is not NetworkObject networkitem) return;
             enemy.SwitchToBehaviourServerRpc(1);
-            enemy.Reflect().Invoke("GrabItemAndSync", netItem);
+            enemy.Reflect().Invoke("GrabItemAndSync", networkitem);
         }
 
         public bool CanUseEntranceDoors(BaboonBirdAI _) => false;

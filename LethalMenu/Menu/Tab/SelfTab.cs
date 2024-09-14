@@ -40,8 +40,8 @@ namespace LethalMenu.Menu.Tab
             UI.HackSlider(Hack.FastClimb, "SelfTab.FastClimb", Settings.f_climbSpeed.ToString("0.0"), ref Settings.f_climbSpeed, Settings.f_defaultClimbSpeed, Settings.f_defaultClimbSpeed + 20);
             UI.HackSlider(Hack.SuperSpeed, "SelfTab.SuperSpeed", Settings.f_movementSpeed.ToString("0.0"), ref Settings.f_movementSpeed, Settings.f_defaultMovementSpeed, Settings.f_defaultMovementSpeed + 20);
             UI.HackSlider(Hack.NoClip, "SelfTab.NoClip", Settings.f_noclipSpeed.ToString("0.0"), ref Settings.f_noclipSpeed, 10f, 30f);
-            UI.Hack(Hack.ClickTeleport, "SelfTab.ClickTeleport");
             UI.HackSlider(Hack.ItemSlots, ["SelfTab.ItemSlots", "General.RejoinRequired"], Settings.f_slots.ToString("0.0"), ref Settings.f_slots, 1f, 20f);
+            UI.Hack(Hack.ClickTeleport, "SelfTab.ClickTeleport");
             UI.Hack(Hack.NightVision, "SelfTab.NightVision");
             UI.Hack(Hack.UnlimitedStamina, "SelfTab.UnlimitedStamina");
             UI.Hack(Hack.UnlimitedBattery, "SelfTab.UnlimitedBattery");
@@ -53,6 +53,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.InteractThroughWalls, "SelfTab.InteractThroughWalls");
             UI.Hack(Hack.Reach, "SelfTab.Reach");
             UI.Hack(Hack.Weight, "SelfTab.Weight");
+            UI.Hack(Hack.AntiGhostGirl, "SelfTab.AntiGhostGirl");
             UI.Hack(Hack.UnlockDoors, "SelfTab.UnlockDoors");
             UI.Hack(Hack.BuildAnywhere, "SelfTab.BuildAnywhere");
             UI.Hack(Hack.FreeCam, "SelfTab.FreeCam");
