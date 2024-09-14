@@ -137,6 +137,7 @@
 	"PlayerTab.Insanity": "Уровень тревоги:",
 	"PlayerTab.Inventory": "Предметы",
 	"PlayerTab.IsHost": "Хост",
+	"PlayerTab.ForceBleed": "Истекать кровью",
 	"ServerTab.Title": "Игра",
 	"ServerTab.InfoDisplay": "Вывод информации",
 	"ServerTab.DisplayBodyCount": "Показывать кол-во погибших",
