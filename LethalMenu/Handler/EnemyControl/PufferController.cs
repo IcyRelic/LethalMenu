@@ -25,5 +25,7 @@
         public string GetSecondarySkillName(PufferAI _) => "Smoke";
 
         public float InteractRange(PufferAI _) => 2.5f;
+
+        public bool CanUseEntranceDoors(PufferAI _) => false;
     }
 }

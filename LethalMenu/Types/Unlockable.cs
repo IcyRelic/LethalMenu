@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Unity.Netcode;
+using UnityEngine;
 
 namespace LethalMenu.Types
 {
@@ -17,6 +15,7 @@ namespace LethalMenu.Types
         Terminal = 16,
         **/
 
+        OrangeSuit = 0,
 
         GreenSuit = 1,
         HazardSuit = 2,
@@ -36,6 +35,10 @@ namespace LethalMenu.Types
         WelcomeMat = 21,
         Goldfish = 22,
         PlushiePajamaMan = 23,
+        PurpleSuit = 24,
+        BeeSuit = 25,
+        BunnySuit = 26,
+        DiscoBall = 27,
     }
 
     public static class UnlockableExtensions
@@ -45,20 +48,18 @@ namespace LethalMenu.Types
             return StartOfRound.Instance.unlockablesList.unlockables[(int)unlockable];
         }
 
-        public static void SetLocked(this Unlockable unlockable)
+        public static void SetLocked(this Unlockable unlockable, bool locked)
         {
             UnlockableItem item = unlockable.GetItem();
-            item.alreadyUnlocked = false;
-            item.hasBeenUnlockedByPlayer = false;
+            item.alreadyUnlocked = locked;
+            item.hasBeenUnlockedByPlayer = locked;
         }
 
         public static void Buy(this Unlockable unlockable, int credits)
         {
-            UnlockableItem item = unlockable.GetItem();
-
-            unlockable.SetLocked();
-
-            StartOfRound.Instance.BuyShipUnlockableServerRpc((int) unlockable, credits);
+            unlockable.SetLocked(false);
+            StartOfRound.Instance.BuyShipUnlockableServerRpc((int)unlockable, credits);
+            StartOfRound.Instance.SyncShipUnlockablesServerRpc();
         }
     }
 }

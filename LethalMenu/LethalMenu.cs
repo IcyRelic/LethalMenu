@@ -8,8 +8,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine.Rendering;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using LethalMenu.Themes;
+using LethalMenu.Menu.Popup;
 
 namespace LethalMenu
 {
@@ -28,47 +31,58 @@ namespace LethalMenu
         public static List<DoorLock> doorLocks = new List<DoorLock>();
         public static List<ShipTeleporter> teleporters = new List<ShipTeleporter>();
         public static List<InteractTrigger> interactTriggers = new List<InteractTrigger>();
+        public static List<SpikeRoofTrap> spikeRoofTraps = new List<SpikeRoofTrap>();
+        public static List<MoldSpore> vainShrouds = new List<MoldSpore>();
+        public static List<AnimatedObjectTrigger> animatedTriggers = new List<AnimatedObjectTrigger>();
         public static HangarShipDoor shipDoor;
         public static BreakerBox breaker;
         public static PlayerControllerB localPlayer;
+        public static VehicleController vehicle;
+        public static Volume volume;
+        public static PatcherTool ZapGun;
         public static int selectedPlayer = -1;
+        public int fps;
+        public Dictionary<string, string> LMUsers { get; set; } = [];
 
-        
-        public static string debugMessage = "";
-        public static string debugMessage2 = "";
 
-        private Harmony harmony;
+        public static Harmony harmony;
         private HackMenu menu;
         private static LethalMenu instance;
         public static LethalMenu Instance
         {
             get
             {
-                if (LethalMenu.instance == null)
-                    LethalMenu.instance = new LethalMenu();
-                return LethalMenu.instance;
+                if (instance == null)
+                    instance = new LethalMenu();
+                return instance;
             }
         }
-
 
         public void Start()
         {
             instance = this;
             try
             {
-                Localization.Initialize();
-                ThemeUtil.LoadTheme("Default");
-                LoadCheats();
-                DoPatching();
-                this.StartCoroutine(this.CollectObjects());                
-            } catch
-            (Exception e)
+                Initialize();
+            }
+            catch (Exception e)
             {
-                debugMessage = e.Message + "\n" + e.StackTrace;
+                Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
             }
         }
 
-        private void DoPatching()
+        private void Initialize()
+        {
+            Localization.Initialize();
+            Theme.Initialize();
+            HarmonyPatching();
+            LoadCheats();
+            MenuUtil.LMUser();
+            this.StartCoroutine(this.CollectObjects());
+            this.StartCoroutine(this.FPSCounter());
+        }
+
+        private void HarmonyPatching()
         {
             harmony = new Harmony("LethalMenu");
             Harmony.DEBUG = false;
@@ -77,7 +91,6 @@ namespace LethalMenu
 
         private void LoadCheats()
         {
-            
             try
             {
                 Settings.Changelog.ReadChanges();
@@ -87,99 +100,82 @@ namespace LethalMenu
                 {
                     cheats.Add((Cheat)Activator.CreateInstance(type));
                 }
-
                 Settings.Config.SaveDefaultConfig();
                 Settings.Config.LoadConfig();
             }
             catch (Exception e)
             {
-                Debug.LogError(e.Message);
-                Debug.LogException(e);
+                Settings.debugMessage = (e.Message);
             }
         }
 
         public void FixedUpdate()
         {
-
             try
             {
-                if ((bool) StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
+                if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
             }
             catch (Exception e)
             {
-                debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
+
         public void Update()
         {
             if (!(bool)StartOfRound.Instance || StartOfRound.Instance.inShipPhase) Settings.v_savedLocation = Vector3.zero;
-
             try
             {
-
                 foreach (Hack hack in Enum.GetValues(typeof(Hack)))
                 {
-                    if ((bool) StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
-
-                    
-
+                    if ((bool)StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
                     if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsAnyHackWaiting()) hack.Execute();
                 }
-
                 if (!(bool)StartOfRound.Instance) return;
-
                 cheats.ForEach(cheat => cheat.Update());
-
-
-
             }
             catch (Exception e)
             {
-                debugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
-
+        
+        public IEnumerator FPSCounter()
+        {
+            while(true)
+            {
+                fps = (int)(1.0f / Time.deltaTime);
+                yield return new WaitForSeconds(1f);
+            }
+        }
 
         public void OnGUI()
         {
             try
             {
-                
-                
                 if (Event.current.type == EventType.Repaint)
                 {
-                    VisualUtil.DrawString(new Vector2(5f, 2f), "Lethal Menu " + Settings.version + " By IcyRelic, and Dustin", Settings.c_primary,
-                        centered: false, bold: true, fontSize: 14);
-
-                   if(MenuUtil.resizing)
+                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin | Menu Toggle: {FirstSetupManagerWindow.kb}";
+                    LethalMenuTitle += Settings.b_FPSCounter ? $" | FPS: {fps}" : "";
+                    VisualUtil.DrawString(new Vector2(5f, 2f), LethalMenuTitle, Settings.c_primary, centered: false, bold: true, fontSize: 14);
+                    if (MenuUtil.resizing)
                     {
-                        string rTitle = "SettingsTab.ResizeTitle";
-                        string rConfirm = "SettingsTab.ResizeConfirm";
-                        string rSize = $"{HackMenu.Instance.windowRect.width}x{HackMenu.Instance.windowRect.height}";
-
-                        VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f), Localization.Localize([rTitle, rConfirm, rSize], true), Settings.c_playerESP, true, true, true, 22);
+                        VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f), Localization.Localize(["SettingsTab.ResizeTitle", "SettingsTab.ResizeConfirm", $"{HackMenu.Instance.windowRect.width}x{HackMenu.Instance.windowRect.height}"], true), Settings.c_playerESP, true, true, true, 22);
                         MenuUtil.ResizeMenu();
                     }
-
-
-                    if (Settings.isDebugMode)
+                    if (Settings.DebugMode)
                     {
                         VisualUtil.DrawString(new Vector2(5f, 20f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, 10);
-                        VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage), false, false, false, 22);
-                        VisualUtil.DrawString(new Vector2(10f, 125f), new RGBAColor(255, 195, 0, 1f).AsString(debugMessage2), false, false, false, 22);
+                        VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(Settings.debugMessage), false, false, false, 22);
                     }
-
                     if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.OnGui());
                 }
-
-
                 menu.Draw();
-            }             
+            }
             catch (Exception e)
             {
-                debugMessage = "Msg: " + e.Message +"\nSrc: "+ e.Source +"\n" + e.StackTrace;
+                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
-
         }
 
         public IEnumerator CollectObjects()
@@ -198,6 +194,8 @@ namespace LethalMenu
                 CollectObjects(interactTriggers);
                 CollectObjects(bigDoors, obj => obj.isBigDoor); 
                 CollectObjects(doorLocks);
+                CollectObjects(spikeRoofTraps);
+                CollectObjects(animatedTriggers);
 
                 shipDoor = Object.FindObjectOfType<HangarShipDoor>();
                 breaker = Object.FindObjectOfType<BreakerBox>();
@@ -215,11 +213,8 @@ namespace LethalMenu
 
         public void Unload()
         {
+            this.StopAllCoroutines();
             Loader.Unload();
-            this.StopCoroutine(this.CollectObjects());
         }
-
-
-
     }
 }

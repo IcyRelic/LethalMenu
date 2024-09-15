@@ -1,7 +1,9 @@
-﻿using System.IO;
+using System.IO;
 using System.Reflection;
 using System;
 using UnityEngine;
+using System.Linq;
+using LethalMenu.Handler;
 using Object = UnityEngine.Object;
 
 
@@ -14,13 +16,14 @@ namespace LethalMenu
 
         public static void Init()
         {
-
-            LoadHarmony();
-            Loader.Load = new GameObject();
-            Load.AddComponent<LethalMenu>();
-            Object.DontDestroyOnLoad(Loader.Load);
-
-           
+            if (Load == null)
+            {
+                ChamHandler.ChamsSetEnabled(true);
+                LoadHarmony();
+                Loader.Load = new GameObject();
+                Load.AddComponent<LethalMenu>();
+                Object.DontDestroyOnLoad(Loader.Load);
+            }
         }
 
         public static void LoadHarmony()
@@ -30,13 +33,17 @@ namespace LethalMenu
             Stream stream = assembly.GetManifestResourceStream(name);
             byte[] rawAssembly = new byte[stream.Length];
             stream.Read(rawAssembly, 0, (int)stream.Length);
-
             AppDomain.CurrentDomain.Load(rawAssembly);
             harmonyLoaded = true;
         }
 
-
-        public static void Unload() => Object.Destroy(Load);
-
+        public static void Unload()
+        {
+            HackExtensions.ToggleFlags.Keys.ToList().ForEach(h => HackExtensions.ToggleFlags[h] = false);
+            ChamHandler.ChamsSetEnabled(false);
+            if (Cursor.visible) Hack.ToggleCursor.Execute();
+            LethalMenu.harmony.UnpatchAll("LethalMenu");
+            Object.Destroy(Load);
+        }
     }
 }

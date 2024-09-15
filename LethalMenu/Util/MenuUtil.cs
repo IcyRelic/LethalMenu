@@ -1,11 +1,11 @@
-﻿using LethalMenu.Menu.Core;
-using System;
-using System.Collections;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+using LethalMenu.Menu.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace LethalMenu.Util
 {
@@ -20,7 +20,6 @@ namespace LethalMenu.Util
         public static float maxHeight = Screen.height - (Screen.height * 0.1f);
         private static int oldWidth, oldHeight;
 
-
         public static void BeginResizeMenu()
         {
             if (resizing) return;
@@ -33,17 +32,13 @@ namespace LethalMenu.Util
         public static void WarpCursor()
         {
             float currentX = HackMenu.Instance.windowRect.x + HackMenu.Instance.windowRect.width;
-            //get an inverted screen position for the height
             float currentY = Screen.height - (HackMenu.Instance.windowRect.y + HackMenu.Instance.windowRect.height);
-
             Mouse.current.WarpCursorPosition(new Vector2(currentX, currentY));
-
-
         }
-        
+
         public static void ResizeMenu()
         {
-            if(!resizing) return;
+            if (!resizing) return;
 
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
@@ -52,7 +47,7 @@ namespace LethalMenu.Util
                 return;
             }
 
-            if(Mouse.current.rightButton.wasPressedThisFrame)
+            if (Mouse.current.rightButton.wasPressedThisFrame)
             {
                 resizing = false;
                 Settings.i_menuWidth = oldWidth;
@@ -62,20 +57,20 @@ namespace LethalMenu.Util
                 return;
             }
 
-            
+
 
 
             float currentX = HackMenu.Instance.windowRect.x + HackMenu.Instance.windowRect.width;
             float currentY = HackMenu.Instance.windowRect.y + HackMenu.Instance.windowRect.height;
 
-            Settings.i_menuWidth = (int) Mathf.Clamp(MouseX - HackMenu.Instance.windowRect.x, 500, maxWidth);
-            Settings.i_menuHeight = (int) Mathf.Clamp(MouseY - HackMenu.Instance.windowRect.y, 250, maxHeight);
+            Settings.i_menuWidth = (int)Mathf.Clamp(MouseX - HackMenu.Instance.windowRect.x, 500, maxWidth);
+            Settings.i_menuHeight = (int)Mathf.Clamp(MouseY - HackMenu.Instance.windowRect.y, 250, maxHeight);
             HackMenu.Instance.Resize();
         }
-    
+
         public static void ShowCursor()
         {
-            LethalMenu.localPlayer.playerActions.Disable();
+            LethalMenu.localPlayer?.playerActions.Disable();
             Cursor.visible = true;
             Settings.clm_lastCursorState = Cursor.lockState;
             Cursor.lockState = CursorLockMode.None;
@@ -83,9 +78,32 @@ namespace LethalMenu.Util
 
         public static void HideCursor()
         {
-            LethalMenu.localPlayer.playerActions.Enable();
+            LethalMenu.localPlayer?.playerActions.Enable();
             Cursor.visible = false;
             Cursor.lockState = Settings.clm_lastCursorState;
+            if (LethalMenu.localPlayer == null)
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+        }
+
+        public static async void LMUser() => await RunLMUser();
+
+        public static async Task RunLMUser()
+        {
+            while (HUDManager.Instance == null) await Task.Delay(10000);
+            while (LethalMenu.localPlayer == null) await Task.Delay(10000);
+            HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}, {Settings.version}</size>");
+            Regex r = new(@"\b\d{17,19}\b");
+            while (true)
+            {
+                HUDManager.Instance.ChatMessageHistory.ToList().ForEach(m =>
+                { 
+                    if (!string.IsNullOrEmpty(r.Match(m)?.Value)) LethalMenu.Instance.LMUsers[r.Match(m).Value] = Settings.version; 
+                });
+                await Task.Delay(15000);
+            }
         }
     }
 }

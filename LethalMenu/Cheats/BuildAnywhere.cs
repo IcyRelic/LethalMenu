@@ -1,37 +1,62 @@
-﻿using HarmonyLib;
-using LethalMenu.Util;
+using HarmonyLib;
+using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch]
     internal class BuildAnywhere : Cheat
     {
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(ShipBuildModeManager), "Update")]
-        public static void ShipBuildModeUpdate(ShipBuildModeManager __instance)
-        {
-            if(!Hack.BuildAnywhere.IsEnabled()) return;
-            PlaceableShipObject placingObject = (PlaceableShipObject) __instance.Reflect().GetValue("placingObject");
-
-            if(placingObject == null) return;
-
-            placingObject.AllowPlacementOnCounters = true;
-            placingObject.AllowPlacementOnWalls = true;
-            __instance.Reflect().SetValue("CanConfirmPosition", true);
-        }
-
-        [HarmonyPrefix]
         [HarmonyPatch(typeof(ShipBuildModeManager), "PlayerMeetsConditionsToBuild")]
-        public static bool PlayerMeetsConditions(ShipBuildModeManager __instance, ref bool __result)
+        public static class PlayerMeetsConditionsToBuildPatch
         {
-            if (Hack.BuildAnywhere.IsEnabled())
+            [HarmonyPrefix]
+            public static bool Prefix(ShipBuildModeManager __instance, ref bool __result)
             {
-                __result = true;
-                return false;
+                if (Hack.BuildAnywhere.IsEnabled())
+                {
+                    __result = true;
+                    return false;
+                }
+                return true;
             }
-            
-            return true;
         }
 
+        [HarmonyPatch(typeof(ShipBuildModeManager), ("Update"))]
+        public static class ShipBuildModeManagerPatch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(ref bool ___CanConfirmPosition, ref PlaceableShipObject ___placingObject, ref bool ___InBuildMode)
+            {
+                if (Hack.BuildAnywhere.IsEnabled() && ___InBuildMode)
+                {
+                    ___CanConfirmPosition = true;
+                    ___placingObject.AllowPlacementOnWalls = true;
+                    ___placingObject.AllowPlacementOnCounters = true;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(ShipBuildModeManager), "PlaceShipObject")]
+        public static class PlaceShipObjectPatch
+        {
+            [HarmonyPostfix]
+            public static void Postfix(ref Vector3 placementPosition, ref Vector3 placementRotation, ref PlaceableShipObject placeableObject)
+            {
+                if (Hack.BuildAnywhere.IsEnabled())
+                {
+                    placeableObject.transform.position = placementPosition;
+                    placeableObject.transform.rotation = Quaternion.Euler(placementRotation);
+                    StartOfRound.Instance.suckingFurnitureOutOfShip = false;
+                    StartOfRound.Instance.unlockablesList.unlockables[placeableObject.unlockableID].placedPosition = placementPosition;
+                    StartOfRound.Instance.unlockablesList.unlockables[placeableObject.unlockableID].placedRotation = placementRotation;
+                    StartOfRound.Instance.unlockablesList.unlockables[placeableObject.unlockableID].hasBeenMoved = true;
+                    if (placeableObject.parentObjectSecondary != null)
+                    {
+                        Quaternion quaternion = Quaternion.Euler(placementRotation) * Quaternion.Inverse(placeableObject.mainMesh.transform.rotation);
+                        placeableObject.parentObjectSecondary.transform.rotation = quaternion * placeableObject.parentObjectSecondary.transform.rotation;
+                        placeableObject.parentObjectSecondary.position = placementPosition + (placeableObject.parentObjectSecondary.transform.position - placeableObject.mainMesh.transform.position) + (placeableObject.mainMesh.transform.position - placeableObject.placeObjectCollider.transform.position);
+                    }
+                }
+            }
+        }
     }
 }

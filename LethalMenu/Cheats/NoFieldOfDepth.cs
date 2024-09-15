@@ -3,21 +3,20 @@ using UnityEngine.Rendering.HighDefinition;
 
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch(typeof(DepthOfField), "IsActive")]
-    public static class NoFieldOfDepth
+    internal class NoFieldOfDepth : Cheat
     {
-        public static bool Prefix(DepthOfField __instance, ref bool __result)
+        [HarmonyPatch(typeof(DepthOfField), "IsActive")]
+        public static class DepthOfFieldIsActivePatch
         {
-            if (Hack.NoFieldOfDepth.IsEnabled())
+            [HarmonyPrefix]
+            public static bool Prefix(DepthOfField __instance)
             {
-                __result = false;
+                if (Hack.NoFieldOfDepth.IsEnabled())
+                {
+                    return false;
+                }
+                return true;
             }
-            else
-            {
-                __result = true;
-            }
-
-            return false;
         }
     }
 }

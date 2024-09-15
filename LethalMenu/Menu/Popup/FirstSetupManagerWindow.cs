@@ -4,10 +4,6 @@ using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 
@@ -17,9 +13,10 @@ namespace LethalMenu.Menu.Popup
     {
         private Vector2 scrollPos = Vector2.zero;
 
+        public static ButtonControl bind = Hack.OpenMenu.GetKeyBind();
+        public static string kb = Hack.OpenMenu.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
         private int selectedLanguage = -1;
         private string[] languages;
-        private GUIStyle style;
         private bool disableBtns = false;
 
         public FirstSetupManagerWindow(int id) : base("FirstSetup.Title", new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100f, 300f, 250f), id) 
@@ -30,58 +27,43 @@ namespace LethalMenu.Menu.Popup
         public override void DrawContent(int windowID)
         {
             if (disableBtns) GUI.enabled = false;
-            SetupContent();
-            if (disableBtns) GUI.enabled = true;
-            //GUI.DragWindow(new Rect(0.0f, 0.0f, 10000f, 45f));
-        }
-
-        private void SetupContent()
-        {
             windowRect.x = Screen.width / 2 - 150;
             windowRect.y = Screen.height / 2 - 100f;
 
-            style = new GUIStyle(GUI.skin.button);
-
-            style.padding = new RectOffset(15, 15, 10, 10);
-            style.margin = new RectOffset(5, 5, 5, 5);
-            style.normal.textColor = Settings.c_menuText.GetColor();
-            style.hover.textColor = Settings.c_menuText.GetColor();
-            style.active.textColor = Settings.c_menuText.GetColor();
-            style.fontSize = 18;
-            style.fontStyle = FontStyle.Bold;
-
             UI.Label("FirstSetup.Welcome");
             GUILayout.Space(20f);
-
-            Keybind();
+            GUILayout.BeginVertical();
+            UI.Label("FirstSetup.SelectKeybind");
+         
+            UI.Label("FirstSetup.Keybind", $"{kb}");
             GUILayout.Space(20f);
-            LangList();
-            GUILayout.Space(10f);
 
-            UI.Actions(new UIButton("FirstSetup.Complete", () =>
+            string btnText = Hack.OpenMenu.IsWaiting() ? "General.Waiting" : "FirstSetup.ClickToChange";
+
+            UI.Actions(new UIButton(btnText, () =>
             {
-                Settings.isFirstLaunch = false;
-                Settings.Config.SaveConfig();
-            }, style));
-        }
+                disableBtns = true;
+                KBUtil.BeginChangeKeyBind(Hack.OpenMenu, () => { disableBtns = false; });
+            }));
 
-        private void LangList()
-        {
+            GUILayout.EndVertical();
+            GUILayout.Space(20f);
             GUILayout.BeginVertical();
             UI.Label("FirstSetup.SelectLanguage");
-            GUILayout.Space(5f);
-  
+            GUILayout.Space(10f);
+
             Rect rect = new Rect(8, 255, 300f, 100f);
             GUI.Box(rect, GUIContent.none);
-            
+            GUILayout.EndVertical();
+
             GUILayout.BeginVertical(GUILayout.Width(300f), GUILayout.Height(100f));
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
+            scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(300f), GUILayout.Height(100f));
 
             if (selectedLanguage == -1) selectedLanguage = Array.FindIndex(languages, x => x == Localization.Language.Name);
 
             for (int i = 0; i < languages.Length; i++)
             {
-                if(selectedLanguage == i) GUI.contentColor = Settings.c_playerESP.GetColor();
+                if (selectedLanguage == i) GUI.contentColor = Settings.c_playerESP.GetColor();
 
                 if (GUILayout.Button(languages[i], GUI.skin.label))
                 {
@@ -94,29 +76,15 @@ namespace LethalMenu.Menu.Popup
 
             GUILayout.EndScrollView();
             GUILayout.EndVertical();
-            GUILayout.EndVertical();
-        }
-
-        private void Keybind()
-        {
-            GUILayout.BeginVertical();
-            UI.Label("FirstSetup.SelectKeybind");
-            ButtonControl bind = Hack.OpenMenu.GetKeyBind();
-            string kb = Hack.OpenMenu.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
-
-            UI.Label("Current: " + kb);
             GUILayout.Space(20f);
 
-            string btnText = Hack.OpenMenu.IsWaiting() ? "General.Waiting" : "FirstSetup.ClickToChange";
-
-            
-
-            UI.Actions(new UIButton(btnText, () =>
+            UI.Actions(new UIButton("FirstSetup.Complete", () =>
             {
-                disableBtns = true;
-                KBUtil.BeginChangeKeyBind(Hack.OpenMenu, () => { disableBtns = false; });
-            }, style));
-            GUILayout.EndVertical();
+                Settings.isFirstLaunch = false;
+                Settings.Config.SaveConfig();
+            }));
+            if (disableBtns) GUI.enabled = true;
+            GUI.DragWindow();
         }
     }
 }

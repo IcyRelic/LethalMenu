@@ -1,7 +1,10 @@
-﻿using LethalMenu.Components;
+﻿using GameNetcodeStuff;
+using HarmonyLib;
+using LethalMenu.Components;
 using LethalMenu.Handler;
 using LethalMenu.Handler.EnemyControl;
 using LethalMenu.Util;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -13,19 +16,16 @@ namespace LethalMenu.Cheats
 {
     internal class EnemyControl : Cheat
     {
-
         private static EnemyAI enemy = null;
         private static GameObject ControllerInstance = null;
         private static MouseInput mouse = null;
         private static AIMovement movement = null;
-        private static bool IsAIControlled = false;
+        public static bool IsAIControlled = false;
         private static bool NoClipEnabled = false;
-
-
-        const float TeleportDoorCooldown = 2.5f;
-        const float DoorInteractionCooldown = 0.7f;
-        float DoorCooldownRemaining  = 0.0f;
-        float TeleportCooldownRemaining = 0.0f;
+        private const float TeleportDoorCooldown = 2.5f;
+        private const float DoorInteractionCooldown = 0.7f;
+        private float DoorCooldownRemaining = 0.0f;
+        private float TeleportCooldownRemaining = 0.0f;
 
         private static Dictionary<Type, IController> EnemyControllers { get; } = new() {
             { typeof(CentipedeAI), new CentipedeController() },
@@ -45,14 +45,30 @@ namespace LethalMenu.Cheats
             { typeof(LassoManAI), new LassoManController() },
             { typeof(CrawlerAI), new CrawlerController() },
             { typeof(SandSpiderAI), new SandSpiderController() },
-            { typeof(RedLocustBees), new RedLocustBeesController() }
+            { typeof(RedLocustBees), new RedLocustBeesController() },
+            //{ typeof(RadMechAI), new RadMechController() },
+            { typeof(ButlerEnemyAI), new ButlerController() },
+            { typeof(ButlerBeesEnemyAI), new ButlerBeesController() },
+            { typeof(FlowerSnakeEnemy), new FlowerSnakeController() },
+            //{ typeof(DoublewingAI), new DoublewingController() },
+            { typeof(DressGirlAI), new DressGirlController() },
+            { typeof(ClaySurgeonAI), new ClaySurgeonController() },
+            { typeof(CaveDwellerAI), new CaveDwellerController() },
         };
-
 
         public static void Control(EnemyAI enemy)
         {
             if (enemy.isEnemyDead) return;
             EnemyControl.enemy = enemy;
+
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller) || controller == null)
+            {
+                Hack.EnemyControl.SetToggle(false);
+                StopControl();
+                HUDManager.Instance.DisplayTip("Lethal Menu", $"No Controller for enemy :C");
+                return;
+            }
+
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             ControllerInstance = new GameObject("EnemyController");
             ControllerInstance.transform.position = enemy.transform.position;
@@ -60,7 +76,7 @@ namespace LethalMenu.Cheats
 
             mouse = ControllerInstance.AddComponent<MouseInput>();
             movement = ControllerInstance.AddComponent<AIMovement>();
-            
+
             movement.Init();
             movement.CalibrateCollision(enemy);
             movement.CharacterSprintSpeed = 5.0f;
@@ -74,7 +90,8 @@ namespace LethalMenu.Cheats
         {
             if (Hack.EnemyControl.IsEnabled() || enemy is null) return;
             Hack.FreeCam.SetToggle(false);
-            if(enemy?.agent is not null)
+
+            if (enemy?.agent != null && enemy.agent.isOnNavMesh)
             {
                 enemy.agent.updatePosition = true;
                 enemy.agent.updateRotation = true;
@@ -83,11 +100,9 @@ namespace LethalMenu.Cheats
                 enemy.agent.Warp(enemy.transform.position);
             }
 
-            if (EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
-            {
-                controller.OnReleaseControl(enemy);
-            }
+            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(true);
 
+            LethalMenu.localPlayer.cursorTip.text = "";
             IsAIControlled = false;
             Destroy(ControllerInstance);
             enemy = null;
@@ -99,25 +114,33 @@ namespace LethalMenu.Cheats
         public override void Update()
         {
             StopControl();
-            if(!Hack.EnemyControl.IsEnabled()) return;
-            if(enemy == null) return;            
-            if(!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
+            if (Hack.EnemyControl.IsEnabled() && enemy.isEnemyDead || enemy == null)
+            {
+                Hack.EnemyControl.SetToggle(false);
+                Hack.FreeCam.SetToggle(false);              
+                return;
+            }
+            if (!Hack.EnemyControl.IsEnabled()) return;
+            if (enemy == null) return;
+            if (!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
             if (Freecam.camera == null) return;
-            
-
+            if (HUDManager.Instance == null) return;
             if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
+
+            if (controller == null)
             {
                 if (!IsAIControlled)
                 {
                     UpdateEnemyPosition();
                     UpdateEnemyRotation();
                 }
-
                 return;
             }
 
+            HUDManager.Instance.Reflect().SetValue("holdButtonToEndGameEarlyHoldTime", 0f);
+            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(false);
 
-            if(!(bool) enemy.agent) return;
+            if (!(bool)enemy.agent) return;
 
             UpdateCooldowns();
 
@@ -146,9 +169,11 @@ namespace LethalMenu.Cheats
             if (controller.IsAbleToRotate(enemy)) UpdateEnemyRotation();
 
             UpdateEnemyPosition();
-            controller.OnMovement(enemy, movement.IsMoving, movement.IsSprinting);            
+            controller.OnMovement(enemy, movement.IsMoving, movement.IsSprinting);
         }
 
+        private static IController GetControllerForEnemy(EnemyAI enemy) => enemy != null && EnemyControllers.TryGetValue(enemy.GetType(), out var controller) ? controller : null;
+      
         private void UpdateCooldowns()
         {
             DoorCooldownRemaining = Mathf.Clamp(
@@ -174,16 +199,16 @@ namespace LethalMenu.Cheats
 
         private static void UpdateEnemyPosition()
         {
+            if (enemy == null || movement == null || mouse == null) return;
             Vector3 euler = enemy.transform.eulerAngles;
             euler.y = mouse.transform.eulerAngles.y;
-
             enemy.transform.eulerAngles = euler;
             enemy.transform.position = movement.transform.position;
         }
 
         private static void UpdateEnemyRotation()
         {
-            if(movement == null) return;
+            if (movement == null) return;
             movement.transform.rotation = mouse.transform.rotation;
         }
 
@@ -194,10 +219,9 @@ namespace LethalMenu.Cheats
             if (Mouse.current.rightButton.isPressed) OnSecondarySkillHold();
             if (Mouse.current.rightButton.wasReleasedThisFrame) ReleaseSecondarySkill();
 
- 
-            if(Keyboard.current.f9Key.wasPressedThisFrame) ToggleAIControl();
-            if(Keyboard.current.f10Key.wasPressedThisFrame) ToggleNoClip();
-            if(Keyboard.current.f11Key.wasPressedThisFrame) Hack.EnemyControl.SetToggle(false);
+            if (Keyboard.current.f9Key.wasPressedThisFrame) ToggleAIControl();
+            if (Keyboard.current.f10Key.wasPressedThisFrame) ToggleNoClip();
+            if (Keyboard.current.f11Key.wasPressedThisFrame) Hack.EnemyControl.SetToggle(false);
             if (Keyboard.current.f12Key.wasPressedThisFrame)
             {
                 Hack.EnemyControl.SetToggle(false);
@@ -205,17 +229,11 @@ namespace LethalMenu.Cheats
             }
         }
 
-        static float InteractRange() =>
-            EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
-                ? value.InteractRange(enemy)
-                : IController.DefaultInteractRange;
+        public static float InteractRange() => GetControllerForEnemy(enemy).InteractRange(enemy);
 
-        static float SprintMultiplier() =>
-            EnemyControllers.TryGetValue(enemy.GetType(), out IController value)
-                ? value.SprintMultiplier(enemy)
-                : IController.DefaultSprintMultiplier;
+        public static float SprintMultiplier() => GetControllerForEnemy(enemy).SprintMultiplier(enemy);
 
-        void ToggleAIControl()
+        public void ToggleAIControl()
         {
             if (enemy?.agent is null || movement is null || mouse is null) return;
 
@@ -223,6 +241,7 @@ namespace LethalMenu.Cheats
             SetAIControl(IsAIControlled);
             //this.SendPossessionNotifcation($"AI Control: {(this.IsAIControlled ? "Enabled" : "Disabled")}");
         }
+
         private static void SetAIControl(bool enableAI)
         {
             if (movement is null || enemy is null || enemy.agent is null) return;
@@ -246,7 +265,7 @@ namespace LethalMenu.Cheats
             movement.enabled = !enableAI;
         }
 
-        void HandleEntranceDoors(EnemyAI enemy, RaycastHit hit)
+        public void HandleEntranceDoors(EnemyAI enemy, RaycastHit hit)
         {
             if (this.TeleportCooldownRemaining > 0.0f) return;
             if (!hit.collider.gameObject.TryGetComponent(out EntranceTeleport entrance)) return;
@@ -255,7 +274,7 @@ namespace LethalMenu.Cheats
             this.TeleportCooldownRemaining = EnemyControl.TeleportDoorCooldown;
         }
 
-        void InteractWithAmbient(EnemyAI enemy, IController controller)
+        public void InteractWithAmbient(EnemyAI enemy, IController controller)
         {
             if (!Physics.Raycast(enemy.transform.position, enemy.transform.forward, out RaycastHit hit, InteractRange())) return;
             if (hit.collider.gameObject.TryGetComponent(out DoorLock doorLock) && this.DoorCooldownRemaining <= 0.0f)
@@ -271,14 +290,14 @@ namespace LethalMenu.Cheats
                 return;
             }
         }
-        void OpenDoorAsEnemy(DoorLock door)
+
+        public void OpenDoorAsEnemy(DoorLock door)
         {
             if (door.Reflect().GetValue<bool>("isDoorOpened")) return;
             if (door.gameObject.TryGetComponent(out AnimatedObjectTrigger trigger))
             {
                 trigger.TriggerAnimationNonPlayer(false, true, false);
             }
-
             door.OpenDoorAsEnemyServerRpc();
         }
 
@@ -287,7 +306,7 @@ namespace LethalMenu.Cheats
                 teleport.entranceId == entrance.entranceId && teleport.isEntranceToBuilding != entrance.isEntranceToBuilding
             )?.entrancePoint;
 
-        void InteractWithTeleport(EnemyAI enemy, EntranceTeleport teleport)
+        public void InteractWithTeleport(EnemyAI enemy, EntranceTeleport teleport)
         {
             if (movement is not AIMovement aiMovement) return;
             if (this.GetExitPointFromDoor(teleport) is not Transform exitPoint) return;
@@ -296,43 +315,54 @@ namespace LethalMenu.Cheats
             enemy.EnableEnemyMesh(true, false);
         }
 
-
-
-
-        void ToggleNoClip()
+        public void ToggleNoClip()
         {
             NoClipEnabled = !NoClipEnabled;
             movement.SetNoClipMode(NoClipEnabled);
-            //this.SendPossessionNotifcation($"NoClip: {(NoClipEnabled ? "Enabled" : "Disabled")}");
         }
 
-        void UsePrimarySkill()
+        public void UsePrimarySkill()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.UsePrimarySkill(enemy);
+            GetControllerForEnemy(enemy).UsePrimarySkill(enemy);
         }
 
-        void UseSecondarySkill()
+        public void UseSecondarySkill()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.UseSecondarySkill(enemy);
+            GetControllerForEnemy(enemy).UseSecondarySkill(enemy);
         }
 
-        void OnSecondarySkillHold()
+        public void OnSecondarySkillHold()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.OnSecondarySkillHold(enemy);
+            GetControllerForEnemy(enemy).OnSecondarySkillHold(enemy);
         }
 
-        void ReleaseSecondarySkill()
+        public void ReleaseSecondarySkill()
         {
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
+            if (enemy == null) return;
+            if (IsAIControlled) return;
 
-            controller.ReleaseSecondarySkill(enemy);
+            GetControllerForEnemy(enemy).ReleaseSecondarySkill(enemy);
         }
+    }
 
+    [HarmonyPatch]
+    internal class EnemyControlPatches
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(HUDManager), "PingScan_performed")]
+        public static bool PingScan_performed(InputAction.CallbackContext context)
+        {
+            if (Hack.EnemyControl.IsEnabled()) return false;
+            return true;
+        }
     }
 }

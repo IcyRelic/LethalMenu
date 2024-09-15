@@ -1,5 +1,6 @@
-﻿using LethalMenu.Cheats;
+using LethalMenu.Cheats;
 using LethalMenu.Language;
+using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using Newtonsoft.Json;
@@ -12,14 +13,15 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using LethalMenu.Themes;
+using Steamworks;
 
 namespace LethalMenu
 {
     internal class Settings
     {
-
-        public static string version = "v1.4.1";
-        public static bool isDebugMode = true;
+        public static string version = "v1.4.5";
+        public static bool DebugMode = false;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen
         {
@@ -27,9 +29,9 @@ namespace LethalMenu
             set { Hack.OpenMenu.SetToggle(value);  }
         }
 
-        /* *    
-         * Menu Settings
-         * */
+        /* * * * * * * * *
+         * Menu Settings *
+         * * * * * * * * */
         public static int i_menuFontSize = 14;
         public static int i_menuWidth = 810;
         public static int  i_menuHeight = 410;
@@ -37,16 +39,18 @@ namespace LethalMenu
         public static int i_textboxWidth = 85;
         public static float f_menuAlpha = 1f;
 
-        /* *
-         * Color Settings
-         * */
+        /* * * * * * * * * *
+         *  Color Settings *
+         * * * * * * * * * */
         public static RGBAColor c_background = new RGBAColor(51, 51, 51, 1f);
         public static RGBAColor c_primary = new RGBAColor(165, 55, 253, 1f);
         public static RGBAColor c_menuText = new RGBAColor(255, 255, 255, 1f);
         public static RGBAColor c_crosshair = new RGBAColor(255, 43, 43, 1f);
+        public static RGBAColor c_hackhighlight = new RGBAColor(165, 55, 253, 1f);
 
-        //ESP Colors
-        
+        /* * * * * * * *
+         * ESP  Colors *
+         * * * * * * * */
         public static RGBAColor c_objectESP = new RGBAColor(255, 255, 255, 1f);
         public static RGBAColor c_playerESP = new RGBAColor(0, 255, 0, 1f);
         public static RGBAColor c_enemyESP = new RGBAColor(255, 0, 0, 1f);
@@ -57,24 +61,40 @@ namespace LethalMenu
         public static RGBAColor c_doorLockESP = new RGBAColor(0.5f, 0.5f, 0.5f, 1f);
         public static RGBAColor c_entranceExitESP = new RGBAColor(0, 0, 255, 1f);
         public static RGBAColor c_steamHazardESP = new RGBAColor(255, 0, 255, 1f);
-        public static RGBAColor c_causeOfDeath = new RGBAColor(1f, 47f / 51f, 0.0156862754f, 1f);
-        public static RGBAColor c_breakerESP = new RGBAColor(255,0,116, 1f);
+        public static RGBAColor c_breakerESP = new RGBAColor(255, 0, 116, 1f);
+        public static RGBAColor c_spikeRoofTrapESP = new RGBAColor(139, 69, 19, 1f);
+
+        /* * * * * * * * *
+         * Chams  Colors *
+         * * * * * * * * */
+        public static RGBAColor c_objectChams = new RGBAColor(255, 255, 255, 0.1f);
+        public static RGBAColor c_playerChams = new RGBAColor(0, 255, 0, 0.1f);
+        public static RGBAColor c_enemyChams = new RGBAColor(255, 0, 0, 0.1f);
+        public static RGBAColor c_shipChams = new RGBAColor(0, 0, 255, 0.1f);
+        public static RGBAColor c_landmineChams = new RGBAColor(255, 0, 0, 0.1f);
+        public static RGBAColor c_turretChams = new RGBAColor(255, 0, 0, 0.1f);
+        public static RGBAColor c_bigDoorChams = new RGBAColor(0, 255, 255, 0.1f);
+        public static RGBAColor c_doorLockChams = new RGBAColor(0.5f, 0.5f, 0.5f, 0.1f);
+        public static RGBAColor c_steamHazardChams = new RGBAColor(255, 0, 255, 0.1f);
+        public static RGBAColor c_breakerChams = new RGBAColor(255, 0, 116, 0.1f);
+        public static RGBAColor c_spikeRoofTrapChams = new RGBAColor(139, 69, 19, 0.1f);
         public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
 
-     
-        //Other Colors
+        /* * * * * * * * *
+         *  Other Colors *
+         * * * * * * * * */
         public static RGBAColor c_error = new RGBAColor(221, 11, 11, 1f);
         public static RGBAColor c_deadPlayer = new RGBAColor(255, 0, 0, 1);
+        public static RGBAColor c_causeOfDeath = new RGBAColor(1f, 47f / 51f, 0.0156862754f, 1f);
 
-        /* *
-         * Vectors
-         *  */
+        /* * * * * *
+         * Vectors *
+         * * * * * */
         public static Vector3 v_savedLocation = Vector3.zero;
 
-
-        /* *
-         * Hack Settings
-         * */
+        /* * * * * * * * *
+         * Hack Settings *
+         * * * * * * * * */
         public static float f_nvIntensity = 3000f;
         public static float f_nvRange = 10000f;
         public static float f_climbSpeed = 4f;
@@ -91,10 +111,23 @@ namespace LethalMenu
         public static float f_fov = 66f;
         public static float f_mouseSensitivity = 0.15f;
         public static float f_inputMovementSpeed = 15f;
+        public static float f_carAcceleration = 5f;
+        public static float f_carMaxSpeed = 7f;
+        public static float f_brakeSpeed = 7f;
+        public static float f_pjSpamSpeed = 0.5f;
+
+
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
         public static bool b_VCDisplay = false;
-        
+        public static bool b_HPDisplay = false;
+        public static bool b_ShowShipItems = false;
+        public static bool b_DropItems = false;
+        public static bool b_HackHighlight = false;
+        public static bool b_FPSCounter = false; 
+        public static bool b_DisplayLMUsers = false;
+        public static bool b_WearBuy = false;
+
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
 
         public static bool b_chamsObject = false;
@@ -107,6 +140,8 @@ namespace LethalMenu
         public static bool b_chamsSteamHazard = false;
         public static bool b_chamsBreaker = false;
         public static bool b_chamsShip = false;
+        public static bool b_chamsSpikeRoofTrap = false;
+        public static bool b_UseDefaultChams = false;
 
         public static float f_defaultGrabDistance = -1f;
         public static float f_defaultClimbSpeed = 3f;
@@ -115,8 +150,11 @@ namespace LethalMenu
         public static float f_defaultNightVisionIntensity = 360f;
         public static float f_defaultNightVisionRange = 12f;
         public static float f_defaultFOV = 66f;
+        public static float f_slots = 4f;
 
         public static int[] i_scrapValueThresholds = new int[] { 30,50,75,100 };
+
+        public static SteamId s_lobbyid;
 
         public static RGBAColor[] c_scrapValueColors = new RGBAColor[] 
         { 
@@ -127,16 +165,15 @@ namespace LethalMenu
         };
 
         public static CursorLockMode clm_lastCursorState = Cursor.lockState;
-        
+
+        public static string debugMessage = "";
 
         internal class Changelog
         {
             public static List<string> changes;
-
             public static void ReadChanges()
             {
                 changes = new List<string>();
-
                 using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("LethalMenu.Resources.Changelog.txt"))
                 using (StreamReader reader = new StreamReader(stream))
                 {
@@ -150,12 +187,12 @@ namespace LethalMenu
 
         internal class Config
         {
-            private static string config = "lethelmenu.config.json";
-            private static string defaultConf = "lethalmenu.default.config.json";
+            public static string config = "lethelmenu.config.json";
+            public static string defaultConf = "lethalmenu.default.config.json";
+
             public static void CreateConfigIfNotExists()
             {
                 if (HasConfig()) return;
-
                 SaveConfig();
             }
 
@@ -163,6 +200,7 @@ namespace LethalMenu
             {
                 SaveConfig(defaultConf);
             }
+
             public static bool HasConfig()
             {
                 return config != null && File.Exists(config);
@@ -179,32 +217,26 @@ namespace LethalMenu
                 Dictionary<string, string> toggles = new Dictionary<string, string>();
                 Dictionary<string, string> enemyFilter = new Dictionary<string, string>();
 
-
                 foreach (var item in HackExtensions.KeyBinds)
                 {
                     string key = item.Key.ToString();
                     string value = item.Value.GetType() == typeof(KeyControl) ? ((KeyControl) item.Value).keyCode.ToString() : item.Value.displayName;
-
                     keybinds.Add(key, value);
                 }   
 
                 foreach (var item in HackExtensions.ToggleFlags)
                 {
                     if (item.Key.CanBeExecuted()) continue;
-
                     string key = item.Key.ToString();
                     string value = item.Value.ToString();
-
                     toggles.Add(key, value);
                 }
 
                 foreach(var item in EnemyAITypeExtensions.EnemyFilter)
                 {
-
                     if (item.Key == EnemyAIType.Unknown) continue;
                     string key = item.Key.ToString();
                     string value = item.Value.ToString();
-
                     enemyFilter.Add(key, value);
                 }
 
@@ -213,7 +245,6 @@ namespace LethalMenu
                 JObject colors = new JObject();
                 JObject hackSettings = new JObject();
                 JObject chams = new JObject();
-
 
                 hackSettings["NightVisionIntensity"] = f_nvIntensity.ToString();
                 hackSettings["NightVisionRange"] = f_nvRange.ToString();
@@ -228,9 +259,17 @@ namespace LethalMenu
                 hackSettings["CrosshairScale"] = f_crosshairScale.ToString();
                 hackSettings["ESPDistance"] = f_espDistance.ToString();
                 hackSettings["DisableSpectatorModels"] = b_disableSpectatorModels.ToString();
-                hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
                 hackSettings["VCDisplay"] = b_VCDisplay.ToString();
+                hackSettings["UseScrapTiers"] = b_useScrapTiers.ToString();
+                hackSettings["HPDisplay"] = b_HPDisplay.ToString();
+                hackSettings["ShowShipItems"] = b_ShowShipItems.ToString();
+                hackSettings["FPSCounter"] = b_FPSCounter.ToString();
+                hackSettings["DisplayLMUsers"] = b_DisplayLMUsers.ToString();
+                hackSettings["HackHighlight"] = b_HackHighlight.ToString();
                 hackSettings["FOV"] = f_fov.ToString();
+                hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
+                hackSettings["PJSpamSpeed"] = f_pjSpamSpeed.ToString();
+
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
                 chams["Enemy"] = b_chamsEnemy.ToString();
@@ -242,15 +281,27 @@ namespace LethalMenu
                 chams["SteamHazard"] = b_chamsSteamHazard.ToString();
                 chams["Breaker"] = b_chamsBreaker.ToString();
                 chams["Ship"] = b_chamsShip.ToString();
-                hackSettings["Chams"] = chams;
-
-                
+                chams["SpikeRoofTrap"] = b_chamsSpikeRoofTrap.ToString();
+                chams["UseDefaultChams"] = b_UseDefaultChams.ToString();
+                hackSettings["Chams"] = chams;   
 
                 colors["Background"] = JsonConvert.SerializeObject(c_background);
                 colors["Primary"] = JsonConvert.SerializeObject(c_primary);
                 colors["MenuText"] = JsonConvert.SerializeObject(c_menuText);
                 colors["Crosshair"] = JsonConvert.SerializeObject(c_crosshair);
+                colors["HackHighlightColor"] = JsonConvert.SerializeObject(c_hackhighlight);
                 colors["Chams"] = JsonConvert.SerializeObject(c_chams);
+                colors["ObjectChams"] = JsonConvert.SerializeObject(c_objectChams);
+                colors["PlayerChams"] = JsonConvert.SerializeObject(c_playerChams);
+                colors["EnemyChams"] = JsonConvert.SerializeObject(c_enemyChams);
+                colors["ShipChams"] = JsonConvert.SerializeObject(c_shipChams);
+                colors["BreakerChams"] = JsonConvert.SerializeObject(c_breakerChams);
+                colors["LandmineChams"] = JsonConvert.SerializeObject(c_landmineChams);
+                colors["TurretChams"] = JsonConvert.SerializeObject(c_turretChams);
+                colors["BigDoorChams"] = JsonConvert.SerializeObject(c_bigDoorChams);
+                colors["DoorLockChams"] = JsonConvert.SerializeObject(c_doorLockChams);
+                colors["SteamHazardChams"] = JsonConvert.SerializeObject(c_steamHazardChams);
+                colors["SpikeRoofTrapChams"] = JsonConvert.SerializeObject(c_spikeRoofTrapChams);
                 colors["ObjectESP"] = JsonConvert.SerializeObject(c_objectESP);
                 colors["PlayerESP"] = JsonConvert.SerializeObject(c_playerESP);
                 colors["EnemyESP"] = JsonConvert.SerializeObject(c_enemyESP);
@@ -262,6 +313,7 @@ namespace LethalMenu
                 colors["DoorLockESP"] = JsonConvert.SerializeObject(c_doorLockESP);
                 colors["EntranceExitESP"] = JsonConvert.SerializeObject(c_entranceExitESP);
                 colors["SteamHazardESP"] = JsonConvert.SerializeObject(c_steamHazardESP);
+                colors["SpikeRoofTrapESP"] = JsonConvert.SerializeObject(c_spikeRoofTrapESP);
                 colors["CauseOfDeath"] = JsonConvert.SerializeObject(c_causeOfDeath);
 
                 settings["FirstLaunch"] = isFirstLaunch.ToString();
@@ -271,8 +323,10 @@ namespace LethalMenu
                 settings["SliderWidth"] = i_sliderWidth.ToString();
                 settings["TextboxWidth"] = i_textboxWidth.ToString();
                 settings["MenuAlpha"] = f_menuAlpha.ToString();
+                settings["DebugMode"] = DebugMode.ToString();
 
 
+                json["Theme"] = Theme.name;
                 json["Language"] = Localization.Language.Name;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
@@ -290,11 +344,37 @@ namespace LethalMenu
 
                 string jsonStr = File.ReadAllText(config);
 
-
                 JObject json = JObject.Parse(jsonStr);
 
-                if(json.TryGetValue("Language", out JToken languageToken))
+                if (json.TryGetValue("Language", out JToken languageToken))
                     Localization.SetLanguage(languageToken.ToString());
+                if (json.TryGetValue("Theme", out JToken themeToken))
+                    Theme.SetTheme(themeToken.ToString());
+
+                if (json.TryGetValue("MenuSettings", out JToken settingsToken))
+                {
+                    JObject settings = settingsToken.ToObject<JObject>();
+
+                    if (settings.TryGetValue("FirstLaunch", out JToken firstLaunchToken))
+                        isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
+                    if (settings.TryGetValue("MenuFontSize", out JToken menuFontSizeToken))
+                        i_menuFontSize = int.Parse(menuFontSizeToken.ToString());
+                    if (settings.TryGetValue("MenuWidth", out JToken menuWidthToken))
+                        i_menuWidth = int.Parse(menuWidthToken.ToString());
+                    if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
+                        i_menuHeight = int.Parse(menuHeightToken.ToString());
+                    if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
+                        i_sliderWidth = int.Parse(sliderWidthToken.ToString());
+                    if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
+                        i_textboxWidth = int.Parse(textboxWidthToken.ToString());
+                    if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
+                        f_menuAlpha = float.Parse(menuAlphaToken.ToString());
+                    if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
+                    {
+                        DebugMode = bool.Parse(debugModeToken.ToString());
+                        HackMenu.Instance.ToggleDebugTab(DebugMode);
+                    }
+                }
 
                 if (json.TryGetValue("HackSettings", out JToken hackSettingsToken))
                 {
@@ -326,11 +406,24 @@ namespace LethalMenu
                         f_espDistance = int.Parse(espDistanceToken.ToString());
                     if (hackSettings.TryGetValue("DisableSpectatorModels", out JToken disableSpectatorModelsToken))
                         b_disableSpectatorModels = bool.Parse(disableSpectatorModelsToken.ToString());
-                    if (hackSettings.TryGetValue("VCDisplay", out JToken vcDisplayToken))
-                        b_VCDisplay = bool.Parse(vcDisplayToken.ToString());
+                    if (hackSettings.TryGetValue("VCDisplay", out JToken VCDisplayToken))
+                        b_VCDisplay = bool.Parse(VCDisplayToken.ToString());
+                    if (hackSettings.TryGetValue("UseScrapTiers", out JToken UseScrapTiersToken))
+                        b_useScrapTiers = bool.Parse(UseScrapTiersToken.ToString());
+                    if (hackSettings.TryGetValue("HPDisplay", out JToken HPDisplayToken))
+                        b_HPDisplay = bool.Parse(HPDisplayToken.ToString());
+                    if (hackSettings.TryGetValue("ShowShipItems", out JToken ShowShipItemsToken))
+                        b_ShowShipItems = bool.Parse(ShowShipItemsToken.ToString());
+                    if (hackSettings.TryGetValue("FPSCounter", out JToken FPSCounterToken))
+                        b_FPSCounter = bool.Parse(FPSCounterToken.ToString());
+                    if (hackSettings.TryGetValue("HackHighlight", out JToken HackHighlightToken))
+                        b_HackHighlight = bool.Parse(HackHighlightToken.ToString());
+                    if (hackSettings.TryGetValue("DisplayLMUsers", out JToken DisplayLMUsersToken))
+                        b_DisplayLMUsers = bool.Parse(DisplayLMUsersToken.ToString());
                     if (hackSettings.TryGetValue("FOV", out JToken fovToken))
                         f_fov = float.Parse(fovToken.ToString());
-                    
+                    if (hackSettings.TryGetValue("PJSpamSpeed", out JToken pjSpamSpeedToken))
+                        f_pjSpamSpeed = float.Parse(pjSpamSpeedToken.ToString());
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {
@@ -338,13 +431,10 @@ namespace LethalMenu
                         {
                             string s_type = item.Key;
                             string s_value = item.Value;
-
                             if (Enum.TryParse<EnemyAIType>(s_type, out EnemyAIType type))
                             {
-
                                 if (type == EnemyAIType.Unknown) continue;
                                 bool value = bool.TryParse(s_value, out bool result) ? result : false;
-
                                 EnemyAITypeExtensions.EnemyFilter[type] = value;
                             }
                         }
@@ -375,10 +465,9 @@ namespace LethalMenu
                             b_chamsBreaker = bool.Parse(breakerToken.ToString());
                         if (chams.TryGetValue("Ship", out JToken shipToken))
                             b_chamsShip = bool.Parse(shipToken.ToString());
-
+                        if (chams.TryGetValue("SpikeRoofTrap", out JToken spikeRoofTrapToken))
+                            b_chamsSpikeRoofTrap = bool.Parse(spikeRoofTrapToken.ToString());
                     }
-
-
                 }
 
                 if (json.TryGetValue("Colors", out JToken colorsToken))
@@ -393,6 +482,8 @@ namespace LethalMenu
                         c_menuText = JsonConvert.DeserializeObject<RGBAColor>(menuTextToken.ToString());
                     if (colors.TryGetValue("Crosshair", out JToken crosshairToken))
                         c_crosshair = JsonConvert.DeserializeObject<RGBAColor>(crosshairToken.ToString());
+                    if (colors.TryGetValue("HackHighlightColor", out JToken hackhighlightToken))
+                        c_hackhighlight = JsonConvert.DeserializeObject<RGBAColor>(hackhighlightToken.ToString());
                     if (colors.TryGetValue("Chams", out JToken chams))
                         c_chams = JsonConvert.DeserializeObject<RGBAColor>(chams.ToString());
                     if (colors.TryGetValue("ObjectESP", out JToken objectESP))
@@ -417,64 +508,30 @@ namespace LethalMenu
                         c_entranceExitESP = JsonConvert.DeserializeObject<RGBAColor>(entranceExitESP.ToString());
                     if(colors.TryGetValue("SteamHazardESP", out JToken steamHazardESP))
                         c_steamHazardESP = JsonConvert.DeserializeObject<RGBAColor>(steamHazardESP.ToString());
+                    if (colors.TryGetValue("SpikeRoofTrapESP", out JToken roofSpikeTrapESP))
+                        c_spikeRoofTrapESP = JsonConvert.DeserializeObject<RGBAColor>(roofSpikeTrapESP.ToString());
                     if (colors.TryGetValue("CauseOfDeath", out JToken causeOfDeath))
                         c_causeOfDeath = JsonConvert.DeserializeObject<RGBAColor>(causeOfDeath.ToString());
                 }
 
-                if (json.TryGetValue("MenuSettings", out JToken settingsToken))
-                {
-                    JObject settings = settingsToken.ToObject<JObject>();
-
-                    if (settings.TryGetValue("FirstLaunch", out JToken firstLaunchToken))
-                        isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
-                    if (settings.TryGetValue("MenuFontSize", out JToken menuFontSizeToken))
-                        i_menuFontSize = int.Parse(menuFontSizeToken.ToString());
-                    if (settings.TryGetValue("MenuWidth", out JToken menuWidthToken))
-                        i_menuWidth = int.Parse(menuWidthToken.ToString());
-                    if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
-                        i_menuHeight = int.Parse(menuHeightToken.ToString());
-                    if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
-                        i_sliderWidth = int.Parse(sliderWidthToken.ToString());
-                    if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
-                        i_textboxWidth = int.Parse(textboxWidthToken.ToString());
-                    if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
-                        f_menuAlpha = float.Parse(menuAlphaToken.ToString());
-
-                }
-
-
-                
-
                 if (json.TryGetValue("KeyBinds", out JToken keybindsToken))
                 {
                     HackExtensions.KeyBinds.Clear();
-
                     ButtonControl[] mouseButtons = new ButtonControl[] { Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton };
-
-
                     foreach (var item in keybindsToken.ToObject<Dictionary<string, string>>())
                     {
                         string s_hack = item.Key;
                         string s_key = item.Value;
-
                         ButtonControl mouseBtn = mouseButtons.FirstOrDefault(k => k.displayName == s_key);
-
                         ButtonControl key = Keyboard.current.allKeys.FirstOrDefault(k => k.keyCode.ToString() == s_key);
-
-
                         if (Enum.TryParse<Hack>(s_hack, out Hack hack))
                         {
                             if (mouseBtn == null && key == null) continue;
                             hack.SetKeyBind(mouseBtn ?? key);
                         }
-
-                            
-
-                        
                     }
                 }
                 
-
 
                 if(json.TryGetValue("Toggles", out JToken togglesToken))
                 {
@@ -482,35 +539,23 @@ namespace LethalMenu
                     {
                         string s_hack = item.Key;
                         string s_key = item.Value;
-
                         if(Enum.TryParse<Hack>(s_hack, out Hack hack))
                         {
                             if (hack.CanBeExecuted()) continue;
-
                             bool toggle = bool.TryParse(s_key, out bool result) ? result : false;
-
                             hack.SetToggle(toggle);
                         }
-
-                        
                     }
                 }
-                
-
             }
 
             public static void RegenerateConfig()
             {
                 if (HasConfig()) File.Delete(config);
                 File.Copy(defaultConf, config);
-
                 HackExtensions.KeyBinds.Clear();
-
                 LoadConfig();
-
-
             }
         }
     }
 }
-

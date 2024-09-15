@@ -1,8 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace LethalMenu.Types
 {
@@ -28,7 +26,14 @@ namespace LethalMenu.Types
         SpringMan,
         Jester,
         LassoMan,
-        MaskedPlayerEnemy
+        MaskedPlayerEnemy,
+        Butler,
+        ButlerBees,
+        RadMech,
+        FlowerSnake,
+        BushWolf,
+        ClaySurgeon,
+        CaveDweller
     }
 
     public static class EnemyAITypeExtensions
@@ -55,7 +60,14 @@ namespace LethalMenu.Types
             { EnemyAIType.SpringMan, true },
             { EnemyAIType.Jester, true },
             { EnemyAIType.LassoMan, true },
-            { EnemyAIType.MaskedPlayerEnemy, true }
+            { EnemyAIType.MaskedPlayerEnemy, true },
+            { EnemyAIType.Butler, true },
+            { EnemyAIType.ButlerBees, true },
+            { EnemyAIType.RadMech, true },
+            { EnemyAIType.FlowerSnake, true },
+            { EnemyAIType.BushWolf, true },
+            { EnemyAIType.ClaySurgeon, true },
+            { EnemyAIType.CaveDweller, true }
         };
 
         public static void ToggleESP(this EnemyAIType type)
@@ -70,9 +82,9 @@ namespace LethalMenu.Types
 
         public static EnemyAIType GetEnemyAIType(this EnemyAI enemy)
         {
-            bool hasType =  Enum.TryParse<EnemyAIType>(enemy.enemyType.name, out EnemyAIType type);
+            bool hasType = Enum.TryParse<EnemyAIType>(enemy.enemyType.name, out EnemyAIType type);
 
-            if(hasType) return type;
+            if (hasType) return type;
 
             return EnemyAIType.Unknown;
         }

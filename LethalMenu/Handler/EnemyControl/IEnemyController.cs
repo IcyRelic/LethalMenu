@@ -5,7 +5,6 @@
         const float DefaultSprintMultiplier = 2.8f;
 
         const float DefaultInteractRange = 2.5f;
-
         void OnTakeControl(EnemyAI enemy);
 
         void OnReleaseControl(EnemyAI enemy);

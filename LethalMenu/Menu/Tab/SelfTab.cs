@@ -1,4 +1,4 @@
-﻿using GameNetcodeStuff;
+using GameNetcodeStuff;
 using LethalMenu.Language;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
@@ -11,9 +11,9 @@ namespace LethalMenu.Menu.Tab
 {
     internal class SelfTab : MenuTab
     {
-        private string s_xp = "";
-        private Vector2 tpScrollPos = Vector2.zero;
         private Vector2 scrollPos = Vector2.zero;
+        private Vector2 scrollPos2 = Vector2.zero;
+        private string s_xp = "";
 
         public SelfTab() : base("SelfTab.Title") { }
 
@@ -40,25 +40,46 @@ namespace LethalMenu.Menu.Tab
             UI.HackSlider(Hack.FastClimb, "SelfTab.FastClimb", Settings.f_climbSpeed.ToString("0.0"), ref Settings.f_climbSpeed, Settings.f_defaultClimbSpeed, Settings.f_defaultClimbSpeed + 20);
             UI.HackSlider(Hack.SuperSpeed, "SelfTab.SuperSpeed", Settings.f_movementSpeed.ToString("0.0"), ref Settings.f_movementSpeed, Settings.f_defaultMovementSpeed, Settings.f_defaultMovementSpeed + 20);
             UI.HackSlider(Hack.NoClip, "SelfTab.NoClip", Settings.f_noclipSpeed.ToString("0.0"), ref Settings.f_noclipSpeed, 10f, 30f);
+            UI.HackSlider(Hack.ItemSlots, ["SelfTab.ItemSlots", "General.RejoinRequired"], Settings.f_slots.ToString("0.0"), ref Settings.f_slots, 1f, 20f);
+            UI.Hack(Hack.ClickTeleport, "SelfTab.ClickTeleport");
             UI.Hack(Hack.NightVision, "SelfTab.NightVision");
             UI.Hack(Hack.UnlimitedStamina, "SelfTab.UnlimitedStamina");
             UI.Hack(Hack.UnlimitedBattery, "SelfTab.UnlimitedBattery");
             UI.Hack(Hack.UnlimitedAmmo, "SelfTab.UnlimitedAmmo");
+            UI.Hack(Hack.UnlimitedOxygen, "SelfTab.UnlimitedOxygen");
+            UI.Hack(Hack.UnlimitedZapGun, "SelfTab.UnlimitedZapGun");
+            UI.Hack(Hack.UnlimitedPresents, "SelfTab.UnlimitedPresents");
             UI.Hack(Hack.LootThroughWalls, "SelfTab.LootThroughWalls");
             UI.Hack(Hack.InteractThroughWalls, "SelfTab.InteractThroughWalls");
             UI.Hack(Hack.Reach, "SelfTab.Reach");
             UI.Hack(Hack.Weight, "SelfTab.Weight");
+            UI.Hack(Hack.AntiGhostGirl, "SelfTab.AntiGhostGirl");
             UI.Hack(Hack.UnlockDoors, "SelfTab.UnlockDoors");
             UI.Hack(Hack.BuildAnywhere, "SelfTab.BuildAnywhere");
             UI.Hack(Hack.FreeCam, "SelfTab.FreeCam");
             UI.Hack(Hack.NoCooldown, "SelfTab.NoCooldown");
             UI.Hack(Hack.InstantInteract, "SelfTab.InstantInteract");
             UI.Hack(Hack.SuperShovel, "SelfTab.SuperShovel");
+            UI.Hack(Hack.SuperKnife, "SelfTab.SuperKnife");
             UI.Hack(Hack.StrongHands, "SelfTab.StrongHands");
             UI.Hack(Hack.Invisibility, "SelfTab.Invisibility");
             UI.Hack(Hack.NoFallDamage, "SelfTab.NoFallDamage");
-            UI.Hack(Hack.HearEveryone, "SelfTab.HearEveryone");
+            UI.Hack(Hack.HearAllAlivePeople, "SelfTab.HearAllAlivePeople");
+            UI.Hack(Hack.HearAllDeadPeople, "SelfTab.HearAllDeadPeople");
             UI.Hack(Hack.NoFlash, "SelfTab.NoFlash");
+            UI.Hack(Hack.NoQuicksand, "SelfTab.NoQuicksand");
+            UI.Hack(Hack.NoCameraShake, "SelfTab.NoCameraShake");
+            UI.Hack(Hack.TeleportWithItems, "SelfTab.TeleportWithItems");
+            UI.Hack(Hack.BridgeNeverFalls, ["SelfTab.BridgeNeverFalls", "General.Vow/Adamance"]);
+            UI.Hack(Hack.DropAllItems, "SelfTab.DropAllItems");
+            UI.Hack(Hack.DeleteHeldItem, "SelfTab.DeleteHeldItem");
+            UI.Hack(Hack.VoteShipLeaveEarly, "SelfTab.VoteShipLeaveEarly");
+            UI.Hack(Hack.VehicleGodMode, "SelfTab.VehicleGodMode");
+            UI.Hack(Hack.EggsNeverExplode, "SelfTab.EggsNeverExplode");
+            UI.Hack(Hack.UnlockAllDoors, "SelfTab.UnlockAllDoors");
+            UI.Hack(Hack.OpenAllBigDoors, "SelfTab.OpenAllBigDoors");
+            UI.Hack(Hack.CloseAllBigDoors, "SelfTab.CloseAllBigDoors");
+            UI.Hack(Hack.GrabItemsBeforeGame, "SelfTab.GrabItemsBeforeGame");
 
             GUILayout.EndScrollView();
         }
@@ -69,7 +90,6 @@ namespace LethalMenu.Menu.Tab
 
             int level = (bool)HUDManager.Instance ? HUDManager.Instance.localPlayerLevel : 0;
             int xp = (bool)HUDManager.Instance ? HUDManager.Instance.localPlayerXP : 0;
-
 
             UI.Label("SelfTab.Level", level.ToString());
             UI.Label("SelfTab.XP", xp.ToString());
@@ -90,7 +110,7 @@ namespace LethalMenu.Menu.Tab
 
             PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
 
-            tpScrollPos = GUILayout.BeginScrollView(tpScrollPos);
+            scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
 
             UI.Hack(Hack.TeleportShip, "SelfTab.TeleportShip", "SelfTab.Teleport");
 
@@ -116,5 +136,4 @@ namespace LethalMenu.Menu.Tab
             }
         }
     }
-
 }

@@ -1,26 +1,31 @@
 ﻿using System;
 using System.Linq;
+using LethalMenu.Language;
 using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
     internal class InfoDisplay : Cheat
     {
+        private static String info = "";
+        private void Info(string label, string value) => info += $"{Localization.Localize(label)} {value} \n";
+
         public override void OnGui()
         {
-            String info = "";
+            info = ""; 
+            
+            if (Hack.DisplayBodyCount.IsEnabled()) Info("Cheats.Info.DisplayBodyCount", GetBodyCount().ToString());
+            if (Hack.DisplayEnemyCount.IsEnabled()) Info("Cheats.Info.DisplayEnemyCount", GetEnemyCount().ToString());
+            if (Hack.DisplayObjectCount.IsEnabled()) Info("Cheats.Info.DisplayObjectCount", GetObjectCount().ToString());
+            if (Hack.DisplayObjectValue.IsEnabled()) Info("Cheats.Info.DisplayObjectValue", GetObjectValue().ToString());
+            if (Hack.DisplayShipObjectCount.IsEnabled()) Info("Cheats.Info.DisplayShipObjectCount", GetShipCount().ToString());
+            if (Hack.DisplayShipObjectValue.IsEnabled()) Info("Cheats.Info.DisplayShipObjectValue", GetShipValue().ToString());
+            if (Hack.DisplayQuota.IsEnabled()) Info("Cheats.Info.DisplayQuota", GetQuota().ToString());
+            if (Hack.DisplayDeadline.IsEnabled()) Info("Cheats.Info.DisplayDeadline", GetDeadline().ToString());
+            if (Hack.DisplayBuyingRate.IsEnabled()) Info("Cheats.Info.DisplayBuyingRate", GetBuyingRate().ToString() + "%");
 
-            if (Hack.DisplayBodyCount.IsEnabled()) info += "Dead Body Count: " + GetBodyCount() + "\n";
-            if (Hack.DisplayEnemyCount.IsEnabled()) info += "Enemy Count: " + GetEnemyCount() + "\n";
-            if (Hack.DisplayObjectScan.IsEnabled()) info += "Object Count: " + GetObjectCount() + "\n";
-            if (Hack.DisplayObjectScan.IsEnabled()) info += "Object Value: " + GetObjectValue() + "\n";
-            if (Hack.DisplayShipScan.IsEnabled()) info += "Ship Value: " + GetShipValue() + "\n";
-            if (Hack.DisplayQuota.IsEnabled()) info += "Quota: " + GetQuota() + "\n";
-            if (Hack.DisplayQuota.IsEnabled()) info += "Days Left: " + GetDaysLeft() + "\n";
-            if (Hack.DisplayBuyingRate.IsEnabled()) info += "Company Buys At: " + GetBuyingRate() + "%\n";
-
-            GUI.color = Color.white;
-            GUI.Label(new Rect(Screen.width - 160 - 0, 0, 160f, 180f), info, new GUIStyle(GUI.skin.label) { fontSize = 14 }); ;
+            GUI.color = Settings.c_primary.GetColor();
+            GUI.Label(new Rect(Screen.width - 200 - 0, 0, 200f, 180f), info, new GUIStyle(GUI.skin.label) { fontSize = 14 }); ;
         }
 
         private int GetBodyCount()
@@ -33,19 +38,24 @@ namespace LethalMenu.Cheats
             return LethalMenu.enemies.FindAll(enemy => !enemy.isEnemyDead).Count();
         }
 
+        private int GetShipCount()
+        {
+            return LethalMenu.items.FindAll(item => item.isInShipRoom && !item.isHeld && !item.isPocketed && !DefaultShipItem(item)).Count();
+        }
+
         private int GetShipValue()
         {
-            return LethalMenu.items.FindAll(item => item.isInShipRoom && !item.isHeld && !item.isPocketed).Sum(item => item.scrapValue);
+            return LethalMenu.items.FindAll(item => item.isInShipRoom && !item.isHeld && !item.isPocketed && !DefaultShipItem(item)).Sum(item => item.scrapValue);
         }
 
         private int GetObjectValue()
         {
-            return LethalMenu.items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed).Sum(item => item.scrapValue);
+            return LethalMenu.items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed && !DefaultShipItem(item)).Sum(item => item.scrapValue);
         }
 
         private int GetObjectCount()
         {
-            return LethalMenu.items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed).Count();
+            return LethalMenu.items.FindAll(item => !item.isInShipRoom && !item.isHeld && !item.isPocketed && !DefaultShipItem(item)).Count();
         }
 
         private int GetQuota()
@@ -54,7 +64,7 @@ namespace LethalMenu.Cheats
             return TimeOfDay.Instance.profitQuota;
         }
 
-        private int GetDaysLeft()
+        private int GetDeadline()
         {
             if (!(bool)StartOfRound.Instance) return 0;
             return TimeOfDay.Instance.daysUntilDeadline;
@@ -65,6 +75,11 @@ namespace LethalMenu.Cheats
             if (!(bool)StartOfRound.Instance) return 0f;
             return StartOfRound.Instance.companyBuyingRate * 100;
         }
-
+        private bool DefaultShipItem(GrabbableObject item)
+        {
+            if (item == null) return false;
+            string[] Items = ["ClipboardManual", "StickyNoteItem"];
+            return Items.Contains(item.name);
+        }
     }
 }

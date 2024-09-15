@@ -43,5 +43,7 @@ namespace LethalMenu.Handler.EnemyControl
         public string GetSecondarySkillName(JesterAI _) => "(HOLD) Begin cranking";
 
         public float InteractRange(JesterAI _) => 1.0f;
+
+        public bool CanUseEntranceDoors(JesterAI _) => false;
     }
 }

@@ -9,5 +9,7 @@
         public float InteractRange(MaskedPlayerEnemy _) => 1.0f;
 
         public bool SyncAnimationSpeedEnabled(MaskedPlayerEnemy _) => false;
+
+        public bool CanUseEntranceDoors(MaskedPlayerEnemy _) => true;
     }
 }

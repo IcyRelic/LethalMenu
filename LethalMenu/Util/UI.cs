@@ -13,8 +13,8 @@ namespace LethalMenu.Util
         public string label;
         public Action action;
         private GUIStyle style = null;
-
-        public UIButton(string label, Action action, GUIStyle style = null)
+     
+    public UIButton(string label, Action action, GUIStyle style = null)
         {
             this.label = Localization.Localize(label);
             this.action = action;
@@ -28,12 +28,12 @@ namespace LethalMenu.Util
         }
     }
 
+
     public class UIOption
     {
         public string label;
         public object value;
         public Action action;
-
 
         public UIOption(string label, object value)
         {
@@ -43,7 +43,7 @@ namespace LethalMenu.Util
 
         public UIOption(string label, Action action)
         {
-            this.label = label;
+            this.label = Localization.Localize(label);
             this.action = action;
         }
 
@@ -54,7 +54,7 @@ namespace LethalMenu.Util
 
         public void Draw()
         {
-            if (GUILayout.Button(label)) action.Invoke();
+            if (GUILayout.Button(label)) action?.Invoke();
         }
     }
 
@@ -90,17 +90,21 @@ namespace LethalMenu.Util
 
         public static void Hack(Hack hack, string header, params object[] param)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
+            GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
-            if (hack.Button()) hack.Execute(param);
+            if (hack.Button()) hack.Execute(param); 
             GUILayout.EndHorizontal();
         }
 
         public static void Hack(Hack hack, string[] header, params object[] param)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
+            GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
             if (hack.Button()) hack.Execute(param);
             GUILayout.EndHorizontal();
@@ -133,30 +137,57 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Toggle(string header, ref bool value, string enabled, string disabled)
+        public static void Toggle(string header, ref bool value, string enabled, string disabled, params Action<bool>[] action)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = value ? Settings.c_hackhighlight.GetColor() : GUI.skin.button.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
+            GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
-            if (GUILayout.Button(Localization.Localize(value ? enabled : disabled))) value = !value;
+            bool newValue = !value;
+            if (GUILayout.Button(Localization.Localize(value ? enabled : disabled)))
+            {
+                value = newValue;
+                action.ToList().ForEach(a => a.Invoke(newValue));
+            }
             GUILayout.EndHorizontal();
         }
 
 
         public static void HackSlider(Hack hack, string header, string displayValue, ref float value, float min, float max, params object[] param)
         {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
             GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
+            GUILayout.Label($"{Localization.Localize(header)} ({displayValue})", style);
             GUILayout.FlexibleSpace();
 
             GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.i_sliderWidth };
-            
+
 
             value = GUILayout.HorizontalSlider(value, min, max, slider, GUI.skin.horizontalSliderThumb);
 
             if (hack.Button()) hack.Execute(param);
             GUILayout.EndHorizontal();
         }
+
+        public static void HackSlider(Hack hack, string[] header, string displayValue, ref float value, float min, float max, params object[] param)
+        {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = Settings.b_HackHighlight && HackExtensions.ToggleFlags.TryGetValue(hack, out bool Enabled) ? (Enabled ? Settings.c_hackhighlight.GetColor() : GUI.skin.label.normal.textColor) : GUI.skin.label.normal.textColor;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"{Localization.Localize(header)} ({displayValue})", style);
+            GUILayout.FlexibleSpace();
+
+            GUIStyle slider = new GUIStyle(GUI.skin.horizontalSlider) { alignment = TextAnchor.MiddleCenter, fixedWidth = Settings.i_sliderWidth };
+
+
+            value = GUILayout.HorizontalSlider(value, min, max, slider, GUI.skin.horizontalSliderThumb);
+
+            if (hack.Button()) hack.Execute(param);
+            GUILayout.EndHorizontal();
+        }
+
 
         public static void Textbox(string label, ref string value, string regex = "", bool big = true)
         {
@@ -178,6 +209,7 @@ namespace LethalMenu.Util
             buttons.ToList().ForEach(btn => btn.Draw());
             GUILayout.EndHorizontal();
         }
+
         public static void TextboxAction(string label, ref string value, string regex, int length, params UIButton[] buttons)
         {
             GUILayout.BeginHorizontal();
@@ -202,19 +234,6 @@ namespace LethalMenu.Util
             GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
             GUILayout.FlexibleSpace();
             value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth));
-            GUILayout.EndHorizontal();
-        }
-
-        public static void SliderAction(string header, string displayValue, ref float value, float min, float max, float defaultValue)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
-            GUILayout.FlexibleSpace();
-            value = GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth));
-            if (GUILayout.Button(Localization.Localize("General.Reset")))
-            {
-                value = defaultValue;
-            }
             GUILayout.EndHorizontal();
         }
 
@@ -255,47 +274,11 @@ namespace LethalMenu.Util
             GUILayout.Label(Localization.Localize(header));
             GUILayout.FlexibleSpace();
             bool modifiedValue = GUILayout.Toggle(isChecked, "");
-            
-            if(modifiedValue != isChecked) onChanged.Invoke();
+
+            if (modifiedValue != isChecked) onChanged.Invoke();
             GUILayout.EndHorizontal();
         }
 
-        public static void IndexSelect(string header, ref int index, params string[] options)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header));
-            GUILayout.FlexibleSpace();
-
-            GUILayout.Label(Localization.Localize(options[index]));
-
-            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
-
-
-            GUILayout.EndHorizontal();
-        }
-
-        public static void IndexSelectAction(string header, ref int index, params string[] options)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label(Localization.Localize(header + " " + options[index]));
-            GUILayout.FlexibleSpace();
-
-            if (GUILayout.Button("-"))
-            {
-                index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
-                ThemeUtil.ApplyTheme(options[index]);
-            }
-
-            if (GUILayout.Button("+"))
-            {
-                index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
-                ThemeUtil.ApplyTheme(options[index]);
-            }
-
-            GUILayout.EndHorizontal();
-        }
-        
         public static void Select(string header, ref int index, params UIOption[] options)
         {
             GUILayout.BeginHorizontal();
@@ -304,9 +287,27 @@ namespace LethalMenu.Util
 
             options[index].Draw();
 
-            if (GUILayout.Button("-")) index = Mathf.Clamp(index-1, 0, options.Length - 1);
-            if (GUILayout.Button("+")) index = Mathf.Clamp(index+1, 0, options.Length - 1);
+            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
 
+
+            GUILayout.EndHorizontal();
+        }
+
+
+        public static void Select(string header, ref int index, ref string value, string regex, int length, params UIOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+
+            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.i_textboxWidth));
+            value = Regex.Replace(value, regex, "");
+
+            options[index].Draw();
+
+            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
 
             GUILayout.EndHorizontal();
         }
@@ -315,7 +316,7 @@ namespace LethalMenu.Util
         {
             List<T> filtered = objects.FindAll(x => textSelector(x).ToLower().Contains(search.ToLower()));
 
-            int rows = Mathf.CeilToInt(filtered.Count / (float) numPerRow);
+            int rows = Mathf.CeilToInt(filtered.Count / (float)numPerRow);
 
             for (int i = 0; i < rows; i++)
             {
@@ -329,7 +330,7 @@ namespace LethalMenu.Util
                     if (GUILayout.Button(textSelector((T)obj), GUILayout.Width(btnWidth))) action((T)obj);
                 }
                 GUILayout.EndHorizontal();
-            }   
+            }
         }
     }
 }

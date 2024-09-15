@@ -106,5 +106,7 @@ namespace LethalMenu.Handler.EnemyControl
         public string GetSecondarySkillName(HoarderBugAI enemy) => enemy.heldItem is null ? "" : "Drop item";
 
         public float InteractRange(HoarderBugAI _) => 1.5f;
+
+        public bool CanUseEntranceDoors(HoarderBugAI _) => false;
     }
 }

@@ -3,8 +3,10 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 using Random = UnityEngine.Random;
 
 namespace LethalMenu.Handler
@@ -16,6 +18,7 @@ namespace LethalMenu.Handler
         Aggravated = 2,
         Unknown = 3
     }
+    
     public class EnemyHandler
     {
         private EnemyAI enemy;
@@ -83,8 +86,6 @@ namespace LethalMenu.Handler
             bool clingingToCeiling = (bool)centipede.Reflect().GetValue("clingingToCeiling");
 
             if(clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
-
-           
         }
 
         private void HandleLureFlowerman()
@@ -163,9 +164,30 @@ namespace LethalMenu.Handler
             SandWormAI worm = enemy as SandWormAI;
             worm.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
+
+        private void HandleLureBushWolf()
+        {
+            BushWolfEnemy bushwolf = enemy as BushWolfEnemy;
+            bushwolf.Reflect().SetValue("isHiding", false);
+            bushwolf.Reflect().SetValue("staringAtPlayer", true);
+            bushwolf.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        }
+
+        private void HandleLureRadMech()
+        {
+            RadMechAI radmech = enemy as RadMechAI;
+            radmech.SetChargingForwardClientRpc(true);
+            radmech.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        }
+
+        private void HandleLureCaveDweller()
+        {
+            CaveDwellerAI cavedweller = enemy as CaveDwellerAI;
+            cavedweller.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
+        }
+
         private void HandleLureEnemyByType()
         {
-
             switch (enemy)
             {
                 case CrawlerAI:
@@ -212,6 +234,15 @@ namespace LethalMenu.Handler
                     break;
                 case SandWormAI:
                     HandleLureSandWorm();
+                    break;
+                case BushWolfEnemy:
+                    HandleLureBushWolf();
+                    break;
+                case RadMechAI:
+                    HandleLureRadMech();
+                    break;
+                case CaveDwellerAI:
+                    HandleLureCaveDweller();
                     break;
                 default:
                     enemy.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
@@ -278,7 +309,11 @@ namespace LethalMenu.Handler
                 typeof(JesterAI),
                 typeof(SandWormAI),
                 typeof(BlobAI),
-                typeof(CentipedeAI)
+                typeof(CentipedeAI),
+                typeof(BushWolfEnemy),
+                typeof(ClaySurgeonAI),
+                typeof(RadMechAI),
+                typeof(CaveDwellerAI)
             };
                 
             return types.Contains(enemy.GetType());
@@ -291,25 +326,31 @@ namespace LethalMenu.Handler
             Cheats.EnemyControl.Control(enemy);
         }
 
+        private List<Type> forceDespawnEnemies = new List<Type>
+        {
+           typeof(ForestGiantAI),
+           typeof(SandWormAI),
+           typeof(BlobAI),
+           typeof(DressGirlAI),
+           typeof(PufferAI),
+           typeof(SpringManAI),
+           typeof(DocileLocustBeesAI),
+           typeof(DoublewingAI),
+           typeof(RedLocustBees),
+           typeof(LassoManAI),
+           typeof(JesterAI),
+           typeof(RedPillAnomaly),
+           typeof(ButlerBeesEnemyAI),
+           typeof(RadMechAI),
+           typeof(ClaySurgeonAI),
+           typeof(CaveDwellerAI)
+        };
+
         public void Kill(bool despawn = false)
         {
-            bool forceDespawn = false;
-
-            if (enemy.GetType() == typeof(ForestGiantAI)
-                        || enemy.GetType() == typeof(SandWormAI)
-                        || enemy.GetType() == typeof(BlobAI)
-                        || enemy.GetType() == typeof(DressGirlAI)
-                        || enemy.GetType() == typeof(PufferAI)
-                        || enemy.GetType() == typeof(SpringManAI)
-                        || enemy.GetType() == typeof(DocileLocustBeesAI)
-                        || enemy.GetType() == typeof(DoublewingAI)
-                        || enemy.GetType() == typeof(RedLocustBees)
-                        || enemy.GetType() == typeof(LassoManAI)
-                        || enemy.GetType() == typeof(JesterAI)
-                        ) forceDespawn = true;
-
+            bool forceDespawn = forceDespawnEnemies.Contains(enemy.GetType());
+            enemy.enemyType.canDie = true;
             enemy.KillEnemyServerRpc(forceDespawn ? forceDespawn : despawn);
-            
         }
 
         public void Stun()
@@ -320,16 +361,15 @@ namespace LethalMenu.Handler
 
         public void Teleport(PlayerControllerB player)
         {
-            if (enemy.GetType() != typeof(MaskedPlayerEnemy) && (enemy.isOutside && player.isInsideFactory || !enemy.isOutside && !player.isInsideFactory)) return;
-
+            if (LethalMenu.localPlayer == null || enemy == null) return;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             enemy.transform.position = player.transform.position;
             enemy.SyncPositionToClients();
         }
 
-
         public void TargetPlayer(PlayerControllerB player)
         {
+            if (LethalMenu.localPlayer == null || enemy == null) return;
             target = player;
             enemy.targetPlayer = player;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
@@ -339,6 +379,7 @@ namespace LethalMenu.Handler
 
         public void KillPlayer(PlayerControllerB player)
         {
+            if (LethalMenu.localPlayer == null || enemy == null) return;
             target = player;
             enemy.targetPlayer = player;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
@@ -381,16 +422,12 @@ namespace LethalMenu.Handler
         public static void StealAllItems(this HoarderBugAI bug)
         {
             bug.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-
             LethalMenu.Instance.StartCoroutine(StealItems(bug));
-
-            
         }
 
         private static IEnumerator StealItems(HoarderBugAI bug)
         {
             List<NetworkObject> items = LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom && i.isInFactory).ConvertAll(i => i.NetworkObject);
-
             foreach (var obj in items)
             {
                 yield return new WaitForSeconds(0.2f);

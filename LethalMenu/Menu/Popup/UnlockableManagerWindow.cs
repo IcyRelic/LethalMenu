@@ -1,10 +1,10 @@
-﻿using LethalMenu.Menu.Core;
+using LethalMenu.Menu.Core;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace LethalMenu.Menu.Popup
 {
@@ -17,25 +17,20 @@ namespace LethalMenu.Menu.Popup
 
         public override void DrawContent(int windowID)
         {
-            if(!(bool)StartOfRound.Instance) return;
-
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            var unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().ToList();
+            List<Unlockable> unlockables = Enum.GetValues(typeof(Unlockable)).Cast<Unlockable>().Where(u => u != Unlockable.OrangeSuit).ToList();
 
             GUILayout.BeginHorizontal();
             UI.Textbox("General.Search", ref s_search);
             GUILayout.FlexibleSpace();
-            UI.Button("UnlockableManager.UnlockAll", () => unlockables.ForEach(x => Hack.UnlockUnlockable.Execute(x)));
+            UI.Button("UnlockableManager.UnlockAll", () => unlockables.ForEach(x => Hack.UnlockUnlockable.Execute(x, true, false)));
             GUILayout.EndHorizontal();
 
-            
-            UI.ButtonGrid(unlockables, (u) => u.GetItem().unlockableName, s_search, (u) => Hack.UnlockUnlockable.Execute(u), 3);
+            UI.ButtonGrid(unlockables, (u) => u.GetItem().unlockableName, s_search, (u) => Hack.UnlockUnlockable.Execute(u, false, true), 3);
 
             GUILayout.EndScrollView();
             GUI.DragWindow();
         }
-
-
     }
 }

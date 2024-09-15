@@ -1,7 +1,10 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
+using System.Linq;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace LethalMenu.Menu.Tab
@@ -23,7 +26,7 @@ namespace LethalMenu.Menu.Tab
             scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
             GeneralActions();
             PlayerActions();
-            GUILayout.EndScrollView();
+            GUILayout.EndScrollView(); 
             GUILayout.EndVertical();
         }
 
@@ -33,7 +36,7 @@ namespace LethalMenu.Menu.Tab
             float height = HackMenu.Instance.contentHeight - 20;
 
             Rect rect = new Rect(0, 0, width, height);
-            GUI.Box(rect, "Player List");
+            GUI.Box(rect, Localization.Localize("PlayerTab.PlayerList"));
 
             GUILayout.BeginVertical(GUILayout.Width(width), GUILayout.Height(height));
 
@@ -48,7 +51,12 @@ namespace LethalMenu.Menu.Tab
 
                 if (selectedPlayer == (int)player.playerClientId) GUI.contentColor = Settings.c_playerESP.GetColor();
 
-                if (GUILayout.Button(player.playerUsername, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
+                name = player.playerUsername;
+
+                if (LethalMenu.Instance.LMUsers.ContainsKey(player.playerSteamId.ToString()) && Settings.b_DisplayLMUsers)
+                    name = $"[LethalMenu {LethalMenu.Instance.LMUsers[player.playerSteamId.ToString()]}] {player.playerUsername}";
+
+                if (GUILayout.Button(name, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
 
                 GUI.contentColor = Settings.c_menuText.GetColor();
             }
@@ -63,7 +71,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.DeathNotifications, "PlayerTab.DeathNotifications");
             UI.Hack(Hack.FreeCam, "PlayerTab.FreeCam");
 
-            if(Hack.SpectatePlayer.IsEnabled())
+            if (Hack.SpectatePlayer.IsEnabled())
                 UI.Button("PlayerTab.StopSpectating", () => Hack.SpectatePlayer.SetToggle(false), "General.Stop");
 
             if (Hack.MiniCam.IsEnabled())
@@ -71,12 +79,10 @@ namespace LethalMenu.Menu.Tab
 
             UI.Button("PlayerTab.KillEveryone", () => LethalMenu.players.ForEach(p => Hack.KillPlayer.Execute(p)));
             UI.Button("PlayerTab.KillEveryoneElse", () => LethalMenu.players.FindAll(p => p.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId).ForEach(p => Hack.KillPlayer.Execute(p)));
-           
         }
 
         private void PlayerActions()
         {
-
             PlayerControllerB player = LethalMenu.players.Find(p => (int)p.playerClientId == selectedPlayer);
 
             if (player == null || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
@@ -86,7 +92,6 @@ namespace LethalMenu.Menu.Tab
             if (player.isPlayerDead && player.deadBody != null)
                 name = $"{Settings.c_deadPlayer.AsString("PlayerTab.DeadPrefix")} {name} ({Settings.c_causeOfDeath.AsString(player.deadBody.causeOfDeath.ToString())})";
 
-
             UI.Header(name);
             UI.Header("PlayerTab.PlayerInfo");
 
@@ -94,21 +99,17 @@ namespace LethalMenu.Menu.Tab
             UI.Label("PlayerTab.PlayerId", player.playerClientId.ToString());
             UI.Label("PlayerTab.PlayerStatus", player.isPlayerDead ? "PlayerTab.DeadPrefix" : "PlayerTab.AlivePrefix");
             UI.Label("PlayerTab.PlayerHealth", player.health.ToString());
+            UI.Label("PlayerTab.IsHost", (player.actualClientId == 0 ? "True" : "False"));
             UI.Label("PlayerTab.IsInFactory", player.isInsideFactory.ToString());
             UI.Label("PlayerTab.IsInShip", player.isInHangarShipRoom.ToString());
             UI.Label("PlayerTab.Insanity", player.insanityLevel.ToString());
 
-            //get the inventory of the player
-            GrabbableObject[] items = player.ItemSlots;
-            //show the inventory
             UI.Header("PlayerTab.Inventory", true);
-            foreach (GrabbableObject item in items)
+            foreach (GrabbableObject item in player.ItemSlots)
             {
                 if (item == null) continue;
-
-                UI.Label("", item.name);
+                UI.Label("", $"Name: {item.name} | Value: {item.scrapValue} | Weight: {item.itemProperties.weight} | Pocketed: {item.isPocketed} | Deactivated: {item.deactivated}");
             }
-
 
             UI.Header("General.GeneralActions", true);
             UI.Hack(Hack.Teleport, "PlayerTab.TeleportTo", player.transform.position, player.isInElevator, player.isInHangarShipRoom, player.isInsideFactory);
@@ -119,7 +120,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportEnemy, "PlayerTab.TeleportAllEnemies", player, LethalMenu.enemies.ToArray());
             UI.Hack(Hack.LureAllEnemies, "PlayerTab.Lure", player);
             UI.Hack(Hack.ExplodeClosestMine, "PlayerTab.ExplodeMine", player);
-
+            UI.Hack(Hack.ForceBleed, "PlayerTab.ForceBleed", player);
 
             if (player.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
             {
@@ -139,7 +140,6 @@ namespace LethalMenu.Menu.Tab
 
                 UI.Button("PlayerTab.Spectate", action, btnText);
 
-
                 btnText = (int)player.playerClientId == Cheats.SpectatePlayer.camPlayer ? "General.Stop" : "General.View";
 
                 startAction = () =>
@@ -156,7 +156,6 @@ namespace LethalMenu.Menu.Tab
 
                 UI.Button("PlayerTab.MiniCam", action, btnText);
             }
-
         }
     }
 }

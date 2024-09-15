@@ -1,3 +1,120 @@
+v1.4.5
+- Added Dress Girl Controller - You can control the dress girl and chase people!
+- Added Clay Surgeon Controller - You can control the Clay Surgeon and cut people up!
+- Added Cave Dweller Controller - You can control the Cave Dweller and jump on peoples!!
+- Added Anti Ghost Girl - Ghost girl can't haunt you
+- Added Welcome Message - Welcome message when you join a lobby
+- Added Enemy Control Anti Scan - Prevents you from scanning when controlling a enemy
+- Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
+- Changed Unload - It attempts to remove all enabled hacks and make everything normal
+
+v1.4.4 
+- Added PJ Plushie Spammer - Spams PJ Plushies at a variable speed
+- Added Click Teleport - Teleport to where you click
+- Added Peer 2 Peer Communication - Adds [LethalMenu {version}] before their names in players tab (1.4.4+) 
+- Added New Enemies To Cham Toggles 
+- Added Grab Objects Before Game - You can pick up items
+- Added Toggle All For Displays - Added a toggle to enable and disable all display options
+- Added Toggle Terminal Sound - Spam the terminal sound
+- Added FPS Counter - Displays your FPS
+- Added Toggle Menu Tip - Adds a Toggle Menu: (Menu Key) to control tips
+- Added Vehicle Godmode - Cruiser doesn't take damage
+- Added Color Customization to info display
+- Added Hack Highlight - Hacks are highlighted
+- Added Hack Highlight Customization - Set the color of the highlighted hacks 
+- Added Transmitt - You can send messages as the signal transmitter
+- Added Message Prefixes - [System], [Server], [Broadcast] - You can send messages in chat as these prefixes like [Prefix] {message}
+- Added Message as other players 
+- Added Suit Manager - View all suits with buy all and wear on buy
+- Added Unlock All Suits - Unlocks all suits
+- Added Wear On Buy to suit manager - Buys the suit and wears 
+- Added Eggs Never Explode - Easter Eggs never explode when you throw them
+- Added Force Bleed - Force others players to bleed 
+- Added Unlimited Zap Gun - You can shock forever
+- Added Reset Ship (Host Only) - Resets everything about the ship
+- Added BushWolf, RadMech, and Cave Dweller to lure
+- Added Copy Lobby ID - Copy a lobby id (Its just the hosts steam id)
+- Added Join Lobby - Join using the lobby id
+- Added Color Customization To Info Display - It changes based on your c_primary color
+- Added Open All Big Doors - Opens all big doors
+- Added Close All Big Doors - Closes all big doors
+- Fixed Themes - They now save in settings and load properly 
+- Fixed Never Lose Scrap - I forgot to add the check for the hack being enabled but its fixed now
+- Fixed First Setup Manager - The buttons were overlapping themselves from a style
+- Fixed Spike Roof Trap Chams - They had to be converted to game objects -- Thanks IcyRelic
+- Fixed No Fog - Experimentation used a volume fog and its now included 
+- Fixed Player ESP Error 
+- Fixed Unlimited Presents - It doesn't make it impossible to drop the present now
+- Fixed SpawnScrap Error - Added a check for spawnEnemiesAndScrap
+- Fixed Kill all enemy (Host Only) - By fixing Enemy killing it fixed this aswell
+- Fixed Enemy killing (Host Only) - Zeekers added a candie bool which can only be changed on host
+- Fixed Teleport all enemies 
+- Changed Player Info - Added more info about the items in their inventory
+- Changed ThemeUtil - It is now just called Theme, way less messy, and better theme loading
+- Changed Shop Lifter - It has much better code and now makes crusier free -- Thanks IcyRelic
+- Changed Item ESP - Made it less messy
+- Changed Info Display - Added a method to make it less messy
+- Changed Item Manager - Made it bigger because the search translation was being cut off
+- Removed Drop All Player Items - I can't fix the syncing issue
+
+v1.4.3
+- Added Super Knife - Instant kill with knife
+- Added No Quicksand - No falling into quicksand 
+- Added No Camera Shake - No camera shake from Giants or Radmechs
+- Added Teleport With Items - Teleport with items on inverse or teleporter
+- Added Drop All Items - Drop all items the local player has
+- Added Berserk All Turrets - Berserk all turrets like you hit them
+- Added Unlock All Doors - Unlock all doors on the map
+- Added Open Ship Door Space - Open the door while in space
+- Added Drop All Players Items - Drop all items all players have
+- Added Show Offensive Lobby Names - Show offensive lobby names that get removed
+- Added Disconnect - Instantly disconnect  
+- Added Bridge Never Falls - Bridges on maps like Vow and Adamance never fall 
+- Added Force Small Bridge Fall - Force Small Bridge on Adamance to fall
+- Added Unlimited Oxygen - Unlimited Oxygen in water
+- Added Spawn Spike Roof Trap - Spawn Spike Roof Traps 
+- Added Enable Shop Items - See and teleport items from the ship in the Item Manager
+- Added Weather Manager - Change the Weather of a moon
+- Added HP Display - See the Health of other players on ESP
+- Added GiftBox Item ESP - See the item inside a GiftBox
+- Added GiftBox Iem value ESP - See the value of the item in a GiftBox
+- Added Unlimited Presents - Open GiftBoxes forever 
+- Added Extra Slots - Change how many slots you have (LOBBY REJOIN REQUIRED)
+- Added Spike Roof Trap ESP - See Spike Roof Traps on ESP
+- Added Spike Roof Trap Chams - See Spike Roof Traps on Chams
+- Added Dot Crosshair - New Dot Crosshair 
+- Added Vote Ship Leave Early - Vote for the ship to leave early instantly
+- Added RadMech to Godmode - RadMech can't kill you by picking you up
+- Added Translations to Info Display - Info Display is now translated for other languages
+- Added Display Ship Object Count - Display how many items are on the ship
+- Added Display Ship Object Value - Display the value of all the items on the ship
+- Added Hear All Alive People - Hear all people who are alive
+- Added Hear All Dead People - Hear all people who died
+- Added Display Object Count - Display how many items on the map excluding ship items 
+- Added Display Object Value - Display the value of the items on the map excluding ship items
+- Added Display Deadline - Display how many days you have left before quota
+- Added Notifications for Managers - Added notifications when you do actions in the managers
+- Added New Unlockables - New Unlockables for v50 are in the Unlockable Manager now
+- Fixed Loader so you can't inject LethalMenu twice - You can't bug LethalMenu by injecting it twice 
+- Fixed Error from leaving with LethalMenu open - Error you can't see but existed in the console
+- Fixed Cursor getting stuck when leaving with LethalMenu open - You couldn't move the mouse with LethalMenu closed on the main menu 
+- Fixed Managers becoming small after leaving - It didn't check if they were in a game
+- Fixed Build everywhere - You can now build anywhere it was broken after a update
+- Fixed Baboon Bird Controller - You can pick up items again
+- Fixed Translations - Translated everything except General tab
+- Fixed Server Tab Scrolling - You couldn't scroll all the way down in the Server Tab
+- Fixed Moon Manager - Now works for v50
+- Fixed Never Lose Scrap - Now works for v50 
+- Removed Display Ship Object Scan - Changed it into Display Ship Object Count and Display Ship Object Value
+- Removed Display Object Scan - Changed it into Display Object Count and Display Object Value
+- Removed Display Deadline from Display Quota - Made Display Deadline its own option instead of being in Display Quota
+- Removed Default Ship Items - Default ship items don't count in Display Object Count, Display Object Value, Display Ship Object Count, or Display Ship Object Value
+- Removed Hear Everyone - Changed it into Hear All Dead People and Hear All Alive People
+
+v1.4.2
+- EnemyControl 2.0 - Control enemies with more options
+- Fixed some bugs with EnemyControl
+
 v1.4.1
 - Added Shoplifter - All shop items are free
 - Fixed ServerTab Manager translations not working

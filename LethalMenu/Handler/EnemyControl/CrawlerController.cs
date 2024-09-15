@@ -8,6 +8,8 @@
 
         public void UseSecondarySkill(CrawlerAI enemy) => enemy.MakeScreechNoiseServerRpc();
 
-        public void UsePrimarySkill(CrawlerAI enemy) => enemy.CollideWithWallServerRpc(); 
+        public void UsePrimarySkill(CrawlerAI enemy) => enemy.CollideWithWallServerRpc();
+
+        public bool CanUseEntranceDoors(CrawlerAI _) => false;
     }
 }

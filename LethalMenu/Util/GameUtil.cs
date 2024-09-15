@@ -11,7 +11,6 @@ namespace LethalMenu.Util
 {
     public static class GameUtil
     {
-
         public static List<EnemyType> GetEnemyTypes()
         {
             List<EnemyType> types = new List<EnemyType>();
@@ -27,18 +26,23 @@ namespace LethalMenu.Util
 
             return types;
         }
-
         public static List<SpawnableMapObject> GetSpawnableMapObjects()
         {
             List<SpawnableMapObject> types = new List<SpawnableMapObject>();
 
-            if (!(bool)StartOfRound.Instance) return types;
+            if (StartOfRound.Instance == null || StartOfRound.Instance.levels == null) return types;
 
             foreach (var level in StartOfRound.Instance.levels)
             {
-                level.spawnableMapObjects.ToList().ForEach(o => { if (!types.Any(x => x.prefabToSpawn.name == o.prefabToSpawn.name)) types.Add(o); });
+                if (level.spawnableMapObjects == null) continue;
+                foreach (var spawnableObject in level.spawnableMapObjects)
+                {
+                    if (!types.Any(x => x.prefabToSpawn.name == spawnableObject.prefabToSpawn.name))
+                    {
+                        types.Add(spawnableObject);
+                    }
+                }
             }
-
             return types;
         }
 
@@ -95,6 +99,13 @@ namespace LethalMenu.Util
             {
                 return null;
             }
+        }
+
+        public static RaycastHit StraightCastForward(this Transform transform, float distance = 1000f)
+        {
+            RaycastHit hit;
+            Physics.Raycast(transform.position, transform.forward, out hit, distance);
+            return hit;
         }
 
         public static void RenderPlayerModels()
