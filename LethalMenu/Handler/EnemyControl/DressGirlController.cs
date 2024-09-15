@@ -33,6 +33,11 @@ namespace LethalMenu.Handler.EnemyControl
 
         public string GetSecondarySkillName(DressGirlAI _) => "";
 
+        public void OnDeath(DressGirlAI enemy)
+        {
+            enemy.EnableEnemyMesh(false, true);
+        }
+
         public bool CanUseEntranceDoors(DressGirlAI _) => true;
 
         public float InteractRange(DressGirlAI _) => 5f;

@@ -1,11 +1,12 @@
 v1.4.5
 - Added Dress Girl Controller - You can control the dress girl and chase people!
 - Added Clay Surgeon Controller - You can control the Clay Surgeon and cut people up!
+- Added Cave Dweller Controller - You can control the Cave Dweller and jump on peoples!!
 - Added Anti Ghost Girl - Ghost girl can't haunt you
 - Added Welcome Message - Welcome message when you join a lobby
-- Added Anti Scan - Prevents you from scanning when controlling a enemy
-- Changed Unload - It attempts to remove all enabled hacks and make everything normal
+- Added Enemy Control Anti Scan - Prevents you from scanning when controlling a enemy
 - Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
+- Changed Unload - It attempts to remove all enabled hacks and make everything normal
 
 v1.4.4 
 - Added PJ Plushie Spammer - Spams PJ Plushies at a variable speed

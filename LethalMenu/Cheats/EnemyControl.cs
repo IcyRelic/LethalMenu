@@ -50,7 +50,7 @@ namespace LethalMenu.Cheats
             { typeof(ButlerEnemyAI), new ButlerController() },
             { typeof(ButlerBeesEnemyAI), new ButlerBeesController() },
             { typeof(FlowerSnakeEnemy), new FlowerSnakeController() },
-            { typeof(DoublewingAI), new DoublewingController() },
+            //{ typeof(DoublewingAI), new DoublewingController() },
             { typeof(DressGirlAI), new DressGirlController() },
             { typeof(ClaySurgeonAI), new ClaySurgeonController() },
             { typeof(CaveDwellerAI), new CaveDwellerController() },
@@ -90,7 +90,8 @@ namespace LethalMenu.Cheats
         {
             if (Hack.EnemyControl.IsEnabled() || enemy is null) return;
             Hack.FreeCam.SetToggle(false);
-            if (enemy?.agent is not null)
+
+            if (enemy?.agent != null && enemy.agent.isOnNavMesh)
             {
                 enemy.agent.updatePosition = true;
                 enemy.agent.updateRotation = true;
@@ -99,6 +100,9 @@ namespace LethalMenu.Cheats
                 enemy.agent.Warp(enemy.transform.position);
             }
 
+            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(true);
+
+            LethalMenu.localPlayer.cursorTip.text = "";
             IsAIControlled = false;
             Destroy(ControllerInstance);
             enemy = null;
@@ -130,14 +134,11 @@ namespace LethalMenu.Cheats
                     UpdateEnemyPosition();
                     UpdateEnemyRotation();
                 }
-
                 return;
             }
 
             HUDManager.Instance.Reflect().SetValue("holdButtonToEndGameEarlyHoldTime", 0f);
-            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(value: false);
-            HUDManager.Instance.holdButtonToEndGameEarlyText.text = "";
-            HUDManager.Instance.holdButtonToEndGameEarlyVotesText.text = "";
+            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(false);
 
             if (!(bool)enemy.agent) return;
 

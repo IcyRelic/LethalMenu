@@ -35,10 +35,19 @@ namespace LethalMenu.Menu.Core
             UnityWebRequest www = UnityWebRequest.Get("https://icyrelic.com/release/lethalmenu/message.json");
             www.SendWebRequest().completed += (op) =>
             {
-                if (www.result != UnityWebRequest.Result.Success) return;
+                if (www.result != UnityWebRequest.Result.Success || HUDManager.Instance == null) return;
                 JObject json = JObject.Parse(www.downloadHandler.text);
-                if (!json["Show"].Value<bool>() || HUDManager.Instance == null) return;
-                HUDManager.Instance.DisplayTip("LethalMenu", json["Message"].Value<string>());
+                void DisplayMessage(string key)
+                {
+                    if (json[key] != null && json[key]["Show"].Value<bool>()) 
+                        HUDManager.Instance.DisplayTip("LethalMenu", json[key]["Message"].Value<string>());
+                }
+                if (json["global"]["Show"].Value<bool>())
+                {
+                    DisplayMessage("global");
+                    System.Threading.Tasks.Task.Delay(8000).ContinueWith(_ => DisplayMessage(Settings.version ?? "default"));
+                }
+                else DisplayMessage(Settings.version ?? "default");
             };
         }
     }
