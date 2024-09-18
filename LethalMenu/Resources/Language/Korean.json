@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "한국어",
-	"TRANSLATOR": "감자",
 	"General.HostRequired": "이 기능을 사용하려면 호스트가 필요합니다!",
 	"General.HostTag": "(호스트 전용)",
 	"General.HostStormyTag": "(호스트/폭풍)",
@@ -219,7 +218,6 @@
 	"UnlockableManager.Title": "잠금 아이템 관리자",
 	"UnlockableManager.UnlockAll": "모두 잠금 해제",
 	"FirstSetup.Title": "첫 번째 설정",
-	"FirstSetup.Welcome": "리썰 메뉴에 오신 것을 환영합니다. 메뉴 단축키와 언어를 선택하세요.",
 	"FirstSetup.SelectLanguage": "언어 선택:",
 	"FirstSetup.SelectKeybind": "메뉴 단축키 선택:",
 	"FirstSetup.Complete": "설정 완료",
