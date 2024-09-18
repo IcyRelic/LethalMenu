@@ -70,13 +70,13 @@ namespace LethalMenu.Cheats
         {
             DisplayChams(LethalMenu.items, _ => Settings.c_chams);
             DisplayChams(LethalMenu.landmines, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.turrets.ConvertAll(t => t?.gameObject?.transform?.parent?.gameObject).Where(t => t != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.turrets.Select(t => t?.gameObject?.transform?.parent?.gameObject).Where(t => t != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.spikeRoofTraps.Select(s => s?.gameObject?.transform?.parent?.gameObject).Where(s => s != null), _ => Settings.c_chams);
             DisplayChams(LethalMenu.players.Where(p => p.playerClientId != LethalMenu.localPlayer.playerClientId), _ => Settings.c_chams);
             DisplayChams(LethalMenu.enemies, _ => Settings.c_chams);
             DisplayChams(LethalMenu.steamValves, _ => Settings.c_chams);
             DisplayChams(LethalMenu.bigDoors, _ => Settings.c_chams);
             DisplayChams(LethalMenu.doorLocks, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.spikeRoofTraps.ConvertAll(s => s?.gameObject?.transform?.parent?.gameObject).Where(s => s != null), _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
         }

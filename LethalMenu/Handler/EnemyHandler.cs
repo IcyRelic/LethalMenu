@@ -3,10 +3,8 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem.HID;
 using Random = UnityEngine.Random;
 
 namespace LethalMenu.Handler
@@ -293,6 +291,12 @@ namespace LethalMenu.Handler
                 case BlobAI blob:
                     blob.SlimeKillPlayerEffectServerRpc((int) target.playerClientId);
                     break;
+                case BushWolfEnemy bushwolf:
+                    bushwolf.DoKillPlayerAnimationServerRpc((int)target.playerClientId);
+                    break;
+                case CaveDwellerAI cavedweller:
+                    cavedweller.KillPlayerAnimationServerRpc((int)target.playerClientId);
+                    break;
             }
         }
          
@@ -348,20 +352,34 @@ namespace LethalMenu.Handler
 
         public void Kill(bool despawn = false)
         {
+            if (enemy == null || HUDManager.Instance == null) return;
+            if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be killed without host");
+                return;
+            }
             bool forceDespawn = forceDespawnEnemies.Contains(enemy.GetType());
-            enemy.enemyType.canDie = true;
-            enemy.KillEnemyServerRpc(forceDespawn ? forceDespawn : despawn);
+            if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie) enemy.enemyType.canDie = true;
+            enemy.KillEnemyServerRpc(forceDespawn || despawn);
+            HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
         }
 
         public void Stun()
         {
-            if (!enemy.enemyType.canBeStunned) return;
+            if (enemy == null || HUDManager.Instance == null) return;
+            if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be stunned without host");
+                return;
+            }
+            if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
             enemy.SetEnemyStunned(true, 5);
+            HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunning {enemy.enemyType.name} for 5 seconds");
         }
 
         public void Teleport(PlayerControllerB player)
         {
-            if (LethalMenu.localPlayer == null || enemy == null) return;
+            if (LethalMenu.localPlayer == null || enemy == null || HUDManager.Instance == null) return;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             enemy.transform.position = player.transform.position;
             enemy.SyncPositionToClients();

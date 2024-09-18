@@ -6,16 +6,10 @@ namespace LethalMenu.Cheats
     [HarmonyPatch]
     internal class AntiGhostGirl : Cheat
     {
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(DressGirlAI), "Update")]
-        public static bool PrefixUpdate()
+        public override void Update()
         {
-            DressGirlAI dressgirl = Object.FindAnyObjectByType<DressGirlAI>();
-            if (Hack.AntiGhostGirl.IsEnabled() && dressgirl.hauntingPlayer == LethalMenu.localPlayer)
-            {
-                return false;
-            }
-            return true;
+            if (!Hack.AntiGhostGirl.IsEnabled() || Object.FindAnyObjectByType<DressGirlAI>().hauntingPlayer != LethalMenu.localPlayer) return;
+            Object.FindAnyObjectByType<DressGirlAI>().hauntingPlayer = null;
         }
     }
 }

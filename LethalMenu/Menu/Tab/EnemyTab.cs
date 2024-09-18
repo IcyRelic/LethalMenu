@@ -13,7 +13,7 @@ namespace LethalMenu.Menu.Tab
 {
     internal class EnemyTab : MenuTab
     {
-        private string[] tabs = new string[] { "EnemyTab.EnemyList", "EnemyTab.SpawnEnemies" };
+        private readonly string[] tabs = ["EnemyTab.EnemyList", "EnemyTab.SpawnEnemies"];
 
         public static int selectedEnemy = -1;
         public static int selectedEnemyType = -1;
@@ -110,6 +110,7 @@ namespace LethalMenu.Menu.Tab
         private void GeneralActions()
         {
             UI.Header("General.GeneralActions");
+            UI.Hack(Hack.EnemyDeathNotifications, "PlayerTab.EnemyDeathNotifications");
             UI.Hack(Hack.KillAllEnemies, "EnemyTab.KillAllEnemies");
             UI.HackSlider(Hack.KillNearbyEnemies, "EnemyTab.KillNearbyEnemies", Settings.f_enemyKillDistance.ToString("0") + "m", ref Settings.f_enemyKillDistance, 5, 50, (int) Settings.f_enemyKillDistance);
             UI.Hack(Hack.StunAllEnemies, "EnemyTab.StunAllEnemies");
@@ -155,7 +156,6 @@ namespace LethalMenu.Menu.Tab
 
             UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayer", selectedPlayer, enemy);
             UI.Hack(Hack.EnemyControl, "EnemyTab.ControlEnemy", enemy);
-            UI.Button("EnemyTab.Control", () => { Hack.EnemyControl.Execute(enemy); });
         }
         
         private void EnemySpawnerContent()

@@ -40,7 +40,7 @@ namespace LethalMenu.Manager
 
         public static void Message(string msg, int type, int id)
         {
-            if (HUDManager.Instance == null) return;
+            if (HUDManager.Instance == null || string.IsNullOrEmpty(msg)) return;
             if (type == 4)
             {
                 if (HUDManager.Instance.lastChatMessage == msg) msg += "\u200B";
@@ -292,12 +292,18 @@ namespace LethalMenu.Manager
                 gameObject.GetComponent<NetworkObject>().Spawn(true);
             }
         }
+
         public static async void ToggleTerminalSound() => await SpamTerminalSound();
+
         public static async Task SpamTerminalSound()
         {
             while (Hack.ToggleTerminalSound.IsEnabled())
             {
-                if (GetTerminal() == null) await Task.Delay(10000);
+                if (GetTerminal() == null)
+                {
+                    await Task.Delay(10000);
+                    continue;
+                }
                 GetTerminal().PlayTerminalAudioServerRpc(1);
                 await Task.Delay(100);
             }
@@ -347,6 +353,7 @@ namespace LethalMenu.Manager
             if(!(bool) StartOfRound.Instance) return;
             StartOfRound.Instance.ChangeLevelServerRpc(levelID, GetTerminal().groupCredits);
         }
+
         public static void FixAllValves() => LethalMenu.steamValves.ForEach(v => v.FixValveServerRpc());
         public static void ToggleAllLandmines() => LethalMenu.landmines.ForEach(mine => mine.ToggleMine(!Hack.ToggleAllLandmines.IsEnabled()));
         public static void ToggleAllTurrets() => LethalMenu.turrets.ForEach(turret => turret.turretActive = !Hack.ToggleAllTurrets.IsEnabled());

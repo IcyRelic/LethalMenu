@@ -117,7 +117,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.HealPlayer, "PlayerTab.Heal", player);
             UI.Hack(Hack.LightningStrikePlayer, ["PlayerTab.Strike", "General.HostStormyTag"], player);
             UI.Hack(Hack.SpiderWebPlayer, "PlayerTab.SpiderWeb", player);
-            UI.Hack(Hack.TeleportEnemy, "PlayerTab.TeleportAllEnemies", player, LethalMenu.enemies.ToArray());
+            UI.Hack(Hack.TeleportAllEnemies, "PlayerTab.TeleportAllEnemies", player, LethalMenu.enemies.ToArray());
             UI.Hack(Hack.LureAllEnemies, "PlayerTab.Lure", player);
             UI.Hack(Hack.ExplodeClosestMine, "PlayerTab.ExplodeMine", player);
             UI.Hack(Hack.ForceBleed, "PlayerTab.ForceBleed", player);

@@ -1,5 +1,5 @@
 v1.4.5
-- Added Dress Girl Controller (Host Only) - You can control the dress girl and chase people!
+- Added Dress Girl Controller - You can control the dress girl and chase people!
 - Added Clay Surgeon Controller - You can control the Clay Surgeon and cut people up!
 - Added Cave Dweller Controller - You can control the Cave Dweller and jump on peoples!!
 - Added Anti Ghost Girl - Ghost girl can't haunt you
@@ -11,7 +11,17 @@ v1.4.5
 - Added Clear Meteor Shower (Host Only) - Clears a meteor shower
 - Added Double Wing Controller - Added controls and abilities for it 
 - Added Docile Locust Bees Controller - Added controls for it but it has no abilities 
+- Added Enemy Death Notifications - Notifes you when a enemy dies
+- Added Notification to Kill Enemy - Notifies you when a enemy is killed or can't be killed
+- Added Notification to Stun Enemy -  Notifies you when a enemy is stunned or can't be stunned
+- Added Bush Wolf Enemy Insta Kill - Added Bush Wolf Enemy to Insta Kill
+- Added Cave Dweller Insta Kill - Added Cave Dweller to Insta Kill
 - Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
+- Fixed Teleport Enemy To Player - It was using EnemyAI[] instead of EnemyAI
+- Fixed Chams Error - Fixed a chams error with turrets when you left mid game
+- Fixed God Mode Error - Added null checks to all god mode patches
+- Fixed Toggle Terminal Sound Error - Fixed error when you leave with Toggle Terminal Sound hack on 
+- Changed Teleport All Enemies - Changed the method it used!
 - Changed Unload - It attempts to remove all enabled hacks and make everything normal
 
 v1.4.4 

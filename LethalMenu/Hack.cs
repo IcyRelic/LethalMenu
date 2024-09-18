@@ -2,6 +2,7 @@
 using LethalMenu.Handler;
 using LethalMenu.Language;
 using LethalMenu.Manager;
+using LethalMenu.Menu.Tab;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using Steamworks;
@@ -168,9 +169,12 @@ namespace LethalMenu
         HealPlayer,
         LightningStrikePlayer,
         DeathNotifications,
+        EnemyDeathNotifications,
         DeathNotify,
+        EnemyDeathNotify,
         SpectatePlayer,
         MiniCam,
+        TeleportAllEnemies,
         TeleportEnemy,
         SpiderWebPlayer,
         LureAllEnemies,
@@ -197,6 +201,7 @@ namespace LethalMenu
             Hack.ModifyScrap,
             Hack.Message,
             Hack.SpiderWebPlayer,
+            Hack.TeleportAllEnemies,
             Hack.TeleportEnemy,
             Hack.EnemyControl,
             Hack.LureAllEnemies,
@@ -254,6 +259,7 @@ namespace LethalMenu
             {Hack.ToggleCarHorn, false},
             {Hack.Breadcrumbs, false},
             {Hack.DeathNotifications, false},
+            {Hack.EnemyDeathNotifications, false},
             {Hack.NoFog, false},
             {Hack.BuildAnywhere, false},
             {Hack.Weight, false},
@@ -335,6 +341,7 @@ namespace LethalMenu
             {Hack.UnlockDoorAction, (Action) HackExecutor.UnlockDoor},
             {Hack.ToggleAllESP, (Action) HackExecutor.ToggleAllESP},
             {Hack.DeathNotify, (Action<PlayerControllerB, CauseOfDeath>) HackExecutor.NotifyDeath},
+            {Hack.EnemyDeathNotify, (Action<EnemyType>) HackExecutor.NotifyEnemyDeath},
             {Hack.SpectatePlayer, (Action<PlayerControllerB>) HackExecutor.SpectatePlayer},
             {Hack.MiniCam, (Action<PlayerControllerB>) HackExecutor.MiniCam},
             {Hack.UnlockUnlockable, (Action<Unlockable, bool, bool>) HackExecutor.UnlockUnlockable},
@@ -342,7 +349,8 @@ namespace LethalMenu
             {Hack.FlickerLights, (Action) HackExecutor.FlickerLights},
             {Hack.FixAllValves, (Action) HackExecutor.FixAllValves},
             {Hack.ModifyScrap, (Action<int, int>) HackExecutor.ModScrap},
-            {Hack.TeleportEnemy, (Action<PlayerControllerB, EnemyAI[]>) HackExecutor.TeleportEnemy},
+            {Hack.TeleportAllEnemies, (Action<PlayerControllerB, EnemyAI[]>) HackExecutor.TeleportAllEnemies},
+            {Hack.TeleportEnemy, (Action<PlayerControllerB, EnemyAI>) HackExecutor.TeleportEnemy},
             {Hack.EnemyControl, (Action<EnemyAI>) HackExecutor.ControlEnemy},
             {Hack.SpawnMaskedEnemy, (Action) HackExecutor.SpawnMaskedEnemy},
             {Hack.SpiderWebPlayer, (Action<PlayerControllerB>) HackExecutor.SpiderWebPlayer},
@@ -588,7 +596,8 @@ namespace LethalMenu
         }
 
         public static void UnloadMenu() => LethalMenu.Instance.Unload();
-        public static void NotifyDeath(PlayerControllerB died, CauseOfDeath cause) => HUDManager.Instance.DisplayTip("Lethal Menu", died.playerUsername + " has died from " + cause.ToString());
+        public static void NotifyDeath(PlayerControllerB died, CauseOfDeath cause) => HUDManager.Instance.DisplayTip("Lethal Menu", $"{died.playerUsername} has died from {cause.ToString()}");
+        public static void NotifyEnemyDeath(EnemyType enemy) => HUDManager.Instance.DisplayTip("Lethal Menu", $"{enemy.name} has died");
         public static void SpawnEnemy(EnemyType type, int num, bool outside) => RoundHandler.SpawnEnemy(type, num, outside);
         public static void SpawnMaskedEnemy() => RoundHandler.SpawnMimicFromMasks();
         public static void ToggleAllLandmines() => RoundHandler.ToggleAllLandmines();
@@ -630,7 +639,8 @@ namespace LethalMenu
         public static void HealPlayer(PlayerControllerB player) => player.Handle().Heal();
         public static void LightningStrikePlayer(PlayerControllerB player) => player.Handle().Strike();
         public static void ControlEnemy(EnemyAI enemy) => enemy.Handle().Control();
-        public static void TeleportEnemy(PlayerControllerB player, EnemyAI[] enemies) => enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));
+        public static void TeleportEnemy(PlayerControllerB player, EnemyAI enemy) => enemy.Handle().Teleport(player);
+        public static void TeleportAllEnemies(PlayerControllerB player, EnemyAI[] enemies) => enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));
         public static void StunAllEnemies() => LethalMenu.enemies.ForEach(enemy => enemy.Handle().Stun());
         public static void KillAllEnemies() => LethalMenu.enemies.ForEach(enemy => enemy.Handle().Kill());
         public static void KillNearbyEnemies(int distance = -1) => LethalMenu.enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance).ForEach(enemy => enemy.Handle().Kill());

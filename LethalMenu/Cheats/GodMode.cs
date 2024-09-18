@@ -67,9 +67,11 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(MouthDogAI), nameof(MouthDogAI.OnCollideWithPlayer))]
         public static bool PrefixDog(MouthDogAI __instance, Collider other)
         {
+            if (__instance == null || other == null) return true;
+
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-            if (LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+            if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
 
             return !Hack.GodMode.IsEnabled();
         }
@@ -79,11 +81,11 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(CentipedeAI), nameof(CentipedeAI.OnCollideWithPlayer))]
         public static bool PrefixCentipede(CentipedeAI __instance, Collider other)
         {
-            if(other == null) return true;
+            if (__instance == null || other == null) return true;
 
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-            if (LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+            if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
 
             return !Hack.GodMode.IsEnabled();
         }
@@ -92,9 +94,11 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(RadMechAI), nameof(RadMechAI.OnCollideWithPlayer))]
         public static bool PrefixRadMechKill(RadMechAI __instance, Collider other)
         {
+            if (__instance == null || other == null) return true;
+
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-            if (LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+            if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
 
             return !Hack.GodMode.IsEnabled();
         }
@@ -103,9 +107,11 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(BushWolfEnemy), nameof(BushWolfEnemy.OnCollideWithPlayer))]
         public static bool PrefixBushWolfEnemy(BushWolfEnemy __instance, Collider other)
         {
+            if (__instance == null || other == null) return true;
+
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-            if (LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+            if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
 
             return !Hack.GodMode.IsEnabled();
         }
@@ -114,11 +120,11 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(CaveDwellerAI), nameof(CaveDwellerAI.OnCollideWithPlayer))]
         public static bool PrefixCaveDwellerAI(CaveDwellerAI __instance, Collider other)
         {
-            if (LethalMenu.localPlayer == null) return true;
+            if (__instance == null || other == null) return true;
 
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
 
-            if (player == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
+            if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
 
             return !Hack.GodMode.IsEnabled();
         }
