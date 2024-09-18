@@ -1,8 +1,5 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
-using System.Numerics;
-using UnityEngine;
-
 
 namespace LethalMenu.Cheats
 {
