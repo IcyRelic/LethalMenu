@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "Русский",
-	"TRANSLATOR": "Kiow",
 	"General.HostRequired": "Для данной функции необходимо быть хостом!",
 	"General.HostTag": "(Только хост)",
 	"General.HostStormyTag": "(Хост/Шторм)",
@@ -127,7 +126,6 @@
 	"PlayerTab.Spectate": "Наблюдать",
 	"PlayerTab.MiniCam": "Мини-камера",
 	"PlayerTab.PlayerInfo": "Информация об игроке",
-	"PlayerTab.LMUser": "Версия LethalMenu:",
 	"PlayerTab.SteamId": "Steam Id:",
 	"PlayerTab.PlayerId": "ID игрока:",
 	"PlayerTab.PlayerStatus": "Статус:",
@@ -304,7 +302,6 @@
 	"LootManager.ShowShipItems": "Показать лут корабля",
 	"WeatherManager.Title": "Менеджер погоды",
 	"FirstSetup.Title": "Быстрая настройка",
-	"FirstSetup.Welcome": "Добро пожаловать в LethalMenu, Пожалуйста, выберите клавишу для меню настроек и язык.",
 	"FirstSetup.SelectLanguage": "Выберите язык:",
 	"FirstSetup.SelectKeybind": "Выберите клавишу для меню настроек:",
 	"FirstSetup.Complete": "Завершить настройку",
