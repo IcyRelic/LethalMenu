@@ -332,7 +332,7 @@ namespace LethalMenu.Menu.Tab
                 GUILayout.Label(hack.ToString());
                 GUILayout.FlexibleSpace();
 
-                if (hack.HasKeyBind() && hack != Hack.OpenMenu && hack != Hack.UnlockDoorAction && GUILayout.Button("-")) hack.RemoveKeyBind();
+                if (hack.HasKeyBind() && hack != Hack.OpenMenu && hack != Hack.UnlockDoorAction && hack != Hack.ClickTeleportAction && GUILayout.Button("-")) hack.RemoveKeyBind();
                 string btnText = hack.IsWaiting() ? "Waiting" : kb;
                 if (GUILayout.Button(btnText, GUILayout.Width(85))) KBUtil.BeginChangeKeyBind(hack);
                

@@ -312,20 +312,36 @@ namespace LethalMenu.Manager
 
         public static void UnlockAllDoors()
         {
+            if (LethalMenu.doorLocks == null) return;
             LethalMenu.doorLocks.FindAll(door => door.isLocked).ForEach(door => door.UnlockDoorServerRpc());
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Doors Unlocked");
         }
 
         public static void OpenAllBigDoors()
-        {
+        { 
+            if (LethalMenu.bigDoors == null) return;
             LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(true));
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Big Doors Opened");
         }
 
         public static void CloseAllBigDoors()
         {
+            if (LethalMenu.bigDoors == null) return;
             LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(false));
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Big Doors Closed");
+        }
+
+        public static void ForceMeteorShower()
+        {
+            if (!LethalMenu.localPlayer.IsHost || TimeOfDay.Instance == null) return;
+            TimeOfDay.Instance.MeteorWeather.BeginDay(TimeOfDay.Instance.normalizedTimeOfDay);
+        }
+
+        public static void ClearMeteorShower()
+        {
+            if (TimeOfDay.Instance.MeteorWeather.meteors.Count == 0 || !LethalMenu.localPlayer.IsHost || TimeOfDay.Instance == null) return;
+            HUDManager.Instance.DisplayTip("Lethal Menu", $"Cleared {TimeOfDay.Instance.MeteorWeather.meteors.Count}");
+            TimeOfDay.Instance.MeteorWeather.ResetMeteorWeather();
         }
 
         public static void ChangeMoon(int levelID)

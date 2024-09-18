@@ -50,10 +50,11 @@ namespace LethalMenu.Cheats
             { typeof(ButlerEnemyAI), new ButlerController() },
             { typeof(ButlerBeesEnemyAI), new ButlerBeesController() },
             { typeof(FlowerSnakeEnemy), new FlowerSnakeController() },
-            //{ typeof(DoublewingAI), new DoublewingController() },
+            { typeof(DoublewingAI), new DoublewingController() },
             { typeof(DressGirlAI), new DressGirlController() },
             { typeof(ClaySurgeonAI), new ClaySurgeonController() },
             { typeof(CaveDwellerAI), new CaveDwellerController() },
+            { typeof(DocileLocustBeesAI), new DocileLocustBeesController() },
         };
 
         public static void Control(EnemyAI enemy)
@@ -357,12 +358,11 @@ namespace LethalMenu.Cheats
     [HarmonyPatch]
     internal class EnemyControlPatches
     {
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(HUDManager), "PingScan_performed")]
-        public static bool PingScan_performed(InputAction.CallbackContext context)
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(HUDManager), "CanPlayerScan")]
+        public static void CanPlayerScan(ref bool __result)
         {
-            if (Hack.EnemyControl.IsEnabled()) return false;
-            return true;
+            if (Hack.EnemyControl.IsEnabled()) __result = false;
         }
     }
 }

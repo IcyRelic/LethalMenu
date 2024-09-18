@@ -54,7 +54,7 @@ namespace LethalMenu.Menu.Tab
                 name = player.playerUsername;
 
                 if (LethalMenu.Instance.LMUsers.ContainsKey(player.playerSteamId.ToString()) && Settings.b_DisplayLMUsers)
-                    name = $"[LethalMenu {LethalMenu.Instance.LMUsers[player.playerSteamId.ToString()]}] {player.playerUsername}";
+                    name = $"[Lethal Menu {LethalMenu.Instance.LMUsers[player.playerSteamId.ToString()]}] {player.playerUsername}";
 
                 if (GUILayout.Button(name, GUI.skin.label)) selectedPlayer = (int)player.playerClientId;
 

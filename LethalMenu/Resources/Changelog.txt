@@ -1,10 +1,16 @@
 v1.4.5
-- Added Dress Girl Controller - You can control the dress girl and chase people!
+- Added Dress Girl Controller (Host Only) - You can control the dress girl and chase people!
 - Added Clay Surgeon Controller - You can control the Clay Surgeon and cut people up!
 - Added Cave Dweller Controller - You can control the Cave Dweller and jump on peoples!!
 - Added Anti Ghost Girl - Ghost girl can't haunt you
 - Added Welcome Message - Welcome message when you join a lobby
 - Added Enemy Control Anti Scan - Prevents you from scanning when controlling a enemy
+- Added Eggs Always Explode - Makes eggs always explode!
+- Added No Ship Door Close (Host Only) - Makes the ship door stay closed when at 0%
+- Added Force Meteor Shower (Host Only) - Forces a meteor shower 
+- Added Clear Meteor Shower (Host Only) - Clears a meteor shower
+- Added Double Wing Controller - Added controls and abilities for it 
+- Added Docile Locust Bees Controller - Added controls for it but it has no abilities 
 - Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
 - Changed Unload - It attempts to remove all enabled hacks and make everything normal
 

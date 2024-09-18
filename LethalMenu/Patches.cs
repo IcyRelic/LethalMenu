@@ -10,12 +10,13 @@ using System.Reflection.Emit;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-
 namespace LethalMenu
 {
     [HarmonyPatch]
     internal class Patches
     {
+        private static bool Sent = false;
+
         [HarmonyPostfix]
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
         public static void Disconnect(GameNetworkManager __instance)
@@ -25,15 +26,19 @@ namespace LethalMenu
             LethalMenu.Instance.LMUsers.Clear();
             Shoplifter.Clear();
             ServerTab.UpdatePlayerOptions(true);
-            MenuFragment.SetEnabled(false);
+            Sent = false;
         }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc")]
         public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
         {
-            MenuUtil.LMUser();
-            MenuFragment.SetEnabled(true);
+            if (!Sent)
+            {
+                MenuUtil.LMUser();
+                MenuFragment.CheckForMessage();
+                Sent = true;
+            }
         }
 
         [HarmonyPostfix]

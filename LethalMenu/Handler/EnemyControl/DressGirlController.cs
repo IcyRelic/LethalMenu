@@ -7,6 +7,7 @@ namespace LethalMenu.Handler.EnemyControl
 {
     internal class DressGirlController : IEnemyController<DressGirlAI>
     {
+        // Buggy I'll attempt to redo this again later on
         public void UsePrimarySkill(DressGirlAI enemy)
         {
             PlayerControllerB player = GetClosestPlayer(enemy);
@@ -32,6 +33,21 @@ namespace LethalMenu.Handler.EnemyControl
         }
 
         public string GetSecondarySkillName(DressGirlAI _) => "";
+
+        public void OnTakeControl(DressGirlAI enemy)
+        {
+            if (!LethalMenu.localPlayer.IsHost)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", "This controller is host only. I'm sorry :C");
+                Cheats.EnemyControl.StopControl();
+                return;
+            }
+        }
+
+        public void OnReleaseControl(DressGirlAI enemy)
+        {
+            enemy.EnableEnemyMesh(false, true);
+        }
 
         public void OnDeath(DressGirlAI enemy)
         {

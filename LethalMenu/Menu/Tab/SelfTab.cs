@@ -76,9 +76,11 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.VoteShipLeaveEarly, "SelfTab.VoteShipLeaveEarly");
             UI.Hack(Hack.VehicleGodMode, "SelfTab.VehicleGodMode");
             UI.Hack(Hack.EggsNeverExplode, "SelfTab.EggsNeverExplode");
+            UI.Hack(Hack.EggsAlwaysExplode, "SelfTab.EggsAlwaysExplode");
             UI.Hack(Hack.UnlockAllDoors, "SelfTab.UnlockAllDoors");
             UI.Hack(Hack.OpenAllBigDoors, "SelfTab.OpenAllBigDoors");
             UI.Hack(Hack.CloseAllBigDoors, "SelfTab.CloseAllBigDoors");
+            UI.Hack(Hack.NoShipDoorClose, ["SelfTab.NoShipDoorClose", "General.HostTag"]);
             UI.Hack(Hack.GrabItemsBeforeGame, "SelfTab.GrabItemsBeforeGame");
 
             GUILayout.EndScrollView();

@@ -8,7 +8,6 @@ using Steamworks;
 using Steamworks.Data;
 using Unity.Netcode;
 using Object = UnityEngine.Object;
-using System.ComponentModel;
 
 
 namespace LethalMenu.Menu.Tab
@@ -74,6 +73,15 @@ namespace LethalMenu.Menu.Tab
                 {
                     Debug.Log($"Name: {s.Value.gameObject.name} ID: {s.Key}");
                 });
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Debug GetSpawnableMapObjects");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                GameUtil.GetSpawnableMapObjects().ToList().ForEach(o => Debug.Log(o.prefabToSpawn.name));
             }
             GUILayout.EndHorizontal();
 

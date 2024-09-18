@@ -70,9 +70,11 @@ namespace LethalMenu
         VoteShipLeaveEarly,
         VehicleGodMode,
         EggsNeverExplode,
+        EggsAlwaysExplode,
         UnlockAllDoors,
         OpenAllBigDoors,
         CloseAllBigDoors,
+        NoShipDoorClose,
         GrabItemsBeforeGame,
         ClickTeleport,
         ClickTeleportAction,
@@ -103,6 +105,8 @@ namespace LethalMenu
         Message,
         ResetShip,
         ItemSlots,
+        ForceMeteorShower,
+        ClearMeteorShower,
 
         /** Troll Tab **/
         ToggleShipLights,
@@ -292,6 +296,8 @@ namespace LethalMenu
             {Hack.ItemSlots, false},
             {Hack.FOV, false},
             {Hack.AntiGhostGirl, false},
+            {Hack.EggsAlwaysExplode, false},
+            {Hack.NoShipDoorClose, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -363,6 +369,8 @@ namespace LethalMenu
             {Hack.ToggleTerminalSound, (Action) HackExecutor.ToggleTerminalSound},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
             {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport},
+            {Hack.ForceMeteorShower, (Action) HackExecutor.ForceMeteorShower},
+            {Hack.ClearMeteorShower, (Action) HackExecutor.ClearMeteorShower},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -550,13 +558,11 @@ namespace LethalMenu
 
         public static void ClickTeleport()
         {
-            if (!Hack.ClickTeleport.IsEnabled()) return;
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-
+            if (!Hack.ClickTeleport.IsEnabled() || CameraManager.ActiveCamera == null) return;
             RaycastHit hitInfo;
             if (Physics.Raycast(new Ray(CameraManager.ActiveCamera.transform.position, CameraManager.ActiveCamera.transform.forward), out hitInfo, 1000f, LayerMask.GetMask("Room")))
             {
-                player.TeleportPlayer(hitInfo.point);
+                LethalMenu.localPlayer.Handle().Teleport(hitInfo.point);
             }
         }
 
@@ -644,5 +650,7 @@ namespace LethalMenu
         public static void UnlockAllDoors() => RoundHandler.UnlockAllDoors();
         public static void OpenAllBigDoors() => RoundHandler.OpenAllBigDoors();
         public static void CloseAllBigDoors() => RoundHandler.CloseAllBigDoors();
+        public static void ForceMeteorShower() => RoundHandler.ForceMeteorShower();
+        public static void ClearMeteorShower() => RoundHandler.ClearMeteorShower();
     }
 }

@@ -19,17 +19,6 @@ namespace LethalMenu.Menu.Core
             };
         }
 
-        public static void SetEnabled(bool enabled)
-        {
-            bool MSent = false;
-            if (enabled && !MSent)
-            {
-                MSent = true;
-                CheckForMessage();
-            }
-            else if (!enabled && MSent) MSent = false;
-        }
-
         public static void CheckForMessage()
         {
             UnityWebRequest www = UnityWebRequest.Get("https://icyrelic.com/release/lethalmenu/message.json");
@@ -40,7 +29,7 @@ namespace LethalMenu.Menu.Core
                 void DisplayMessage(string key)
                 {
                     if (json[key] != null && json[key]["Show"].Value<bool>()) 
-                        HUDManager.Instance.DisplayTip("LethalMenu", json[key]["Message"].Value<string>());
+                        HUDManager.Instance.DisplayTip("Lethal Menu", json[key]["Message"].Value<string>());
                 }
                 if (json["global"]["Show"].Value<bool>())
                 {

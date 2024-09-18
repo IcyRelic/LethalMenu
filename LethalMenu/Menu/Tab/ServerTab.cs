@@ -115,6 +115,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SpawnTurret, ["ServerTab.SpawnTurret", "General.HostTag"]);
             UI.Hack(Hack.SpawnSpikeRoofTrap, ["ServerTab.SpawnSpikeRoofTrap", "General.HostTag"]);
             UI.Hack(Hack.ResetShip, ["ServerTab.ResetShip", "General.HostTag"]);
+            UI.Hack(Hack.ForceMeteorShower, ["ServerTab.ForceMeteorShower", "General.HostTag"]);
+            UI.Hack(Hack.ClearMeteorShower, ["ServerTab.ClearMeteorShower", "General.HostTag"]);
 
             GUILayout.EndScrollView();
         }
