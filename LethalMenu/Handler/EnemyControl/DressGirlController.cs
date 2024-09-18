@@ -28,13 +28,13 @@ namespace LethalMenu.Handler.EnemyControl
             PlayerControllerB player = GetClosestPlayer(enemy);
             if (player != null) enemy.hauntingPlayer = player;
             else return;
-            if (enemy.hauntingPlayer != null && !enemy.creatureAnimator.GetBool("Walk"))
+            if (enemy.hauntingPlayer != null && enemy.currentBehaviourStateIndex != 1)
             {
                 enemy.EnableEnemyMesh(true, true);
                 enemy.SwitchToBehaviourStateOnLocalClient(0);
                 enemy.Reflect().Invoke("BeginChasing");
             }
-            else if (enemy.hauntingPlayer != null && enemy.creatureAnimator.GetBool("Walk")) enemy.Reflect().Invoke("StopChasing");
+            else if (enemy.hauntingPlayer != null && enemy.currentBehaviourStateIndex == 1) enemy.Reflect().Invoke("StopChasing");
         }
 
         public string GetPrimarySkillName(DressGirlAI enemy)
@@ -45,14 +45,14 @@ namespace LethalMenu.Handler.EnemyControl
 
         public void OnReleaseControl(DressGirlAI enemy)
         {
-            if (enemy.creatureAnimator.GetBool("Walk")) enemy.Reflect().Invoke("StopChasing");
+            if (enemy.currentBehaviourStateIndex == 1) enemy.Reflect().Invoke("StopChasing");
             enemy.EnableEnemyMesh(false, true);
             enemy.hauntingPlayer = null;
         }
 
         public void OnDeath(DressGirlAI enemy)
         {
-            if (enemy.creatureAnimator.GetBool("Walk")) enemy.Reflect().Invoke("StopChasing");
+            if (enemy.currentBehaviourStateIndex == 1) enemy.Reflect().Invoke("StopChasing");
             enemy.EnableEnemyMesh(false, true);
             enemy.hauntingPlayer = null;
         }
