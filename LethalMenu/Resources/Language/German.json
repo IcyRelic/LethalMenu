@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "Deutsch",
-	"TRANSLATOR": "QueenScarletts",
 	"General.HostRequired": "Du musst der Host sein!",
 	"General.HostTag": "(Nur als Host)",
 	"General.HostStormyTag": "(Host/Stürmisch)",
@@ -219,7 +218,6 @@
 	"UnlockableManager.Title": "Gegenstände-Manager",
 	"UnlockableManager.UnlockAll": "Alles freischalten",
 	"FirstSetup.Title": "Ersteinrichtung",
-	"FirstSetup.Welcome": "Willkommen zu LethalMenu, wähle bitte deine Sprache und eine Taste um das Menü zu öffnen. ",
 	"FirstSetup.SelectLanguage": "Sprache auswählen:",
 	"FirstSetup.SelectKeybind": "Menü Taste auswählen:",
 	"FirstSetup.Complete": "Bestätigen",
