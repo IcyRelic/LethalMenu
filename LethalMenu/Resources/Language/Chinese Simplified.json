@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "中文（简体）",
-	"TRANSLATOR": "Lucifer / FlyCloud / MRUIAW",
 	"General.HostRequired": "此功能需要你为房主!",
 	"General.HostTag": "(仅限房主)",
 	"General.HostStormyTag": "(主机/暴风雨)",
@@ -105,7 +104,6 @@
 	"PlayerTab.Spectate": "观战",
 	"PlayerTab.MiniCam": "迷你摄像头",
 	"PlayerTab.PlayerInfo": "玩家信息",
-	"PlayerTab.LMUser": "LethalMenu版本：",
 	"PlayerTab.PlayerId": "玩家ID:",
 	"PlayerTab.PlayerStatus": "状态：",
 	"PlayerTab.PlayerHealth": "血量：",
@@ -237,7 +235,6 @@
 	"UnlockableManager.Title": "解锁管理器",
 	"UnlockableManager.UnlockAll": "全部解锁",
 	"FirstSetup.Title": "首次设置",
-	"FirstSetup.Welcome": "欢迎使用LethalMenu，请选择您的菜单键绑定和语言。",
 	"FirstSetup.SelectLanguage": "选择语言:",
 	"FirstSetup.SelectKeybind": "选择菜单键绑定:",
 	"FirstSetup.Complete": "完成设置",
