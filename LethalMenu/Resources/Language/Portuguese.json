@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "Português",
-	"TRANSLATOR": "JARDAS",
 	"General.HostRequired": "Esta funcionalidade requer ser o anfitrião!",
 	"General.HostTag": "(Apenas Anfitrião)",
 	"General.HostStormyTag": "(Apenas Anfitrião/Stormy)",
@@ -105,7 +104,6 @@
 	"PlayerTab.Spectate": "Observar",
 	"PlayerTab.MiniCam": "Mini Cam",
 	"PlayerTab.PlayerInfo": "Informação do Jogador",
-	"PlayerTab.LMUser": "Versão do LethalMenu:",
 	"PlayerTab.SteamId": "SteamID:",
 	"PlayerTab.PlayerId": "PlayerID:",
 	"PlayerTab.PlayerStatus": "Estado:",
@@ -238,7 +236,6 @@
 	"UnlockableManager.Title": "Gerenciador de Desbloqueáveis",
 	"UnlockableManager.UnlockAll": "Desbloquear Tudo",
 	"FirstSetup.Title": "Primeira Configuração",
-	"FirstSetup.Welcome": "Bem-vindo ao LethalMenu, por favor, escolhe o teu atalho de teclado e idioma.",
 	"FirstSetup.SelectLanguage": "Seleciona o Idioma:",
 	"FirstSetup.SelectKeybind": "Seleciona o Atalho de Teclado do Menu:",
 	"FirstSetup.Complete": "Concluir Configuração",
