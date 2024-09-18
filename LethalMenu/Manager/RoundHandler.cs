@@ -23,8 +23,6 @@ namespace LethalMenu.Manager
 
     public class RoundHandler
     {
-        public static Dictionary<Hack, bool> StoredFlags = new Dictionary<Hack, bool>();
-
         public static void ModCredits(int amount, ActionType type)
         {
             if (GetTerminal() == null) return;           
@@ -340,7 +338,7 @@ namespace LethalMenu.Manager
         public static void ClearMeteorShower()
         {
             if (TimeOfDay.Instance.MeteorWeather.meteors.Count == 0 || !LethalMenu.localPlayer.IsHost || TimeOfDay.Instance == null) return;
-            HUDManager.Instance.DisplayTip("Lethal Menu", $"Cleared {TimeOfDay.Instance.MeteorWeather.meteors.Count}");
+            HUDManager.Instance.DisplayTip("Lethal Menu", $"Cleared {TimeOfDay.Instance.MeteorWeather.meteors.Count} Meteors");
             TimeOfDay.Instance.MeteorWeather.ResetMeteorWeather();
         }
 
