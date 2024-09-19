@@ -309,6 +309,17 @@ namespace LethalMenu.Manager
             }
         }
 
+        public static async void CloseGate() => await ClosingGate();
+
+        public static async Task ClosingGate()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                LethalMenu.animatedTriggers.Where(t => t.name == "Cube" && t.transform.parent.name == "Cutscenes").ToList().ForEach(t => t.triggerAnimator?.SetTrigger("doorFall"));
+                await Task.Delay(100);
+            }
+        }
+
         public static void BreakAllWebs()
         {
             LethalMenu.enemies.FindAll(e => e.GetType() == typeof(SandSpiderAI)).Cast<SandSpiderAI>().ToList().ForEach(s => s.BreakAllWebs());

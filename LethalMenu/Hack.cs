@@ -140,6 +140,7 @@ namespace LethalMenu
         OpenShipDoorSpace,
         BerserkAllTurrets,
         PJSpammer,
+        CloseGate,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -375,6 +376,7 @@ namespace LethalMenu
             {Hack.ResetShip, (Action) HackExecutor.ResetShip},
             {Hack.ToggleAllDisplays, (Action) HackExecutor.ToggleAllDisplays},
             {Hack.ToggleTerminalSound, (Action) HackExecutor.ToggleTerminalSound},
+            {Hack.CloseGate, (Action) HackExecutor.CloseGate},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
             {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport},
             {Hack.ForceMeteorShower, (Action) HackExecutor.ForceMeteorShower},
@@ -656,6 +658,7 @@ namespace LethalMenu
         public static void BerserkAllTurrets() => RoundHandler.BerserkAllTurrets();
         public static void DropAllItems() => RoundHandler.DropAllItems();
         public static void ToggleTerminalSound() => RoundHandler.ToggleTerminalSound();
+        public static void CloseGate() => RoundHandler.CloseGate();
         public static void DeleteHeldItem() => RoundHandler.DeleteHeldItem();
         public static void UnlockAllDoors() => RoundHandler.UnlockAllDoors();
         public static void OpenAllBigDoors() => RoundHandler.OpenAllBigDoors();

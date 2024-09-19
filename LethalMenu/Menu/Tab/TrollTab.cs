@@ -43,6 +43,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportOneItem, "TrollTab.TeleportOneItem");
             UI.Hack(Hack.EjectEveryone, ["TrollTab.EjectEveryone", "General.HostTag"]);
             UI.HackSlider(Hack.PJSpammer, "TrollTab.PJSpammer", Settings.f_pjSpamSpeed.ToString("0.00"), ref Settings.f_pjSpamSpeed, 0f, 1f);
+            UI.Hack(Hack.CloseGate, ["TrollTab.CloseGate", "General.Experimentation"]);
+
             GUILayout.EndScrollView();
         }
     }
