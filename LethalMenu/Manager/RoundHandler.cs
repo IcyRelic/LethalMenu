@@ -11,6 +11,7 @@ using Random = UnityEngine.Random;
 using Steamworks;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using DunGen;
 
 
 namespace LethalMenu.Manager
@@ -327,22 +328,34 @@ namespace LethalMenu.Manager
 
         public static void UnlockAllDoors()
         {
-            if (LethalMenu.doorLocks == null) return;
-            LethalMenu.doorLocks.FindAll(door => door.isLocked).ForEach(door => door.UnlockDoorServerRpc());
+            if (LethalMenu.doorLocks == null || HUDManager.Instance) return;
+            LethalMenu.doorLocks.Where(d => d.isLocked).ToList().ForEach(d => d.UnlockDoorServerRpc()); 
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Doors Unlocked");
         }
 
         public static void OpenAllBigDoors()
-        { 
-            if (LethalMenu.bigDoors == null) return;
-            LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(true));
+        {
+            if (LethalMenu.bigDoors == null || HUDManager.Instance == null || RoundManager.Instance == null || LethalMenu.breaker == null) return;
+            if (LethalMenu.breaker.leversSwitchedOff > 0 || !LethalMenu.breaker.isPowerOn)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", "Please turn on Breaker power to use this!");
+                return;
+            }
+            if (RoundManager.Instance.powerOffPermanently) RoundManager.Instance.powerOffPermanently = false;
+            LethalMenu.bigDoors.ToList().ForEach(d => d.SetDoorOpenServerRpc(true));
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Big Doors Opened");
         }
 
         public static void CloseAllBigDoors()
         {
-            if (LethalMenu.bigDoors == null) return;
-            LethalMenu.bigDoors.ForEach(door => door.SetDoorOpenServerRpc(false));
+            if (LethalMenu.bigDoors == null || HUDManager.Instance == null || RoundManager.Instance == null || LethalMenu.breaker == null) return;
+            if (LethalMenu.breaker.leversSwitchedOff > 0 || !LethalMenu.breaker.isPowerOn)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", "Please turn on Breaker power to use this!");
+                return;
+            }
+            if (RoundManager.Instance.powerOffPermanently) RoundManager.Instance.powerOffPermanently = false;
+            LethalMenu.bigDoors.ToList().ForEach(d => d.SetDoorOpenServerRpc(false));
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Big Doors Closed");
         }
 

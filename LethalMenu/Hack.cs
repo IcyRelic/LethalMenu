@@ -381,6 +381,8 @@ namespace LethalMenu
             {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport},
             {Hack.ForceMeteorShower, (Action) HackExecutor.ForceMeteorShower},
             {Hack.ClearMeteorShower, (Action) HackExecutor.ClearMeteorShower},
+            {Hack.OpenAllBigDoors, (Action) HackExecutor.OpenAllBigDoors},
+            {Hack.CloseAllBigDoors, (Action) HackExecutor.CloseAllBigDoors},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()

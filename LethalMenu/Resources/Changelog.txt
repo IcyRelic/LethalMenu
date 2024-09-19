@@ -22,6 +22,8 @@ v1.4.5
 - Fixed Chams Error - Fixed a chams error with turrets when you left mid game
 - Fixed God Mode Error - Added null checks to all god mode patches
 - Fixed Toggle Terminal Sound Error - Fixed error when you leave with Toggle Terminal Sound hack on 
+- Fixed Open All Doors - Forgot to add it to executors :C and improved its code!
+- Fixed Close All Doors - Forgot to add it to executors :C and improved its code!
 - Changed Teleport All Enemies - Changed the method it used!
 - Changed Unload - It attempts to remove all enabled hacks and make everything normal
 
