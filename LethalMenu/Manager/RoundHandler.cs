@@ -196,13 +196,13 @@ namespace LethalMenu.Manager
 
         public static void TeleportOneItem()
         {
-            GrabbableObject itemToTeleport = LethalMenu.items.Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).OrderBy(i => Random.value) .FirstOrDefault();
-            if (itemToTeleport != null)
+            GrabbableObject i = LethalMenu.items.Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).OrderBy(i => Random.value).FirstOrDefault();
+            if (i != null)
             {
                 Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
-                itemToTeleport.gameObject.transform.position = point;
-                itemToTeleport.startFallingPosition = point;
-                itemToTeleport.targetFloorPosition = point;
+                i.gameObject.transform.position = point;
+                i.startFallingPosition = point;
+                i.targetFloorPosition = point;
             }
         }
 
@@ -329,7 +329,7 @@ namespace LethalMenu.Manager
         public static void UnlockAllDoors()
         {
             if (LethalMenu.doorLocks == null || HUDManager.Instance) return;
-            LethalMenu.doorLocks.Where(d => d.isLocked).ToList().ForEach(d => d.UnlockDoorServerRpc()); 
+            LethalMenu.doorLocks.FindAll(door => door.isLocked).ForEach(door => door.UnlockDoorServerRpc());
             HUDManager.Instance.DisplayTip("Lethal Menu", "All Doors Unlocked");
         }
 
