@@ -15,6 +15,7 @@ namespace LethalMenu.Menu.Tab
         private string s_quota = "";
         private string s_scrapAmount = "1";
         private string s_scrapValue = "1";
+        private string s_deadlineValue = "3";
         public static string s_message = "";
         public static int i_messageindex = 0;
         private string s_joinlobbyid = "";
@@ -77,6 +78,10 @@ namespace LethalMenu.Menu.Tab
 
             UI.TextboxAction(["ServerTab.EditQuota", "General.HostTag"], ref s_quota, @"[^0-9]", 50,
                 new UIButton("General.Set", () => Hack.ModifyQuota.Execute(int.Parse(s_quota)))
+            );
+
+            UI.TextboxAction(["ServerTab.EditDeadline", "General.HostTag"], ref s_deadlineValue, @"[^0-9]", 3,
+                new UIButton("General.Set", () => Hack.ModifyDeadline.Execute(int.Parse(s_deadlineValue)))
             );
 
             UI.TextboxAction(["ServerTab.ScrapAmount", "General.HostTag"], ref s_scrapAmount, @"[^0-9]", 3,

@@ -159,6 +159,7 @@
 	"ServerTab.DisplayDeadline": "Display Deadline",
 	"ServerTab.DisplayBuyingRate": "Display Buying Rate",
 	"ServerTab.ServerCheats": "Server Cheats",
+	"ServerTab.EditDeadline": "Edit Deadline",
 	"ServerTab.EditCredits": "Edit Credits",
 	"ServerTab.EditQuota": "Edit Quota",
 	"ServerTab.ScrapAmount": "Scrap Amount Multiplier",

@@ -127,6 +127,7 @@ namespace LethalMenu
         FlickerLights,
         FixAllValves,
         ModifyScrap,
+        ModifyDeadline,
         SpawnMaskedEnemy,
         BreakAllWebs,
         SpawnLandmine,
@@ -200,6 +201,7 @@ namespace LethalMenu
             Hack.MiniCam,
             Hack.UnlockUnlockable,
             Hack.ModifyScrap,
+            Hack.ModifyDeadline,
             Hack.Message,
             Hack.SpiderWebPlayer,
             Hack.TeleportAllEnemies,
@@ -319,6 +321,7 @@ namespace LethalMenu
             {Hack.SaveTeleportPosition, (Action) HackExecutor.SaveTeleportPosition},
             {Hack.ModifyCredits, (Action<int, ActionType>) HackExecutor.ModCredits},
             {Hack.ModifyQuota, (Action<int>) HackExecutor.ModQuota},
+            {Hack.ModifyDeadline, (Action<int>) HackExecutor.ModDeadline},
             {Hack.Message, (Action<string, int, int>) HackExecutor.Message},
             {Hack.SpawnMoreScrap, (Action) HackExecutor.SpawnMoreScrap},
             {Hack.EndGame, (Action) HackExecutor.EndGame},
@@ -621,6 +624,7 @@ namespace LethalMenu
         public static void EndGame() => RoundHandler.EndGame();
         public static void StartGame() => RoundHandler.StartGame();
         public static void ModQuota(int amt) => RoundHandler.SetQuota(amt);
+        public static void ModDeadline(int amt) => RoundHandler.SetDeadline(amt);
         public static void Message(string msg, int type, int id) => RoundHandler.Message(msg, type, id);
         public static void ModCredits(int amt, ActionType type) => RoundHandler.ModCredits(amt, type);
         public static void BreakAllWebs() => RoundHandler.BreakAllWebs();

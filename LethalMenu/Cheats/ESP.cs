@@ -53,11 +53,7 @@ namespace LethalMenu.Cheats
             {
                 if (o == null) return;
 
-                Transform transform;
-
-                if (o is Component component) transform = component.transform;
-                else if (o is GameObject gameObject) transform = gameObject.transform;
-                else return;
+                Transform transform = o is Component component ? component.transform : o is GameObject gameObject ? gameObject.transform : null;
 
                 if (transform == null) return;
 
@@ -164,7 +160,7 @@ namespace LethalMenu.Cheats
         private void DisplayScrap()
         {
             DisplayObjects(
-                LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated),
+                LethalMenu.items?.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated),
                 item =>
                 {
                     if (item is GiftBoxItem giftBox && giftBox.Reflect().GetValue<Item>("objectInPresentItem") is Item objectInPresentItem && giftBox.Reflect().GetValue<int>("objectInPresentValue") is int objectInPresentValue) return $"{item.itemProperties.itemName} ({item.scrapValue}) - {objectInPresentItem.itemName} ({objectInPresentValue})";
