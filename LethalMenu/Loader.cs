@@ -16,8 +16,13 @@ namespace LethalMenu
 
         public static void Init()
         {
+            if (Load != null && HUDManager.Instance != null)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", "Lethal Menu is already injected!");
+            }
             if (Load == null)
             {
+                if (HUDManager.Instance != null) HUDManager.Instance.DisplayTip("Lethal Menu", "Lethal Menu injected!");
                 ChamHandler.ChamsSetEnabled(true);
                 LoadHarmony();
                 Loader.Load = new GameObject();

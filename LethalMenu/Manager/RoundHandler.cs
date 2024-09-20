@@ -35,8 +35,21 @@ namespace LethalMenu.Manager
 
         public static void SetQuota(int amount)
         {
-            Object.FindObjectOfType<TimeOfDay>().profitQuota = amount;
+            if (TimeOfDay.Instance == null) return;
+            TimeOfDay.Instance.profitQuota = amount;
             TimeOfDay.Instance.SyncNewProfitQuotaClientRpc(TimeOfDay.Instance.profitQuota, 0, TimeOfDay.Instance.timesFulfilledQuota);
+        }
+
+        public static void SetDeadline(int amount)
+        {
+            if (TimeOfDay.Instance == null || HUDManager.Instance == null || !LethalMenu.localPlayer.IsHost) return;
+            if (!StartOfRound.Instance.inShipPhase)
+            {
+                HUDManager.Instance.DisplayTip("Lethal Menu", "You must be in orbit!");
+                return;
+            }
+            TimeOfDay.Instance.timeUntilDeadline = TimeOfDay.Instance.totalTime * amount;
+            TimeOfDay.Instance.UpdateProfitQuotaCurrentTime();
         }
 
         public static void Message(string msg, int type, int id)

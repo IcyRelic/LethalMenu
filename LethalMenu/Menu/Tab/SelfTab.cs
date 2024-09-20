@@ -82,6 +82,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.CloseAllBigDoors, "SelfTab.CloseAllBigDoors");
             UI.Hack(Hack.NoShipDoorClose, ["SelfTab.NoShipDoorClose", "General.HostTag"]);
             UI.Hack(Hack.GrabItemsBeforeGame, "SelfTab.GrabItemsBeforeGame");
+            UI.Hack(Hack.OpenDropShipLand, "SelfTab.OpenDropShipLand");
 
             GUILayout.EndScrollView();
         }

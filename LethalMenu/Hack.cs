@@ -108,6 +108,7 @@ namespace LethalMenu
         ItemSlots,
         ForceMeteorShower,
         ClearMeteorShower,
+        OpenDropShipLand,
 
         /** Troll Tab **/
         ToggleShipLights,
@@ -307,6 +308,7 @@ namespace LethalMenu
             {Hack.AntiGhostGirl, false},
             {Hack.EggsAlwaysExplode, false},
             {Hack.NoShipDoorClose, false},
+            {Hack.OpenDropShipLand, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
