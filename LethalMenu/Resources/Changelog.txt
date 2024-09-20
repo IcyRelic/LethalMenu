@@ -17,6 +17,7 @@ v1.4.5
 - Added Bush Wolf Enemy Insta Kill - Added Bush Wolf Enemy to Insta Kill
 - Added Cave Dweller Insta Kill - Added Cave Dweller to Insta Kill
 - Added Edit Deadline (Host Only) - Lets you change the deadline!
+- Added Open Drop Ship On Land - Opens drop ship as soon as it lands!
 - Added Close Gate - Closes Experimentation gate at the front entrance
 - Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
 - Fixed Teleport Enemy To Player - It was using EnemyAI[] instead of EnemyAI
