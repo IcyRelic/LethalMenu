@@ -19,6 +19,8 @@ v1.4.5
 - Added Edit Deadline (Host Only) - Lets you change the deadline!
 - Added Open Drop Ship On Land - Opens drop ship as soon as it lands!
 - Added Close Gate - Closes Experimentation gate at the front entrance
+- Added Loot Any Item Belt Bag - Lets you put any items in the belt bag
+- Added Loot Through Walls Belt Bag - Lets you loot through walls with the belt bag
 - Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
 - Fixed Teleport Enemy To Player - It was using EnemyAI[] instead of EnemyAI
 - Fixed Chams Error - Fixed a chams error with turrets when you left mid game
@@ -27,6 +29,7 @@ v1.4.5
 - Fixed Open All Doors - Forgot to add it to executors :C and improved its code!
 - Fixed Close All Doors - Forgot to add it to executors :C and improved its code!
 - Changed Teleport All Enemies - Changed the method it used!
+- Changed Grab Items Before Game - Redid it so its reverts if it gets disabled and renamed it to Loot Before Game Starts
 - Changed Unload - It attempts to remove all enabled hacks and make everything normal
 
 v1.4.4 
@@ -34,7 +37,7 @@ v1.4.4
 - Added Click Teleport - Teleport to where you click
 - Added Peer 2 Peer Communication - Adds [LethalMenu {version}] before their names in players tab (1.4.4+) 
 - Added New Enemies To Cham Toggles 
-- Added Grab Objects Before Game - You can pick up items
+- Added Grab Items Before Game - You can pick up items
 - Added Toggle All For Displays - Added a toggle to enable and disable all display options
 - Added Toggle Terminal Sound - Spam the terminal sound
 - Added FPS Counter - Displays your FPS
