@@ -141,12 +141,10 @@ namespace LethalMenu.Menu.Tab
         {
             options = options.Take(4).ToList();
             if (clear) i_messageindex = 0;
-            if (!clear)
-            {
-                options.AddRange(LethalMenu.players.Select(player =>
-                    new UIOption(player.playerUsername, () => Hack.Message.Execute(s_message, 4, (int)player.actualClientId)))
-                );
-            }
+            if (clear) return;
+            options.AddRange(LethalMenu.players.Select(player =>
+                new UIOption(player.playerUsername, () => Hack.Message.Execute(s_message, 4, (int)player.actualClientId)))
+            );
         }
     }
 }

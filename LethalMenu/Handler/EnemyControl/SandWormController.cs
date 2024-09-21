@@ -2,15 +2,19 @@
 {
     internal class SandWormController : IEnemyController<SandWormAI>
     {
-        bool IsEmerged(SandWormAI enemy) => enemy.inEmergingState || enemy.emerged;
-
-        public void UseSecondarySkill(SandWormAI enemy)
+        public void Update(SandWormAI enemy, bool isAIControlled)
         {
-            if (this.IsEmerged(enemy)) return;
+            if (enemy == null || isAIControlled) return;
+            enemy.chaseTimer = 2f;
+        }
+
+        public void UsePrimarySkill(SandWormAI enemy)
+        {
+            if (enemy == null || enemy.inEmergingState) return;
             enemy.StartEmergeAnimation();
         }
 
-        public string GetSecondarySkillName(SandWormAI _) => "Emerge";
+        public string GetPrimarySkillName(SandWormAI _) => "Emerge";
 
         public bool CanUseEntranceDoors(SandWormAI _) => false;
 

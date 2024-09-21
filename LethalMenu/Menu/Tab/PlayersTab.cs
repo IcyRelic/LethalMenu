@@ -3,8 +3,6 @@ using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
-using System.Linq;
-using System.Reflection.Emit;
 using UnityEngine;
 
 namespace LethalMenu.Menu.Tab

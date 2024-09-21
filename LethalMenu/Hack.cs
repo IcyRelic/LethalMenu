@@ -76,9 +76,11 @@ namespace LethalMenu
         OpenAllBigDoors,
         CloseAllBigDoors,
         NoShipDoorClose,
-        GrabItemsBeforeGame,
+        LootBeforeGameStarts,
         ClickTeleport,
         ClickTeleportAction,
+        LootAnyItemBeltBag,
+        LootThroughWallsBeltBag,
 
         /** Server Tab **/
         ToggleAllDisplays,
@@ -300,7 +302,7 @@ namespace LethalMenu
             {Hack.ForceBleed, false},
             {Hack.UnlimitedZapGun, false},
             {Hack.ToggleTerminalSound, false},
-            {Hack.GrabItemsBeforeGame, false},
+            {Hack.LootBeforeGameStarts, false},
             {Hack.ClickTeleport, false},
             {Hack.PJSpammer, false},
             {Hack.ItemSlots, false},
@@ -309,6 +311,8 @@ namespace LethalMenu
             {Hack.EggsAlwaysExplode, false},
             {Hack.NoShipDoorClose, false},
             {Hack.OpenDropShipLand, false},
+            {Hack.LootAnyItemBeltBag, false},
+            {Hack.LootThroughWallsBeltBag, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()

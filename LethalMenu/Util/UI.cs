@@ -1,4 +1,5 @@
-﻿using LethalMenu.Language;
+﻿using LethalMenu.Cheats;
+using LethalMenu.Language;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -189,12 +190,12 @@ namespace LethalMenu.Util
         }
 
 
-        public static void Textbox(string label, ref string value, string regex = "", bool big = true)
+        public static void Textbox(string label, ref string value, string regex = "", int size = 3, bool big = true)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(label));
             GUILayout.FlexibleSpace();
-            value = GUILayout.TextField(value, GUILayout.Width(big ? Settings.i_textboxWidth * 3 : Settings.i_textboxWidth));
+            value = GUILayout.TextField(value, GUILayout.Width(big ? Settings.i_textboxWidth * size : Settings.i_textboxWidth));
             value = Regex.Replace(value, regex, "");
             GUILayout.EndHorizontal();
         }
@@ -218,6 +219,20 @@ namespace LethalMenu.Util
             value = GUILayout.TextField(value, length, GUILayout.Width(Settings.i_textboxWidth));
             value = Regex.Replace(value, regex, "");
             buttons.ToList().ForEach(btn => btn.Draw());
+            GUILayout.EndHorizontal();
+        }
+
+        public static void Divider(int width, int height)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Box("", GUILayout.Width(width), GUILayout.Height(height));
+            GUILayout.EndHorizontal();
+        }
+
+        public static void Divider(int height)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Box("", GUILayout.Width(Screen.width), GUILayout.Height(height));
             GUILayout.EndHorizontal();
         }
 
