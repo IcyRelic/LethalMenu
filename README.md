@@ -243,59 +243,49 @@ Thank you for contributing to the development of this mod by sharing your feedba
 | Unlock Door Action  | <kbd>F1</kbd> | Unlock the door you're looking at|
 | NoClip Controls  | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Space</kbd><kbd>LCTRL</kbd> | Movement Controls while using NoClip |
 
-## Latest Changelog | v1.4.3
+## Latest Changelog | v1.4.5
 ```
-- Added Super Knife 
-- Added No Quicksand 
-- Added No Camera Shake
-- Added Teleport With Items
-- Added Drop All Items 
-- Added Berserk All Turrets
-- Added Unlock All Doors 
-- Added Open Ship Door Space 
-- Added Drop All Players Items 
-- Added Show Offensive Lobby Names 
-- Added Disconnect
-- Added Bridge Never Falls
-- Added Force Small Bridge Fall 
-- Added Unlimited Oxygen
-- Added Spawn Spike Roof Trap 
-- Added Enable Shop Items
-- Added Weather Manager 
+- Added Dress Girl Controller 
+- Added Clay Surgeon Controller
+- Added Cave Dweller Controller 
+- Added Anti Ghost Girl 
+- Added Welcome Message 
+- Added Enemy Control Anti Scan 
+- Added Eggs Always Explode
+- Added No Ship Door Close (Host Only)
+- Added Force Meteor Shower (Host Only) 
+- Added Clear Meteor Shower (Host Only) 
+- Added Double Wing Controller 
+- Added Docile Locust Bees Controller
+- Added Enemy Death Notifications 
+- Added Notification to Kill Enemy 
+- Added Notification to Stun Enemy 
+- Added Bush Wolf Enemy Insta Kill 
+- Added Cave Dweller Insta Kill
+- Added Edit Deadline (Host Only) 
+- Added Open Drop Ship On Land 
+- Added Close Gate 
+- Added Loot Any Item Belt Bag 
+- Added Loot Through Walls Belt Bag 
+- Added Click Kill
 - Added HP Display
-- Added GiftBox Item ESP 
-- Added GiftBox Iem value ESP 
-- Added Unlimited Presents 
-- Added Extra Slots 
-- Added Spike Roof Trap ESP 
-- Added Spike Roof Trap Chams 
-- Added Dot Crosshair
-- Added Vote Ship Leave Early
-- Added RadMech to Godmode
-- Added Translations to Info Display 
-- Added Display Ship Object Count
-- Added Display Ship Object Value 
-- Added Hear All Alive People 
-- Added Hear All Dead People
-- Added Display Object Count 
-- Added Display Object Value 
-- Added Display Deadline
-- Added Notifications for Managers 
-- Added New Unlockables
-- Fixed Loader so you can't inject LethalMenu twice 
-- Fixed Error from leaving with LethalMenu open 
-- Fixed Cursor getting stuck when leaving with LethalMenu open
-- Fixed Managers becoming small after leaving
-- Fixed Build everywhere 
-- Fixed Baboon Bird Controller 
-- Fixed Translations 
-- Fixed Server Tab Scrolling
-- Fixed Never Lose Scrap
-- Removed Display Ship Object Scan 
-- Removed Display Object Scan
-- Removed Display Deadline from Display Quota 
-- Removed Default Ship Items 
-- Removed Hear Everyone
+- Added No TZP Effects
+- Added Unlimited TZP
+- Fixed Enemy Controller 
+- Fixed Teleport Enemy To Player
+- Fixed Chams Error
+- Fixed God Mode Error
+- Fixed Toggle Terminal Sound Error
+- Fixed Open All Doors 
+- Fixed Close All Doors 
+- Fixed Unlock all doors
+- Changed HP Display to Player HP Display 
+- Changed Teleport All Enemies
+- Changed Grab Items Before Game
+- Changed Unload 
+- Changed Unlock Door 
+- Changed Enemy Spawn List 
+- Changed Enemy List
 ```
 
 ## Credit
@@ -305,6 +295,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
     - Additionally adopted several style/techniques from him
   - [Project Apparatus](https://github.com/KaylinOwO/Project-Apparatus/) - Inspiration/code style
   - [TeaMod](https://thunderstore.io/c/lethal-company/p/TeaMods/TeaMod/) - Extra Item Slots Hack
+  - [Treys Health Text](https://thunderstore.io/c/lethal-company/p/Treyotech/Treys_Health_Text/) - HP Display
 
 ## Helpful Links
   - [HTML Color Wheel (With Alpha Support)](https://rgbacolorpicker.com/color-wheel-picker)
