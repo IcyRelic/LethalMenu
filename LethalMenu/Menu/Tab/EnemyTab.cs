@@ -5,6 +5,7 @@ using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -92,19 +93,18 @@ namespace LethalMenu.Menu.Tab
         }
 
         private void EnemyList()
-        {
-            
+        {      
             switch (selectedTab)
             {
                 case 0:
                     if (!LethalMenu.enemies.Exists(e => e.GetInstanceID() == selectedEnemy)) selectedEnemy = -1;
-                    DrawList<EnemyAI>("EnemyTab.EnemyList", LethalMenu.enemies, e => e.isEnemyDead, e => e.enemyType.name, ref scrollPos, ref selectedEnemy);
+                    DrawList<EnemyAI>("EnemyTab.EnemyList", LethalMenu.enemies.OrderBy(e => e.enemyType.name).ToList(), e => e.isEnemyDead, e => e.enemyType.name, ref scrollPos, ref selectedEnemy);
                     break;
                 case 1:
-                    if(!GameUtil.GetEnemyTypes().Exists(e => e.GetInstanceID() == selectedEnemyType)) selectedEnemyType = -1;
-                    DrawList<EnemyType>("EnemyTab.EnemyTypes", GameUtil.GetEnemyTypes(), _ => false, e => e.name, ref scrollPos3, ref selectedEnemyType);
+                    if (!GameUtil.GetEnemyTypes().Exists(e => e.GetInstanceID() == selectedEnemyType)) selectedEnemyType = -1;
+                    DrawList<EnemyType>("EnemyTab.EnemyTypes", GameUtil.GetEnemyTypes().OrderBy(e => e.name).ToList(), _ => false, e => e.name, ref scrollPos3, ref selectedEnemyType);
                     break;
-            }          
+            }
         }
 
         private void GeneralActions()
@@ -157,7 +157,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayer", selectedPlayer, enemy);
             UI.Hack(Hack.EnemyControl, "EnemyTab.ControlEnemy", enemy);
         }
-        
+
         private void EnemySpawnerContent()
         {
             if (!(bool)StartOfRound.Instance || LethalMenu.localPlayer == null) return;

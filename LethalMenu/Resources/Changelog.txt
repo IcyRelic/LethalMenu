@@ -21,6 +21,10 @@ v1.4.5
 - Added Close Gate - Closes Experimentation gate at the front entrance
 - Added Loot Any Item Belt Bag - Lets you put any items in the belt bag
 - Added Loot Through Walls Belt Bag - Lets you loot through walls with the belt bag
+- Added Click Kill - Middle Click to kill enemies when click kill is enabled
+- Added HP Display - Shows your hp in your the corner of the Player HUD
+- Added No TZP Effects - No negative effects from TZP
+- Added Unlimited TZP - Use TZP forever
 - Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
 - Fixed Teleport Enemy To Player - It was using EnemyAI[] instead of EnemyAI
 - Fixed Chams Error - Fixed a chams error with turrets when you left mid game
@@ -28,9 +32,14 @@ v1.4.5
 - Fixed Toggle Terminal Sound Error - Fixed error when you leave with Toggle Terminal Sound hack on 
 - Fixed Open All Doors - Forgot to add it to executors :C and improved its code!
 - Fixed Close All Doors - Forgot to add it to executors :C and improved its code!
+- Fixed Unlock all doors - Improved the code and fixed my mistake
+- Changed HP Display to Player HP Display - To cause less confusion
 - Changed Teleport All Enemies - Changed the method it used!
 - Changed Grab Items Before Game - Redid it so its reverts if it gets disabled and renamed it to Loot Before Game Starts
 - Changed Unload - It attempts to remove all enabled hacks and make everything normal
+- Changed Unlock Door - Improved the code 
+- Changed Enemy Spawn List - Goes by the alphabet now (A - Z)
+- Changed Enemy List - Goes by the alphabet now (A - Z)
 
 v1.4.4 
 - Added PJ Plushie Spammer - Spams PJ Plushies at a variable speed

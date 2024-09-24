@@ -352,7 +352,7 @@ namespace LethalMenu.Handler
 
         public void Kill(bool despawn = false)
         {
-            if (enemy == null || HUDManager.Instance == null) return;
+            if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
             if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie)
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be killed without host");

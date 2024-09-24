@@ -8,8 +8,10 @@ namespace LethalMenu.Cheats
     {
         public override void Update()
         {
-            if (!Hack.AntiGhostGirl.IsEnabled() || Object.FindAnyObjectByType<DressGirlAI>().hauntingPlayer != LethalMenu.localPlayer) return;
-            Object.FindAnyObjectByType<DressGirlAI>().hauntingPlayer = null;
+            if (!Hack.AntiGhostGirl.IsEnabled()) return;
+            DressGirlAI dressgirl = Object.FindAnyObjectByType<DressGirlAI>();
+            if (dressgirl == null || dressgirl.hauntingPlayer != LethalMenu.localPlayer) return;
+            dressgirl.hauntingPlayer = null;
         }
     }
 }

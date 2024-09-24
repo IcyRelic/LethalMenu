@@ -10,6 +10,8 @@ using UnityEngine;
 using UnityEngine.InputSystem.Controls;
 using LethalMenu.Themes;
 using LethalMenu.Manager;
+using UnityEngine.InputSystem.XR;
+using UnityEngine.InputSystem;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -326,16 +328,16 @@ namespace LethalMenu.Menu.Tab
                 GUILayout.BeginHorizontal();
 
                 ButtonControl bind = hack.GetKeyBind();
-
-                string kb = hack.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
+                string kb = hack.HasKeyBind() ? (bind is KeyControl keyBind ? keyBind.keyCode.ToString() : bind.displayName) : "None";
 
                 GUILayout.Label(hack.ToString());
                 GUILayout.FlexibleSpace();
 
-                if (hack.HasKeyBind() && hack != Hack.OpenMenu && hack != Hack.UnlockDoorAction && hack != Hack.ClickTeleportAction && GUILayout.Button("-")) hack.RemoveKeyBind();
+                if (hack.HasKeyBind() && hack != Hack.OpenMenu && GUILayout.Button("-")) hack.RemoveKeyBind();
+
                 string btnText = hack.IsWaiting() ? "Waiting" : kb;
                 if (GUILayout.Button(btnText, GUILayout.Width(85))) KBUtil.BeginChangeKeyBind(hack);
-               
+
                 GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();

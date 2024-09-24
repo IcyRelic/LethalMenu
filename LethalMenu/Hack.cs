@@ -68,6 +68,8 @@ namespace LethalMenu
         DeleteHeldItem,
         DropAllItems,
         UnlimitedPresents,
+        UnlimitedTZP,
+        NoTZPEffects,
         VoteShipLeaveEarly,
         VehicleGodMode,
         EggsNeverExplode,
@@ -79,6 +81,8 @@ namespace LethalMenu
         LootBeforeGameStarts,
         ClickTeleport,
         ClickTeleportAction,
+        ClickKill,
+        ClickKillAction,
         LootAnyItemBeltBag,
         LootThroughWallsBeltBag,
 
@@ -168,6 +172,7 @@ namespace LethalMenu
         NoVisor,
         NoFieldOfDepth,
         FOV,
+        HPDisplay,
 
         /** Player Tab **/
         KillPlayer,
@@ -304,6 +309,7 @@ namespace LethalMenu
             {Hack.ToggleTerminalSound, false},
             {Hack.LootBeforeGameStarts, false},
             {Hack.ClickTeleport, false},
+            {Hack.ClickKill, false},
             {Hack.PJSpammer, false},
             {Hack.ItemSlots, false},
             {Hack.FOV, false},
@@ -313,6 +319,9 @@ namespace LethalMenu
             {Hack.OpenDropShipLand, false},
             {Hack.LootAnyItemBeltBag, false},
             {Hack.LootThroughWallsBeltBag, false},
+            {Hack.UnlimitedTZP, false},
+            {Hack.NoTZPEffects, false},
+            {Hack.HPDisplay, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -388,6 +397,7 @@ namespace LethalMenu
             {Hack.CloseGate, (Action) HackExecutor.CloseGate},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
             {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport},
+            {Hack.ClickKillAction, (Action) HackExecutor.ClickKill},
             {Hack.ForceMeteorShower, (Action) HackExecutor.ForceMeteorShower},
             {Hack.ClearMeteorShower, (Action) HackExecutor.ClearMeteorShower},
             {Hack.OpenAllBigDoors, (Action) HackExecutor.OpenAllBigDoors},
@@ -400,7 +410,8 @@ namespace LethalMenu
             {Hack.ToggleCursor, Keyboard.current.leftAltKey},
             {Hack.UnloadMenu, Keyboard.current.pauseKey},
             {Hack.UnlockDoorAction, Keyboard.current.f1Key},
-            {Hack.ClickTeleportAction, Mouse.current.middleButton}
+            {Hack.ClickTeleportAction, Mouse.current.middleButton},
+            {Hack.ClickKillAction, Mouse.current.middleButton}
         };
 
         public static void Execute(this Hack hack, params object[] param)
@@ -541,52 +552,6 @@ namespace LethalMenu
             Hack.DisplayShipObjectValue.Execute();
         }
 
-        public static void UnlockDoor()
-        {
-            if (!Hack.UnlockDoors.IsEnabled()) return;
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-            if (player == null) return;
-            RaycastHit hitInfo;
-            if (Physics.Raycast(new Ray(CameraManager.ActiveCamera.transform.position, CameraManager.ActiveCamera.transform.forward), out hitInfo, 5f, LayerMask.GetMask("InteractableObject")))
-            {
-                DoorLock doorLock = hitInfo.transform.GetComponent<DoorLock>();
-                if (doorLock != null && doorLock.isLocked && !doorLock.isPickingLock)
-                {
-                    doorLock.UnlockDoorSyncWithServer();
-                    HUDManager.Instance.DisplayTip("Lethal Menu", "Door Unlocked");
-                }
-            }
-            else
-            {
-                LethalMenu.turrets.ForEach(turret => turret.gameObject.GetComponent<TerminalAccessibleObject>().CallFunctionFromTerminal());
-                foreach (TerminalAccessibleObject obj in LethalMenu.allTerminalObjects)
-                {
-                    Vector3 directionToObject = obj.transform.position - player.transform.position;
-                    float angle = Vector3.Angle(player.transform.forward, directionToObject);
-                    if (angle < 60f && directionToObject.magnitude < 5f)
-                    {
-                        string type = "Terminal Object";
-                        if (obj.isBigDoor) type = "Big Door";
-                        else if (obj.name == "TurretScript") type = "Turret";
-                        else if (obj.name == "Landmine") type = "Landmine";
-                        else type = obj.name;
-                        obj.CallFunctionFromTerminal();
-                        HUDManager.Instance.DisplayTip("Lethal Menu", type + " ( " + obj.objectCode + " ) has been called from the terminal.");
-                    }
-                }
-            }
-        }
-
-        public static void ClickTeleport()
-        {
-            if (!Hack.ClickTeleport.IsEnabled() || CameraManager.ActiveCamera == null) return;
-            RaycastHit hitInfo;
-            if (Physics.Raycast(new Ray(CameraManager.ActiveCamera.transform.position, CameraManager.ActiveCamera.transform.forward), out hitInfo, 1000f, LayerMask.GetMask("Room")))
-            {
-                LethalMenu.localPlayer.Handle().Teleport(hitInfo.point);
-            }
-        }
-
         public static void ModExperience(int amt, ActionType type)
         {
             int newAmt = amt;
@@ -608,6 +573,9 @@ namespace LethalMenu
             else MenuUtil.HideCursor();
         }
 
+        public static void ClickKill() => RoundHandler.ClickKill();
+        public static void ClickTeleport() => RoundHandler.ClickTeleport();
+        public static void UnlockDoor() => RoundHandler.UnlockDoor();
         public static void UnloadMenu() => LethalMenu.Instance.Unload();
         public static void NotifyDeath(PlayerControllerB died, CauseOfDeath cause) => HUDManager.Instance.DisplayTip("Lethal Menu", $"{died.playerUsername} has died from {cause.ToString()}");
         public static void NotifyEnemyDeath(EnemyType enemy) => HUDManager.Instance.DisplayTip("Lethal Menu", $"{enemy.name} has died");

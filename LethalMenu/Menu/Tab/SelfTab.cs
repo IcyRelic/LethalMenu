@@ -42,6 +42,7 @@ namespace LethalMenu.Menu.Tab
             UI.HackSlider(Hack.NoClip, "SelfTab.NoClip", Settings.f_noclipSpeed.ToString("0.0"), ref Settings.f_noclipSpeed, 10f, 30f);
             UI.HackSlider(Hack.ItemSlots, ["SelfTab.ItemSlots", "General.RejoinRequired"], Settings.f_slots.ToString("0.0"), ref Settings.f_slots, 1f, 20f);
             UI.Hack(Hack.ClickTeleport, "SelfTab.ClickTeleport");
+            UI.Hack(Hack.ClickKill, "SelfTab.ClickKill");
             UI.Hack(Hack.NightVision, "SelfTab.NightVision");
             UI.Hack(Hack.UnlimitedStamina, "SelfTab.UnlimitedStamina");
             UI.Hack(Hack.UnlimitedBattery, "SelfTab.UnlimitedBattery");
@@ -49,6 +50,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.UnlimitedOxygen, "SelfTab.UnlimitedOxygen");
             UI.Hack(Hack.UnlimitedZapGun, "SelfTab.UnlimitedZapGun");
             UI.Hack(Hack.UnlimitedPresents, "SelfTab.UnlimitedPresents");
+            UI.Hack(Hack.UnlimitedTZP, "SelfTab.UnlimitedTZP");
+            UI.Hack(Hack.NoTZPEffects, "SelfTab.NoTZPEffects");
             UI.Hack(Hack.LootThroughWalls, "SelfTab.LootThroughWalls");
             UI.Hack(Hack.InteractThroughWalls, "SelfTab.InteractThroughWalls");
             UI.Hack(Hack.Reach, "SelfTab.Reach");

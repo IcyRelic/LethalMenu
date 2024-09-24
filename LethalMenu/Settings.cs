@@ -120,7 +120,7 @@ namespace LethalMenu
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
         public static bool b_VCDisplay = false;
-        public static bool b_HPDisplay = false;
+        public static bool b_PlayerHPDisplay = false;
         public static bool b_ShowShipItems = false;
         public static bool b_DropItems = false;
         public static bool b_HackHighlight = false;
@@ -261,7 +261,7 @@ namespace LethalMenu
                 hackSettings["DisableSpectatorModels"] = b_disableSpectatorModels.ToString();
                 hackSettings["VCDisplay"] = b_VCDisplay.ToString();
                 hackSettings["UseScrapTiers"] = b_useScrapTiers.ToString();
-                hackSettings["HPDisplay"] = b_HPDisplay.ToString();
+                hackSettings["PlayerHPDisplay"] = b_PlayerHPDisplay.ToString();
                 hackSettings["ShowShipItems"] = b_ShowShipItems.ToString();
                 hackSettings["FPSCounter"] = b_FPSCounter.ToString();
                 hackSettings["DisplayLMUsers"] = b_DisplayLMUsers.ToString();
@@ -410,8 +410,8 @@ namespace LethalMenu
                         b_VCDisplay = bool.Parse(VCDisplayToken.ToString());
                     if (hackSettings.TryGetValue("UseScrapTiers", out JToken UseScrapTiersToken))
                         b_useScrapTiers = bool.Parse(UseScrapTiersToken.ToString());
-                    if (hackSettings.TryGetValue("HPDisplay", out JToken HPDisplayToken))
-                        b_HPDisplay = bool.Parse(HPDisplayToken.ToString());
+                    if (hackSettings.TryGetValue("PlayerHPDisplay", out JToken PlayerHPDisplayToken))
+                        b_PlayerHPDisplay = bool.Parse(PlayerHPDisplayToken.ToString());
                     if (hackSettings.TryGetValue("ShowShipItems", out JToken ShowShipItemsToken))
                         b_ShowShipItems = bool.Parse(ShowShipItemsToken.ToString());
                     if (hackSettings.TryGetValue("FPSCounter", out JToken FPSCounterToken))
