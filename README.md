@@ -294,8 +294,9 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - [winstxnhdw](https://www.unknowncheats.me/forum/members/5891304.html) - Extreamly Talented Individual, Learned a lot from his [project](https://github.com/winstxnhdw/lc-hax/), Lure monsters was derived from it.
     - Additionally adopted several style/techniques from him
   - [Project Apparatus](https://github.com/KaylinOwO/Project-Apparatus/) - Inspiration/code style
-  - [TeaMod](https://thunderstore.io/c/lethal-company/p/TeaMods/TeaMod/) - Extra Item Slots Hack
-  - [Treys Health Text](https://thunderstore.io/c/lethal-company/p/Treyotech/Treys_Health_Text/) - HP Display
+  - [TeaMod](https://thunderstore.io/c/lethal-company/p/TeaMods/TeaMod/) - Item Slots Hack
+  - [Treys Health Text](https://thunderstore.io/c/lethal-company/p/Treyotech/Treys_Health_Text/) - HP Display Hack
+    -  Positioning / style
 
 ## Helpful Links
   - [HTML Color Wheel (With Alpha Support)](https://rgbacolorpicker.com/color-wheel-picker)
