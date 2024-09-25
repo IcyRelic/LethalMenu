@@ -1,7 +1,12 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using UnityEngine.Networking;
+using Object = UnityEngine.Object;
+using Steamworks;
 
 namespace LethalMenu.Menu.Core
 {
@@ -38,6 +43,17 @@ namespace LethalMenu.Menu.Core
                 }
                 else DisplayMessage(Settings.version ?? "default");
             };
+        }
+
+        public static async void InjectNotification() => await InjectMessage();
+
+        public static async Task InjectMessage()
+        {
+            if (HUDManager.Instance == null) return;
+            if (Loader.Load == null) HUDManager.Instance.DisplayTip("Lethal Menu", "Lethal Menu injected!");
+            if (Loader.Load != null) HUDManager.Instance.DisplayTip("Lethal Menu", "Lethal Menu is already injected!");
+            await Task.Delay(10000);
+            CheckForMessage();
         }
     }
 }

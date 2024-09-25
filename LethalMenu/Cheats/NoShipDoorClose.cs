@@ -1,10 +1,29 @@
 ﻿using HarmonyLib;
+using UnityEngine;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace LethalMenu.Cheats
 {
     [HarmonyPatch]
     internal class NoShipDoorClose : Cheat
     {
+        public static Dictionary<string, bool> Triggered = new Dictionary<string, bool>();
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.Interact))]
+        public static void Interact(InteractTrigger __instance, Transform playerTransform)
+        {
+            Triggered[__instance.transform.parent.name] = true;
+            LethalMenu.Instance.StartCoroutine(WaitForTriggerFinish(__instance, __instance.animationWaitTime));
+        }
+
+        private static IEnumerator WaitForTriggerFinish(InteractTrigger __instance, float animationWaitTime)
+        {
+            yield return new WaitForSeconds(animationWaitTime);
+            Triggered[__instance.transform.parent.name] = false;
+        }
 
         [HarmonyPrefix]
         [HarmonyPatch(typeof(StartOfRound), "SetShipDoorsOverheatClientRpc")]
@@ -26,7 +45,13 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(HangarShipDoor), "PlayDoorAnimation")]
         public static bool PlayDoorAnimation(bool closed)
         {
-            if (LethalMenu.shipDoor != null && LethalMenu.shipDoor.doorPower == 0f && Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost)
+            InteractTrigger trigger = LethalMenu.interactTriggers.FirstOrDefault(i => i != null && i.transform.parent != null && i.transform.parent.name == "StartButton");
+            if (trigger == null || LethalMenu.shipDoor == null) return false;
+            if (LethalMenu.localPlayer && Triggered.TryGetValue(trigger.transform.parent.name, out bool isTriggered) && isTriggered)
+            {
+                return true;
+            }
+            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost)
             {
                 return false;
             }

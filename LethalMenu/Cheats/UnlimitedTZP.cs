@@ -10,7 +10,7 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            if (!Hack.UnlimitedTZP.IsEnabled()) return;
+            if (!Hack.UnlimitedTZP.IsEnabled() || TZP == null || !(LethalMenu.localPlayer.currentlyHeldObjectServer is TetraChemicalItem)) return;
             TZP.Reflect().SetValue("fuel", 1f);
         }
 

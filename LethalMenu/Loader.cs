@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using System.Linq;
 using LethalMenu.Handler;
+using LethalMenu.Menu.Core;
 using Object = UnityEngine.Object;
 
 
@@ -11,24 +12,18 @@ namespace LethalMenu
 {
     public class Loader : MonoBehaviour
     {
-        private static GameObject Load;
+        public static GameObject Load;
         public static bool harmonyLoaded = false;
 
         public static void Init()
         {
-            if (Load != null && HUDManager.Instance != null)
-            {
-                HUDManager.Instance.DisplayTip("Lethal Menu", "Lethal Menu is already injected!");
-            }
-            if (Load == null)
-            {
-                if (HUDManager.Instance != null) HUDManager.Instance.DisplayTip("Lethal Menu", "Lethal Menu injected!");
-                ChamHandler.ChamsSetEnabled(true);
-                LoadHarmony();
-                Loader.Load = new GameObject();
-                Load.AddComponent<LethalMenu>();
-                Object.DontDestroyOnLoad(Loader.Load);
-            }
+            if (Load != null) return;      
+            ChamHandler.ChamsSetEnabled(true);
+            LoadHarmony();
+            Loader.Load = new GameObject();
+            Load.AddComponent<LethalMenu>();
+            Object.DontDestroyOnLoad(Loader.Load);
+            MenuFragment.InjectNotification();
         }
 
         public static void LoadHarmony()
