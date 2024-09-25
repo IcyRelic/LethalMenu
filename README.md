@@ -296,7 +296,6 @@ Thank you for contributing to the development of this mod by sharing your feedba
   - [Project Apparatus](https://github.com/KaylinOwO/Project-Apparatus/) - Inspiration/code style
   - [TeaMod](https://thunderstore.io/c/lethal-company/p/TeaMods/TeaMod/) - Item Slots Hack
   - [Treys Health Text](https://thunderstore.io/c/lethal-company/p/Treyotech/Treys_Health_Text/) - HP Display Hack
-    -  Positioning / style
 
 ## Helpful Links
   - [HTML Color Wheel (With Alpha Support)](https://rgbacolorpicker.com/color-wheel-picker)
