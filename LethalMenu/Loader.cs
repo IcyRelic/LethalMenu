@@ -17,13 +17,13 @@ namespace LethalMenu
 
         public static void Init()
         {
+            MenuFragment.InjectNotification();
             if (Load != null) return;      
             ChamHandler.ChamsSetEnabled(true);
             LoadHarmony();
             Loader.Load = new GameObject();
             Load.AddComponent<LethalMenu>();
             Object.DontDestroyOnLoad(Loader.Load);
-            MenuFragment.InjectNotification();
         }
 
         public static void LoadHarmony()

@@ -20,29 +20,20 @@ namespace LethalMenu.Handler.EnemyControl
         public void UseHeldItem(HoarderBugAI enemy)
         {
             if (enemy.heldItem == null || enemy.heldItem.itemGrabbableObject == null) return;
-            if (enemy.heldItem.itemGrabbableObject is ShotgunItem gun) gun.ShootGunAsEnemy(enemy);
+            if (enemy.heldItem.itemGrabbableObject is ShotgunItem shotgun) shotgun.ShootGunAsEnemy(enemy);
         }
 
         public void Update(HoarderBugAI enemy, bool isAIControlled)
         {
-            if (enemy == null || isAIControlled || enemy.heldItem?.itemGrabbableObject is null) return;
+            if (enemy == null || isAIControlled) return;
             enemy.angryTimer = 0.0f;
             enemy.SetBehaviourState(BugState.IDLE);
         }
 
-        public void GrabItem(HoarderBugAI enemy, GrabbableObject item)
-        {
-            NetworkObject netItem = item.GetComponent<NetworkObject>();
-            if (enemy == null || item == null || netItem == null) return;
-            enemy.SwitchToBehaviourServerRpc(1);
-            enemy.GrabItemServerRpc(netItem);
-        }
-
-
         public void OnDeath(HoarderBugAI enemy)
         {
-            if (enemy.heldItem.itemGrabbableObject.TryGetComponent(out NetworkObject networkObject)) return;
-            _ = enemy.Reflect().Invoke("DropItemAndCallDropRPC", networkObject, false);
+            if (enemy.heldItem.itemGrabbableObject.TryGetComponent(out NetworkObject netitem)) return;
+            DropItemAndCallDropRPC(enemy, netitem, false);
         }
 
         public void UsePrimarySkill(HoarderBugAI enemy)
@@ -54,8 +45,8 @@ namespace LethalMenu.Handler.EnemyControl
                 enemy.angryAtPlayer = null;
                 enemy.SetBehaviourState(BugState.IDLE);
             }
-            GrabbableObject item = enemy.FindNearbyItem();
-            if (item != null) GrabItem(enemy, item);
+            GrabbableObject item = enemy.FindNearbyItem(5);
+            if (item != null && item.TryGetComponent(out NetworkObject netitem)) GrabItemAndCallGrabRPC(enemy, netitem);
             else UseHeldItem(enemy);
         }
 
@@ -70,18 +61,70 @@ namespace LethalMenu.Handler.EnemyControl
                 enemy.SetBehaviourState(BugState.CHASING_PLAYER);
                 return;
             }
-            if (enemy.heldItem.itemGrabbableObject.TryGetComponent(out NetworkObject networkObject))
-            {
-                enemy.Reflect().Invoke("DropItemAndCallDropRPC", networkObject, false);
-            }
+            if (enemy.heldItem.itemGrabbableObject.TryGetComponent(out NetworkObject netitem)) DropItemAndCallDropRPC(enemy, netitem, false);
         }
 
-        public string GetPrimarySkillName(HoarderBugAI enemy) => enemy.heldItem is not null ? "Use item" : "Grab Item";
+        public string GetPrimarySkillName(HoarderBugAI enemy) => (enemy == null || enemy.heldItem == null) ? "Grab Item" : (enemy.heldItem.itemGrabbableObject is ShotgunItem ? "Use item" : "Drop item (Right Click)");
 
-        public string GetSecondarySkillName(HoarderBugAI enemy) => enemy.heldItem is null ? "" : "Drop item";
+        public string GetSecondarySkillName(HoarderBugAI enemy) => enemy.heldItem.itemGrabbableObject != null ? "" : "Drop Item";
 
         public float InteractRange(HoarderBugAI _) => 1.5f;
 
         public bool CanUseEntranceDoors(HoarderBugAI _) => false;
+
+        public static void GrabItemAndCallGrabRPC(HoarderBugAI enemy, NetworkObject item)
+        {
+            GrabItem(enemy, item);
+            enemy.Reflect().SetValue("sendingGrabOrDropRPC", true);
+            enemy.GrabItemServerRpc(item);
+        }
+
+        public static void GrabItem(HoarderBugAI enemy, NetworkObject item)
+        {
+            if (enemy.Reflect().GetValue<bool>("sendingGrabOrDropRPC"))
+            {
+                enemy.Reflect().SetValue("sendingGrabOrDropRPC", false);
+                return;
+            }
+            if (enemy.heldItem != null) DropItem(enemy, enemy.heldItem.itemGrabbableObject.GetComponent<NetworkObject>(), enemy.heldItem.itemGrabbableObject.GetItemFloorPosition());
+            enemy.targetItem = null;
+            GrabbableObject component = item.gameObject.GetComponent<GrabbableObject>();
+            HoarderBugAI.HoarderBugItems.Add(new HoarderBugItem(component, HoarderBugItemStatus.Owned, enemy.nestPosition));
+            enemy.heldItem = HoarderBugAI.HoarderBugItems[HoarderBugAI.HoarderBugItems.Count - 1];
+            component.parentObject = enemy.grabTarget;
+            component.hasHitGround = false;
+            component.GrabItemFromEnemy(enemy);
+            component.EnablePhysics(false);
+            HoarderBugAI.grabbableObjectsInMap.Remove(component.gameObject);
+        }
+
+        private void DropItemAndCallDropRPC(HoarderBugAI enemy, NetworkObject dropItemNetworkObject, bool droppedInNest = true)
+        {
+            Vector3 targetFloorPosition = RoundManager.Instance.RandomlyOffsetPosition(enemy.heldItem.itemGrabbableObject.GetItemFloorPosition(), 1.2f, 0.4f);
+            DropItem(enemy, dropItemNetworkObject, targetFloorPosition);
+            enemy.Reflect().SetValue("sendingGrabOrDropRPC", true);
+            enemy.DropItemServerRpc(dropItemNetworkObject, targetFloorPosition, droppedInNest);
+        }
+
+        public static void DropItem(HoarderBugAI enemy, NetworkObject item, Vector3 targetFloorPosition, bool droppingInNest = true)
+        {
+            if (enemy.Reflect().GetValue<bool>("sendingGrabOrDropRPC"))
+            {
+                enemy.Reflect().SetValue("sendingGrabOrDropRPC", false);
+                return;
+            }
+            if (enemy.heldItem == null)return;
+            GrabbableObject itemGrabbableObject = enemy.heldItem.itemGrabbableObject;
+            itemGrabbableObject.parentObject = null;
+            itemGrabbableObject.transform.SetParent(StartOfRound.Instance.propsContainer, true);
+            itemGrabbableObject.EnablePhysics(enable: true);
+            itemGrabbableObject.fallTime = 0f;
+            itemGrabbableObject.startFallingPosition = itemGrabbableObject.transform.parent.InverseTransformPoint(itemGrabbableObject.transform.position);
+            itemGrabbableObject.targetFloorPosition = itemGrabbableObject.transform.parent.InverseTransformPoint(targetFloorPosition);
+            itemGrabbableObject.floorYRot = -1;
+            itemGrabbableObject.DiscardItemFromEnemy();
+            enemy.heldItem = null;
+            if (!droppingInNest) HoarderBugAI.grabbableObjectsInMap.Add(itemGrabbableObject.gameObject);
+        }
     }
 }

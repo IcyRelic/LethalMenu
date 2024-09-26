@@ -385,6 +385,14 @@ namespace LethalMenu.Handler
             enemy.SyncPositionToClients();
         }
 
+        public void Teleport(Vector3 position)
+        {
+            if (LethalMenu.localPlayer == null || enemy == null || HUDManager.Instance == null) return;
+            enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            enemy.transform.position = position;
+            enemy.SyncPositionToClients();
+        }
+
         public void TargetPlayer(PlayerControllerB player)
         {
             if (LethalMenu.localPlayer == null || enemy == null) return;

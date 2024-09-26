@@ -2,26 +2,12 @@ using GameNetcodeStuff;
 using UnityEngine;
 using System.Linq;
 using LethalMenu.Util;
+using HarmonyLib;
 
 namespace LethalMenu.Handler.EnemyControl
 {
     internal class DressGirlController : IEnemyController<DressGirlAI>
     {
-        public void Update(DressGirlAI enemy, bool AIControlled)
-        {
-            if (AIControlled || enemy == null) return;
-            Collider collider = enemy.GetComponent<Collider>();
-            if (collider == null) return;
-            PlayerControllerB player = enemy.MeetsStandardPlayerCollisionConditions(collider, false, true);
-            if (player != null && player == enemy.hauntingPlayer && enemy.currentBehaviourStateIndex == 1)
-            {
-                player.KillPlayer(Vector3.zero, true, CauseOfDeath.Unknown, 1);
-                enemy.Reflect().Invoke("StopChasing");
-                enemy.EnableEnemyMesh(false, true);
-                enemy.creatureSFX.Stop();
-            }
-        }
-
         public void UsePrimarySkill(DressGirlAI enemy)
         {
             if (enemy == null) return;
@@ -45,7 +31,9 @@ namespace LethalMenu.Handler.EnemyControl
 
         public void OnReleaseControl(DressGirlAI enemy)
         {
+            if (enemy == null) return;
             if (enemy.currentBehaviourStateIndex == 1) enemy.Reflect().Invoke("StopChasing");
+            enemy.Handle().Teleport(new Vector3(-1000, -1000));
             enemy.EnableEnemyMesh(false, true);
             enemy.hauntingPlayer = null;
         }
@@ -53,6 +41,7 @@ namespace LethalMenu.Handler.EnemyControl
         public void OnDeath(DressGirlAI enemy)
         {
             if (enemy.currentBehaviourStateIndex == 1) enemy.Reflect().Invoke("StopChasing");
+            enemy.Handle().Teleport(new Vector3(-1000, -1000));
             enemy.EnableEnemyMesh(false, true);
             enemy.hauntingPlayer = null;
         }
@@ -61,6 +50,40 @@ namespace LethalMenu.Handler.EnemyControl
 
         public float InteractRange(DressGirlAI _) => 5f;
 
-        public static PlayerControllerB GetClosestPlayer(DressGirlAI e) => LethalMenu.players.Where(p => p != null && !p.isPlayerDead).OrderBy(p => Vector3.Distance(e.transform.position, p.transform.position)).FirstOrDefault();
+        public static PlayerControllerB GetClosestPlayer(EnemyAI e) => LethalMenu.players.Where(p => p != null && !p.isPlayerDead).OrderBy(p => Vector3.Distance(e.transform.position, p.transform.position)).FirstOrDefault();
+    }
+
+    [HarmonyPatch]
+    public class DressGirlAIPatches
+    {
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(DressGirlAI), "Update")]
+        public static bool Update(DressGirlAI __instance)
+        {
+            if (!Cheats.EnemyControl.IsAIControlled)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(DressGirlAI), "OnCollideWithPlayer")]
+        public static bool OnCollideWithPlayer(DressGirlAI __instance, Collider other)
+        {
+            if (!Cheats.EnemyControl.IsAIControlled)
+            {
+                PlayerControllerB player = DressGirlController.GetClosestPlayer(__instance);
+                if (player != null && __instance.hauntingPlayer != null && other.gameObject == __instance.hauntingPlayer.gameObject && __instance.currentBehaviourStateIndex == 1)
+                {
+                    player.KillPlayer(Vector3.zero, true, CauseOfDeath.Unknown, 1);
+                    __instance.Reflect().Invoke("StopChasing");
+                    __instance.EnableEnemyMesh(false, true);
+                    __instance.creatureSFX.Stop();
+                }
+                return false;
+            }
+            return true;
+        }
     }
 }

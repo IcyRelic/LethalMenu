@@ -1,3 +1,4 @@
+using DunGen;
 using GameNetcodeStuff;
 using LethalMenu.Language;
 using LethalMenu.Manager;
@@ -116,14 +117,12 @@ namespace LethalMenu.Menu.Tab
 
             if (!(bool)StartOfRound.Instance) return;
 
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-
             scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
 
             UI.Hack(Hack.TeleportShip, "SelfTab.TeleportShip", "SelfTab.Teleport");
 
-            DoorTeleportLocations(player, LethalMenu.doors.FindAll(door => door.isEntranceToBuilding));
-            DoorTeleportLocations(player, LethalMenu.doors.FindAll(door => !door.isEntranceToBuilding));
+            DoorTeleportLocations(LethalMenu.doors.FindAll(door => door.isEntranceToBuilding));
+            DoorTeleportLocations(LethalMenu.doors.FindAll(door => !door.isEntranceToBuilding));
 
             UI.Hack(Hack.TeleportSavedPosition, "SelfTab.TeleportSaved", "SelfTab.Teleport");
             UI.Hack(Hack.SaveTeleportPosition, "SelfTab.SavePosition", "General.Save");
@@ -131,17 +130,14 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndScrollView();
         }
 
-        private void DoorTeleportLocations(PlayerControllerB player, List<EntranceTeleport> doors)
+        private void DoorTeleportLocations(List<EntranceTeleport> doors)
         {
             char c = 'A';
-            foreach (EntranceTeleport door in doors)
+            doors.ForEach(d =>
             {
-                string textKey = door.isEntranceToBuilding ? "SelfTab.TeleportEntrance" : "SelfTab.TeleportExit";
-                string localizedText = Localization.Localize(textKey);
-
-                UI.Hack(Hack.Teleport, $"{localizedText} {c}", door.entrancePoint.position, false, true, door.isEntranceToBuilding);
-                c++;
-            }
+                string type = d.isEntranceToBuilding ? "SelfTab.TeleportEntrance" : "SelfTab.TeleportExit";
+                UI.Hack(Hack.Teleport, $"{Localization.Localize(type)} {c++}", d.entrancePoint.position, false, true, d.isEntranceToBuilding);
+            });
         }
     }
 }

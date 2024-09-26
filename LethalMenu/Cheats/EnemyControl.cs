@@ -1,15 +1,11 @@
-﻿using GameNetcodeStuff;
-using HarmonyLib;
+﻿using HarmonyLib;
 using LethalMenu.Components;
 using LethalMenu.Handler;
 using LethalMenu.Handler.EnemyControl;
 using LethalMenu.Util;
-using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 namespace LethalMenu.Cheats
@@ -20,6 +16,7 @@ namespace LethalMenu.Cheats
         private static GameObject ControllerInstance = null;
         private static MouseInput mouse = null;
         private static AIMovement movement = null;
+        private static AudioListener audioListener = null;
         public static bool IsAIControlled = false;
         private static bool NoClipEnabled = false;
         private const float TeleportDoorCooldown = 2.5f;
@@ -70,11 +67,12 @@ namespace LethalMenu.Cheats
                 return;
             }
 
-            enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            if (enemy.IsSpawned) enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             ControllerInstance = new GameObject("EnemyController");
             ControllerInstance.transform.position = enemy.transform.position;
             ControllerInstance.transform.rotation = enemy.transform.rotation;
 
+            audioListener = ControllerInstance.AddComponent<AudioListener>();
             mouse = ControllerInstance.AddComponent<MouseInput>();
             movement = ControllerInstance.AddComponent<AIMovement>();
 
@@ -85,6 +83,7 @@ namespace LethalMenu.Cheats
             movement.SetPosition(enemy.transform.position);
             movement.CharacterSprintSpeed = SprintMultiplier();
             SetAIControl(false);
+            ChangeAudioListener(audioListener);
         }
 
         public static void StopControl()
@@ -101,15 +100,20 @@ namespace LethalMenu.Cheats
                 enemy.agent.Warp(enemy.transform.position);
             }
 
-            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(true);
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
 
+            controller.OnReleaseControl(enemy);
+
+            if (LethalMenu.localPlayer.isPlayerDead) HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(true);
             LethalMenu.localPlayer.cursorTip.text = "";
+            ChangeAudioListener(LethalMenu.localPlayer.activeAudioListener);
             IsAIControlled = false;
             Destroy(ControllerInstance);
             enemy = null;
             ControllerInstance = null;
             mouse = null;
             movement = null;
+            audioListener = null;
         }
 
         public override void Update()
@@ -126,7 +130,7 @@ namespace LethalMenu.Cheats
             if (!Hack.FreeCam.IsEnabled()) Hack.FreeCam.Execute();
             if (Freecam.camera == null) return;
             if (HUDManager.Instance == null) return;
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller))
+            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller)) return;
 
             if (controller == null)
             {
@@ -138,14 +142,14 @@ namespace LethalMenu.Cheats
                 return;
             }
 
-            HUDManager.Instance.Reflect().SetValue("holdButtonToEndGameEarlyHoldTime", 0f);
-            HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(false);
+            if (LethalMenu.localPlayer.isPlayerDead) HUDManager.Instance.Reflect().SetValue("holdButtonToEndGameEarlyHoldTime", 0f);
+            if (LethalMenu.localPlayer.isPlayerDead) HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(false);
 
             if (!(bool)enemy.agent) return;
 
             UpdateCooldowns();
 
-            enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            if (enemy.IsSpawned) enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
             MoveCamera();
 
             if (enemy.isEnemyDead)
@@ -155,6 +159,8 @@ namespace LethalMenu.Cheats
                 StopControl();
                 return;
             }
+
+            controller.OnTakeControl(enemy);
 
             controller.Update(enemy, false);
             InteractWithAmbient(enemy, EnemyControllers[enemy.GetType()]);
@@ -174,7 +180,12 @@ namespace LethalMenu.Cheats
         }
 
         private static IController GetControllerForEnemy(EnemyAI enemy) => enemy != null && EnemyControllers.TryGetValue(enemy.GetType(), out var controller) ? controller : null;
-      
+
+        private static void ChangeAudioListener(AudioListener audioListener)
+        {
+            StartOfRound.Instance.audioListener = audioListener;
+        }
+
         private void UpdateCooldowns()
         {
             DoorCooldownRemaining = Mathf.Clamp(

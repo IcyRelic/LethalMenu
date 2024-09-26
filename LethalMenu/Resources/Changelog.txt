@@ -25,6 +25,7 @@ v1.4.5
 - Added HP Display - Shows your hp in your the corner of the Player HUD
 - Added No TZP Effects - No negative effects from TZP
 - Added Unlimited TZP - Use TZP forever
+- Added Audio Listener for enemy controllers - You can hear the audio around the enemy
 - Fixed Enemy Controller - Enemy control gets disabled when the enemy dies or gets destroyed
 - Fixed Teleport Enemy To Player - It was using EnemyAI[] instead of EnemyAI
 - Fixed Chams Error - Fixed a chams error with turrets when you left mid game
@@ -33,6 +34,10 @@ v1.4.5
 - Fixed Open All Doors - Forgot to add it to executors :C and improved its code!
 - Fixed Close All Doors - Forgot to add it to executors :C and improved its code!
 - Fixed Unlock all doors - Improved the code and fixed my mistake
+- Fixed Sand Worm Controller - Added a cooldown while it resets
+- Fixed Puffer Controller - Able to do abilities while players aren't nearby
+- Fixed Hoarder Bug Controller - Fixed picking up items being inconsistent
+- Fixed Baboon Bird Controller - Fixed picking up items being inconsistent
 - Changed HP Display to Player HP Display - To cause less confusion
 - Changed Teleport All Enemies - Changed the method it used!
 - Changed Grab Items Before Game - Redid it so its reverts if it gets disabled and renamed it to Loot Before Game Starts
