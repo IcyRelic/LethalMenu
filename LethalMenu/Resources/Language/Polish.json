@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "Polski",
-	"TRANSLATOR": "kocgum",
 	"General.HostRequired": "Ta funkcja wymaga hosta!",
 	"General.HostTag": "(Tylko host)",
 	"General.HostStormyTag": "(Host/Burza)",
@@ -219,7 +218,6 @@
 	"UnlockableManager.Title": "Manadżer Odblokowywalnych przedmiotó",
 	"UnlockableManager.UnlockAll": "Odblokuj Wszystko",
 	"FirstSetup.Title": "Pierwsza Konfiguracja",
-	"FirstSetup.Welcome": "Witaj w LethalMenu, Proszę ustaw swoj skrót klawiszowy do menu i język.",
 	"FirstSetup.SelectLanguage": "Wybierz Język:",
 	"FirstSetup.SelectKeybind": "Wybierz Skrót Klawiszowy Menu:",
 	"FirstSetup.Complete": "Zakończ Konfigurację",

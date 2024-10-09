@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "Français",
-	"TRANSLATOR": "ABigCat, Akira",
 	"General.HostRequired": "Cette fonction requiert d'être le créateur !",
 	"General.HostTag": "(Créateur Uniquement)",
 	"General.HostStormyTag": "(Créateur/Orageux)",
@@ -104,7 +103,6 @@
 	"PlayerTab.Spectate": "Observer",
 	"PlayerTab.MiniCam": "Mini caméra",
 	"PlayerTab.PlayerInfo": "Information du joueur",
-	"PlayerTab.LMUser": "Version de LethalMenu :",
 	"PlayerTab.SteamId": "SteamID",
 	"PlayerTab.PlayerStatus": "Statuts :",
 	"PlayerTab.PlayerHealth": "Santé :",
@@ -230,7 +228,6 @@
 	"UnlockableManager.Title": "Gestionnaire de déblocable",
 	"UnlockableManager.UnlockAll": "Débloquer tout",
 	"FirstSetup.Title": "Première configuration",
-	"FirstSetup.Welcome": "Bienvenue dans LethalMenu, Veuillez choisir votre Langue et vos Touches.",
 	"FirstSetup.SelectLanguage": "Choisir la langue:",
 	"FirstSetup.SelectKeybind": "Touche pour ouvrir le menu:",
 	"FirstSetup.Complete": "Finir la configuration",

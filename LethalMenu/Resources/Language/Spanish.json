@@ -1,6 +1,5 @@
 {
 	"LANGUAGE": "Inglés",
-	"TRANSLATOR": "tiofeo65",
 	"General.HostRequired": "¡Esta función requiere anfitrión!",
 	"General.HostTag": "(Solo anfitrión)",
 	"General.HostStormyTag": "(Anfitrión/Tormentoso)",
@@ -219,7 +218,6 @@
 	"UnlockableManager.Title": "Gestor Desbloqueable",
 	"UnlockableManager.UnlockAll": "Desbloquear Todo",
 	"FirstSetup.Title": "Primer ajuste",
-	"FirstSetup.Welcome": "Bienvenido a LethalMenu, Por favor, elija su teclado del menú y el idioma.",
 	"FirstSetup.SelectLanguage": "Seleccionar idioma:",
 	"FirstSetup.SelectKeybind": "Seleccionar teclado de menú:",
 	"FirstSetup.Complete": "Completar Configuración",
