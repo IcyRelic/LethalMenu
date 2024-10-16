@@ -173,6 +173,7 @@ namespace LethalMenu
         NoFieldOfDepth,
         FOV,
         HPDisplay,
+        MineshaftElevatorESP,
 
         /** Player Tab **/
         KillPlayer,
@@ -322,6 +323,7 @@ namespace LethalMenu
             {Hack.UnlimitedTZP, false},
             {Hack.NoTZPEffects, false},
             {Hack.HPDisplay, false},
+            {Hack.MineshaftElevatorESP, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()

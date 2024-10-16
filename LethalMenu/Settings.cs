@@ -20,7 +20,7 @@ namespace LethalMenu
 {
     internal class Settings
     {
-        public static string version = "v1.4.5";
+        public static string version = "v1.4.6";
         public static bool DebugMode = false;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen
@@ -64,6 +64,8 @@ namespace LethalMenu
         public static RGBAColor c_breakerESP = new RGBAColor(255, 0, 116, 1f);
         public static RGBAColor c_spikeRoofTrapESP = new RGBAColor(139, 69, 19, 1f);
 
+        public static RGBAColor c_mineshaftElevatorESP = new RGBAColor(0, 0, 255, 1f);
+
         /* * * * * * * * *
          * Chams  Colors *
          * * * * * * * * */
@@ -79,6 +81,8 @@ namespace LethalMenu
         public static RGBAColor c_breakerChams = new RGBAColor(255, 0, 116, 0.1f);
         public static RGBAColor c_spikeRoofTrapChams = new RGBAColor(139, 69, 19, 0.1f);
         public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
+
+        public static RGBAColor c_mineshaftElevatorChams = new RGBAColor(0, 0, 255, 0.1f);
 
         /* * * * * * * * *
          *  Other Colors *
@@ -142,6 +146,8 @@ namespace LethalMenu
         public static bool b_chamsShip = false;
         public static bool b_chamsSpikeRoofTrap = false;
         public static bool b_UseDefaultChams = false;
+        public static bool b_chamsDisableWithLOS = false;
+        public static bool b_chamsMineshaftElevator = false;
 
         public static float f_defaultGrabDistance = -1f;
         public static float f_defaultClimbSpeed = 3f;
@@ -283,6 +289,8 @@ namespace LethalMenu
                 chams["Ship"] = b_chamsShip.ToString();
                 chams["SpikeRoofTrap"] = b_chamsSpikeRoofTrap.ToString();
                 chams["UseDefaultChams"] = b_UseDefaultChams.ToString();
+                chams["DisableWithLOS"] = b_chamsDisableWithLOS.ToString();
+                chams["mineshaftElevator"] = b_chamsMineshaftElevator.ToString();
                 hackSettings["Chams"] = chams;   
 
                 colors["Background"] = JsonConvert.SerializeObject(c_background);
@@ -315,6 +323,9 @@ namespace LethalMenu
                 colors["SteamHazardESP"] = JsonConvert.SerializeObject(c_steamHazardESP);
                 colors["SpikeRoofTrapESP"] = JsonConvert.SerializeObject(c_spikeRoofTrapESP);
                 colors["CauseOfDeath"] = JsonConvert.SerializeObject(c_causeOfDeath);
+                colors["MineshaftElevatorESP"] = JsonConvert.SerializeObject(c_mineshaftElevatorESP);
+                colors["MineshaftElevatorChams"] = JsonConvert.SerializeObject(c_mineshaftElevatorChams);
+
 
                 settings["FirstLaunch"] = isFirstLaunch.ToString();
                 settings["MenuFontSize"] = i_menuFontSize.ToString();
@@ -467,6 +478,11 @@ namespace LethalMenu
                             b_chamsShip = bool.Parse(shipToken.ToString());
                         if (chams.TryGetValue("SpikeRoofTrap", out JToken spikeRoofTrapToken))
                             b_chamsSpikeRoofTrap = bool.Parse(spikeRoofTrapToken.ToString());
+                        if (chams.TryGetValue("DisableWithLOS", out JToken disableWithLOS))
+                            b_chamsDisableWithLOS = bool.Parse(disableWithLOS.ToString());
+                        if (chams.TryGetValue("MineshaftElevator", out JToken elevator))
+                            b_chamsMineshaftElevator = bool.Parse(elevator.ToString());
+
                     }
                 }
 
@@ -512,6 +528,10 @@ namespace LethalMenu
                         c_spikeRoofTrapESP = JsonConvert.DeserializeObject<RGBAColor>(roofSpikeTrapESP.ToString());
                     if (colors.TryGetValue("CauseOfDeath", out JToken causeOfDeath))
                         c_causeOfDeath = JsonConvert.DeserializeObject<RGBAColor>(causeOfDeath.ToString());
+                    if (colors.TryGetValue("MineshaftElevatorESP", out JToken elevatorEsp))
+                        c_mineshaftElevatorESP = JsonConvert.DeserializeObject<RGBAColor>(elevatorEsp.ToString());
+                    if (colors.TryGetValue("MineshaftElevatorChams", out JToken elevatorChams))
+                        c_mineshaftElevatorChams = JsonConvert.DeserializeObject<RGBAColor>(elevatorChams.ToString());
                 }
 
                 if (json.TryGetValue("KeyBinds", out JToken keybindsToken))

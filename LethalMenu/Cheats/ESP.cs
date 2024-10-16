@@ -38,6 +38,7 @@ namespace LethalMenu.Cheats
                 if (Hack.DoorLockESP.IsEnabled()) this.DisplayDoorLocks();
                 if (Hack.BreakerESP.IsEnabled()) this.DisplayBreaker();
                 if (Hack.SpikeRoofTrapESP.IsEnabled()) this.DisplaySpikeRoofTraps();
+                if (Hack.MineshaftElevatorESP.IsEnabled()) this.DisplayElevator();
             }
             catch (Exception e)
             {
@@ -75,6 +76,7 @@ namespace LethalMenu.Cheats
             DisplayChams(LethalMenu.doorLocks, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
+            DisplayChams(new[] { LethalMenu.mineshaftElevator }, _ => Settings.c_chams);
         }
 
 
@@ -109,6 +111,15 @@ namespace LethalMenu.Cheats
                 new[] { LethalMenu.shipDoor },
                 ship => "Ship",
                 ship => Settings.c_shipESP
+            );
+        }
+
+        private void DisplayElevator()
+        {
+            DisplayObjects(
+                new[] { LethalMenu.mineshaftElevator },
+                elevator => "Mineshaft Elevator",
+                elevator => Settings.c_mineshaftElevatorESP
             );
         }
 

@@ -54,6 +54,8 @@ namespace LethalMenu.Handler
             if (@object is GameObject) renderers.AddRange(((GameObject)@object).GetComponentsInChildren<Renderer>());
             if (@object is Component) renderers.AddRange(((Component)@object).GetComponentsInChildren<Renderer>());
             if (@object is DoorLock) renderers.AddRange(((DoorLock)@object).GetComponentsInParent<Renderer>());
+            if (@object is RadMechAI) renderers.AddRange(((RadMechAI)@object).GetComponentsInChildren<Renderer>());
+
 
             return renderers;
         }
@@ -86,15 +88,23 @@ namespace LethalMenu.Handler
             if (@object is HangarShipDoor) e = Settings.b_chamsShip;
             if (@object is BreakerBox) e = Settings.b_chamsBreaker;
             if (@object is SpikeRoofTrap) e = Settings.b_chamsSpikeRoofTrap;
+
+            if (@object is MineshaftElevatorController) e = Settings.b_chamsMineshaftElevator;
    
             if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap; 
             if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
             if (chamsenabled && e && distance >= Settings.f_chamDistance) ApplyCham();
             else RemoveCham();
 
-            if ((@object is GrabbableObject && ((GrabbableObject)@object).isHeld) 
+            if (((@object is GrabbableObject && ((GrabbableObject)@object).isHeld) 
             || (@object is SteamValveHazard && !((SteamValveHazard)@object).triggerScript.interactable)
+            || (@object is Component && LethalMenu.localPlayer.Handle().HasLineOfSight((Component)@object))
+
+            )
+
             ) RemoveCham();
+
+            
         }
 
         public void ApplyCham()
@@ -131,6 +141,7 @@ namespace LethalMenu.Handler
             if (@object is SpikeRoofTrap) color = Settings.c_spikeRoofTrapChams.GetColor();
             if (@object is GameObject && @object.name.StartsWith("AnimContainer")) color = Settings.c_spikeRoofTrapChams.GetColor();
             if (@object is GameObject && @object.name.StartsWith("TurretContainer")) color = Settings.c_turretChams.GetColor();
+            if (@object is MineshaftElevatorController) color = Settings.c_mineshaftElevatorChams.GetColor();
             if (Settings.b_UseDefaultChams) color = Settings.c_chams.GetColor();
             r.materials.ToList().ForEach(m => m.SetColor(_color, color));
         }

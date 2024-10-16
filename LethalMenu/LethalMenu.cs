@@ -36,6 +36,7 @@ namespace LethalMenu
         public static List<AnimatedObjectTrigger> animatedTriggers = new List<AnimatedObjectTrigger>();
         public static HangarShipDoor shipDoor;
         public static BreakerBox breaker;
+        public static MineshaftElevatorController mineshaftElevator;
         public static PlayerControllerB localPlayer;
         public static VehicleController vehicle;
         public static Volume volume;
@@ -199,6 +200,7 @@ namespace LethalMenu
 
                 shipDoor = Object.FindObjectOfType<HangarShipDoor>();
                 breaker = Object.FindObjectOfType<BreakerBox>();
+                mineshaftElevator = Object.FindObjectOfType<MineshaftElevatorController>();
                 localPlayer = GameNetworkManager.Instance?.localPlayerController;
 
                 yield return new WaitForSeconds(1f);

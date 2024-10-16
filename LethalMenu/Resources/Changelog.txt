@@ -1,3 +1,9 @@
+v1.4.6
+- Added Chams Disable w/ Line of Sight
+- Added Mineshaft Elevator to ESP and Chams
+- Fixed RadMechAI chams
+
+
 v1.4.5
 - Added Dress Girl Controller - You can control the dress girl and chase people!
 - Added Clay Surgeon Controller - You can control the Clay Surgeon and cut people up!

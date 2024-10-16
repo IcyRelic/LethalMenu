@@ -153,6 +153,7 @@ namespace LethalMenu.Menu.Tab
         {
             UI.Header("SettingsTab.ESP", true);
             UI.SubHeader("SettingsTab.Chams");
+            UI.Checkbox("SettingsTab.ChamsDisableWithLOS", ref Settings.b_chamsDisableWithLOS);
 
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical(GUILayout.Width((f_leftWidth * 0.465f)));

@@ -132,6 +132,8 @@ namespace LethalMenu.Handler
             });
         }
 
+        public bool HasLineOfSight(Component o) => player.HasLineOfSightToPosition(o.transform.position);
+
         public PlayerHandler GetHandler(PlayerControllerB player) => new PlayerHandler(player);
     }
 

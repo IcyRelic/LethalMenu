@@ -117,17 +117,25 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("PJ Plushie");
+            GUILayout.Label("Test");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                GameObject obj = GameObject.Find("PlushiePJManContainer(Clone)");
-                AnimatedObjectTrigger trigger = obj.GetComponentInChildren<AnimatedObjectTrigger>();
-                trigger.TriggerAnimation(LethalMenu.localPlayer);
-                Debug.Log("Triggered Animation");
-                Debug.Log(trigger.transform.parent.gameObject.name);
+               RadMechAI enemy = Object.FindAnyObjectByType<RadMechAI>();
+
+                foreach (var item in enemy.GetComponentsInParent<Renderer>())
+                {
+                    Debug.LogWarning(item.name + "=>" + item.GetType());
+
+                }
+
+                foreach (var item in enemy.GetComponentsInChildren<Renderer>())
+                {
+                    Debug.LogError(item.name + "=>" + item.GetType());
+
+                }
             }
-            GUILayout.EndHorizontal();
+    GUILayout.EndHorizontal();
             GUILayout.EndScrollView(); 
         }
 

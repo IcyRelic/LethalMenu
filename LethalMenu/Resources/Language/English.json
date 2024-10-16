@@ -326,6 +326,7 @@
 	"SettingsTab.DisplayLMUsers": "Display LM Users",
 	"SettingsTab.DebugMode": "Debug Mode",
 	"SettingsTab.HackHighlight": "Hack Highlight",
+	"SettingsTab.ChamsDisableWithLOS": "Disable With Line of Sight",
 	"MoonManager.Title": "Moon Manager",
 	"MoonManager.CurrentMoon": "Current Moon",
 	"MoonManager.Moon": "Moon:",
