@@ -162,6 +162,7 @@ namespace LethalMenu.Menu.Tab
             UI.Checkbox("SettingsTab.Players", ref Settings.b_chamsPlayer);
             UI.Checkbox("SettingsTab.Landmines", ref Settings.b_chamsLandmine);
             UI.Checkbox("SettingsTab.Breaker", ref Settings.b_chamsBreaker);
+            UI.Checkbox("SettingsTab.MineshaftElevator", ref Settings.b_chamsMineshaftElevator);
             GUILayout.EndVertical();
 
             GUILayout.BeginVertical(GUILayout.Width((f_leftWidth * 0.465f)));

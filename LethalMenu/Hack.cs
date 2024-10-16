@@ -539,6 +539,7 @@ namespace LethalMenu
             Hack.DoorLockESP.Execute();
             Hack.BreakerESP.Execute();
             Hack.SpikeRoofTrapESP.Execute();
+            Hack.MineshaftElevatorESP.Execute();
         }
 
         public static void ToggleAllDisplays()
