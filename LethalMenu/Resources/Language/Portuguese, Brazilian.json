@@ -155,6 +155,10 @@
 	"PlayerTab.EnemyDeathNotifications": "Notificações de morte de inimigo",
 	"ServerTab.Title": "Servidor",
 	"ServerTab.InfoDisplay": "Exibição de informação",
+	"ServerTab.DisplayBodyCount": "Exibir corpos",
+	"ServerTab.DisplayEnemyCount": "Exibir inimigos",
+	"ServerTab.DisplayMapObjects": "Exibir objetos do mapa",
+	"ServerTab.DisplayShipObjects": "Exibir objetos da nave",
 	"ServerTab.DisplayQuota": "Exibir cota",
 	"ServerTab.DisplayDeadline": "Exibir prazo final",
 	"ServerTab.ServerCheats": "Cheats do servidor",
@@ -302,6 +306,7 @@
 	"SettingsTab.TierColorError": "Os limites e cores devem ser do mesmo comprimento!",
 	"SettingsTab.BindInUseError": "O atalho já está sendo usado!",
 	"SettingsTab.FontSize": "Tamanho da fonte",
+	"SettingsTab.ScreenFontSize": "Tamanho da fonte",
 	"SettingsTab.ResizeMenu": "Redimensionar menu",
 	"SettingsTab.Resize": "Redimensionar",
 	"SettingsTab.ResizeTitle": "Redimensionando menu",
@@ -345,5 +350,11 @@
 	"FirstSetup.Keybind": "Atual:",
 	"SuitManager.Title": "Gerenciador de traje",
 	"SuitManager.WearBuy": "Vestir ao comprar",
-	"SuitManager.UnlockAll": "Desbloquear tudo"
+	"SuitManager.UnlockAll": "Desbloquear tudo",
+	"Cheats.Info.Bodies": "Corpos: {0}",
+	"Cheats.Info.Enemies": "Inimigos: {0}",
+	"Cheats.Info.MapObjects": "Objetos do mapa: {0} ( $ {1} )",
+	"Cheats.Info.ShipObjects": "Objetos da nave: {0} ( $ {1} )",
+	"Cheats.Info.Quota": "Cota: {0} / {1}",
+	"Cheats.Info.Deadline": "Prazo final: {0} ( {1} )"
 }
