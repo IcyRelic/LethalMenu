@@ -88,15 +88,12 @@ namespace LethalMenu
 
         /** Server Tab **/
         ToggleAllDisplays,
-        DisplayBodyCount,
-        DisplayEnemyCount,
-        DisplayObjectCount,
-        DisplayObjectValue,
-        DisplayShipObjectCount,
-        DisplayShipObjectValue,
+        DisplayBodies,
+        DisplayEnemies,
+        DisplayMapObjects,
+        DisplayShipObjects,
         DisplayQuota,
         DisplayDeadline,
-        DisplayBuyingRate,
         ModifyCredits,
         ModifyQuota,
         EndGame,
@@ -256,15 +253,12 @@ namespace LethalMenu
             {Hack.DoorLockESP, false},
             {Hack.SpikeRoofTrapESP, false},
             {Hack.Crosshair, false},
-            {Hack.DisplayBodyCount, false},
-            {Hack.DisplayEnemyCount, false},
-            {Hack.DisplayObjectCount, false},
-            {Hack.DisplayObjectValue, false},
-            {Hack.DisplayShipObjectCount, false},
-            {Hack.DisplayShipObjectValue, false},
+            {Hack.DisplayBodies, false},
+            {Hack.DisplayEnemies, false},
+            {Hack.DisplayMapObjects, false},
+            {Hack.DisplayShipObjects, false},
             {Hack.DisplayQuota, false},
             {Hack.DisplayDeadline, false},
-            {Hack.DisplayBuyingRate, false},
             {Hack.ToggleAllLandmines, false},
             {Hack.ToggleAllTurrets, false},
             {Hack.ToggleShipHorn, false},
@@ -544,15 +538,12 @@ namespace LethalMenu
 
         public static void ToggleAllDisplays()
         {
-            Hack.DisplayBodyCount.Execute();
-            Hack.DisplayBuyingRate.Execute();
+            Hack.DisplayBodies.Execute();
             Hack.DisplayDeadline.Execute();
-            Hack.DisplayEnemyCount.Execute();
-            Hack.DisplayObjectCount.Execute();
-            Hack.DisplayObjectValue.Execute();
+            Hack.DisplayEnemies.Execute();
+            Hack.DisplayMapObjects.Execute();
             Hack.DisplayQuota.Execute();
-            Hack.DisplayShipObjectCount.Execute();
-            Hack.DisplayShipObjectValue.Execute();
+            Hack.DisplayShipObjects.Execute();
         }
 
         public static void ModExperience(int amt, ActionType type)

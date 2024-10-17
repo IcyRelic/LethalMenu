@@ -38,6 +38,7 @@ namespace LethalMenu
         public static int i_sliderWidth = 100;
         public static int i_textboxWidth = 85;
         public static float f_menuAlpha = 1f;
+        public static int i_screenFontSize = 14;
 
         /* * * * * * * * * *
          *  Color Settings *
@@ -329,6 +330,7 @@ namespace LethalMenu
 
                 settings["FirstLaunch"] = isFirstLaunch.ToString();
                 settings["MenuFontSize"] = i_menuFontSize.ToString();
+                settings["ScreenFontSize"] = i_screenFontSize.ToString();
                 settings["MenuWidth"] = i_menuWidth.ToString();
                 settings["MenuHeight"] = i_menuHeight.ToString();
                 settings["SliderWidth"] = i_sliderWidth.ToString();
@@ -380,6 +382,8 @@ namespace LethalMenu
                         i_textboxWidth = int.Parse(textboxWidthToken.ToString());
                     if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
                         f_menuAlpha = float.Parse(menuAlphaToken.ToString());
+                    if (settings.TryGetValue("ScreenFontSize", out JToken screenFontSizeToken))
+                        i_screenFontSize = int.Parse(screenFontSizeToken.ToString());
                     if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
                     {
                         DebugMode = bool.Parse(debugModeToken.ToString());

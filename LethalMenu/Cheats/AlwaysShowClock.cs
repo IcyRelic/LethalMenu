@@ -14,8 +14,8 @@ namespace LethalMenu.Cheats
         {
             if (Hack.SimpleClock.IsEnabled())
             {
-                VisualUtil.DrawString(new Vector2(Screen.width / 2, 25f), GetTime(), Color.white, true, true, true, 40);
-                VisualUtil.DrawString(new Vector2(Screen.width / 2, 55f), TimeOfDay.Instance.dayMode.ToString(), Color.white, true, true, true, 16);
+                VisualUtil.DrawString(new Vector2(Screen.width / 2, 25f), GetTime(), Color.white, true, true, true, true, 40);
+                VisualUtil.DrawString(new Vector2(Screen.width / 2, 55f), TimeOfDay.Instance.dayMode.ToString(), Color.white, true, true, true, true, 16);
             }
         }
 

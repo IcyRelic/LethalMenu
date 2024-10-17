@@ -51,15 +51,12 @@ namespace LethalMenu.Menu.Tab
             scrollPos2 = GUILayout.BeginScrollView(scrollPos2);
 
             UI.Hack(Hack.ToggleAllDisplays, "ServerTab.ToggleAll");
-            UI.Hack(Hack.DisplayBodyCount, "ServerTab.DisplayBodyCount");
-            UI.Hack(Hack.DisplayEnemyCount, "ServerTab.DisplayEnemyCount");
-            UI.Hack(Hack.DisplayObjectCount, "ServerTab.DisplayObjectCount");
-            UI.Hack(Hack.DisplayObjectValue, "ServerTab.DisplayObjectValue");
-            UI.Hack(Hack.DisplayShipObjectCount, "ServerTab.DisplayShipObjectCount");
-            UI.Hack(Hack.DisplayShipObjectValue, "ServerTab.DisplayShipObjectValue");
+            UI.Hack(Hack.DisplayBodies, "ServerTab.DisplayBodyCount");
+            UI.Hack(Hack.DisplayEnemies, "ServerTab.DisplayEnemyCount");
+            UI.Hack(Hack.DisplayMapObjects, "ServerTab.DisplayMapObjects");
+            UI.Hack(Hack.DisplayShipObjects, "ServerTab.DisplayShipObjects");
             UI.Hack(Hack.DisplayQuota, "ServerTab.DisplayQuota");
             UI.Hack(Hack.DisplayDeadline, "ServerTab.DisplayDeadline");
-            UI.Hack(Hack.DisplayBuyingRate, "ServerTab.DisplayBuyingRate");
 
             GUILayout.EndScrollView();
         }

@@ -47,7 +47,7 @@ namespace LethalMenu.Cheats
                 PlayerControllerB player = GetSpectatedPlayer();
                 if (player == null) return;
 
-                VisualUtil.DrawString(new Vector2(Screen.width / 2, 160f), "(Spectating: "+ player.playerUsername + ")", Settings.c_playerESP, true, true, false, 32);
+                VisualUtil.DrawString(new Vector2(Screen.width / 2, 160f), "(Spectating: "+ player.playerUsername + ")", Settings.c_playerESP, true, true, false, true, 32);
             }
 
             if(Hack.MiniCam.IsEnabled())
@@ -56,7 +56,7 @@ namespace LethalMenu.Cheats
                 if (player == null) return;
 
                 float x = minicamDisplay.rectTransform.localPosition.x + (minicamDisplay.rectTransform.sizeDelta.x/2);
-                VisualUtil.DrawString(new Vector2(Screen.width - (x / 2), 15f), player.playerUsername, Settings.c_playerESP, true, true, false, 16);
+                VisualUtil.DrawString(new Vector2(Screen.width - (x / 2), 15f), player.playerUsername, Settings.c_playerESP, true, true, false, true, 16);
             }
         }
 

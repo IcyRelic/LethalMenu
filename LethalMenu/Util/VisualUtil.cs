@@ -115,11 +115,11 @@ namespace LethalMenu.Util
             GUI.DrawTexture(new Rect(position, size), Texture2D.whiteTexture, ScaleMode.StretchToFill);
         }
 
-        public static void DrawString(Vector2 position, string label, Color color, bool centered = true, bool alignMiddle = false, bool bold = false, int fontSize = -1)
+        public static void DrawString(Vector2 position, string label, Color color, bool centered = true, bool alignMiddle = false, bool bold = false, bool forceOnScreen = false, int fontSize = -1)
         {
             Color color2 = GUI.color;
             Color = color;
-            DrawString(position, label, centered, alignMiddle, bold, fontSize);
+            DrawString(position, label, centered, alignMiddle, bold, forceOnScreen, fontSize);
             GUI.color = color2;
         }
 
@@ -129,12 +129,12 @@ namespace LethalMenu.Util
             DrawString(position, label, color.GetColor(), true, true);
         }
 
-        public static void DrawString(Vector2 position, string label, RGBAColor color, bool centered = true, bool alignMiddle = false, bool bold = false, int fontSize = -1)
+        public static void DrawString(Vector2 position, string label, RGBAColor color, bool centered = true, bool alignMiddle = false, bool bold = false, bool forceOnScreen = false, int fontSize = -1)
         {
-            DrawString(position, label, color.GetColor(), centered, alignMiddle, bold, fontSize);
+            DrawString(position, label, color.GetColor(), centered, alignMiddle, bold, forceOnScreen, fontSize);
         }
 
-        public static void DrawString(Vector2 position, string label, bool centered = true, bool alignMiddle = false, bool bold = false, int fontSize = -1)
+        public static void DrawString(Vector2 position, string label, bool centered = true, bool alignMiddle = false, bool bold = false, bool forceOnScreen = false, int fontSize = -1)
         {
             var content = new GUIContent(label);
 
@@ -155,7 +155,17 @@ namespace LethalMenu.Util
 
             if(fontSize > 0) style.fontSize = fontSize;
 
-            GUI.Label(new Rect(upperLeft, size), content, style);
+            Rect pos = new Rect(upperLeft, size);
+
+            if(forceOnScreen)
+            {
+                if (pos.x < 0) pos.x = 10;
+                if (pos.y < 0) pos.y = 10;
+                if (pos.x + pos.width > Screen.width) pos.x = Screen.width - pos.width - 10;
+                if (pos.y + pos.height > Screen.height) pos.y = Screen.height - pos.height - 10;
+            }
+
+            GUI.Label(pos, content, style);
         }
 
         public static Texture2D lineTex;

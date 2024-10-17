@@ -1,31 +1,48 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection.Emit;
 using LethalMenu.Language;
+using LethalMenu.Util;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace LethalMenu.Cheats
 {
     internal class InfoDisplay : Cheat
     {
         private static String info = "";
-        private void Info(string label, string value) => info += $"{Localization.Localize(label)} {value} \n";
+        private void Format(string label, params object[] args) => info += $"{String.Format(Localization.Localize(label), args)}\n";
+        /** 
+         * InfoDisplay Rework Notes:
+         * - Make the display more modern and clean
+         * - Example: Rather than ship value and quota being displayed as two separate lines, display them as one line
+         **/
+
 
         public override void OnGui()
         {
-            info = ""; 
-            
-            if (Hack.DisplayBodyCount.IsEnabled()) Info("Cheats.Info.DisplayBodyCount", GetBodyCount().ToString());
-            if (Hack.DisplayEnemyCount.IsEnabled()) Info("Cheats.Info.DisplayEnemyCount", GetEnemyCount().ToString());
-            if (Hack.DisplayObjectCount.IsEnabled()) Info("Cheats.Info.DisplayObjectCount", GetObjectCount().ToString());
-            if (Hack.DisplayObjectValue.IsEnabled()) Info("Cheats.Info.DisplayObjectValue", GetObjectValue().ToString());
-            if (Hack.DisplayShipObjectCount.IsEnabled()) Info("Cheats.Info.DisplayShipObjectCount", GetShipCount().ToString());
-            if (Hack.DisplayShipObjectValue.IsEnabled()) Info("Cheats.Info.DisplayShipObjectValue", GetShipValue().ToString());
-            if (Hack.DisplayQuota.IsEnabled()) Info("Cheats.Info.DisplayQuota", GetQuota().ToString());
-            if (Hack.DisplayDeadline.IsEnabled()) Info("Cheats.Info.DisplayDeadline", GetDeadline().ToString());
-            if (Hack.DisplayBuyingRate.IsEnabled()) Info("Cheats.Info.DisplayBuyingRate", GetBuyingRate().ToString() + "%");
+            info = "";
 
-            GUI.color = Settings.c_primary.GetColor();
-            GUI.Label(new Rect(Screen.width - 200 - 0, 0, 200f, 180f), info, new GUIStyle(GUI.skin.label) { fontSize = 14 }); ;
+            if (Hack.DisplayBodies.IsEnabled())
+                Format("Cheats.Info.Bodies", GetBodyCount());
+
+            if (Hack.DisplayEnemies.IsEnabled())
+                Format("Cheats.Info.Enemies", GetEnemyCount());
+
+            if (Hack.DisplayMapObjects.IsEnabled())
+                Format("Cheats.Info.MapObjects", GetObjectCount(), GetObjectValue());
+
+            if (Hack.DisplayShipObjects.IsEnabled())
+                Format("Cheats.Info.ShipObjects", GetShipCount(), GetShipValue());
+
+            if (Hack.DisplayQuota.IsEnabled())
+                Format("Cheats.Info.Quota", GetShipValue(), GetQuota());
+
+            if (Hack.DisplayDeadline.IsEnabled())
+                Format("Cheats.Info.Deadline", GetDeadline(), $"{GetBuyingRate()}%");
+
+            Vector2 position = new Vector2(Screen.width - 200, 10);
+            VisualUtil.DrawString(position, info, Settings.c_primary, centered: false, forceOnScreen: true, fontSize: Settings.i_screenFontSize);
         }
 
         private int GetBodyCount()
@@ -73,7 +90,7 @@ namespace LethalMenu.Cheats
         private float GetBuyingRate()
         {
             if (!(bool)StartOfRound.Instance) return 0f;
-            return StartOfRound.Instance.companyBuyingRate * 100;
+            return (float)Math.Round(StartOfRound.Instance.companyBuyingRate * 100, 2);
         }
         private bool DefaultShipItem(GrabbableObject item)
         {
