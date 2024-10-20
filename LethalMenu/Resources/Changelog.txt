@@ -42,6 +42,7 @@ v1.4.5
 - Fixed Hoarder Bug Controller - Fixed picking up items being inconsistent
 - Fixed Baboon Bird Controller - Fixed picking up items being inconsistent
 - Fixed RadMechAI chams - Its now applied to the body not the particles from the stepping
+- Fixed Item ESP - Items in the belt bag don't show up on the esp anymore
 - Changed HP Display to Player HP Display - To cause less confusion
 - Changed Teleport All Enemies - Changed the method it used!
 - Changed Grab Items Before Game - Redid it so its reverts if it gets disabled and renamed it to Loot Before Game Starts
@@ -49,6 +50,7 @@ v1.4.5
 - Changed Unlock Door - Improved the code 
 - Changed Enemy Spawn List - Goes by the alphabet now (A - Z)
 - Changed Enemy List - Goes by the alphabet now (A - Z)
+- Removed Force Bleed - Too many bugs
 
 v1.4.4 
 - Added PJ Plushie Spammer - Spams PJ Plushies at a variable speed

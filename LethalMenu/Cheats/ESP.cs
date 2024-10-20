@@ -171,7 +171,7 @@ namespace LethalMenu.Cheats
         private void DisplayScrap()
         {
             DisplayObjects(
-                LethalMenu.items?.Where(i => i != null && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated),
+                LethalMenu.items?.Where(i => i != null && !i.heldByPlayerOnServer && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated),
                 item =>
                 {
                     if (item is GiftBoxItem giftBox && giftBox.Reflect().GetValue<Item>("objectInPresentItem") is Item objectInPresentItem && giftBox.Reflect().GetValue<int>("objectInPresentValue") is int objectInPresentValue) return $"{item.itemProperties.itemName} ({item.scrapValue}) - {objectInPresentItem.itemName} ({objectInPresentValue})";

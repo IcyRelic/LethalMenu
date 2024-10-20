@@ -187,7 +187,6 @@ namespace LethalMenu
         SpiderWebPlayer,
         LureAllEnemies,
         ExplodeClosestMine,
-        ForceBleed,
         EnemyControl,
     }
 
@@ -215,7 +214,6 @@ namespace LethalMenu
             Hack.EnemyControl,
             Hack.LureAllEnemies,
             Hack.ExplodeClosestMine,
-            Hack.ForceBleed,
             Hack.SpawnMapObjects,
         };
 
@@ -299,7 +297,6 @@ namespace LethalMenu
             {Hack.BridgeNeverFalls, false},
             {Hack.VehicleGodMode, false},
             {Hack.EggsNeverExplode, false},
-            {Hack.ForceBleed, false},
             {Hack.UnlimitedZapGun, false},
             {Hack.ToggleTerminalSound, false},
             {Hack.LootBeforeGameStarts, false},
@@ -376,7 +373,6 @@ namespace LethalMenu
             {Hack.SpawnTurret, (Action) HackExecutor.SpawnTurret},
             {Hack.SpawnSpikeRoofTrap, (Action) HackExecutor.SpawnSpikeRoofTrap},
             {Hack.ExplodeClosestMine, (Action<PlayerControllerB>) HackExecutor.ExplodeClosestMine},
-            {Hack.ForceBleed, (Action<PlayerControllerB>) HackExecutor.ForceBleed},
             {Hack.SellEverything, (Action) HackExecutor.SellEverything},
             {Hack.TeleportAllItems, (Action) HackExecutor.TeleportAllItems},
             {Hack.TeleportOneItem, (Action) HackExecutor.TeleportOneItem},
@@ -602,7 +598,6 @@ namespace LethalMenu
         public static void SpawnMapObjects(MapObject type) => RoundHandler.SpawnMapObjects(type);
         public static void SellEverything() => LethalMenu.localPlayer.Handle().PlaceEverythingOnDesk();
         public static void ExplodeClosestMine(PlayerControllerB player) => player.Handle().ExplodeClosestLandmine();
-        public static void ForceBleed(PlayerControllerB player) => player.Handle().ForceBleed();
         public static void LureAllEnemies(PlayerControllerB player) => player.Handle().LureAllEnemies();
         public static void SpiderWebPlayer(PlayerControllerB player) => player.Handle().SpawnSpiderWebs(6);
         public static void SpectatePlayer(PlayerControllerB player) => player.Handle().Spectate();

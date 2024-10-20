@@ -91,32 +91,6 @@ namespace LethalMenu.Handler
             mine.ExplodeMineServerRpc();
         }
 
-        public void ForceBleed()
-        {
-            if (Hack.ForceBleed.IsEnabled())
-            {
-                player.hasBeenCriticallyInjured = false;
-                player.criticallyInjured = false;
-                player.playerBodyAnimator.SetBool("Limp", false);
-                if (LethalMenu.localPlayer.IsHost)
-                {
-                    player.MakeCriticallyInjuredServerRpc();
-                    return;
-                }
-                player.MakeCriticallyInjured(true);
-            }
-            else
-            {
-                player.hasBeenCriticallyInjured = false;
-                if (LethalMenu.localPlayer.IsHost)
-                {
-                    player.HealServerRpc();
-                    return;
-                }
-                player.MakeCriticallyInjured(false);
-            }
-        }
-
         public void LureAllEnemies() => LethalMenu.enemies.FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().TargetPlayer(player));
 
         public void PlaceEverythingOnDesk()
