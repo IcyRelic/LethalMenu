@@ -23,18 +23,11 @@ namespace LethalMenu.Cheats
         {
             int num1 = (int)((double)TimeOfDay.Instance.normalizedTimeOfDay * (60.0 * (double)TimeOfDay.Instance.numberOfHours)) + 360;
             int num2 = (int)Mathf.Floor((float)(num1 / 60));
-
-
             if (num2 >= 24) return "12:00 AM";
-
             string amPM = num2 >= 12 ? "PM" : "AM";
-            if (num2 > 12)
-                num2 %= 12;
+            if (num2 > 12) num2 %= 12;
             int num3 = num1 % 60;
-
             return string.Format("{0:00}:{1:00} ", (object)num2, (object)num3).TrimStart('0') + amPM;
-        }
-
-        
+        }     
     }
 }

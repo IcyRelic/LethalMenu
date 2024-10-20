@@ -20,7 +20,7 @@ namespace LethalMenu
 {
     internal class Settings
     {
-        public static string version = "v1.4.6";
+        public static string version = "v1.4.5";
         public static bool DebugMode = false;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen

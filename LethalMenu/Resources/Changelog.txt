@@ -1,10 +1,6 @@
-v1.4.6
+v1.4.5
 - Added Chams Disable w/ Line of Sight
 - Added Mineshaft Elevator to ESP and Chams
-- Fixed RadMechAI chams
-
-
-v1.4.5
 - Added Dress Girl Controller - You can control the dress girl and chase people!
 - Added Clay Surgeon Controller - You can control the Clay Surgeon and cut people up!
 - Added Cave Dweller Controller - You can control the Cave Dweller and jump on peoples!!
@@ -20,6 +16,7 @@ v1.4.5
 - Added Enemy Death Notifications - Notifes you when a enemy dies
 - Added Notification to Kill Enemy - Notifies you when a enemy is killed or can't be killed
 - Added Notification to Stun Enemy -  Notifies you when a enemy is stunned or can't be stunned
+- Added Bush Wolf to enemy spawner - You can spawn the Bush Wolf in the enemy tab enemy spawner
 - Added Bush Wolf Enemy Insta Kill - Added Bush Wolf Enemy to Insta Kill
 - Added Cave Dweller Insta Kill - Added Cave Dweller to Insta Kill
 - Added Edit Deadline (Host Only) - Lets you change the deadline!
@@ -44,6 +41,7 @@ v1.4.5
 - Fixed Puffer Controller - Able to do abilities while players aren't nearby
 - Fixed Hoarder Bug Controller - Fixed picking up items being inconsistent
 - Fixed Baboon Bird Controller - Fixed picking up items being inconsistent
+- Fixed RadMechAI chams - Its now applied to the body not the particles from the stepping
 - Changed HP Display to Player HP Display - To cause less confusion
 - Changed Teleport All Enemies - Changed the method it used!
 - Changed Grab Items Before Game - Redid it so its reverts if it gets disabled and renamed it to Loot Before Game Starts

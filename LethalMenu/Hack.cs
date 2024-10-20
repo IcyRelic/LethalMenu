@@ -614,11 +614,11 @@ namespace LethalMenu
         public static void KillPlayer(PlayerControllerB player) => player.Handle().Kill();
         public static void HealPlayer(PlayerControllerB player) => player.Handle().Heal();
         public static void LightningStrikePlayer(PlayerControllerB player) => player.Handle().Strike();
-        public static void ControlEnemy(EnemyAI enemy) => enemy.Handle().Control();
-        public static void TeleportEnemy(PlayerControllerB player, EnemyAI enemy) => enemy.Handle().Teleport(player);
+        public static void ControlEnemy(EnemyAI e) => e.Handle().Control();
+        public static void TeleportEnemy(PlayerControllerB player, EnemyAI e) => e.Handle().Teleport(player);
         public static void TeleportAllEnemies(PlayerControllerB player, EnemyAI[] enemies) => enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));
-        public static void StunAllEnemies() => LethalMenu.enemies.ForEach(enemy => enemy.Handle().Stun());
-        public static void KillAllEnemies() => LethalMenu.enemies.ForEach(enemy => enemy.Handle().Kill());
+        public static void StunAllEnemies() => LethalMenu.enemies.ForEach(e => e.Handle().Stun(true));
+        public static void KillAllEnemies() => LethalMenu.enemies.ForEach(e => e.Handle().Kill(false, true));
         public static void KillNearbyEnemies(int distance = -1) => LethalMenu.enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance).ForEach(enemy => enemy.Handle().Kill());
         public static void ToggleShipLights() => RoundHandler.ToggleShipLights();
         public static void ToggleCarHorn() => RoundHandler.ToggleCarHorn();

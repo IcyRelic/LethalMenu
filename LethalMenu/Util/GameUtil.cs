@@ -3,9 +3,8 @@ using LethalMenu.Cheats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace LethalMenu.Util
 {
@@ -15,7 +14,11 @@ namespace LethalMenu.Util
         {
             List<EnemyType> types = new List<EnemyType>();
 
+            QuickMenuManager menu = Object.FindAnyObjectByType<QuickMenuManager>();
+
             if (!(bool)StartOfRound.Instance) return types;
+
+            if (menu != null) types.AddRange(menu.testAllEnemiesLevel.OutsideEnemies.Where(e => e.enemyType.enemyName == "Bush Wolf").Select(e => e.enemyType));
 
             foreach (var item in StartOfRound.Instance.levels)
             {
@@ -26,6 +29,7 @@ namespace LethalMenu.Util
 
             return types;
         }
+
         public static List<SpawnableMapObject> GetSpawnableMapObjects()
         {
             List<SpawnableMapObject> types = new List<SpawnableMapObject>();

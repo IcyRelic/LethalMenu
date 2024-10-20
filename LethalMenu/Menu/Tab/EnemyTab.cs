@@ -149,6 +149,7 @@ namespace LethalMenu.Menu.Tab
             if (enemy is SandSpiderAI spider) UI.Button("EnemyTab.SpawnWeb", () => { spider.SpawnWeb(spider.abdomen.position); });
 
             UI.Button("EnemyTab.KillEnemy", () => { enemy.Handle().Kill(); });
+            UI.Button("EnemyTab.StunEnemy", () => { enemy.Handle().Stun(); });
             UI.Button("EnemyTab.TargetSelectedPlayer", () => { enemy.Handle().TargetPlayer(selectedPlayer); });
             
             if(enemy.Handle().HasInstaKill())
@@ -170,7 +171,7 @@ namespace LethalMenu.Menu.Tab
             UI.Label("EnemyTab.SelectedType", type.name, Settings.c_enemyESP);
             UI.Textbox("EnemyTab.SpawnAmount", ref s_spawnAmount, @"[^0-9]");
 
-            UI.Checkbox("EnemyTab.SpawnOutside", ref b_spawnOutside);
+            if (type.enemyName != "Bush Wolf") UI.Checkbox("EnemyTab.SpawnOutside", ref b_spawnOutside);
             UI.Button("EnemyTab.Spawn", () => HackExecutor.SpawnEnemy(type, int.Parse(s_spawnAmount), b_spawnOutside));
         }
 

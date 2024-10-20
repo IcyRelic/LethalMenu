@@ -44,7 +44,7 @@ namespace LethalMenu.Menu.Popup
 
         private void SpawnItem(Item item)
         {
-            Vector3 position = GameNetworkManager.Instance.localPlayerController.playerEye.transform.position;
+            Vector3 position = LethalMenu.localPlayer.playerEye.transform.position;
             GameObject gameObject = Object.Instantiate(item.spawnPrefab, position, Quaternion.identity, StartOfRound.Instance.propsContainer);
             int value = int.TryParse(s_scrapValue, out value) ? value : Random.Range(15, 100);
             gameObject.GetComponent<GrabbableObject>().SetScrapValue(value);

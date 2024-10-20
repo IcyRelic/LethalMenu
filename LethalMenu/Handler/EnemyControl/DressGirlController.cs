@@ -33,7 +33,7 @@ namespace LethalMenu.Handler.EnemyControl
         {
             if (enemy == null) return;
             if (enemy.currentBehaviourStateIndex == 1) enemy.Reflect().Invoke("StopChasing");
-            enemy.Handle().Teleport(new Vector3(-1000, -1000));
+            enemy.Handle().Teleport(null, new Vector3(-1000, -1000));
             enemy.EnableEnemyMesh(false, true);
             enemy.hauntingPlayer = null;
         }
@@ -41,7 +41,7 @@ namespace LethalMenu.Handler.EnemyControl
         public void OnDeath(DressGirlAI enemy)
         {
             if (enemy.currentBehaviourStateIndex == 1) enemy.Reflect().Invoke("StopChasing");
-            enemy.Handle().Teleport(new Vector3(-1000, -1000));
+            enemy.Handle().Teleport(null, new Vector3(-1000, -1000));
             enemy.EnableEnemyMesh(false, true);
             enemy.hauntingPlayer = null;
         }

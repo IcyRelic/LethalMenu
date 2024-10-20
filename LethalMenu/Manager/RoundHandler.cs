@@ -277,6 +277,7 @@ namespace LethalMenu.Manager
             GameObject[] gameobject = outside ? RoundManager.Instance.outsideAINodes : RoundManager.Instance.insideAINodes;
             List<Transform> nodes = new List<Transform>();
             Array.ForEach(gameobject, obj => nodes.Add(obj.transform));
+            if (type.enemyName == "Bush Wolf") SpawnBushWolf(type);
             for (int i = 0; i < num; i++)
             {
                 Transform node = nodes[Random.Range(0, nodes.Count)];
@@ -311,6 +312,19 @@ namespace LethalMenu.Manager
             }
         }
 
+        public static async void SpawnBushWolf(EnemyType type, QuickMenuManager menu = null) => await WaitSpawnBushWolf(type, menu);
+
+        public static async Task WaitSpawnBushWolf(EnemyType type, QuickMenuManager menu)
+        {
+            int enemyTypeId = -1;
+            if (menu != null) enemyTypeId = menu.Reflect().GetValue<int>("enemyTypeId");
+            Vector3 spawnPosition = Vector3.zero;
+            spawnPosition = (StartOfRound.Instance.testRoom == null ? RoundManager.Instance.outsideAINodes[Random.Range(0, RoundManager.Instance.outsideAINodes.Length)].transform.position : menu.debugEnemySpawnPositions[enemyTypeId].position);
+            Object.FindObjectOfType<MoldSpreadManager>().GenerateMold(spawnPosition, 1);
+            await Task.Delay(500);
+            Object.FindObjectOfType<MoldSpreadManager>().RemoveAllMold();
+        }
+
         public static async void ToggleTerminalSound() => await SpamTerminalSound();
 
         public static async Task SpamTerminalSound()
@@ -319,7 +333,7 @@ namespace LethalMenu.Manager
             {
                 if (GetTerminal() == null)
                 {
-                    await Task.Delay(10000);
+                    await Task.Delay(5000);
                     continue;
                 }
                 GetTerminal().PlayTerminalAudioServerRpc(1);

@@ -3,9 +3,12 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 namespace LethalMenu.Handler
 {
@@ -299,7 +302,7 @@ namespace LethalMenu.Handler
                     break;
             }
         }
-         
+
         public bool HasInstaKill()
         {
             List<System.Type> types = new()
@@ -319,18 +322,17 @@ namespace LethalMenu.Handler
                 typeof(RadMechAI),
                 typeof(CaveDwellerAI)
             };
-                
+
             return types.Contains(enemy.GetType());
         }
 
         public void Control()
         {
-            if (enemy.isEnemyDead) return;
-
+            if (enemy.isEnemyDead || enemy == null) return;
             Cheats.EnemyControl.Control(enemy);
         }
 
-        private List<Type> forceDespawnEnemies = new List<Type>
+        private readonly List<Type> forceDespawnEnemies = new List<Type>
         {
            typeof(ForestGiantAI),
            typeof(SandWormAI),
@@ -350,7 +352,7 @@ namespace LethalMenu.Handler
            typeof(CaveDwellerAI)
         };
 
-        public void Kill(bool despawn = false)
+        public void Kill(bool despawn = false, bool all = false)
         {
             if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
             if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie)
@@ -361,12 +363,13 @@ namespace LethalMenu.Handler
             bool forceDespawn = forceDespawnEnemies.Contains(enemy.GetType());
             if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie) enemy.enemyType.canDie = true;
             enemy.KillEnemyServerRpc(forceDespawn || despawn);
-            HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
+            if (all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed all enemies");
+            else HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
         }
 
-        public void Stun()
+        public void Stun(bool all = false)
         {
-            if (enemy == null || HUDManager.Instance == null) return;
+            if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
             if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned)
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be stunned without host");
@@ -374,23 +377,15 @@ namespace LethalMenu.Handler
             }
             if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
             enemy.SetEnemyStunned(true, 5);
-            HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunning {enemy.enemyType.name} for 5 seconds");
+            if (all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunned all enemies");
+            else HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunning {enemy.enemyType.name} for 5 seconds");
         }
 
-        public void Teleport(PlayerControllerB player)
+        public void Teleport(PlayerControllerB player = null, Vector3 position = default)
         {
             if (LethalMenu.localPlayer == null || enemy == null || HUDManager.Instance == null) return;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-            enemy.transform.position = player.transform.position;
-            enemy.SyncPositionToClients();
-        }
-
-        public void Teleport(Vector3 position)
-        {
-            if (LethalMenu.localPlayer == null || enemy == null || HUDManager.Instance == null) return;
-            enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-            enemy.transform.position = position;
-            enemy.SyncPositionToClients();
+            SyncEnemyPosition(player, position);
         }
 
         public void TargetPlayer(PlayerControllerB player)
@@ -412,6 +407,15 @@ namespace LethalMenu.Handler
             HandleKillPlayerByType();
         }
 
+        public void SyncEnemyPosition(PlayerControllerB player = null, Vector3 position = default)
+        {
+            if (enemy == null) return;
+            Vector3 pos = player?.transform.position ?? position;
+            if (pos == default) return;
+            enemy.transform.position = pos;
+            enemy.serverPosition = pos;
+            enemy.SyncPositionToClients();
+        }
 
         public static EnemyHandler GetHandler(EnemyAI enemy) => new(enemy);
     }
@@ -435,10 +439,8 @@ namespace LethalMenu.Handler
             {
                 if (!collider.TryGetComponent(out GrabbableObject item)) continue;
                 if (!item.TryGetComponent(out NetworkObject _)) continue;
-
                 return item;
             }
-
             return null;
         }
     }
@@ -468,27 +470,18 @@ namespace LethalMenu.Handler
         public static int SpawnWeb(this SandSpiderAI spider, Vector3 position)
         {
             spider.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
-
             Ray ray = new Ray(position, Vector3.Scale(Random.onUnitSphere, new Vector3(1f, Random.Range(0.6f, 1f), 1f)));
-
-            if (Physics.Raycast(ray, out RaycastHit rayHit, 7f, StartOfRound.Instance.collidersAndRoomMask) && (double)rayHit.distance >= 1.5)
+            if (Physics.Raycast(ray, out RaycastHit rayHit, 7f, StartOfRound.Instance.collidersAndRoomMask) && rayHit.distance >= 1.5f)
             {
-                Vector3 point = rayHit.point;
-                if (Physics.Raycast(position, Vector3.down, out rayHit, 10f, StartOfRound.Instance.collidersAndRoomMask))
+                if (Physics.Raycast(rayHit.point, Vector3.down, out rayHit, 10f, StartOfRound.Instance.collidersAndRoomMask))
                 {
-                    spider.SpawnWebTrapServerRpc(rayHit.point, point);
-
-
+                    spider.SpawnWebTrapServerRpc(rayHit.point, rayHit.point);
                     return spider.webTraps.Count - 1;
                 }
             }
-
             return -1;
         }
 
-        public static void BreakAllWebs(this SandSpiderAI spider)
-        {
-            spider.webTraps.ForEach(web => spider.BreakWebServerRpc(web.trapID, -1));
-        }
+        public static void BreakAllWebs(this SandSpiderAI spider) => spider.webTraps.ForEach(web => spider.BreakWebServerRpc(web.trapID, -1));
     }
 }
