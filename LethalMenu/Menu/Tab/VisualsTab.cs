@@ -33,6 +33,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.ObjectESP, "VisualsTab.ObjectESP");
             UI.Hack(Hack.EnemyESP, "VisualsTab.EnemyESP");
             UI.Hack(Hack.PlayerESP, "VisualsTab.PlayerESP");
+            UI.Hack(Hack.BodyESP, "VisualsTab.BodyESP");
             UI.Hack(Hack.DoorESP, "VisualsTab.EntExtDoorsESP");
             UI.Hack(Hack.LandmineESP, "VisualsTab.LandmineESP");
             UI.Hack(Hack.TurretESP, "VisualsTab.TurretESP");

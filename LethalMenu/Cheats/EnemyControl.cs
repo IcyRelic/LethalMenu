@@ -133,7 +133,7 @@ namespace LethalMenu.Cheats
             if (Hack.EnemyControl.IsEnabled() && enemy.isEnemyDead || enemy == null)
             {
                 Hack.EnemyControl.SetToggle(false);
-                Hack.FreeCam.SetToggle(false);              
+                Hack.FreeCam.SetToggle(false);
                 return;
             }
             if (!Hack.EnemyControl.IsEnabled()) return;

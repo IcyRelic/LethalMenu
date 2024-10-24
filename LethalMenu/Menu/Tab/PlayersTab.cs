@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Cheats;
 using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
@@ -111,6 +112,8 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("General.GeneralActions", true);
             UI.Hack(Hack.Teleport, "PlayerTab.TeleportTo", player.transform.position, player.isInElevator, player.isInHangarShipRoom, player.isInsideFactory);
+            if (player != LethalMenu.localPlayer) UI.Hack(Hack.DemiGod, "PlayerTab.DemiGod", player);
+            HackExtensions.SetToggle(Hack.DemiGod, DemiGodCheat.DemiGodPlayers.Contains(player));
             UI.Hack(Hack.KillPlayer, "PlayerTab.Kill", player);
             UI.Hack(Hack.HealPlayer, "PlayerTab.Heal", player);
             UI.Hack(Hack.LightningStrikePlayer, ["PlayerTab.Strike", "General.HostStormyTag"], player);

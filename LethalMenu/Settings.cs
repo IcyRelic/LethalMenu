@@ -54,12 +54,13 @@ namespace LethalMenu
          * * * * * * * */
         public static RGBAColor c_objectESP = new RGBAColor(255, 255, 255, 1f);
         public static RGBAColor c_playerESP = new RGBAColor(0, 255, 0, 1f);
+        public static RGBAColor c_bodyESP = new RGBAColor(255, 165, 0, 1f);
         public static RGBAColor c_enemyESP = new RGBAColor(255, 0, 0, 1f);
         public static RGBAColor c_shipESP = new RGBAColor(0, 0, 255, 1f);
         public static RGBAColor c_landmineESP = new RGBAColor(255, 0, 0, 1f);
         public static RGBAColor c_turretESP = new RGBAColor(255, 0, 0, 1f);
         public static RGBAColor c_bigDoorESP = new RGBAColor(0, 255, 255, 1f);
-        public static RGBAColor c_doorLockESP = new RGBAColor(0.5f, 0.5f, 0.5f, 1f);
+        public static RGBAColor c_doorLockESP = new RGBAColor(128, 128, 128, 255);
         public static RGBAColor c_entranceExitESP = new RGBAColor(0, 0, 255, 1f);
         public static RGBAColor c_steamHazardESP = new RGBAColor(255, 0, 255, 1f);
         public static RGBAColor c_breakerESP = new RGBAColor(255, 0, 116, 1f);
@@ -90,7 +91,7 @@ namespace LethalMenu
          * * * * * * * * */
         public static RGBAColor c_error = new RGBAColor(221, 11, 11, 1f);
         public static RGBAColor c_deadPlayer = new RGBAColor(255, 0, 0, 1);
-        public static RGBAColor c_causeOfDeath = new RGBAColor(1f, 47f / 51f, 0.0156862754f, 1f);
+        public static RGBAColor c_causeOfDeath = new RGBAColor(255, 235, 4, 255);
 
         /* * * * * *
          * Vectors *
@@ -146,7 +147,7 @@ namespace LethalMenu
         public static bool b_chamsBreaker = false;
         public static bool b_chamsShip = false;
         public static bool b_chamsSpikeRoofTrap = false;
-        public static bool b_UseDefaultChams = false;
+        public static bool b_UseDefaultChams = true;
         public static bool b_chamsDisableWithLOS = false;
         public static bool b_chamsMineshaftElevator = false;
 

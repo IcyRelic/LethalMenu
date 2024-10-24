@@ -12,12 +12,11 @@ namespace LethalMenu
 {
     public class Loader : MonoBehaviour
     {
-        public static GameObject Load;
-        public static bool harmonyLoaded = false;
+        private static GameObject Load;
 
         public static void Init()
         {
-            MenuFragment.InjectNotification();
+            MenuFragment.InjectNotification(Load);
             if (Load != null) return;      
             ChamHandler.ChamsSetEnabled(true);
             LoadHarmony();
@@ -34,7 +33,6 @@ namespace LethalMenu
             byte[] rawAssembly = new byte[stream.Length];
             stream.Read(rawAssembly, 0, (int)stream.Length);
             AppDomain.CurrentDomain.Load(rawAssembly);
-            harmonyLoaded = true;
         }
 
         public static void Unload()

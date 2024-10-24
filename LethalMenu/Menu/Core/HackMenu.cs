@@ -19,6 +19,7 @@ namespace LethalMenu.Menu.Core
         public PopupMenu LootManagerWindow = new LootManagerWindow(5);
         public PopupMenu WeatherManagerWindow = new WeatherManagerWindow(6);
         public PopupMenu SuitManagerWindow = new SuitManagerWindow(7);
+        public PopupMenu NotificationWindow = new NotificationWindow(8);
 
         public static List<MenuTab> menuTabs = new List<MenuTab>();
         private int selectedTab = 0;
@@ -109,26 +110,27 @@ namespace LethalMenu.Menu.Core
         public void Draw()
         {
             if (Settings.isFirstLaunch || Settings.isMenuOpen) Stylize(); else return;
-
             if (Settings.isFirstLaunch) FirstSetupManagerWindow.Draw();
             else
             {
                 GUI.color = new Color(1f, 1f, 1f, Settings.f_menuAlpha);
                 windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "Lethal Menu");
-                if (LethalMenu.localPlayer == null) return;
-                UnlockableManagerWindow.Draw();
-                ItemManagerWindow.Draw();
-                MoonManagerWindow.Draw();
-                LootManagerWindow.Draw();
-                WeatherManagerWindow.Draw();
-                SuitManagerWindow.Draw();
+                if (LethalMenu.localPlayer != null)
+                {
+                    UnlockableManagerWindow.Draw();
+                    ItemManagerWindow.Draw();
+                    MoonManagerWindow.Draw();
+                    LootManagerWindow.Draw();
+                    WeatherManagerWindow.Draw();
+                    SuitManagerWindow.Draw();
+                }
+                NotificationWindow.Draw();
                 GUI.color = Color.white;
             }
         }
 
         private void DrawContent(int windowID)
         {
-
             GUI.color = new Color(1f, 1f, 1f, 0.1f);
             GUIStyle watermark = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold };
             string text = "Developed By IcyRelic, and Dustin";

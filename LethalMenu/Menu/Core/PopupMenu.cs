@@ -24,6 +24,7 @@ namespace LethalMenu.Menu.Core
         }
 
         public void LocalizeName() => name = Localization.Localize(localization);
+
         public void Draw()
         {
             if (!isOpen) return;

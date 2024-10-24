@@ -4,7 +4,6 @@ using System.Reflection.Emit;
 using LethalMenu.Language;
 using LethalMenu.Util;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace LethalMenu.Cheats
 {
@@ -92,7 +91,7 @@ namespace LethalMenu.Cheats
             if (!(bool)StartOfRound.Instance) return 0f;
             return (float)Math.Round(StartOfRound.Instance.companyBuyingRate * 100, 2);
         }
-        private bool DefaultShipItem(GrabbableObject item)
+        public static bool DefaultShipItem(GrabbableObject item)
         {
             if (item == null) return false;
             string[] Items = ["ClipboardManual", "StickyNoteItem"];

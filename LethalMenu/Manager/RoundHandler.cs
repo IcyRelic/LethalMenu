@@ -111,17 +111,10 @@ namespace LethalMenu.Manager
 
             RoundManager.Instance.FlickerLights();
         }
+        public static void StartGame() => StartOfRound.Instance?.StartGameServerRpc();
 
-        public static void StartGame()
-        {
-            if ((bool)StartOfRound.Instance) StartOfRound.Instance.StartGameServerRpc();
-        }
+        public static void EndGame() => StartOfRound.Instance?.EndGameServerRpc(-1);
 
-        public static void EndGame()
-        {
-            if ((bool)StartOfRound.Instance) StartOfRound.Instance.EndGameServerRpc(-1);
-        }
-        
         public static void BuyUnlockable(Unlockable unlockable, bool all, bool enabled)
         {
             if (!(bool)StartOfRound.Instance) return;
@@ -163,14 +156,14 @@ namespace LethalMenu.Manager
 
         public static void SpawnScrap()
         {
-            if (!RoundManager.Instance.currentLevel.spawnEnemiesAndScrap) return;
-            if ((bool)RoundManager.Instance) RoundManager.Instance.SpawnScrapInLevel();
+            if (!RoundManager.Instance.currentLevel.spawnEnemiesAndScrap || RoundManager.Instance == null) return;
+            RoundManager.Instance.SpawnScrapInLevel();
         }
 
         public static void ModScrap(int value, int type)
         {
             if (!(bool)StartOfRound.Instance || !(bool)RoundManager.Instance) return;
-            if (type == 0)RoundManager.Instance.scrapAmountMultiplier = value;
+            if (type == 0) RoundManager.Instance.scrapAmountMultiplier = value;
             if (type == 1) RoundManager.Instance.scrapValueMultiplier = value;
         }
         
@@ -200,9 +193,23 @@ namespace LethalMenu.Manager
             }
         }
 
+        public static void SpawnHoardingBugInfestation()
+        {
+            for (int i = 0; i < RoundManager.Instance.currentLevel.Enemies.Count; i++)
+            {
+                if (RoundManager.Instance.currentLevel.Enemies.Any(e => e.enemyType.enemyName == "Hoarding bug")) SpawnEnemy(GameUtil.GetEnemyTypes().ToList().FirstOrDefault(e => e.enemyName == "Hoarding bug"), 1, false);
+                else HUDManager.Instance.DisplayTip("Lethal Menu", "There must be one Hoarding bug spawned");
+                if (RoundManager.Instance.currentLevel.Enemies[i].enemyType.enemyName == "Hoarding bug")
+                {
+                    RoundManager.Instance.Reflect().SetValue("enemyRushIndex", i);
+                    RoundManager.Instance.currentMaxInsidePower = 30f;
+                }
+            }
+        }
+
         public static void TeleportAllItems()
         {
-            LethalMenu.items.FindAll(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).ForEach(i =>
+            LethalMenu.items.FindAll(i => i != null && !i.isHeld && !i.isPocketed && !i.isInShipRoom && !i.heldByPlayerOnServer).ForEach(i =>
             {
                 Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
                 i.gameObject.transform.position = point;
@@ -213,25 +220,16 @@ namespace LethalMenu.Manager
 
         public static void TeleportOneItem()
         {
-            GrabbableObject i = LethalMenu.items.Where(i => !i.isHeld && !i.isPocketed && !i.isInShipRoom).OrderBy(i => Random.value).FirstOrDefault();
-            if (i != null)
-            {
-                Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
-                i.gameObject.transform.position = point;
-                i.startFallingPosition = point;
-                i.targetFloorPosition = point;
-            }
+            GrabbableObject i = LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && !i.isInShipRoom && !i.heldByPlayerOnServer).OrderBy(i => Random.value).FirstOrDefault();
+            Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
+            i.gameObject.transform.position = point;
+            i.startFallingPosition = point;
+            i.targetFloorPosition = point;
         }
 
-        public static void JoinLobby(SteamId id)
-        {
-            GameNetworkManager.Instance.StartClient(id);
-        }
+        public static void JoinLobby(SteamId id) => GameNetworkManager.Instance.StartClient(id);
 
-        public static void Disconnect()
-        {
-            GameNetworkManager.Instance.Disconnect();
-        }
+        public static void Disconnect() => GameNetworkManager.Instance.Disconnect();
 
         public static void DropAllItems()
         {
@@ -240,21 +238,22 @@ namespace LethalMenu.Manager
             Settings.b_DropItems = false;
         }
 
-        public static void DeleteHeldItem()
-        {
-            LethalMenu.localPlayer.DespawnHeldObject();
-        }
+        public static void DeleteHeldItem() => LethalMenu.localPlayer.DespawnHeldObject();
 
         public static void ToggleShipHorn()
         {
-            if (Hack.ToggleShipHorn.IsEnabled()) Object.FindObjectOfType<ShipAlarmCord>().PullCordServerRpc(-1);
-            else Object.FindObjectOfType<ShipAlarmCord>().StopPullingCordServerRpc(-1);
+            ShipAlarmCord horn = Object.FindObjectOfType<ShipAlarmCord>();
+            if (horn == null) return;
+            if (Hack.ToggleShipHorn.IsEnabled()) horn.PullCordServerRpc(-1);
+            else horn.StopPullingCordServerRpc(-1);
         }
 
         public static void ToggleCarHorn()
         {
-            if (Hack.ToggleCarHorn.IsEnabled()) Object.FindObjectOfType<VehicleController>().SetHonkServerRpc(true, -1);
-            else Object.FindObjectOfType<VehicleController>().SetHonkServerRpc(false, -1);
+            VehicleController horn = Object.FindObjectOfType<VehicleController>();
+            if (horn == null) return;
+            if (Hack.ToggleCarHorn.IsEnabled()) horn.SetHonkServerRpc(true, -1);
+            else horn.SetHonkServerRpc(false, -1);
         }
 
         public static void SpawnMimicFromMasks()
@@ -262,10 +261,9 @@ namespace LethalMenu.Manager
             PlayerControllerB alivePlayer = StartOfRound.Instance.allPlayerScripts.ToList().Find(p => !p.isPlayerDead);
             LethalMenu.items.FindAll(i => i.GetType() == typeof(HauntedMaskItem)).Cast<HauntedMaskItem>().ToList().ForEach(m =>
             {
-                m.ChangeOwnershipOfProp(GameNetworkManager.Instance.localPlayerController.actualClientId);
+                m.ChangeOwnershipOfProp(LethalMenu.localPlayer.actualClientId);
                 m.Reflect().SetValue("previousPlayerHeldBy", alivePlayer);
-                bool factory = m.transform.position.y < LethalMenu.shipDoor.transform.position.y - 10f;
-                m.CreateMimicServerRpc(factory, m.transform.position);
+                m.CreateMimicServerRpc(m.isInFactory, m.transform.position);
             });
         }
 

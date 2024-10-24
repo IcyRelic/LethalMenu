@@ -154,7 +154,6 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-
         public static void HackSlider(Hack hack, string header, string displayValue, ref float value, float min, float max, params object[] param)
         {
             GUIStyle style = new GUIStyle(GUI.skin.label);
@@ -189,7 +188,6 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-
         public static void Textbox(string label, ref string value, string regex = "", int size = 3, bool big = true)
         {
             GUILayout.BeginHorizontal();
@@ -222,19 +220,12 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Divider(int width, int height)
+        public static void Divider(int height = 1)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Box("", GUILayout.Width(width), GUILayout.Height(height));
+            GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(height));
             GUILayout.EndHorizontal();
-        }
-
-        public static void Divider(int height)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Box("", GUILayout.Width(Screen.width), GUILayout.Height(height));
-            GUILayout.EndHorizontal();
-        }
+        }   
 
         public static void Actions(params UIButton[] buttons)
         {

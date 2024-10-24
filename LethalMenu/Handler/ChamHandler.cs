@@ -146,6 +146,16 @@ namespace LethalMenu.Handler
             r.materials.ToList().ForEach(m => m.SetColor(_color, color));
         }
 
+        public static void RefreshChams()
+        {
+            materials.ToList().ForEach(entry =>
+            {
+                Renderer renderer = Object.FindObjectsOfType<Renderer>().FirstOrDefault(r => r.GetInstanceID() == entry.Key);
+                if (renderer == null) return;
+                renderer.SetMaterials(chamsenabled ? Enumerable.Repeat(m_chamMaterial, entry.Value.Length).ToList() : entry.Value.ToList());
+                if (!chamsenabled) materials.Remove(entry.Key);
+            });
+        }
 
         public static ChamHandler GetHandler(Object obj)
         {

@@ -13,7 +13,7 @@ namespace LethalMenu.Cheats
             if (!Hack.PJSpammer.IsEnabled()) return;
             if (Time.time - lastTime < Settings.f_pjSpamSpeed) return;
 
-            LethalMenu.animatedTriggers.FindAll(c => c.transform.parent is not null && c.transform.parent.gameObject.name.StartsWith("PlushiePJManContainer")).ForEach(c => c.TriggerAnimation(LethalMenu.localPlayer));
+            LethalMenu.animatedTriggers.FindAll(c => c != null && c.transform.parent != null && c.transform.parent.gameObject.name.StartsWith("PlushiePJManContainer")).ForEach(c => { if (c != null) c.TriggerAnimation(LethalMenu.localPlayer); });
             lastTime = Time.time;            
         }
     }

@@ -24,6 +24,7 @@ namespace LethalMenu.Menu.Popup
             languages = Localization.GetLanguages();
             isOpen = true; 
         }
+
         public override void DrawContent(int windowID)
         {
             if (disableBtns) GUI.enabled = false;

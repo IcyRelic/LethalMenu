@@ -1,4 +1,5 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Cheats;
 using LethalMenu.Handler;
 using LethalMenu.Language;
 using LethalMenu.Manager;
@@ -85,6 +86,7 @@ namespace LethalMenu
         ClickKillAction,
         LootAnyItemBeltBag,
         LootThroughWallsBeltBag,
+        AntiKick,
 
         /** Server Tab **/
         ToggleAllDisplays,
@@ -119,6 +121,7 @@ namespace LethalMenu
         ToggleShipHorn,
         ToggleCarHorn,
         ToggleTerminalSound,
+        ToggleDepositDeskDoorSound,
         ForceBridgeFall,
         ForceSmallBridgeFall,
         BlowUpAllLandmines,
@@ -138,6 +141,7 @@ namespace LethalMenu
         SpawnTurret,
         SpawnSpikeRoofTrap,
         SpawnMapObjects,
+        SellQuota,
         SellEverything,
         TeleportAllItems,
         TeleportOneItem,
@@ -146,12 +150,15 @@ namespace LethalMenu
         BerserkAllTurrets,
         PJSpammer,
         CloseGate,
+        SpawnHoardingBugInfestation,
+        FullRenderResolution,
 
         /** Visuals Tab **/
         ToggleAllESP,
         ObjectESP,
         EnemyESP,
         PlayerESP,
+        BodyESP,
         DoorESP,
         LandmineESP,
         TurretESP,
@@ -174,6 +181,7 @@ namespace LethalMenu
 
         /** Player Tab **/
         KillPlayer,
+        DemiGod,
         HealPlayer,
         LightningStrikePlayer,
         DeathNotifications,
@@ -241,6 +249,7 @@ namespace LethalMenu
             {Hack.ObjectESP, false},
             {Hack.EnemyESP, false},
             {Hack.PlayerESP, false},
+            {Hack.BodyESP, false},
             {Hack.DoorESP, false},
             {Hack.LandmineESP, false},
             {Hack.TurretESP, false},
@@ -315,6 +324,10 @@ namespace LethalMenu
             {Hack.NoTZPEffects, false},
             {Hack.HPDisplay, false},
             {Hack.MineshaftElevatorESP, false},
+            {Hack.AntiKick, false},
+            {Hack.DemiGod, false},
+            {Hack.FullRenderResolution, false},
+            {Hack.ToggleDepositDeskDoorSound, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -349,6 +362,7 @@ namespace LethalMenu
             {Hack.ToggleAllTurrets, (Action) HackExecutor.ToggleAllTurrets},
             {Hack.KillPlayer, (Action<PlayerControllerB>) HackExecutor.KillPlayer},
             {Hack.HealPlayer, (Action<PlayerControllerB>) HackExecutor.HealPlayer},
+            {Hack.DemiGod, (Action<PlayerControllerB>) HackExecutor.DemiGod},
             {Hack.LightningStrikePlayer, (Action<PlayerControllerB>) HackExecutor.LightningStrikePlayer},
             {Hack.UnlockDoorAction, (Action) HackExecutor.UnlockDoor},
             {Hack.ToggleAllESP, (Action) HackExecutor.ToggleAllESP},
@@ -373,6 +387,7 @@ namespace LethalMenu
             {Hack.SpawnTurret, (Action) HackExecutor.SpawnTurret},
             {Hack.SpawnSpikeRoofTrap, (Action) HackExecutor.SpawnSpikeRoofTrap},
             {Hack.ExplodeClosestMine, (Action<PlayerControllerB>) HackExecutor.ExplodeClosestMine},
+            {Hack.SellQuota, (Action) HackExecutor.SellQuota},
             {Hack.SellEverything, (Action) HackExecutor.SellEverything},
             {Hack.TeleportAllItems, (Action) HackExecutor.TeleportAllItems},
             {Hack.TeleportOneItem, (Action) HackExecutor.TeleportOneItem},
@@ -394,6 +409,7 @@ namespace LethalMenu
             {Hack.ClearMeteorShower, (Action) HackExecutor.ClearMeteorShower},
             {Hack.OpenAllBigDoors, (Action) HackExecutor.OpenAllBigDoors},
             {Hack.CloseAllBigDoors, (Action) HackExecutor.CloseAllBigDoors},
+            {Hack.SpawnHoardingBugInfestation, (Action) HackExecutor.SpawnHoardingBugInfestation},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -520,6 +536,7 @@ namespace LethalMenu
             Hack.ObjectESP.Execute();
             Hack.EnemyESP.Execute();
             Hack.PlayerESP.Execute();
+            Hack.BodyESP.Execute();
             Hack.DoorESP.Execute();
             Hack.LandmineESP.Execute();
             Hack.TurretESP.Execute();
@@ -596,6 +613,7 @@ namespace LethalMenu
         public static void SpawnTurret() => RoundHandler.SpawnMapObject(MapObject.TurretContainer);
         public static void SpawnSpikeRoofTrap() => RoundHandler.SpawnMapObject(MapObject.SpikeRoofTrapHazard);
         public static void SpawnMapObjects(MapObject type) => RoundHandler.SpawnMapObjects(type);
+        public static void SellQuota() => LethalMenu.localPlayer.Handle().SellQuota();
         public static void SellEverything() => LethalMenu.localPlayer.Handle().PlaceEverythingOnDesk();
         public static void ExplodeClosestMine(PlayerControllerB player) => player.Handle().ExplodeClosestLandmine();
         public static void LureAllEnemies(PlayerControllerB player) => player.Handle().LureAllEnemies();
@@ -608,7 +626,9 @@ namespace LethalMenu
         public static void Teleport(Vector3 pos, bool elevator = false, bool ship = false, bool factory = false) => LethalMenu.localPlayer.Handle().Teleport(pos, elevator, ship, factory);
         public static void KillPlayer(PlayerControllerB player) => player.Handle().Kill();
         public static void HealPlayer(PlayerControllerB player) => player.Handle().Heal();
+        public static void DemiGod(PlayerControllerB player) => DemiGodCheat.ToggleDemiGod(player);
         public static void LightningStrikePlayer(PlayerControllerB player) => player.Handle().Strike();
+        public static void SpawnHoardingBugInfestation() => RoundHandler.SpawnHoardingBugInfestation();
         public static void ControlEnemy(EnemyAI e) => e.Handle().Control();
         public static void TeleportEnemy(PlayerControllerB player, EnemyAI e) => e.Handle().Teleport(player);
         public static void TeleportAllEnemies(PlayerControllerB player, EnemyAI[] enemies) => enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));

@@ -29,6 +29,7 @@ namespace LethalMenu.Cheats
                 if (Hack.ObjectESP.IsEnabled()) this.DisplayScrap();
                 if (Hack.EnemyESP.IsEnabled()) this.DisplayEnemyAI();
                 if (Hack.PlayerESP.IsEnabled()) this.DisplayPlayers();
+                if (Hack.BodyESP.IsEnabled()) this.DisplayBodies();
                 if (Hack.DoorESP.IsEnabled()) this.DisplayEntranceExitDoors();
                 if (Hack.LandmineESP.IsEnabled()) this.DisplayLandmines();
                 if (Hack.TurretESP.IsEnabled()) this.DisplayTurrets();
@@ -67,7 +68,7 @@ namespace LethalMenu.Cheats
         {
             DisplayChams(LethalMenu.items, _ => Settings.c_chams);
             DisplayChams(LethalMenu.landmines, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.turrets.Select(t => t?.gameObject?.transform?.parent?.gameObject).Where(t => t != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.turrets.Where(t => t != null && t.gameObject != null && t.gameObject.transform?.parent?.gameObject != null).Select(t => t.gameObject.transform.parent.gameObject), _ => Settings.c_chams);
             DisplayChams(LethalMenu.spikeRoofTraps.Select(s => s?.gameObject?.transform?.parent?.gameObject).Where(s => s != null), _ => Settings.c_chams);
             DisplayChams(LethalMenu.players.Where(p => p.playerClientId != LethalMenu.localPlayer.playerClientId), _ => Settings.c_chams);
             DisplayChams(LethalMenu.enemies, _ => Settings.c_chams);
@@ -78,8 +79,6 @@ namespace LethalMenu.Cheats
             DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.mineshaftElevator }, _ => Settings.c_chams);
         }
-
-
 
         private void DisplayObjects<T>(IEnumerable<T> objects, Func<T, string> labelSelector, Func<T, RGBAColor> colorSelector) where T : Component
         {
@@ -171,20 +170,30 @@ namespace LethalMenu.Cheats
         private void DisplayScrap()
         {
             DisplayObjects(
-                LethalMenu.items?.Where(i => i != null && !i.heldByPlayerOnServer && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated),
+                LethalMenu.items?.Where(i => i != null && !i.heldByPlayerOnServer && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated && !(i is RagdollGrabbableObject)),
                 item =>
                 {
-                    if (item is GiftBoxItem giftBox && giftBox.Reflect().GetValue<Item>("objectInPresentItem") is Item objectInPresentItem && giftBox.Reflect().GetValue<int>("objectInPresentValue") is int objectInPresentValue) return $"{item.itemProperties.itemName} ({item.scrapValue}) - {objectInPresentItem.itemName} ({objectInPresentValue})";
-                    if (item is RagdollGrabbableObject body) return StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId].playerUsername + "\n" + Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString());
-                    return ($"{item.itemProperties.itemName} ({item.scrapValue})");
+                    if (item is GiftBoxItem box && box.Reflect().GetValue<Item>("objectInPresentItem") is Item _item && box.Reflect().GetValue<int>("objectInPresentValue") is int _value)
+                    {
+                        return $"{item.itemProperties.itemName} ( {item.scrapValue} ) - {_item.itemName} ( {_value} )";
+                    }
+                    return $"{item.itemProperties.itemName} ( {item.scrapValue} )"; 
                 },
                 item =>
                 {
                     if (!Settings.b_useScrapTiers) return Settings.c_objectESP;
-                    if (item is RagdollGrabbableObject) return Settings.c_deadPlayer;
-                    int i = Array.FindLastIndex<int>(Settings.i_scrapValueThresholds, x => x <= item.scrapValue);
-                    return i > -1 ? Settings.c_scrapValueColors[i] : Settings.c_objectESP;
+                    int index = Array.FindLastIndex(Settings.i_scrapValueThresholds, x => x <= item.scrapValue);
+                    return index > -1 ? Settings.c_scrapValueColors[index] : Settings.c_objectESP;
                 }
+            );
+        }
+
+        private void DisplayBodies()
+        {
+            DisplayObjects(
+                LethalMenu.items?.Where(i => i != null && !i.heldByPlayerOnServer && !i.isHeld && !i.isPocketed && i.IsSpawned && i.itemProperties != null && !i.deactivated && i is RagdollGrabbableObject),
+                ragdoll => ragdoll is RagdollGrabbableObject body ? $"{StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId].playerUsername} - {Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString())}" : null,
+                ragdoll => Settings.c_deadPlayer
             );
         }
 

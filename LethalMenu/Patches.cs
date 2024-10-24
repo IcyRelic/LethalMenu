@@ -5,22 +5,35 @@ using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
 using Steamworks;
 using System.Collections.Generic;
-using LethalMenu.Menu.Core;
+using System.Linq;
 using System.Reflection.Emit;
 using Unity.Netcode;
 using UnityEngine;
-using Debug = UnityEngine.Debug;
+using LethalMenu.Manager;
 using Object = UnityEngine.Object;
 using Vector3 = UnityEngine.Vector3;
-using System.Linq;
-using LethalMenu.Manager;
+using Random = UnityEngine.Random;
+using System.Collections;
 
 namespace LethalMenu
 {
     [HarmonyPatch]
     internal class Patches
     {
-        private static bool Sent = false;
+        public static bool SellQuota = false;
+        private static bool OnJoin = true;
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc")]
+        public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
+        {
+            if (OnJoin)
+            {
+                MenuUtil.LMUser();
+                LethalMenu.items.Where(i => i != null && !i.isInShipRoom).ToList().ForEach(i => i.isInShipRoom = true);
+                OnJoin = false;
+            }
+        }
 
         [HarmonyPostfix]
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
@@ -31,19 +44,7 @@ namespace LethalMenu
             LethalMenu.Instance.LMUsers.Clear();
             Shoplifter.Clear();
             ServerTab.UpdatePlayerOptions(true);
-            Sent = false;
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc")]
-        public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
-        {
-            if (!Sent)
-            {
-                MenuUtil.LMUser();
-                MenuFragment.CheckForMessage();
-                Sent = true;
-            }
+            OnJoin = true;
         }
 
         [HarmonyPostfix]
@@ -69,23 +70,26 @@ namespace LethalMenu
             ___inGrabbingObjectsAnimation = false;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.AllowPlayerDeath))]
-        public static bool AllowPlayerDeath(ref bool __result)
-        {
-            if (Settings.DebugMode)
-            {
-                __result = true;
-                return false;
-            }
-            return true;
-        }
-
         [HarmonyPostfix]
         [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc))]
         public static void CompanyAttackPostfix(ref bool ___inGrabbingObjectsAnimation, ref bool __state)
         {
             ___inGrabbingObjectsAnimation = __state;
+        }
+
+        [HarmonyPostfix]
+        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.DisplayCreditsEarning))]
+        public static void DisplayCreditsEarning(HUDManager __instance, int creditsEarned, GrabbableObject[] objectsSold, int newGroupCredits)
+        {
+            if (SellQuota)
+            {
+                int total = TimeOfDay.Instance.profitQuota;
+                int fulfilled = TimeOfDay.Instance.quotaFulfilled;
+                int quotaLeft = total - fulfilled;
+                if (quotaLeft > 0) HUDManager.Instance.DisplayTip("Lethal Menu", $"Not enough items to meet quota! {fulfilled}/{total}");
+                if (quotaLeft < 0) HUDManager.Instance.DisplayTip("Lethal Menu", $"Quota met! {fulfilled}/{total}");
+                SellQuota = false;
+            }
         }
 
         [HarmonyTranspiler]
@@ -102,6 +106,18 @@ namespace LethalMenu
         [HarmonyPrefix]
         [HarmonyPatch(typeof(QuickMenuManager), "CanEnableDebugMenu")]
         public static bool CanEnableDebugMenu(ref bool __result)
+        {
+            if (Settings.DebugMode)
+            {
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(PlayerControllerB), "AllowPlayerDeath")]
+        public static bool AllowPlayerDeath(PlayerControllerB __instance, ref bool __result)
         {
             if (Settings.DebugMode)
             {
