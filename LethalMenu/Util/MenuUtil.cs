@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System;
 using System.Linq;
+using static UnityEngine.InputSystem.InputControlScheme.MatchResult;
 
 namespace LethalMenu.Util
 {
@@ -92,15 +93,19 @@ namespace LethalMenu.Util
 
         public static async Task RunLMUser()
         {
+            while (!Settings.b_DisplayLMUsers) await Task.Delay(10000);
             while (HUDManager.Instance == null) await Task.Delay(10000);
             while (LethalMenu.localPlayer == null) await Task.Delay(10000);
             HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}, {Settings.version}</size>");
-            Regex r = new(@"\b\d{17,19}\b");
-            while (true)
+            Regex s = new(@"\b\d{17,19}\b");
+            Regex v = new(@",\s*(v\d+\.\d+\.\d+)");
+            while (Settings.b_DisplayLMUsers)
             {
                 HUDManager.Instance.ChatMessageHistory.ToList().ForEach(m =>
-                { 
-                    if (!string.IsNullOrEmpty(r.Match(m)?.Value)) LethalMenu.Instance.LMUsers[r.Match(m).Value] = Settings.version; 
+                {
+                    var steamid = s.Match(m);
+                    var version = v.Match(m);
+                    if (steamid.Success && version.Success) LethalMenu.Instance.LMUsers[steamid.Value] = version.Groups[1].Value;
                 });
                 await Task.Delay(15000);
             }

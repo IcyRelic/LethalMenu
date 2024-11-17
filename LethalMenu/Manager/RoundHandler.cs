@@ -104,13 +104,6 @@ namespace LethalMenu.Manager
             ShipLights lights = Object.FindObjectOfType<ShipLights>();
             return lights.areLightsOn;
         }
-
-        public static void FlickerLights()
-        {
-            if (!(bool)StartOfRound.Instance || !(bool)RoundManager.Instance) return;
-
-            RoundManager.Instance.FlickerLights();
-        }
         public static void StartGame() => StartOfRound.Instance?.StartGameServerRpc();
 
         public static void EndGame() => StartOfRound.Instance?.EndGameServerRpc(-1);
@@ -335,17 +328,6 @@ namespace LethalMenu.Manager
                     continue;
                 }
                 GetTerminal().PlayTerminalAudioServerRpc(1);
-                await Task.Delay(100);
-            }
-        }
-
-        public static async void CloseGate() => await ClosingGate();
-
-        public static async Task ClosingGate()
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                LethalMenu.animatedTriggers.Where(t => t.name == "Cube" && t.transform.parent.name == "Cutscenes").ToList().ForEach(t => t.triggerAnimator?.SetTrigger("doorFall"));
                 await Task.Delay(100);
             }
         }

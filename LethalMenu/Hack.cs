@@ -87,6 +87,12 @@ namespace LethalMenu
         LootAnyItemBeltBag,
         LootThroughWallsBeltBag,
         AntiKick,
+        SellQuota,
+        SellEverything,
+        TeleportAllItems,
+        TeleportOneItem,
+        FixAllValves,
+        FullRenderResolution,
 
         /** Server Tab **/
         ToggleAllDisplays,
@@ -104,7 +110,6 @@ namespace LethalMenu
         UnlockUnlockable,
         UnlockUnlockableSuit,
         Shoplifter,
-        NeverLoseScrap,
         ShowOffensiveLobbyNames,
         JoinLobby,
         Disconnect,
@@ -114,6 +119,8 @@ namespace LethalMenu
         ForceMeteorShower,
         ClearMeteorShower,
         OpenDropShipLand,
+        ModifyScrap,
+        ModifyDeadline,
 
         /** Troll Tab **/
         ToggleShipLights,
@@ -131,27 +138,17 @@ namespace LethalMenu
         KillNearbyEnemies,
         StunAllEnemies,
         ForceTentacleAttack,
-        FlickerLights,
-        FixAllValves,
-        ModifyScrap,
-        ModifyDeadline,
         SpawnMaskedEnemy,
         BreakAllWebs,
         SpawnLandmine,
         SpawnTurret,
         SpawnSpikeRoofTrap,
         SpawnMapObjects,
-        SellQuota,
-        SellEverything,
-        TeleportAllItems,
-        TeleportOneItem,
         EjectEveryone,
         OpenShipDoorSpace,
         BerserkAllTurrets,
         PJSpammer,
-        CloseGate,
         SpawnHoardingBugInfestation,
-        FullRenderResolution,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -293,7 +290,6 @@ namespace LethalMenu
             {Hack.HearAllDeadPeople, false},
             {Hack.NoVisor, false},
             {Hack.NoFieldOfDepth, false},
-            {Hack.NeverLoseScrap, false},
             {Hack.NoFlash, false},
             {Hack.TeleportWithItems, false},
             {Hack.OpenShipDoorSpace, false},
@@ -372,7 +368,6 @@ namespace LethalMenu
             {Hack.MiniCam, (Action<PlayerControllerB>) HackExecutor.MiniCam},
             {Hack.UnlockUnlockable, (Action<Unlockable, bool, bool>) HackExecutor.UnlockUnlockable},
             {Hack.UnlockUnlockableSuit, (Action<Unlockable, bool, bool, bool>) HackExecutor.UnlockUnlockableSuit},
-            {Hack.FlickerLights, (Action) HackExecutor.FlickerLights},
             {Hack.FixAllValves, (Action) HackExecutor.FixAllValves},
             {Hack.ModifyScrap, (Action<int, int>) HackExecutor.ModScrap},
             {Hack.TeleportAllEnemies, (Action<PlayerControllerB, EnemyAI[]>) HackExecutor.TeleportAllEnemies},
@@ -401,7 +396,6 @@ namespace LethalMenu
             {Hack.ResetShip, (Action) HackExecutor.ResetShip},
             {Hack.ToggleAllDisplays, (Action) HackExecutor.ToggleAllDisplays},
             {Hack.ToggleTerminalSound, (Action) HackExecutor.ToggleTerminalSound},
-            {Hack.CloseGate, (Action) HackExecutor.CloseGate},
             {Hack.DeleteHeldItem, (Action) HackExecutor.DeleteHeldItem},
             {Hack.ClickTeleportAction, (Action) HackExecutor.ClickTeleport},
             {Hack.ClickKillAction, (Action) HackExecutor.ClickKill},
@@ -597,7 +591,6 @@ namespace LethalMenu
         public static void ForceSmallBridgeFall() => RoundHandler.ForceSmallBridgeFall();
         public static void ForceTentacleAttack() => RoundHandler.ForceTentacleAttack();
         public static void ModScrap(int value, int type) => RoundHandler.ModScrap(value, type);
-        public static void FlickerLights() => RoundHandler.FlickerLights();
         public static void SpawnMoreScrap() => RoundHandler.SpawnScrap();
         public static void ResetShip() => RoundHandler.ResetShip();
         public static void UnlockUnlockable(Unlockable unlockable, bool all, bool enabled) => RoundHandler.BuyUnlockable(unlockable, all, enabled);
@@ -647,7 +640,6 @@ namespace LethalMenu
         public static void BerserkAllTurrets() => RoundHandler.BerserkAllTurrets();
         public static void DropAllItems() => RoundHandler.DropAllItems();
         public static void ToggleTerminalSound() => RoundHandler.ToggleTerminalSound();
-        public static void CloseGate() => RoundHandler.CloseGate();
         public static void DeleteHeldItem() => RoundHandler.DeleteHeldItem();
         public static void UnlockAllDoors() => RoundHandler.UnlockAllDoors();
         public static void OpenAllBigDoors() => RoundHandler.OpenAllBigDoors();

@@ -419,7 +419,7 @@ namespace LethalMenu
                     if (hackSettings.TryGetValue("CrosshairScale", out JToken crosshairScaleToken))
                         f_crosshairScale = float.Parse(crosshairScaleToken.ToString());
                     if (hackSettings.TryGetValue("ESPDistance", out JToken espDistanceToken))
-                        f_espDistance = int.Parse(espDistanceToken.ToString());
+                        f_espDistance = float.Parse(espDistanceToken.ToString());
                     if (hackSettings.TryGetValue("DisableSpectatorModels", out JToken disableSpectatorModelsToken))
                         b_disableSpectatorModels = bool.Parse(disableSpectatorModelsToken.ToString());
                     if (hackSettings.TryGetValue("VCDisplay", out JToken VCDisplayToken))

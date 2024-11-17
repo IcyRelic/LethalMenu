@@ -65,15 +65,6 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Notify");
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Execute"))
-            {
-                MenuFragment.DisplayMessage("Dummy");
-            }
-            GUILayout.EndHorizontal();
-
-            GUILayout.BeginHorizontal();
             GUILayout.Label("Debug NetworkObjectReferences");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))

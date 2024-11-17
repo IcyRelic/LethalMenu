@@ -21,7 +21,6 @@ v1.4.5
 - Added Cave Dweller Insta Kill - Added Cave Dweller to Insta Kill
 - Added Edit Deadline (Host Only) - Lets you change the deadline!
 - Added Open Drop Ship On Land - Opens drop ship as soon as it lands!
-- Added Close Gate - Closes Experimentation gate at the front entrance
 - Added Loot Any Item Belt Bag - Lets you put any items in the belt bag
 - Added Loot Through Walls Belt Bag - Lets you loot through walls with the belt bag
 - Added Click Kill - Middle Click to kill enemies when click kill is enabled
@@ -30,7 +29,6 @@ v1.4.5
 - Added Unlimited TZP - Use TZP forever
 - Added Audio Listener for enemy controllers - You can hear the audio around the enemy
 - Added Demi God - Sets players health to 100 when its not for people you enable it for
-- Added Notifications - Used for injection message and version messages
 - Added Anti Kick (BUGGY) - Its only enabled after being kicked from the lobby might cause your name to be nameless and profile to be the Lethal Company logo
 - Added Sell Quota - Sells as much as quota needs if there is enough items
 - Added Stun - You can stun a single enemy like you can kill it
@@ -51,6 +49,7 @@ v1.4.5
 - Fixed Baboon Bird Controller - Fixed picking up items being inconsistent
 - Fixed RadMechAI chams - Its now applied to the body not the particles from the stepping
 - Fixed Item ESP - Items in the belt bag don't show up on the esp anymore
+- Fixed ESP Distance - It only accepted ints not floats so config would fail to load
 - Changed Body ESP - Made body esp its own toggle instead of being inside the item 
 - Changed HP Display to Player HP Display - To cause less confusion
 - Changed Teleport All Enemies - Changed the method it used!
@@ -63,7 +62,9 @@ v1.4.5
 - Changed Heal - It doesn't make sound when you heal them now
 - Changed Kill - It does the player hp instead of 1000
 - Changed moved Fix Valves, Sell Everything, Teleport All Items, Teleport One Item from troll tab to self tab
+- Changed Display Lethal Menu Users - It only sends the display message if you have it turned on instead of doing it regardless
 - Removed Force Bleed - Too many bugs
+- Removed Flicker Lights - Client side only
 
 v1.4.4 
 - Added PJ Plushie Spammer - Spams PJ Plushies at a variable speed

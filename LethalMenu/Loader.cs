@@ -6,6 +6,8 @@ using System.Linq;
 using LethalMenu.Handler;
 using LethalMenu.Menu.Core;
 using Object = UnityEngine.Object;
+using System.Threading.Tasks;
+using UnityEngine.Rendering.HighDefinition;
 
 
 namespace LethalMenu
@@ -14,9 +16,14 @@ namespace LethalMenu
     {
         private static GameObject Load;
 
-        public static void Init()
+        public static async void Init()
         {
-            MenuFragment.InjectNotification(Load);
+            DepthOfField gameloaded = FindObjectOfType<DepthOfField>(); 
+            while (gameloaded == null)
+            {
+                await Task.Delay(1000); 
+                gameloaded = FindObjectOfType<DepthOfField>(); 
+            }
             if (Load != null) return;      
             ChamHandler.ChamsSetEnabled(true);
             LoadHarmony();

@@ -41,6 +41,7 @@ namespace LethalMenu.Cheats
                 if (!HostQuit) HostKickedPlayerList.Add(Settings.s_lobbyid);
                 HostQuit = false;
             }
+            if (GameNetworkManager.Instance.disconnectReason == 3) HostKickedPlayerList.Add(Settings.s_lobbyid);
         }
 
         [HarmonyPostfix]

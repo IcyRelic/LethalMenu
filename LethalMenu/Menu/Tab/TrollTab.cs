@@ -28,7 +28,6 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.ToggleDepositDeskDoorSound, "TrollTab.ToggleDepositDeskDoorSound");
             UI.Hack(Hack.ToggleShipLights, "TrollTab.ShipLights");
             UI.Hack(Hack.ToggleFactoryLights, ["TrollTab.FactoryLights","General.HostTag"]);
-            UI.Hack(Hack.FlickerLights, ["TrollTab.FlickerFactoryLights", "General.HostTag"]);
             UI.Hack(Hack.ForceBridgeFall, ("TrollTab.ForceBridgeFall"));
             UI.Hack(Hack.ForceSmallBridgeFall, ("TrollTab.ForceSmallBridgeFall"));
             UI.Hack(Hack.BlowUpAllLandmines, "TrollTab.BlowAllMines");
@@ -40,7 +39,6 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SpawnMaskedEnemy, "TrollTab.SpawnMasks");
             UI.Hack(Hack.EjectEveryone, ["TrollTab.EjectEveryone", "General.HostTag"]);
             UI.HackSlider(Hack.PJSpammer, "TrollTab.PJSpammer", Settings.f_pjSpamSpeed.ToString("0.00"), ref Settings.f_pjSpamSpeed, 0f, 1f);
-            UI.Hack(Hack.CloseGate, ["TrollTab.CloseGate", "General.Experimentation"]);
             UI.Hack(Hack.SpawnHoardingBugInfestation, "TrollTab.SpawnHoardingBugInfestation");
 
             GUILayout.EndScrollView();

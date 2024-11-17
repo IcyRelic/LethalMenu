@@ -108,7 +108,6 @@ namespace LethalMenu.Menu.Tab
 
             UI.Hack(Hack.Disconnect, "ServerTab.Disconnect");
             UI.Hack(Hack.ShowOffensiveLobbyNames, "ServerTab.ShowOffensiveLobbyNames");
-            UI.Hack(Hack.NeverLoseScrap, "ServerTab.NeverLoseScrap");
             UI.Hack(Hack.Shoplifter, "ServerTab.Shoplifter");
             UI.Hack(Hack.SpawnMoreScrap, ["ServerTab.SpawnScrap", "General.HostTag"]);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandomMines", "General.HostTag"], MapObject.Landmine);
