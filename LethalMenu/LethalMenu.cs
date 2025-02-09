@@ -183,35 +183,57 @@ namespace LethalMenu
         {
             while (true)
             {
-                CollectObjects(items);
-                CollectObjects(landmines);
-                CollectObjects(turrets);
-                CollectObjects(doors);
-                CollectObjects(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame);
-                CollectObjects(enemies);
-                CollectObjects(steamValves);        
-                CollectObjects(allTerminalObjects);
-                CollectObjects(teleporters);
-                CollectObjects(interactTriggers);
-                CollectObjects(bigDoors, obj => obj.isBigDoor); 
-                CollectObjects(doorLocks);
-                CollectObjects(spikeRoofTraps);
-                CollectObjects(animatedTriggers);
-
-                shipDoor = Object.FindObjectOfType<HangarShipDoor>();
-                breaker = Object.FindObjectOfType<BreakerBox>();
-                mineshaftElevator = Object.FindObjectOfType<MineshaftElevatorController>();
+                yield return StartCoroutine(CollectWithDelay(items));
+                yield return StartCoroutine(CollectWithDelay(landmines));
+                yield return StartCoroutine(CollectWithDelay(turrets));
+                yield return StartCoroutine(CollectWithDelay(doors));
+                yield return StartCoroutine(CollectWithDelay(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame));
+                yield return StartCoroutine(CollectWithDelay(enemies));
+                yield return StartCoroutine(CollectWithDelay(steamValves));
+                yield return StartCoroutine(CollectWithDelay(allTerminalObjects));
+                yield return StartCoroutine(CollectWithDelay(teleporters));
+                yield return StartCoroutine(CollectWithDelay(interactTriggers));
+                yield return StartCoroutine(CollectWithDelay(bigDoors, obj => obj.isBigDoor));
+                yield return StartCoroutine(CollectWithDelay(doorLocks));
+                yield return StartCoroutine(CollectWithDelay(spikeRoofTraps));
+                yield return StartCoroutine(CollectWithDelay(animatedTriggers));
+                yield return StartCoroutine(FindObjectWithDelay<HangarShipDoor>(obj => shipDoor = obj));
+                yield return StartCoroutine(FindObjectWithDelay<BreakerBox>(obj => breaker = obj));
+                yield return StartCoroutine(FindObjectWithDelay<MineshaftElevatorController>(obj => mineshaftElevator = obj));
                 localPlayer = GameNetworkManager.Instance?.localPlayerController;
 
                 yield return new WaitForSeconds(1f);
             }
         }
 
-        private void CollectObjects<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
+        private IEnumerator CollectWithDelay<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
         {
             list.Clear();
-            list.AddRange(filter == null ? Object.FindObjectsOfType<T>() : Object.FindObjectsOfType<T>().Where(filter));
+            var foundObjects = Object.FindObjectsOfType<T>();
+
+            if (filter != null)
+            {
+                foreach (var obj in foundObjects)
+                {
+                    if (filter(obj))
+                        list.Add(obj);
+
+                    yield return null;
+                }
+            }
+            else
+            {
+                list.AddRange(foundObjects);
+                yield return null;
+            }
         }
+        private IEnumerator FindObjectWithDelay<T>(Action<T> assignAction) where T : MonoBehaviour
+        {
+            var foundObject = Object.FindObjectOfType<T>();
+            assignAction(foundObject);
+            yield return null;
+        }
+
 
         public void Unload()
         {
