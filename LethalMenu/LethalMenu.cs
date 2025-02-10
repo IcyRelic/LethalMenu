@@ -181,58 +181,66 @@ namespace LethalMenu
 
         public IEnumerator CollectObjects()
         {
+            float totalDuration = 3f;
+            int totalTasks = 17;
+            float interval = totalDuration / totalTasks;
+
             while (true)
             {
-                yield return StartCoroutine(CollectWithDelay(items));
-                yield return StartCoroutine(CollectWithDelay(landmines));
-                yield return StartCoroutine(CollectWithDelay(turrets));
-                yield return StartCoroutine(CollectWithDelay(doors));
-                yield return StartCoroutine(CollectWithDelay(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame));
-                yield return StartCoroutine(CollectWithDelay(enemies));
-                yield return StartCoroutine(CollectWithDelay(steamValves));
-                yield return StartCoroutine(CollectWithDelay(allTerminalObjects));
-                yield return StartCoroutine(CollectWithDelay(teleporters));
-                yield return StartCoroutine(CollectWithDelay(interactTriggers));
-                yield return StartCoroutine(CollectWithDelay(bigDoors, obj => obj.isBigDoor));
-                yield return StartCoroutine(CollectWithDelay(doorLocks));
-                yield return StartCoroutine(CollectWithDelay(spikeRoofTraps));
-                yield return StartCoroutine(CollectWithDelay(animatedTriggers));
-                yield return StartCoroutine(FindObjectWithDelay<HangarShipDoor>(obj => shipDoor = obj));
-                yield return StartCoroutine(FindObjectWithDelay<BreakerBox>(obj => breaker = obj));
-                yield return StartCoroutine(FindObjectWithDelay<MineshaftElevatorController>(obj => mineshaftElevator = obj));
-                localPlayer = GameNetworkManager.Instance?.localPlayerController;
+                var tasks = new List<IEnumerator>
+        {
+            CollectWithBatch(items),
+            CollectWithBatch(landmines),
+            CollectWithBatch(turrets),
+            CollectWithBatch(doors),
+            CollectWithBatch(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame),
+            CollectWithBatch(enemies),
+            CollectWithBatch(steamValves),
+            CollectWithBatch(allTerminalObjects),
+            CollectWithBatch(teleporters),
+            CollectWithBatch(interactTriggers),
+            CollectWithBatch(bigDoors, obj => obj.isBigDoor),
+            CollectWithBatch(doorLocks),
+            CollectWithBatch(spikeRoofTraps),
+            CollectWithBatch(animatedTriggers),
+            FindObjectWithDelay<HangarShipDoor>(obj => shipDoor = obj),
+            FindObjectWithDelay<BreakerBox>(obj => breaker = obj),
+            FindObjectWithDelay<MineshaftElevatorController>(obj => mineshaftElevator = obj)
+        };
 
-                yield return new WaitForSeconds(1f);
+                foreach (var task in tasks)
+                {
+                    yield return StartCoroutine(task);
+                    yield return new WaitForSeconds(interval);
+                }
+
+                yield return new WaitForSeconds(0.1f);
             }
         }
 
-        private IEnumerator CollectWithDelay<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
+        private IEnumerator CollectWithBatch<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
         {
             list.Clear();
             var foundObjects = Object.FindObjectsOfType<T>();
+            int batchSize = 20;
 
-            if (filter != null)
+            for (int i = 0; i < foundObjects.Length; i++)
             {
-                foreach (var obj in foundObjects)
-                {
-                    if (filter(obj))
-                        list.Add(obj);
+                if (filter == null || filter(foundObjects[i]))
+                    list.Add(foundObjects[i]);
 
+                if (i % batchSize == 0)
                     yield return null;
-                }
-            }
-            else
-            {
-                list.AddRange(foundObjects);
-                yield return null;
             }
         }
+
         private IEnumerator FindObjectWithDelay<T>(Action<T> assignAction) where T : MonoBehaviour
         {
-            var foundObject = Object.FindObjectOfType<T>();
-            assignAction(foundObject);
+            assignAction(Object.FindObjectOfType<T>());
             yield return null;
         }
+
+
 
 
         public void Unload()
