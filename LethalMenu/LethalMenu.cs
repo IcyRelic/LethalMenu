@@ -213,10 +213,13 @@ namespace LethalMenu
                     yield return StartCoroutine(task);
                     yield return new WaitForSeconds(interval);
                 }
+                localPlayer = GameNetworkManager.Instance?.localPlayerController;
 
                 yield return new WaitForSeconds(0.1f);
+
             }
         }
+
 
         private IEnumerator CollectWithBatch<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
         {
@@ -229,7 +232,7 @@ namespace LethalMenu
                 if (filter == null || filter(foundObjects[i]))
                     list.Add(foundObjects[i]);
 
-                if (i % batchSize == 0)
+                if ((i + 1) % batchSize == 0) 
                     yield return null;
             }
         }
