@@ -1,14 +1,16 @@
-﻿using UnityEngine;
+﻿using HarmonyLib;
+using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch(typeof(ItemDropship), "ShipLandedAnimationEvent")]
     internal class OpenDropShipLand : Cheat
     {
-        public override void Update()
+        [HarmonyPostfix]
+        public static void ShipLandedAnimationEvent(ItemDropship __instance)
         {
-            ItemDropship dropship = Object.FindAnyObjectByType<ItemDropship>();
-            if (!Hack.OpenDropShipLand.IsEnabled() || dropship == null || !dropship.shipLanded) return;
-            dropship.OpenShipServerRpc();
+            if (!Hack.OpenDropShipLand.IsEnabled() || __instance == null || __instance.shipDoorsOpened) return;
+            __instance.OpenShipServerRpc();
         }
     }
 }

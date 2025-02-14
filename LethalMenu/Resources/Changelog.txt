@@ -1,3 +1,8 @@
+v1.4.6
+- Added Host kicked warning to anti kick - Shows what lobbies hosts kicked you!
+- Added Lethal Menu User Warning to Display Lethal Menu Users - Shows if the host is using Lethal Menu User in the lobby
+- Fixed FPS Problem - Thanks to Akira for pointing me to the issue :D
+ 
 v1.4.5
 - Added Chams Disable w/ Line of Sight
 - Added Mineshaft Elevator to ESP and Chams

@@ -1,13 +1,10 @@
-using System.IO;
-using System.Reflection;
-using System;
-using UnityEngine;
-using System.Linq;
 using LethalMenu.Handler;
-using LethalMenu.Menu.Core;
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
 using Object = UnityEngine.Object;
-using System.Threading.Tasks;
-using UnityEngine.Rendering.HighDefinition;
 
 
 namespace LethalMenu
@@ -16,17 +13,11 @@ namespace LethalMenu
     {
         private static GameObject Load;
 
-        public static async void Init()
+        public static void Init()
         {
-            DepthOfField gameloaded = FindObjectOfType<DepthOfField>(); 
-            while (gameloaded == null)
-            {
-                await Task.Delay(1000); 
-                gameloaded = FindObjectOfType<DepthOfField>(); 
-            }
             if (Load != null) return;      
-            ChamHandler.ChamsSetEnabled(true);
             LoadHarmony();
+            ChamHandler.ChamsSetEnabled(true);
             Loader.Load = new GameObject();
             Load.AddComponent<LethalMenu>();
             Object.DontDestroyOnLoad(Loader.Load);
@@ -46,7 +37,8 @@ namespace LethalMenu
         {
             HackExtensions.ToggleFlags.Keys.ToList().ForEach(h => HackExtensions.ToggleFlags[h] = false);
             ChamHandler.ChamsSetEnabled(false);
-            if (Cursor.visible) Hack.ToggleCursor.Execute();
+            if ((bool)!LethalMenu.localPlayer?.playerActions.Movement.enabled) LethalMenu.localPlayer.playerActions.Enable();
+            if (Cursor.visible && !LethalMenu.quickMenuManager.isMenuOpen) Cursor.visible = false;
             LethalMenu.harmony.UnpatchAll("LethalMenu");
             Object.Destroy(Load);
         }

@@ -3,10 +3,8 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 using Random = UnityEngine.Random;
 using Vector3 = UnityEngine.Vector3;
 
@@ -352,22 +350,25 @@ namespace LethalMenu.Handler
            typeof(CaveDwellerAI)
         };
 
-        public void Kill(bool despawn = false, bool all = false)
+        public void Kill(bool despawn = false, bool all = false, List<EnemyAI> enemies = null)
         {
             if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
             if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie)
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be killed without host");
+                enemy.serverPosition = new Vector3(-9999, -9999, -9999);
                 return;
             }
             bool forceDespawn = forceDespawnEnemies.Contains(enemy.GetType());
             if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie) enemy.enemyType.canDie = true;
             enemy.KillEnemyServerRpc(forceDespawn || despawn);
-            if (all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed all enemies");
-            else HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
+            if (LethalMenu.EnemyCount == 0) LethalMenu.EnemyCount = enemies.Count;
+            LethalMenu.EnemyCount--;
+            if (all && LethalMenu.EnemyCount == 0) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed all enemies");
+            else if (!all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
         }
 
-        public void Stun(bool all = false)
+        public void Stun(bool all = false, List<EnemyAI> enemies = null)
         {
             if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
             if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned)
@@ -377,8 +378,10 @@ namespace LethalMenu.Handler
             }
             if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
             enemy.SetEnemyStunned(true, 5);
-            if (all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunned all enemies");
-            else HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunning {enemy.enemyType.name} for 5 seconds");
+            if (LethalMenu.EnemyCount == 0) LethalMenu.EnemyCount = enemies.Count;
+            LethalMenu.EnemyCount--;
+            if (all && LethalMenu.EnemyCount == 0) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunned all enemies");
+            else if (!all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunning {enemy.enemyType.name} for 5 seconds");
         }
 
         public void Teleport(PlayerControllerB player = null, Vector3 position = default)

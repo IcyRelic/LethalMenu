@@ -1,5 +1,5 @@
-﻿using Dissonance;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
 namespace LethalMenu.Cheats
@@ -10,11 +10,13 @@ namespace LethalMenu.Cheats
         {
             GameObject gameObject = GameObject.Find("Systems");
 
-            if (gameObject == null) return;
+            if (gameObject == null || TimeOfDay.Instance.currentLevelWeather != LevelWeatherType.Foggy) return;
+            // fix later and add specifics maps with fog
 
-            if (LethalMenu.volume?.sharedProfile?.TryGet(out Fog fog) == true) fog.active = !Hack.NoFog.IsEnabled();
             gameObject.transform.Find("Rendering").Find("VolumeMain")?.gameObject.SetActive(!Hack.NoFog.IsEnabled());
             gameObject.transform.Find("Rendering").Find("VolumeMain (1)")?.gameObject.SetActive(!Hack.NoFog.IsEnabled());
+            RoundManager.Instance.indoorFog.gameObject.SetActive(!Hack.NoFog.IsEnabled());
+            TimeOfDay.Instance.foggyWeather.gameObject.SetActive(!Hack.NoFog.IsEnabled());
         }
     }
 }

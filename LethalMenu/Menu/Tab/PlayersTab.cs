@@ -44,7 +44,7 @@ namespace LethalMenu.Menu.Tab
 
             foreach (PlayerControllerB player in LethalMenu.players)
             {
-                if (player.disconnectedMidGame || !player.IsSpawned) continue;
+                if (player == null || !player.IsSpawned || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) continue;
 
                 if (selectedPlayer == -1) selectedPlayer = (int)player.playerClientId;
 
@@ -84,7 +84,7 @@ namespace LethalMenu.Menu.Tab
         {
             PlayerControllerB player = LethalMenu.players.Find(p => (int)p.playerClientId == selectedPlayer);
 
-            if (player == null || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
+            if (player == null || !player.IsSpawned || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
 
             string name = player.playerUsername;
 

@@ -14,11 +14,9 @@ namespace LethalMenu.Util
         {
             List<EnemyType> types = new List<EnemyType>();
 
-            QuickMenuManager menu = Object.FindAnyObjectByType<QuickMenuManager>();
-
             if (!(bool)StartOfRound.Instance) return types;
 
-            if (menu != null) types.AddRange(menu.testAllEnemiesLevel.OutsideEnemies.Where(e => e.enemyType.enemyName == "Bush Wolf").Select(e => e.enemyType));
+            if (LethalMenu.quickMenuManager != null) types.AddRange(LethalMenu.quickMenuManager.testAllEnemiesLevel.OutsideEnemies.Where(e => e.enemyType.enemyName == "Bush Wolf").Select(e => e.enemyType));
 
             foreach (var item in StartOfRound.Instance.levels)
             {

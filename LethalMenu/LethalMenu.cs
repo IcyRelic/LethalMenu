@@ -1,18 +1,17 @@
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMenu.Language;
+using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
+using LethalMenu.Menu.Popup;
+using LethalMenu.Themes;
 using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine.Rendering;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using LethalMenu.Themes;
-using LethalMenu.Menu.Popup;
 
 namespace LethalMenu
 {
@@ -32,18 +31,20 @@ namespace LethalMenu
         public static List<ShipTeleporter> teleporters = new List<ShipTeleporter>();
         public static List<InteractTrigger> interactTriggers = new List<InteractTrigger>();
         public static List<SpikeRoofTrap> spikeRoofTraps = new List<SpikeRoofTrap>();
-        public static List<MoldSpore> vainShrouds = new List<MoldSpore>();
+        public static List<GameObject> vainShrouds = new List<GameObject>();
         public static List<AnimatedObjectTrigger> animatedTriggers = new List<AnimatedObjectTrigger>();
+        public static List<EnemyVent> enemyVents = new List<EnemyVent>();
+        public static List<VehicleController> vehicles = new List<VehicleController>();
+        public static ItemDropship itemDropship;
         public static HangarShipDoor shipDoor;
         public static BreakerBox breaker;
         public static MineshaftElevatorController mineshaftElevator;
         public static PlayerControllerB localPlayer;
-        public static VehicleController vehicle;
-        public static Volume volume;
-        public static PatcherTool ZapGun;
+        public static QuickMenuManager quickMenuManager;
         public static int selectedPlayer = -1;
+        public static int EnemyCount = 0;
         public int fps;
-        public Dictionary<string, string> LMUsers { get; set; } = [];
+        public Dictionary<string, string> LMUsers = [];
 
 
         public static Harmony harmony;
@@ -79,7 +80,7 @@ namespace LethalMenu
             HarmonyPatching();
             LoadCheats();
             MenuUtil.LMUser();
-            this.StartCoroutine(this.CollectObjects());
+            ObjectManager.CollectObjects();
             this.StartCoroutine(this.FPSCounter());
         }
 
@@ -97,10 +98,7 @@ namespace LethalMenu
                 Settings.Changelog.ReadChanges();
                 cheats = new List<Cheat>();
                 menu = new HackMenu();
-                foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(t => String.Equals(t.Namespace, "LethalMenu.Cheats", StringComparison.Ordinal) && t.IsSubclassOf(typeof(Cheat))))
-                {
-                    cheats.Add((Cheat)Activator.CreateInstance(type));
-                }
+                foreach (Type type in Assembly.GetExecutingAssembly().GetTypes().Where(t => String.Equals(t.Namespace, "LethalMenu.Cheats", StringComparison.Ordinal) && t.IsSubclassOf(typeof(Cheat)))) cheats.Add((Cheat)Activator.CreateInstance(type));
                 Settings.Config.SaveDefaultConfig();
                 Settings.Config.LoadConfig();
             }
@@ -177,40 +175,6 @@ namespace LethalMenu
             {
                 Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
-        }
-
-        public IEnumerator CollectObjects()
-        {
-            while (true)
-            {
-                CollectObjects(items);
-                CollectObjects(landmines);
-                CollectObjects(turrets);
-                CollectObjects(doors);
-                CollectObjects(players, obj => !obj.playerUsername.StartsWith("Player #") && !obj.disconnectedMidGame);
-                CollectObjects(enemies);
-                CollectObjects(steamValves);        
-                CollectObjects(allTerminalObjects);
-                CollectObjects(teleporters);
-                CollectObjects(interactTriggers);
-                CollectObjects(bigDoors, obj => obj.isBigDoor); 
-                CollectObjects(doorLocks);
-                CollectObjects(spikeRoofTraps);
-                CollectObjects(animatedTriggers);
-
-                shipDoor = Object.FindObjectOfType<HangarShipDoor>();
-                breaker = Object.FindObjectOfType<BreakerBox>();
-                mineshaftElevator = Object.FindObjectOfType<MineshaftElevatorController>();
-                localPlayer = GameNetworkManager.Instance?.localPlayerController;
-
-                yield return new WaitForSeconds(1f);
-            }
-        }
-
-        private void CollectObjects<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
-        {
-            list.Clear();
-            list.AddRange(filter == null ? Object.FindObjectsOfType<T>() : Object.FindObjectsOfType<T>().Where(filter));
         }
 
         public void Unload()

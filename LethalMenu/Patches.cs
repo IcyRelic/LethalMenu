@@ -1,19 +1,20 @@
 using GameNetcodeStuff;
 using HarmonyLib;
 using LethalMenu.Cheats;
+using LethalMenu.Manager;
 using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
 using Steamworks;
+using Steamworks.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
-using LethalMenu.Manager;
 using Object = UnityEngine.Object;
-using Vector3 = UnityEngine.Vector3;
 using Random = UnityEngine.Random;
-using System.Collections;
+using Vector3 = UnityEngine.Vector3;
 
 namespace LethalMenu
 {
@@ -21,22 +22,20 @@ namespace LethalMenu
     internal class Patches
     {
         public static bool SellQuota = false;
-        private static bool OnJoin = true;
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc")]
+        [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc"), HarmonyPostfix]
         public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
         {
-            if (OnJoin)
+            if (__instance.IsLocalPlayer)
             {
+                Task.Delay(2000);
                 MenuUtil.LMUser();
                 LethalMenu.items.Where(i => i != null && !i.isInShipRoom).ToList().ForEach(i => i.isInShipRoom = true);
-                OnJoin = false;
+                RoundHandler.LootBeforeGameStarts();
             }
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect))]
+        [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect)), HarmonyPostfix]
         public static void Disconnect(GameNetworkManager __instance)
         {
             SpectatePlayer.Reset();
@@ -44,25 +43,27 @@ namespace LethalMenu
             LethalMenu.Instance.LMUsers.Clear();
             Shoplifter.Clear();
             ServerTab.UpdatePlayerOptions(true);
-            OnJoin = true;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(StartOfRound), "OnClientConnect")]
+        [HarmonyPatch(typeof(StartOfRound), "OnClientConnect"), HarmonyPostfix]
         public static void OnClientConnect(StartOfRound __instance)
         {
             MenuUtil.LMUser();
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(GameNetworkManager), "StartClient")]
+        [HarmonyPatch(typeof(GameNetworkManager), "StartClient"), HarmonyPostfix]
         public static void StartClient(SteamId id)
         {
             Settings.s_lobbyid = id;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc))]
+        [HarmonyPatch(typeof(GameNetworkManager), "SteamMatchmaking_OnLobbyCreated"), HarmonyPrefix]
+        public static void SteamMatchmaking_OnLobbyCreated(GameNetworkManager __instance, Result result, Lobby lobby)
+        {
+            if (Settings.b_DisplayLMUsers) __instance.lobbyHostSettings.lobbyName += "\x200C";
+        }
+
+        [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc)), HarmonyPrefix]
         public static void CompanyAttackPrefix(ref bool ___attacking, ref bool ___inGrabbingObjectsAnimation, ref bool __state)
         {
             __state = ___inGrabbingObjectsAnimation;
@@ -70,15 +71,13 @@ namespace LethalMenu
             ___inGrabbingObjectsAnimation = false;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc))]
+        [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc)), HarmonyPostfix]
         public static void CompanyAttackPostfix(ref bool ___inGrabbingObjectsAnimation, ref bool __state)
         {
             ___inGrabbingObjectsAnimation = __state;
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.DisplayCreditsEarning))]
+        [HarmonyPatch(typeof(HUDManager), nameof(HUDManager.DisplayCreditsEarning)), HarmonyPostfix]
         public static void DisplayCreditsEarning(HUDManager __instance, int creditsEarned, GrabbableObject[] objectsSold, int newGroupCredits)
         {
             if (SellQuota)
@@ -92,8 +91,7 @@ namespace LethalMenu
             }
         }
 
-        [HarmonyTranspiler]
-        [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.PlaceItemOnCounter))]
+        [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.PlaceItemOnCounter)), HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> PlaceItemOnCounter(IEnumerable<CodeInstruction> instructions)
         {
             foreach (CodeInstruction instruction in instructions)
@@ -103,8 +101,7 @@ namespace LethalMenu
             }
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "CanEnableDebugMenu")]
+        [HarmonyPatch(typeof(QuickMenuManager), "CanEnableDebugMenu"), HarmonyPrefix]
         public static bool CanEnableDebugMenu(ref bool __result)
         {
             if (Settings.DebugMode)
@@ -115,8 +112,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(PlayerControllerB), "AllowPlayerDeath")]
+        [HarmonyPatch(typeof(PlayerControllerB), "AllowPlayerDeath"), HarmonyPrefix]
         public static bool AllowPlayerDeath(PlayerControllerB __instance, ref bool __result)
         {
             if (Settings.DebugMode)
@@ -127,8 +123,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "Debug_SpawnEnemy")]
+        [HarmonyPatch(typeof(QuickMenuManager), "Debug_SpawnEnemy"), HarmonyPrefix]
         public static bool Debug_SpawnEnemy(QuickMenuManager __instance)
         {
             if (Settings.DebugMode)
@@ -166,8 +161,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "Start")]
+        [HarmonyPatch(typeof(QuickMenuManager), "Start"), HarmonyPrefix]
         public static bool Start(QuickMenuManager __instance)
         {
             if (Settings.DebugMode)
@@ -180,8 +174,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "Debug_SpawnItem")]
+        [HarmonyPatch(typeof(QuickMenuManager), "Debug_SpawnItem"), HarmonyPrefix]
         public static bool Debug_SpawnItem(QuickMenuManager __instance)
         {
             if (Settings.DebugMode)
@@ -197,8 +190,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "Debug_KillLocalPlayer")]
+        [HarmonyPatch(typeof(QuickMenuManager), "Debug_KillLocalPlayer"), HarmonyPrefix]
         public static bool Debug_KillLocalPlayer()
         {
             if (Settings.DebugMode)
@@ -209,8 +201,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "Debug_SpawnTruck")]
+        [HarmonyPatch(typeof(QuickMenuManager), "Debug_SpawnTruck"), HarmonyPrefix]
         public static bool Debug_SpawnTruck(QuickMenuManager __instance)
         {
             if (Settings.DebugMode)
@@ -221,8 +212,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "Debug_ToggleTestRoom")]
+        [HarmonyPatch(typeof(QuickMenuManager), "Debug_ToggleTestRoom"), HarmonyPrefix]
         public static bool Debug_ToggleTestRoom()
         {
             if (Settings.DebugMode)
@@ -233,8 +223,7 @@ namespace LethalMenu
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(QuickMenuManager), "Debug_ToggleAllowDeath")]
+        [HarmonyPatch(typeof(QuickMenuManager), "Debug_ToggleAllowDeath"), HarmonyPrefix]
         public static bool Debug_ToggleAllowDeath()
         {
             if (Settings.DebugMode)

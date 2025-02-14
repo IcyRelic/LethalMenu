@@ -8,8 +8,6 @@ using System;
 namespace LethalMenu.Cheats
 {
     [HarmonyPatch]
-    [HarmonyPatch(typeof(GiftBoxItem), nameof(GiftBoxItem.Start))]
-    [HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.DestroyObjectInHand))]
     internal class UnlimitedPresents : Cheat
     {
         private static bool stuckpresent = false;
@@ -25,7 +23,7 @@ namespace LethalMenu.Cheats
             }
         }
 
-        [HarmonyPrefix]
+        [HarmonyPatch(typeof(GrabbableObject), nameof(GrabbableObject.DestroyObjectInHand)), HarmonyPrefix]
         public static bool DestroyObjectInHand()
         {
             if (Hack.UnlimitedPresents.IsEnabled() && LethalMenu.localPlayer.currentlyHeldObjectServer is GiftBoxItem)
@@ -36,7 +34,7 @@ namespace LethalMenu.Cheats
             return true;
         }
 
-        [HarmonyPostfix]
+        [HarmonyPatch(typeof(GiftBoxItem), nameof(GiftBoxItem.Start)), HarmonyPostfix]
         public static void Start(GiftBoxItem __instance)
         {
             if (Hack.UnlimitedPresents.IsEnabled() && LethalMenu.localPlayer.currentlyHeldObjectServer is GiftBoxItem && stuckpresent) __instance.Reflect().SetValue("hasUsedGift", false);

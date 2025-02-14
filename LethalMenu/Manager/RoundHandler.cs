@@ -2,19 +2,17 @@
 using LethalMenu.Handler;
 using LethalMenu.Types;
 using LethalMenu.Util;
+using Steamworks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
-using Steamworks;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Numerics;
-using Vector3 = UnityEngine.Vector3;
 using Quaternion = UnityEngine.Quaternion;
-using static UnityEngine.EventSystems.EventTrigger;
+using Random = UnityEngine.Random;
+using Vector3 = UnityEngine.Vector3;
 
 
 namespace LethalMenu.Manager
@@ -27,6 +25,8 @@ namespace LethalMenu.Manager
 
     public class RoundHandler
     {
+        public static List<GrabbableObject> shipitems = new List<GrabbableObject>();
+
         public static void ModCredits(int amount, ActionType type)
         {
             if (GetTerminal() == null) return;           
@@ -98,12 +98,14 @@ namespace LethalMenu.Manager
             if (!(bool)StartOfRound.Instance || LethalMenu.breaker == null) return false;
             return LethalMenu.breaker.isPowerOn;
         }
+
         public static bool AreShipLightsOn()
         {
             if (!(bool)StartOfRound.Instance) return false;
             ShipLights lights = Object.FindObjectOfType<ShipLights>();
             return lights.areLightsOn;
         }
+
         public static void StartGame() => StartOfRound.Instance?.StartGameServerRpc();
 
         public static void EndGame() => StartOfRound.Instance?.EndGameServerRpc(-1);
@@ -388,6 +390,19 @@ namespace LethalMenu.Manager
             if (TimeOfDay.Instance.MeteorWeather.meteors.Count == 0 || !LethalMenu.localPlayer.IsHost || TimeOfDay.Instance == null) return;
             HUDManager.Instance.DisplayTip("Lethal Menu", $"Cleared {TimeOfDay.Instance.MeteorWeather.meteors.Count} Meteors");
             TimeOfDay.Instance.MeteorWeather.ResetMeteorWeather();
+        }
+
+        public static void LootBeforeGameStarts()
+        {
+            if (Hack.LootBeforeGameStarts.IsEnabled())
+            {
+                LethalMenu.items.Where(i => i != null && !i.itemProperties.canBeGrabbedBeforeGameStart && !shipitems.Contains(i)).ToList().ForEach(i =>
+                {
+                    i.itemProperties.canBeGrabbedBeforeGameStart = true;
+                    shipitems.Add(i);
+                });
+            }
+            else shipitems.Clear();
         }
 
         public static void ChangeMoon(int levelID)

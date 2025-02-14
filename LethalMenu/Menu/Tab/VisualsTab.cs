@@ -44,6 +44,10 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.BreakerESP, "VisualsTab.BreakerESP");
             UI.Hack(Hack.SpikeRoofTrapESP, "VisualsTab.SpikeRoofTrapESP");
             UI.Hack(Hack.MineshaftElevatorESP, "VisualsTab.MineshaftElevatorESP");
+            UI.Hack(Hack.EnemyVentESP, "VisualsTab.EnemyVentESP");
+            UI.Hack(Hack.VainShroudESP, "VisualsTab.VainShroudESP");
+            UI.Hack(Hack.CruiserESP, "VisualsTab.CruiserESP");
+            UI.Hack(Hack.ItemDropShipESP, "VisualsTab.ItemDropShipESP");
 
             GUILayout.EndScrollView();
         }

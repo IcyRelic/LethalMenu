@@ -3,7 +3,6 @@ using LethalMenu.Cheats;
 using LethalMenu.Handler;
 using LethalMenu.Language;
 using LethalMenu.Manager;
-using LethalMenu.Menu.Tab;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using Steamworks;
@@ -13,7 +12,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
-using Object = UnityEngine.Object;
 using Vector3 = UnityEngine.Vector3;
 
 namespace LethalMenu
@@ -165,6 +163,9 @@ namespace LethalMenu
         BigDoorESP,
         DoorLockESP,
         SpikeRoofTrapESP,
+        VainShroudESP,
+        CruiserESP,
+        ItemDropShipESP,
         AlwaysShowClock,
         SimpleClock,
         Crosshair,
@@ -175,6 +176,7 @@ namespace LethalMenu
         FOV,
         HPDisplay,
         MineshaftElevatorESP,
+        EnemyVentESP,
 
         /** Player Tab **/
         KillPlayer,
@@ -256,6 +258,10 @@ namespace LethalMenu
             {Hack.BigDoorESP, false},
             {Hack.DoorLockESP, false},
             {Hack.SpikeRoofTrapESP, false},
+            {Hack.EnemyVentESP, false},
+            {Hack.VainShroudESP, false},
+            {Hack.CruiserESP, false},
+            {Hack.ItemDropShipESP, false},
             {Hack.Crosshair, false},
             {Hack.DisplayBodies, false},
             {Hack.DisplayEnemies, false},
@@ -404,6 +410,7 @@ namespace LethalMenu
             {Hack.OpenAllBigDoors, (Action) HackExecutor.OpenAllBigDoors},
             {Hack.CloseAllBigDoors, (Action) HackExecutor.CloseAllBigDoors},
             {Hack.SpawnHoardingBugInfestation, (Action) HackExecutor.SpawnHoardingBugInfestation},
+            {Hack.LootBeforeGameStarts, (Action) HackExecutor.LootBeforeGameStarts},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -541,6 +548,10 @@ namespace LethalMenu
             Hack.BreakerESP.Execute();
             Hack.SpikeRoofTrapESP.Execute();
             Hack.MineshaftElevatorESP.Execute();
+            Hack.EnemyVentESP.Execute();
+            Hack.VainShroudESP.Execute();
+            Hack.CruiserESP.Execute();
+            Hack.ItemDropShipESP.Execute();
         }
 
         public static void ToggleAllDisplays()
@@ -625,8 +636,8 @@ namespace LethalMenu
         public static void ControlEnemy(EnemyAI e) => e.Handle().Control();
         public static void TeleportEnemy(PlayerControllerB player, EnemyAI e) => e.Handle().Teleport(player);
         public static void TeleportAllEnemies(PlayerControllerB player, EnemyAI[] enemies) => enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));
-        public static void StunAllEnemies() => LethalMenu.enemies.ForEach(e => e.Handle().Stun(true));
-        public static void KillAllEnemies() => LethalMenu.enemies.ForEach(e => e.Handle().Kill(false, true));
+        public static void StunAllEnemies() => LethalMenu.enemies.ForEach(e => e.Handle().Stun(true, LethalMenu.enemies));
+        public static void KillAllEnemies() => LethalMenu.enemies.ToList().ForEach(e => e.Handle().Kill(false, true, LethalMenu.enemies));
         public static void KillNearbyEnemies(int distance = -1) => LethalMenu.enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance).ForEach(enemy => enemy.Handle().Kill());
         public static void ToggleShipLights() => RoundHandler.ToggleShipLights();
         public static void ToggleCarHorn() => RoundHandler.ToggleCarHorn();
@@ -646,5 +657,6 @@ namespace LethalMenu
         public static void CloseAllBigDoors() => RoundHandler.CloseAllBigDoors();
         public static void ForceMeteorShower() => RoundHandler.ForceMeteorShower();
         public static void ClearMeteorShower() => RoundHandler.ClearMeteorShower();
+        public static void LootBeforeGameStarts() => RoundHandler.LootBeforeGameStarts();
     }
 }

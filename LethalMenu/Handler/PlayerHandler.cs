@@ -1,8 +1,10 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Cheats;
+using LethalMenu.Manager;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 
 namespace LethalMenu.Handler
 {
@@ -96,7 +98,8 @@ namespace LethalMenu.Handler
             desk.PlaceItemOnCounter(player);
         }
 
-        public bool HasLineOfSight(Component o) => player != null && o != null && player.HasLineOfSightToPosition(o.transform.position);
+        public bool HasLineOfSightToPosition(Component o) => player != null && o != null && player.HasLineOfSightToPosition(o.transform.position);
+        public bool HasLineOfSight(Component o) => player != null && o != null && player.HasLineOfSight(o.transform.position);
         public PlayerHandler GetHandler(PlayerControllerB player) => new PlayerHandler(player);
     }
 
@@ -105,5 +108,10 @@ namespace LethalMenu.Handler
     public static class PlayerHandlerExtensions
     {
         public static PlayerHandler Handle(this PlayerControllerB player) => new PlayerHandler(player);
+        public static bool HasLineOfSight(this PlayerControllerB player, Vector3 pos, float width = 45f, int range = 60)
+        {
+            if (Vector3.Distance(player.transform.position, pos) < (float)range && Vector3.Angle(player.playerEye.transform.forward, pos - CameraManager.ActiveCamera.transform.position) < width && !Physics.Linecast(player.playerEye.transform.position, pos, out RaycastHit hit, StartOfRound.Instance.collidersRoomDefaultAndFoliage, QueryTriggerInteraction.Ignore)) return true;
+            return false;
+        }
     }
 }

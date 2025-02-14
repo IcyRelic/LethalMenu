@@ -13,7 +13,7 @@ namespace LethalMenu.Cheats
     [HarmonyPatch]
     internal class AntiKick : Cheat
     {
-        private static List<ulong> HostKickedPlayerList = new List<ulong>();
+        public static List<ulong> HostKickedPlayerList = new List<ulong>();
         private static bool HostQuit = false;
         private static bool HostKicked = false;
 
