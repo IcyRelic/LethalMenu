@@ -240,52 +240,61 @@ Thank you for contributing to the development of this mod by sharing your feedba
 | ------------ | ------------- | ------------- |
 | Toggle Menu  | <kbd>Insert</kbd> | Open/Close the GUI |
 | Unload Menu  | <kbd>Pause</kbd> | Completely unload the cheat |
-| Unlock Door Action  | <kbd>F1</kbd> | Unlock the door you're looking at|
+| Unlock Objects Action  | <kbd>F1</kbd> | Unlock the object you're looking at including doors, big doors, turrets, and landmines |
 | NoClip Controls  | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Space</kbd><kbd>LCTRL</kbd> | Movement Controls while using NoClip |
 
 ## Latest Changelog | v1.4.5
 ```
-- Added Dress Girl Controller 
-- Added Clay Surgeon Controller
-- Added Cave Dweller Controller 
-- Added Anti Ghost Girl 
-- Added Welcome Message 
-- Added Enemy Control Anti Scan 
-- Added Eggs Always Explode
-- Added No Ship Door Close (Host Only)
-- Added Force Meteor Shower (Host Only) 
-- Added Clear Meteor Shower (Host Only) 
-- Added Double Wing Controller 
-- Added Docile Locust Bees Controller
-- Added Enemy Death Notifications 
-- Added Notification to Kill Enemy 
-- Added Notification to Stun Enemy 
-- Added Bush Wolf Enemy Insta Kill 
-- Added Cave Dweller Insta Kill
-- Added Edit Deadline (Host Only) 
-- Added Open Drop Ship On Land 
-- Added Close Gate 
-- Added Loot Any Item Belt Bag 
-- Added Loot Through Walls Belt Bag 
-- Added Click Kill
-- Added HP Display
-- Added No TZP Effects
-- Added Unlimited TZP
-- Fixed Enemy Controller 
-- Fixed Teleport Enemy To Player
-- Fixed Chams Error
-- Fixed God Mode Error
-- Fixed Toggle Terminal Sound Error
-- Fixed Open All Doors 
-- Fixed Close All Doors 
-- Fixed Unlock all doors
-- Changed HP Display to Player HP Display 
-- Changed Teleport All Enemies
-- Changed Grab Items Before Game
-- Changed Unload 
-- Changed Unlock Door 
-- Changed Enemy Spawn List 
-- Changed Enemy List
+- Added Host kicked warning to anti kick
+- Added Lethal Menu User Warning to Display Lethal Menu Users
+- Added Enemy Vent ESP
+- Added Enemy Vent Chams
+- Added Vain Shroud ESP
+- Added Vain Shroud Chams
+- Added Cruiser ESP
+- Added Cruiser Chams
+- Added Item Dropship ESP
+- Added Item Dropship Chams
+- Added Audio to Free cam
+- Added Audio to Spectate player
+- Added Box ESP
+- Added Mineshaft colors
+- Added Toggle Mineshaft Elevator
+- Added Toggle Vehicle Magnet
+- Added Toggle Vehicle Ignition
+- Added Object Queue Delay
+- Added Toggle All Chams
+- Added Spam Shoot All Shotguns
+- Added Shot All Shotguns
+- Added Minigun Shotgun
+- Added Grab Nutcrackers Shotgun
+- Added Display Credits
+- Added Message Spam
+- Added Is Outside to enemy tab
+- Added Item Amount to Item Manager
+- Added Explode Cruiser
+- Fixed null ESP and Chams errors
+- Fixed Demi god / heal
+- Fixed Cursor bug
+- Fixed First Setup Manager bug
+- Fixed No Fog
+- Fixed Players List
+- Fixed FPS Problem
+- Fixed Kill All and Stun All notifications
+- Fixed Self Tab Error
+- Fixed Wrong config name
+- Fixed Loot Before Game Starts
+- Fixed Kill enemy
+- Fixed Kill All Enemies and Stun All Enemies
+- Fixed Self Tab Error
+- Fixed Loot Manager
+- Fixed Moon Manager
+- Changed Managers
+- Changed Unlock Door
+- Changed Open All Doors
+- Changed Close All Doors
+- Changed Unlock Door to Unlock Objects
+- Removed line of sight
 ```
 
 ## Credit
