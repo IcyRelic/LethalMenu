@@ -291,6 +291,7 @@ namespace LethalMenu
                 hackSettings["ESPThickness"] = f_ESPThickness.ToString();
                 hackSettings["ObjectQueueDelay"] = f_ObjectQueueDelay.ToString();
                 hackSettings["NoFog"] = b_NoFog.ToString();
+                hackSettings["DisplayHostKickedLobbies"] = b_DisplayHostKickedLobbies.ToString();
 
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
@@ -477,6 +478,8 @@ namespace LethalMenu
                         f_ObjectQueueDelay = float.Parse(objectQueueDelayToken.ToString());
                     if (hackSettings.TryGetValue("NoFog", out JToken noFogToken))
                         b_NoFog = bool.Parse(noFogToken.ToString());
+                    if (hackSettings.TryGetValue("DisplayHostKickedLobbies", out JToken displayHostKickedLobbiesToken))
+                        b_DisplayHostKickedLobbies = bool.Parse(displayHostKickedLobbiesToken.ToString());
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {
