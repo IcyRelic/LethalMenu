@@ -3,7 +3,7 @@
 
 #### Screenshots
 <p>
-  <img src="https://i.imgur.com/H5FEQMr.png" width="445" height="255" />
+  <img src="https://i.imgur.com/3gysNVQ.png" width="445" height="255" />
   <img src="https://i.imgur.com/D7srqbi.png" width="445" height="255" />
 </p>
 
