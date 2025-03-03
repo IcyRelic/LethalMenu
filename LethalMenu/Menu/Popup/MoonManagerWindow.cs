@@ -29,15 +29,16 @@ namespace LethalMenu.Menu.Popup
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             UI.Header("MoonManager.CurrentMoon");
-            UI.Label("MoonManager.Moon", StartOfRound.Instance.currentLevel.PlanetName);                      
-            UI.Label("MoonManager.Weather", StartOfRound.Instance.currentLevel.currentWeather.ToString());   
+            UI.Label("MoonManager.Moon", StartOfRound.Instance.currentLevel.PlanetName);
+            UI.Label("MoonManager.Weather", StartOfRound.Instance.currentLevel.currentWeather.ToString());
             UI.Label("MoonManager.Risk", StartOfRound.Instance.currentLevel.riskLevel);
 
             UI.Header("MoonManager.ChangeMoon", true);
 
             selectableLevels.Where(x => x != null && x.levelID != StartOfRound.Instance.currentLevel.levelID).ToList().ForEach(x =>
             {
-                UI.Button($"{x.PlanetName}{(x.currentWeather == LevelWeatherType.None ? "" : $" ({x.currentWeather})")}", () =>
+                string weather = x.currentWeather == LevelWeatherType.None ? "" : $" ({x.currentWeather})";
+                UI.Button($"{x.PlanetName}{weather}", () =>
                 {
                     RoundHandler.ChangeMoon(x.levelID);
                     HUDManager.Instance.DisplayTip($"Lethal Menu", $"Changed moon to {x.PlanetName}!");
