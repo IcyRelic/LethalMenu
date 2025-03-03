@@ -1,10 +1,10 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Cheats;
+using LethalMenu.Manager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace LethalMenu.Util
 {
@@ -58,7 +58,7 @@ namespace LethalMenu.Util
 
         public static float GetDistanceToPlayer(Vector3 position)
         {
-            return (float)Mathf.Round(Vector3.Distance(GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform.position, position));
+            return (float)Mathf.Round(Vector3.Distance(CameraManager.ActiveCamera.transform.position, position));
         }
 
         public static float GetDistance(Vector3 from, Vector3 to)

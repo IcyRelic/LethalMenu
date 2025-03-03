@@ -36,8 +36,8 @@ namespace LethalMenu
         InteractThroughWalls,
         Reach,
         AntiGhostGirl,
-        UnlockDoors,
-        UnlockDoorAction,
+        UnlockObjects,
+        UnlockObjectsAction,
         SuperSpeed,
         NoClip,
         Experience,
@@ -91,6 +91,8 @@ namespace LethalMenu
         TeleportOneItem,
         FixAllValves,
         FullRenderResolution,
+        GrabNutcrackerShotgun,
+        MinigunShotgun,
 
         /** Server Tab **/
         ToggleAllDisplays,
@@ -100,13 +102,12 @@ namespace LethalMenu
         DisplayShipObjects,
         DisplayQuota,
         DisplayDeadline,
+        DisplayCredits,
         ModifyCredits,
         ModifyQuota,
         EndGame,
         StartGame,
         SpawnMoreScrap,
-        UnlockUnlockable,
-        UnlockUnlockableSuit,
         Shoplifter,
         ShowOffensiveLobbyNames,
         JoinLobby,
@@ -147,9 +148,16 @@ namespace LethalMenu
         BerserkAllTurrets,
         PJSpammer,
         SpawnHoardingBugInfestation,
+        ToggleMineshaftElevator,
+        ToggleVehicleMagnet,
+        SpamShootAllShotguns,
+        ShootAllShotguns,
+        ExplodeCruiser,
 
         /** Visuals Tab **/
         ToggleAllESP,
+        NameESP,
+        BoxESP,
         ObjectESP,
         EnemyESP,
         PlayerESP,
@@ -170,7 +178,6 @@ namespace LethalMenu
         SimpleClock,
         Crosshair,
         Breadcrumbs,
-        NoFog,
         NoVisor,
         NoFieldOfDepth,
         FOV,
@@ -211,7 +218,6 @@ namespace LethalMenu
             Hack.DeathNotify,
             Hack.SpectatePlayer,
             Hack.MiniCam,
-            Hack.UnlockUnlockable,
             Hack.ModifyScrap,
             Hack.ModifyDeadline,
             Hack.Message,
@@ -240,11 +246,13 @@ namespace LethalMenu
             {Hack.LootThroughWalls, false},
             {Hack.InteractThroughWalls, false},
             {Hack.Reach, false},
-            {Hack.UnlockDoors, false},
+            {Hack.UnlockObjects, false},
             {Hack.AlwaysShowClock, false},
             {Hack.SimpleClock, false},
             {Hack.SuperSpeed, false},
             {Hack.NoClip, false},
+            {Hack.NameESP, false},
+            {Hack.BoxESP, false},
             {Hack.ObjectESP, false},
             {Hack.EnemyESP, false},
             {Hack.PlayerESP, false},
@@ -269,6 +277,7 @@ namespace LethalMenu
             {Hack.DisplayShipObjects, false},
             {Hack.DisplayQuota, false},
             {Hack.DisplayDeadline, false},
+            {Hack.DisplayCredits, false},
             {Hack.ToggleAllLandmines, false},
             {Hack.ToggleAllTurrets, false},
             {Hack.ToggleShipHorn, false},
@@ -276,7 +285,6 @@ namespace LethalMenu
             {Hack.Breadcrumbs, false},
             {Hack.DeathNotifications, false},
             {Hack.EnemyDeathNotifications, false},
-            {Hack.NoFog, false},
             {Hack.BuildAnywhere, false},
             {Hack.Weight, false},
             {Hack.GhostMode, false},
@@ -330,6 +338,9 @@ namespace LethalMenu
             {Hack.DemiGod, false},
             {Hack.FullRenderResolution, false},
             {Hack.ToggleDepositDeskDoorSound, false},
+            {Hack.GrabNutcrackerShotgun, false},
+            {Hack.MinigunShotgun, false},
+            {Hack.SpamShootAllShotguns, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -366,14 +377,12 @@ namespace LethalMenu
             {Hack.HealPlayer, (Action<PlayerControllerB>) HackExecutor.HealPlayer},
             {Hack.DemiGod, (Action<PlayerControllerB>) HackExecutor.DemiGod},
             {Hack.LightningStrikePlayer, (Action<PlayerControllerB>) HackExecutor.LightningStrikePlayer},
-            {Hack.UnlockDoorAction, (Action) HackExecutor.UnlockDoor},
+            {Hack.UnlockObjectsAction, (Action) HackExecutor.UnlockObjects},
             {Hack.ToggleAllESP, (Action) HackExecutor.ToggleAllESP},
             {Hack.DeathNotify, (Action<PlayerControllerB, CauseOfDeath>) HackExecutor.NotifyDeath},
             {Hack.EnemyDeathNotify, (Action<EnemyType>) HackExecutor.NotifyEnemyDeath},
             {Hack.SpectatePlayer, (Action<PlayerControllerB>) HackExecutor.SpectatePlayer},
             {Hack.MiniCam, (Action<PlayerControllerB>) HackExecutor.MiniCam},
-            {Hack.UnlockUnlockable, (Action<Unlockable, bool, bool>) HackExecutor.UnlockUnlockable},
-            {Hack.UnlockUnlockableSuit, (Action<Unlockable, bool, bool, bool>) HackExecutor.UnlockUnlockableSuit},
             {Hack.FixAllValves, (Action) HackExecutor.FixAllValves},
             {Hack.ModifyScrap, (Action<int, int>) HackExecutor.ModScrap},
             {Hack.TeleportAllEnemies, (Action<PlayerControllerB, EnemyAI[]>) HackExecutor.TeleportAllEnemies},
@@ -410,15 +419,19 @@ namespace LethalMenu
             {Hack.OpenAllBigDoors, (Action) HackExecutor.OpenAllBigDoors},
             {Hack.CloseAllBigDoors, (Action) HackExecutor.CloseAllBigDoors},
             {Hack.SpawnHoardingBugInfestation, (Action) HackExecutor.SpawnHoardingBugInfestation},
-            {Hack.LootBeforeGameStarts, (Action) HackExecutor.LootBeforeGameStarts},
+            {Hack.ToggleMineshaftElevator, (Action) HackExecutor.ToggleMineshaftElevator},
+            {Hack.ToggleVehicleMagnet, (Action) HackExecutor.ToggleVehicleMagnet},
+            {Hack.SpamShootAllShotguns, (Action) HackExecutor.SpamShootAllShotguns},
+            {Hack.ShootAllShotguns, (Action) HackExecutor.ShootAllShotguns},
+            {Hack.ExplodeCruiser, (Action) HackExecutor.ExplodeCruiser},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
         {
             {Hack.OpenMenu, Keyboard.current.insertKey},
-            {Hack.ToggleCursor, Keyboard.current.leftAltKey},
+            {Hack.ToggleCursor, Keyboard.current.altKey},
             {Hack.UnloadMenu, Keyboard.current.pauseKey},
-            {Hack.UnlockDoorAction, Keyboard.current.f1Key},
+            {Hack.UnlockObjectsAction, Keyboard.current.f1Key},
             {Hack.ClickTeleportAction, Mouse.current.middleButton},
             {Hack.ClickKillAction, Mouse.current.middleButton}
         };
@@ -562,6 +575,7 @@ namespace LethalMenu
             Hack.DisplayMapObjects.Execute();
             Hack.DisplayQuota.Execute();
             Hack.DisplayShipObjects.Execute();
+            Hack.DisplayCredits.Execute();
         }
 
         public static void ModExperience(int amt, ActionType type)
@@ -587,7 +601,7 @@ namespace LethalMenu
 
         public static void ClickKill() => RoundHandler.ClickKill();
         public static void ClickTeleport() => RoundHandler.ClickTeleport();
-        public static void UnlockDoor() => RoundHandler.UnlockDoor();
+        public static void UnlockObjects() => RoundHandler.UnlockObjects();
         public static void UnloadMenu() => LethalMenu.Instance.Unload();
         public static void NotifyDeath(PlayerControllerB died, CauseOfDeath cause) => HUDManager.Instance.DisplayTip("Lethal Menu", $"{died.playerUsername} has died from {cause.ToString()}");
         public static void NotifyEnemyDeath(EnemyType enemy) => HUDManager.Instance.DisplayTip("Lethal Menu", $"{enemy.name} has died");
@@ -604,8 +618,6 @@ namespace LethalMenu
         public static void ModScrap(int value, int type) => RoundHandler.ModScrap(value, type);
         public static void SpawnMoreScrap() => RoundHandler.SpawnScrap();
         public static void ResetShip() => RoundHandler.ResetShip();
-        public static void UnlockUnlockable(Unlockable unlockable, bool all, bool enabled) => RoundHandler.BuyUnlockable(unlockable, all, enabled);
-        public static void UnlockUnlockableSuit(Unlockable unlockablesuit, bool wearbuy, bool buy, bool sound) => RoundHandler.BuyUnlockableSuit(unlockablesuit, wearbuy, buy, sound);
         public static void EndGame() => RoundHandler.EndGame();
         public static void StartGame() => RoundHandler.StartGame();
         public static void ModQuota(int amt) => RoundHandler.SetQuota(amt);
@@ -636,8 +648,8 @@ namespace LethalMenu
         public static void ControlEnemy(EnemyAI e) => e.Handle().Control();
         public static void TeleportEnemy(PlayerControllerB player, EnemyAI e) => e.Handle().Teleport(player);
         public static void TeleportAllEnemies(PlayerControllerB player, EnemyAI[] enemies) => enemies.ToList().FindAll(e => !e.isEnemyDead).ForEach(e => e.Handle().Teleport(player));
-        public static void StunAllEnemies() => LethalMenu.enemies.ForEach(e => e.Handle().Stun(true, LethalMenu.enemies));
-        public static void KillAllEnemies() => LethalMenu.enemies.ToList().ForEach(e => e.Handle().Kill(false, true, LethalMenu.enemies));
+        public static void StunAllEnemies() => RoundHandler.StunAll();
+        public static void KillAllEnemies() => RoundHandler.KillAll();
         public static void KillNearbyEnemies(int distance = -1) => LethalMenu.enemies.FindAll(e => GameUtil.GetDistanceToPlayer(e.transform.position) <= distance).ForEach(enemy => enemy.Handle().Kill());
         public static void ToggleShipLights() => RoundHandler.ToggleShipLights();
         public static void ToggleCarHorn() => RoundHandler.ToggleCarHorn();
@@ -650,13 +662,17 @@ namespace LethalMenu
         public static void VoteShipLeaveEarly() => TimeOfDay.Instance.VoteShipToLeaveEarly();
         public static void BerserkAllTurrets() => RoundHandler.BerserkAllTurrets();
         public static void DropAllItems() => RoundHandler.DropAllItems();
-        public static void ToggleTerminalSound() => RoundHandler.ToggleTerminalSound();
+        public static void ToggleTerminalSound() => LethalMenu.Instance.StartCoroutine(RoundHandler.ToggleTerminalSound());
         public static void DeleteHeldItem() => RoundHandler.DeleteHeldItem();
         public static void UnlockAllDoors() => RoundHandler.UnlockAllDoors();
         public static void OpenAllBigDoors() => RoundHandler.OpenAllBigDoors();
         public static void CloseAllBigDoors() => RoundHandler.CloseAllBigDoors();
         public static void ForceMeteorShower() => RoundHandler.ForceMeteorShower();
         public static void ClearMeteorShower() => RoundHandler.ClearMeteorShower();
-        public static void LootBeforeGameStarts() => RoundHandler.LootBeforeGameStarts();
+        public static void ToggleMineshaftElevator() => RoundHandler.ToggleMineshaftElevator();
+        public static void ToggleVehicleMagnet() => RoundHandler.ToggleVehicleMagnet();
+        public static void SpamShootAllShotguns() => LethalMenu.Instance.StartCoroutine(RoundHandler.SpamShootAllShotguns());
+        public static void ShootAllShotguns() => RoundHandler.ShootAllShotguns();
+        public static void ExplodeCruiser() => RoundHandler.ExplodeCruiser();
     }
 }

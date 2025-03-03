@@ -1,9 +1,11 @@
 ﻿using GameNetcodeStuff;
+using LethalMenu.Manager;
 using LethalMenu.Types;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Component = UnityEngine.Component;
 using Object = UnityEngine.Object;
 
 namespace LethalMenu.Handler
@@ -71,14 +73,12 @@ namespace LethalMenu.Handler
         public void ProcessCham(float distance)
         {
             if (@object == null) return;
-
             bool e = false;
-            bool HasLineOfSight = LethalMenu.localPlayer != null && @object is Component component ? LethalMenu.localPlayer.Handle().HasLineOfSight(component) : true;
 
             if (@object is GrabbableObject item && !item.isHeld) e = Settings.b_chamsObject;
             if (@object is Landmine) e = Settings.b_chamsLandmine;
             if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
-            if (@object is EnemyAI enemy && !enemy.isEnemyDead) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
+            if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
             if (@object is SteamValveHazard steamValve && !steamValve.triggerScript.interactable) e = Settings.b_chamsSteamHazard;
             if (@object is TerminalAccessibleObject && ((TerminalAccessibleObject)@object).isBigDoor) e = Settings.b_chamsBigDoor;
             if (@object is DoorLock doorLock && doorLock.isLocked) e = Settings.b_chamsDoorLock;
@@ -91,8 +91,8 @@ namespace LethalMenu.Handler
             if (@object is MineshaftElevatorController) e = Settings.b_chamsMineshaftElevator;
             if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap;     
             if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
-
-            if (chamsenabled && e && distance >= Settings.f_chamDistance && (!Settings.b_chamsDisableWithLOS || !HasLineOfSight)) ApplyCham();
+         
+            if (chamsenabled && e && distance >= Settings.f_chamDistance) ApplyCham();
             else RemoveCham();
         }
 
@@ -166,11 +166,19 @@ namespace LethalMenu.Handler
         }
     }
 
-    public static class RendererExtensions
+    public static class ChamHandlerExtensions
     {
         public static ChamHandler GetChamHandler(this Object obj)
         {
             return ChamHandler.GetHandler(obj);
+        }
+
+        public static Vector3 GetPosition(this Object obj)
+        {
+            if (obj is Transform transform) return transform.position;
+            else if (obj is GameObject gameObject) return gameObject.transform.position;
+            else if (obj is Component component) return component.transform.position;
+            return Vector3.zero;
         }
     }
 }

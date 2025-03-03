@@ -1,11 +1,15 @@
-﻿using LethalMenu.Manager;
+﻿using GameNetcodeStuff;
+using LethalMenu.Handler;
+using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
-using UnityEngine;
-using LethalMenu.Util;
 using LethalMenu.Types;
-using System.Linq;
-using System.Collections.Generic;
+using LethalMenu.Util;
 using Steamworks;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -16,18 +20,20 @@ namespace LethalMenu.Menu.Tab
         private string s_scrapAmount = "1";
         private string s_scrapValue = "1";
         private string s_deadlineValue = "3";
-        public static string s_message = "";
+        public static string s_message = "Lethal Menu on top!";
         public static int i_messageindex = 0;
+        private static int id = -1;
         private string s_joinlobbyid = "";
+        private bool MessageSpam = false;
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
 
-        public static List<UIOption> options = new List<UIOption>
+        private static List<UIOption> options = new List<UIOption>
         {
-            new UIOption("ServerTab.System", () => Hack.Message.Execute(s_message, 0, -1)),
-            new UIOption("ServerTab.Server", () => Hack.Message.Execute(s_message, 1, -1)),
-            new UIOption("ServerTab.Broadcast", () => Hack.Message.Execute(s_message, 2, -1)),
-            new UIOption("ServerTab.SignalTranslator", () => Hack.Message.Execute(s_message, 3, -1))
+            new UIOption("ServerTab.System", () => MessageExecute(0, -1)),
+            new UIOption("ServerTab.Server", () => MessageExecute(1, -1)),
+            new UIOption("ServerTab.Broadcast", () => MessageExecute(2, -1)),
+            new UIOption("ServerTab.SignalTranslator", () => MessageExecute(3, -1))
         };
 
         public ServerTab() : base("ServerTab.Title") { }
@@ -57,6 +63,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.DisplayShipObjects, "ServerTab.DisplayShipObjects");
             UI.Hack(Hack.DisplayQuota, "ServerTab.DisplayQuota");
             UI.Hack(Hack.DisplayDeadline, "ServerTab.DisplayDeadline");
+            UI.Hack(Hack.DisplayCredits, "ServerTab.DisplayCredits");
 
             GUILayout.EndScrollView();
         }
@@ -89,9 +96,11 @@ namespace LethalMenu.Menu.Tab
                 new UIButton("General.Set", () => Hack.ModifyScrap.Execute(int.Parse(s_scrapValue), 1))
             );
 
-            UpdatePlayerOptions(false);
+            UpdatePlayerOptions();
 
-            UI.Select("ServerTab.Message", ref i_messageindex, ref s_message, @"", 50, options.ToArray());
+            UI.Select("ServerTab.Message", ref i_messageindex, ref s_message, @"", 50, 2, options.ToArray());
+
+            UI.ToggleAction("ServerTab.MessageSpam", ref MessageSpam, "General.Enable", "General.Disable", () => LethalMenu.Instance.StartCoroutine(StartSpamming()));
 
             UI.Hack(Hack.StartGame, "ServerTab.ForceLand");
             UI.Hack(Hack.EndGame, "ServerTab.ForceLeave");
@@ -125,22 +134,41 @@ namespace LethalMenu.Menu.Tab
         private void ManagersContent()
         {
             UI.Header("ServerTab.Managers");
-            UI.Toggle("MoonManager.Title", ref HackMenu.Instance.MoonManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("UnlockableManager.Title", ref HackMenu.Instance.UnlockableManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("ItemManager.Title", ref HackMenu.Instance.ItemManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("LootManager.Title", ref HackMenu.Instance.LootManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("WeatherManager.Title", ref HackMenu.Instance.WeatherManagerWindow.isOpen, "General.Close", "General.Open");
-            UI.Toggle("SuitManager.Title", ref HackMenu.Instance.SuitManagerWindow.isOpen, "General.Close", "General.Open");
+            UI.Toggle("MoonManager.Title", ref HackMenu.Instance.MoonManagerWindow.isOpen, "General.Open", "General.Close");
+            UI.Toggle("UnlockableManager.Title", ref HackMenu.Instance.UnlockableManagerWindow.isOpen, "General.Open", "General.Close");
+            UI.Toggle("ItemManager.Title", ref HackMenu.Instance.ItemManagerWindow.isOpen, "General.Open", "General.Close");
+            UI.Toggle("LootManager.Title", ref HackMenu.Instance.LootManagerWindow.isOpen, "General.Open", "General.Close");
+            UI.Toggle("WeatherManager.Title", ref HackMenu.Instance.WeatherManagerWindow.isOpen, "General.Open", "General.Close");
+            UI.Toggle("SuitManager.Title", ref HackMenu.Instance.SuitManagerWindow.isOpen, "General.Open", "General.Close");
         }
 
-        public static void UpdatePlayerOptions(bool clear)
+        private static void MessageExecute(int Type, int ID)
         {
+            id = ID;  
+            Hack.Message.Execute(s_message, Type, ID);
+        }
+
+        public static void UpdatePlayerOptions(bool clear = false)
+        {
+            List<PlayerControllerB> players = LethalMenu.players.Where(p => p != null && p.IsRealPlayer()).ToList();
             options = options.Take(4).ToList();
-            if (clear) i_messageindex = 0;
-            if (clear) return;
-            options.AddRange(LethalMenu.players.Select(player =>
-                new UIOption(player.playerUsername, () => Hack.Message.Execute(s_message, 4, (int)player.actualClientId)))
+            if (clear)
+            {
+                i_messageindex = 0;
+                return;
+            }
+            options.AddRange(players.Select(p =>
+                new UIOption(p.playerUsername, () => MessageExecute(4, (int)p.actualClientId)))
             );
+        }
+
+        private IEnumerator StartSpamming()
+        {
+            while (MessageSpam)
+            {
+                Hack.Message.Execute(s_message, i_messageindex, id);
+                yield return new WaitForSeconds(0.1f);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Cheats;
+using LethalMenu.Handler;
 using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
@@ -44,7 +45,7 @@ namespace LethalMenu.Menu.Tab
 
             foreach (PlayerControllerB player in LethalMenu.players)
             {
-                if (player == null || !player.IsSpawned || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) continue;
+                if (player == null || !player.IsRealPlayer()) continue;
 
                 if (selectedPlayer == -1) selectedPlayer = (int)player.playerClientId;
 
@@ -84,7 +85,7 @@ namespace LethalMenu.Menu.Tab
         {
             PlayerControllerB player = LethalMenu.players.Find(p => (int)p.playerClientId == selectedPlayer);
 
-            if (player == null || !player.IsSpawned || player.playerUsername.StartsWith("Player #") || player.disconnectedMidGame) return;
+            if (player == null || !player.IsRealPlayer()) return;
 
             string name = player.playerUsername;
 
@@ -98,10 +99,10 @@ namespace LethalMenu.Menu.Tab
             UI.Label("PlayerTab.PlayerId", player.playerClientId.ToString());
             UI.Label("PlayerTab.PlayerStatus", player.isPlayerDead ? "PlayerTab.DeadPrefix" : "PlayerTab.AlivePrefix");
             UI.Label("PlayerTab.PlayerHealth", player.health.ToString());
-            UI.Label("PlayerTab.IsHost", (player.actualClientId == 0 ? "True" : "False"));
+            UI.Label("PlayerTab.Insanity", player.insanityLevel.ToString());
+            UI.Label("PlayerTab.IsHost", player.IsHost().ToString());
             UI.Label("PlayerTab.IsInFactory", player.isInsideFactory.ToString());
             UI.Label("PlayerTab.IsInShip", player.isInHangarShipRoom.ToString());
-            UI.Label("PlayerTab.Insanity", player.insanityLevel.ToString());
 
             UI.Header("PlayerTab.Inventory", true);
             foreach (GrabbableObject item in player.ItemSlots)
@@ -112,8 +113,11 @@ namespace LethalMenu.Menu.Tab
 
             UI.Header("General.GeneralActions", true);
             UI.Hack(Hack.Teleport, "PlayerTab.TeleportTo", player.transform.position, player.isInElevator, player.isInHangarShipRoom, player.isInsideFactory);
-            if (player != LethalMenu.localPlayer) UI.Hack(Hack.DemiGod, "PlayerTab.DemiGod", player);
-            HackExtensions.SetToggle(Hack.DemiGod, DemiGodCheat.DemiGodPlayers.Contains(player));
+            if (player != LethalMenu.localPlayer)
+            {
+                UI.Hack(Hack.DemiGod, "PlayerTab.DemiGod", player);
+                HackExtensions.SetToggle(Hack.DemiGod, DemiGodCheat.DemiGodPlayers.Contains(player));
+            }
             UI.Hack(Hack.KillPlayer, "PlayerTab.Kill", player);
             UI.Hack(Hack.HealPlayer, "PlayerTab.Heal", player);
             UI.Hack(Hack.LightningStrikePlayer, ["PlayerTab.Strike", "General.HostStormyTag"], player);
@@ -124,7 +128,7 @@ namespace LethalMenu.Menu.Tab
 
             if (player.playerClientId != GameNetworkManager.Instance.localPlayerController.playerClientId)
             {
-                string btnText = Cheats.SpectatePlayer.isSpectatingPlayer(player) ? "General.Stop" : "PlayerTab.Spectate";
+                string btnText = SpectatePlayer.isSpectatingPlayer(player) ? "General.Stop" : "PlayerTab.Spectate";
 
                 Action startAction = () =>
                 {
@@ -136,11 +140,11 @@ namespace LethalMenu.Menu.Tab
                     Hack.SpectatePlayer.SetToggle(false);
                 };
 
-                Action action = Cheats.SpectatePlayer.isSpectatingPlayer(player) ? stopAction : startAction;
+                Action action = SpectatePlayer.isSpectatingPlayer(player) ? stopAction : startAction;
 
                 UI.Button("PlayerTab.Spectate", action, btnText);
 
-                btnText = (int)player.playerClientId == Cheats.SpectatePlayer.camPlayer ? "General.Stop" : "General.View";
+                btnText = (int)player.playerClientId == SpectatePlayer.camPlayer ? "General.Stop" : "General.View";
 
                 startAction = () =>
                 {
@@ -152,7 +156,7 @@ namespace LethalMenu.Menu.Tab
                     Hack.MiniCam.SetToggle(false);
                 };
 
-                action = Cheats.SpectatePlayer.isCamPlayer(player) ? stopAction : startAction;
+                action = SpectatePlayer.isCamPlayer(player) ? stopAction : startAction;
 
                 UI.Button("PlayerTab.MiniCam", action, btnText);
             }

@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections;
+using LethalMenu.Handler;
 
 namespace LethalMenu.Cheats
 {
@@ -31,8 +32,8 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(StartOfRound), "SetShipDoorsOverheatClientRpc")]
         public static bool SetShipDoorsOverheatClientRpc(StartOfRound __instance)
         {
-            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost) return false;
-            else if (Hack.NoShipDoorClose.IsEnabled() && !LethalMenu.localPlayer.IsHost)
+            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost()) return false;
+            else if (Hack.NoShipDoorClose.IsEnabled() && !LethalMenu.localPlayer.IsHost())
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "This is host only :C");
                 return true;
@@ -47,7 +48,7 @@ namespace LethalMenu.Cheats
             InteractTrigger trigger = LethalMenu.interactTriggers.FirstOrDefault(i => i != null && i.transform.parent != null && i.transform.parent.name == "StartButton");
             if (trigger == null || LethalMenu.shipDoor == null) return false;
             if (LethalMenu.localPlayer && Triggered.TryGetValue(trigger.transform.name, out bool isTriggered) && isTriggered) return true;
-            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost) return false;
+            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost()) return false;
             return true;
         }
     }

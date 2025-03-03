@@ -1,6 +1,4 @@
-﻿using GameNetcodeStuff;
-using HarmonyLib;
-using LethalMenu.Language;
+﻿using LethalMenu.Language;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System;
@@ -13,16 +11,14 @@ namespace LethalMenu.Menu.Popup
     {
         private Vector2 scrollPos = Vector2.zero;
 
-        public static ButtonControl bind = Hack.OpenMenu.GetKeyBind();
-        public static string kb = Hack.OpenMenu.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
         private int selectedLanguage = -1;
         private string[] languages;
         private bool disableBtns = false;
 
-        public FirstSetupManagerWindow(int id) : base("FirstSetup.Title", new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100f, 300f, 250f), id) 
+        public FirstSetupManagerWindow(int id) : base("FirstSetup.Title", new Rect(Screen.width / 2 - 150, Screen.height / 2 - 100f, 300f, 250f), id)
         {
             languages = Localization.GetLanguages();
-            isOpen = true; 
+            isOpen = true;
         }
 
         public override void DrawContent(int windowID)
@@ -35,8 +31,8 @@ namespace LethalMenu.Menu.Popup
             GUILayout.Space(20f);
             GUILayout.BeginVertical();
             UI.Label("FirstSetup.SelectKeybind");
-         
-            UI.Label("FirstSetup.Keybind", $"{kb}");
+
+            UI.Label("FirstSetup.Keybind", $"{GetMenuKeybindName()}");
             GUILayout.Space(20f);
 
             string btnText = Hack.OpenMenu.IsWaiting() ? "General.Waiting" : "FirstSetup.ClickToChange";
@@ -86,6 +82,12 @@ namespace LethalMenu.Menu.Popup
             }));
             if (disableBtns) GUI.enabled = true;
             GUI.DragWindow();
+        }
+
+        public static string GetMenuKeybindName()
+        {
+            ButtonControl bind = Hack.OpenMenu.GetKeyBind();
+            return Hack.OpenMenu.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
         }
     }
 }

@@ -12,6 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.HighDefinition;
 
 namespace LethalMenu
 {
@@ -35,17 +38,19 @@ namespace LethalMenu
         public static List<AnimatedObjectTrigger> animatedTriggers = new List<AnimatedObjectTrigger>();
         public static List<EnemyVent> enemyVents = new List<EnemyVent>();
         public static List<VehicleController> vehicles = new List<VehicleController>();
+        public static List<LocalVolumetricFog> fogs = new List<LocalVolumetricFog>();
+        public static List<Volume> volumes = new List<Volume>();
         public static ItemDropship itemDropship;
         public static HangarShipDoor shipDoor;
+        public static DepositItemsDesk depositItemsDesk;
         public static BreakerBox breaker;
         public static MineshaftElevatorController mineshaftElevator;
         public static PlayerControllerB localPlayer;
         public static QuickMenuManager quickMenuManager;
+        public static Terminal terminal;
         public static int selectedPlayer = -1;
-        public static int EnemyCount = 0;
         public int fps;
         public Dictionary<string, string> LMUsers = [];
-
 
         public static Harmony harmony;
         private HackMenu menu;
@@ -79,7 +84,7 @@ namespace LethalMenu
             Theme.Initialize();
             HarmonyPatching();
             LoadCheats();
-            MenuUtil.LMUser();
+            MenuUtil.StartLMUser();
             ObjectManager.CollectObjects();
             this.StartCoroutine(this.FPSCounter());
         }
@@ -129,8 +134,8 @@ namespace LethalMenu
                 {
                     if ((bool)StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
                     if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsAnyHackWaiting()) hack.Execute();
+                    if (!(bool)StartOfRound.Instance) return;
                 }
-                if (!(bool)StartOfRound.Instance) return;
                 cheats.ForEach(cheat => cheat.Update());
             }
             catch (Exception e)
@@ -154,7 +159,7 @@ namespace LethalMenu
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin | Menu Toggle: {FirstSetupManagerWindow.kb}";
+                    string LethalMenuTitle = $"Lethal Menu {Settings.version} By IcyRelic, and Dustin | Menu Toggle: {FirstSetupManagerWindow.GetMenuKeybindName()}";
                     LethalMenuTitle += Settings.b_FPSCounter ? $" | FPS: {fps}" : "";
                     VisualUtil.DrawString(new Vector2(5f, 2f), LethalMenuTitle, Settings.c_primary, centered: false, bold: true, fontSize: 14);
                     if (MenuUtil.resizing)

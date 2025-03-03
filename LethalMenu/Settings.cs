@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -89,10 +90,9 @@ namespace LethalMenu
         public static RGBAColor c_vainShroudChams = new RGBAColor(102, 51, 153, 0.1f);
         public static RGBAColor c_spikeRoofTrapChams = new RGBAColor(139, 69, 19, 0.1f);
         public static RGBAColor c_itemDropShipChams = new RGBAColor(199, 21, 133, 0.1f); 
-        public static RGBAColor c_CruiserChams = new RGBAColor(255, 215, 0, 0.1f);   
-        public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
-
+        public static RGBAColor c_CruiserChams = new RGBAColor(255, 215, 0, 0.1f);
         public static RGBAColor c_mineshaftElevatorChams = new RGBAColor(0, 0, 255, 0.1f);
+        public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
 
         /* * * * * * * * *
          *  Other Colors *
@@ -129,7 +129,8 @@ namespace LethalMenu
         public static float f_carMaxSpeed = 7f;
         public static float f_brakeSpeed = 7f;
         public static float f_pjSpamSpeed = 0.5f;
-
+        public static float f_ESPThickness = 1f;
+        public static float f_ObjectQueueDelay = 0.1f;
 
         public static bool b_disableSpectatorModels = true;
         public static bool b_useScrapTiers = false;
@@ -141,7 +142,7 @@ namespace LethalMenu
         public static bool b_FPSCounter = false; 
         public static bool b_DisplayLMUsers = false;
         public static bool b_DisplayHostKickedLobbies = false;
-        public static bool b_WearBuy = false;
+        public static bool b_NoFog = false;
 
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
 
@@ -156,8 +157,7 @@ namespace LethalMenu
         public static bool b_chamsBreaker = false;
         public static bool b_chamsShip = false;
         public static bool b_chamsSpikeRoofTrap = false;
-        public static bool b_UseSingleChamColor = true;
-        public static bool b_chamsDisableWithLOS = false;
+        public static bool b_UseSingleChamColor = false;
         public static bool b_chamsMineshaftElevator = false;
         public static bool b_chamsEnemyVent = false;
         public static bool b_chamsItemDropship = false;
@@ -185,8 +185,6 @@ namespace LethalMenu
             new RGBAColor(255, 165, 0, 1f),
         };
 
-        public static CursorLockMode clm_lastCursorState = Cursor.lockState;
-
         public static string debugMessage = "";
 
         internal class Changelog
@@ -208,7 +206,7 @@ namespace LethalMenu
 
         internal class Config
         {
-            public static string config = "lethelmenu.config.json";
+            public static string config = "lethalmenu.config.json"; 
             public static string defaultConf = "lethalmenu.default.config.json";
 
             public static void CreateConfigIfNotExists()
@@ -247,7 +245,7 @@ namespace LethalMenu
 
                 foreach (var item in HackExtensions.ToggleFlags)
                 {
-                    if (item.Key.CanBeExecuted()) continue;
+                    if (item.Key.CanBeExecuted()) continue; 
                     string key = item.Key.ToString();
                     string value = item.Value.ToString();
                     toggles.Add(key, value);
@@ -290,6 +288,9 @@ namespace LethalMenu
                 hackSettings["FOV"] = f_fov.ToString();
                 hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
                 hackSettings["PJSpamSpeed"] = f_pjSpamSpeed.ToString();
+                hackSettings["ESPThickness"] = f_ESPThickness.ToString();
+                hackSettings["ObjectQueueDelay"] = f_ObjectQueueDelay.ToString();
+                hackSettings["NoFog"] = b_NoFog.ToString();
 
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
@@ -304,7 +305,6 @@ namespace LethalMenu
                 chams["Ship"] = b_chamsShip.ToString();
                 chams["SpikeRoofTrap"] = b_chamsSpikeRoofTrap.ToString();
                 chams["UseSingleChamColor"] = b_UseSingleChamColor.ToString();
-                chams["DisableWithLOS"] = b_chamsDisableWithLOS.ToString();
                 chams["MineshaftElevator"] = b_chamsMineshaftElevator.ToString();
                 chams["EnemyVent"] = b_chamsEnemyVent.ToString();
                 chams["VainShroud"] = b_chamsVainShroud.ToString();
@@ -373,17 +373,21 @@ namespace LethalMenu
                 json["KeyBinds"] = JObject.FromObject(keybinds);
                 json["Toggles"] = JObject.FromObject(toggles);
 
-
                 File.WriteAllText(conf, json.ToString());
             }
 
             public static void LoadConfig()
             {
+                if (File.Exists("lethelmenu.config.json"))
+                {
+                    File.Move("lethelmenu.config.json", config);
+                    LoadConfig();
+                    return;
+                }
+
                 CreateConfigIfNotExists();
 
-                string jsonStr = File.ReadAllText(config);
-
-                JObject json = JObject.Parse(jsonStr);
+                JObject json = JObject.Parse(File.ReadAllText(config));
 
                 if (json.TryGetValue("Language", out JToken languageToken))
                     Localization.SetLanguage(languageToken.ToString());
@@ -467,6 +471,12 @@ namespace LethalMenu
                         f_fov = float.Parse(fovToken.ToString());
                     if (hackSettings.TryGetValue("PJSpamSpeed", out JToken pjSpamSpeedToken))
                         f_pjSpamSpeed = float.Parse(pjSpamSpeedToken.ToString());
+                    if (hackSettings.TryGetValue("ESPThickness", out JToken espThicknessToken))
+                        f_ESPThickness = float.Parse(espThicknessToken.ToString());
+                    if (hackSettings.TryGetValue("ObjectQueueDelay", out JToken objectQueueDelayToken))
+                        f_ObjectQueueDelay = float.Parse(objectQueueDelayToken.ToString());
+                    if (hackSettings.TryGetValue("NoFog", out JToken noFogToken))
+                        b_NoFog = bool.Parse(noFogToken.ToString());
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {
@@ -510,8 +520,6 @@ namespace LethalMenu
                             b_chamsShip = bool.Parse(shipToken.ToString());
                         if (chams.TryGetValue("SpikeRoofTrap", out JToken spikeRoofTrapToken))
                             b_chamsSpikeRoofTrap = bool.Parse(spikeRoofTrapToken.ToString());
-                        if (chams.TryGetValue("DisableWithLOS", out JToken disableWithLOS))
-                            b_chamsDisableWithLOS = bool.Parse(disableWithLOS.ToString());
                         if (chams.TryGetValue("MineshaftElevator", out JToken elevator))
                             b_chamsMineshaftElevator = bool.Parse(elevator.ToString());
                         if (chams.TryGetValue("EnemyVent", out JToken enemyvent))
@@ -631,6 +639,8 @@ namespace LethalMenu
                 HackExtensions.KeyBinds.Clear();
                 LoadConfig();
             }
+
+            public static void OpenConfig() => Process.Start("explorer.exe", config);
         }
     }
 }

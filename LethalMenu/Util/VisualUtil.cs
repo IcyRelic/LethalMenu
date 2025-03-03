@@ -1,4 +1,5 @@
-﻿using LethalMenu.Language;
+﻿using LethalMenu.Handler;
+using LethalMenu.Language;
 using Newtonsoft.Json;
 using UnityEngine;
 
@@ -89,7 +90,7 @@ namespace LethalMenu.Util
         }
 
     }
-    public class VisualUtil
+    public class VisualUtil : Cheat
     {
         public static GUIStyle StringStyle { get; set; } = new GUIStyle(GUI.skin.label);
 
@@ -97,22 +98,6 @@ namespace LethalMenu.Util
         {
             get { return GUI.color; }
             set { GUI.color = value; }
-        }
-
-        public static void DrawBox(Vector2 position, Vector2 size, Color color, bool centered = true)
-        {
-            Color = color;
-            DrawBox(position, size, centered);
-        }
-
-        public static void DrawBox(Vector2 position, Vector2 size, RGBAColor color, bool centered = true)
-        {
-            DrawBox(position, size, color.GetColor(), centered);
-        }
-        public static void DrawBox(Vector2 position, Vector2 size, bool centered = true)
-        {
-            var upperLeft = centered ? position - size / 2f : position;
-            GUI.DrawTexture(new Rect(position, size), Texture2D.whiteTexture, ScaleMode.StretchToFill);
         }
 
         public static void DrawString(Vector2 position, string label, Color color, bool centered = true, bool alignMiddle = false, bool bold = false, bool forceOnScreen = false, int fontSize = -1)
@@ -172,17 +157,14 @@ namespace LethalMenu.Util
         public static void DrawLine(Vector2 pointA, Vector2 pointB, Color color, float width)
         {
             Matrix4x4 matrix = GUI.matrix;
-            if (!lineTex)
-                lineTex = new Texture2D(1, 1);
-
+            if (!lineTex) lineTex = new Texture2D(1, 1);
             Color color2 = GUI.color;
             GUI.color = color;
             float num = Vector3.Angle(pointB - pointA, Vector2.right);
-
-            if (pointA.y > pointB.y)
-                num = -num;
-
-            GUIUtility.ScaleAroundPivot(new Vector2((pointB - pointA).magnitude, width), new Vector2(pointA.x, pointA.y + 0.5f));
+            if (pointA.y > pointB.y) num = -num;
+            Vector2 scale = new Vector2((pointB - pointA).magnitude, width);
+            if (scale.x == 0 || scale.y == 0) return;
+            GUIUtility.ScaleAroundPivot(scale, new Vector2(pointA.x, pointA.y + 0.5f));
             GUIUtility.RotateAroundPivot(num, pointA);
             GUI.DrawTexture(new Rect(pointA.x, pointA.y, 1f, 1f), lineTex);
             GUI.matrix = matrix;
@@ -194,30 +176,38 @@ namespace LethalMenu.Util
             DrawLine(pointA, pointB, color.GetColor(), width);
         }
 
-        public static void DrawBox(float x, float y, float w, float h, Color color, float thickness)
+        public static void DrawBoxOutline(GameObject GameObject, Color color, float thickness)
         {
-            DrawLine(new Vector2(x, y), new Vector2(x + w, y), color, thickness);
-            DrawLine(new Vector2(x, y), new Vector2(x, y + h), color, thickness);
-            DrawLine(new Vector2(x + w, y), new Vector2(x + w, y + h), color, thickness);
-            DrawLine(new Vector2(x, y + h), new Vector2(x + w, y + h), color, thickness);
+            Bounds bounds = GameObject.GetBounds();
+            Vector3[] corners = new Vector3[8];
+            corners[0] = new Vector3(bounds.min.x, bounds.max.y, bounds.min.z);
+            corners[1] = new Vector3(bounds.max.x, bounds.max.y, bounds.min.z);
+            corners[2] = new Vector3(bounds.max.x, bounds.max.y, bounds.max.z);
+            corners[3] = new Vector3(bounds.min.x, bounds.max.y, bounds.max.z);
+            corners[4] = new Vector3(bounds.min.x, bounds.min.y, bounds.min.z);
+            corners[5] = new Vector3(bounds.max.x, bounds.min.y, bounds.min.z);
+            corners[6] = new Vector3(bounds.max.x, bounds.min.y, bounds.max.z);
+            corners[7] = new Vector3(bounds.min.x, bounds.min.y, bounds.max.z);
+            if (WorldToScreen(corners[0], out var topL) && WorldToScreen(corners[1], out var topR) && WorldToScreen(corners[2], out var topRN) && WorldToScreen(corners[3], out var topLN) && WorldToScreen(corners[4], out var bottomLF) && WorldToScreen(corners[5], out var bottomRF) && WorldToScreen(corners[6], out var bottomRN) && WorldToScreen(corners[7], out var bottomLN))
+            {
+                DrawLine(topL, topR, color, thickness);
+                DrawLine(topR, topRN, color, thickness);
+                DrawLine(topRN, topLN, color, thickness);
+                DrawLine(topLN, topL, color, thickness);
+                DrawLine(bottomLF, bottomRF, color, thickness);
+                DrawLine(bottomRF, bottomRN, color, thickness);
+                DrawLine(bottomRN, bottomLN, color, thickness);
+                DrawLine(bottomLN, bottomLF, color, thickness);
+                DrawLine(topL, bottomLF, color, thickness);
+                DrawLine(topR, bottomRF, color, thickness);
+                DrawLine(topRN, bottomRN, color, thickness);
+                DrawLine(topLN, bottomLN, color, thickness);
+            }
         }
 
-        public static void DrawBox(float x, float y, float w, float h, RGBAColor color, float thickness)
+        public static void DrawBoxOutline(GameObject GameObject, RGBAColor color, float thickness)
         {
-            DrawBox(x, y, w, h, color.GetColor(), thickness);
-        }
-
-        public static void DrawBoxOutline(Vector2 Point, float width, float height, Color color, float thickness)
-        {
-            DrawLine(Point, new Vector2(Point.x + width, Point.y), color, thickness);
-            DrawLine(Point, new Vector2(Point.x, Point.y + height), color, thickness);
-            DrawLine(new Vector2(Point.x + width, Point.y + height), new Vector2(Point.x + width, Point.y), color, thickness);
-            DrawLine(new Vector2(Point.x + width, Point.y + height), new Vector2(Point.x, Point.y + height), color, thickness);
-        }
-
-        public static void DrawBoxOutline(Vector2 Point, float width, float height, RGBAColor color, float thickness)
-        {
-            DrawBoxOutline(Point, width, height, color.GetColor(), thickness);
+            DrawBoxOutline(GameObject, color.GetColor(), thickness);
         }
 
         public static void DrawDot(Vector2 position, Color color, float radius)

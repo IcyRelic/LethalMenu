@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Vector3 = UnityEngine.Vector3;
 
 
 namespace LethalMenu.Cheats
@@ -55,30 +54,37 @@ namespace LethalMenu.Cheats
 
         private void DisplayChams<T>(IEnumerable<T> objects, Func<T, RGBAColor> colorSelector) where T : Object
         {
-            objects?.ToList().ForEach(o =>
+            if (objects == null) return;
+            foreach (var obj in objects?.Where(o => o != null))
             {
-                if (o == null) return;
-                Transform transform = o is Component component ? component.transform : o is GameObject gameObject ? gameObject.transform : null;
-                if (transform == null) return;
+                Transform transform = obj switch
+                {
+                    Transform _transform => _transform,
+                    Component component => component.transform,
+                    GameObject gameObject => gameObject.transform,
+                    _ => null
+                };
+                if (transform == null) continue;
                 float distance = GetDistanceToPlayer(transform.position);
-                o.GetChamHandler()?.ProcessCham(distance);
-            });
+                if (distance == 0f) continue;
+                obj.GetChamHandler()?.ProcessCham(distance);
+            }
         }
 
         public void DisplayChams()
         {
-            DisplayChams(LethalMenu.items, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.items?.Where(i => i != null), _ => Settings.c_chams);
             DisplayChams(LethalMenu.landmines, _ => Settings.c_chams);
             DisplayChams(LethalMenu.turrets?.Where(t => t != null && t.gameObject != null && t.gameObject.transform?.parent?.gameObject != null).Select(t => t.gameObject.transform.parent.gameObject), _ => Settings.c_chams);
             DisplayChams(LethalMenu.spikeRoofTraps?.Where(s => s != null && s.gameObject && s.gameObject.transform?.parent?.gameObject != null).Select(s => s?.gameObject.transform?.parent?.gameObject), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.players?.Where(p => p != null && p != LethalMenu.localPlayer), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.enemies, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.steamValves, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.bigDoors, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.doorLocks, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.enemyVents, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.vainShrouds?.Where(v => v != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.vehicles, _ => Settings.c_chams);
+            DisplayChams(LethalMenu.players?.Where(p => p != null && p.actualClientId != LethalMenu.localPlayer?.actualClientId), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.enemies?.Where(e => e != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.steamValves?.Where(s => s != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.bigDoors?.Where(b => b != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.doorLocks?.Where(d => d != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.enemyVents?.Where(e => e != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.vainShrouds?.Where(v => v != null)?.Where(v => v != null), _ => Settings.c_chams);
+            DisplayChams(LethalMenu.vehicles?.Where(v => v != null), _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.itemDropship }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
             DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
@@ -87,16 +93,13 @@ namespace LethalMenu.Cheats
 
         private void DisplayObjects<T>(IEnumerable<T> objects, Func<T, string> labelSelector, Func<T, RGBAColor> colorSelector) where T : Component
         {
-            foreach (T obj in objects)
+            if (objects == null) return;
+            foreach (var obj in objects?.Where(o => o != null && o.gameObject.activeSelf))
             {
-                if (obj != null && obj.gameObject.activeSelf)
-                {
-                    float distance = GetDistanceToPlayer(obj.transform.position);
-
-                    if (distance > Settings.f_espDistance || !WorldToScreen(obj.transform.position, out Vector3 screen)) continue;
-
-                    VisualUtil.DrawDistanceString(screen, labelSelector(obj), colorSelector(obj), distance);
-                }
+                float distance = GetDistanceToPlayer(obj.transform.position);
+                if (distance == 0f || distance > Settings.f_espDistance || !WorldToScreen(obj.transform.position, out var screen)) continue;
+                if (Hack.NameESP.IsEnabled()) VisualUtil.DrawDistanceString(screen, labelSelector(obj), colorSelector(obj), distance);
+                if (Hack.BoxESP.IsEnabled()) VisualUtil.DrawBoxOutline(obj.gameObject, colorSelector(obj), Settings.f_ESPThickness);
             }
         }
 
@@ -159,7 +162,7 @@ namespace LethalMenu.Cheats
         private void DisplayPlayers()
         {
             DisplayObjects(
-                LethalMenu.players?.Where(p => p != null && !p.isPlayerDead && !p.disconnectedMidGame && !p.playerUsername.StartsWith("Player #") && p != LethalMenu.localPlayer),
+                LethalMenu.players?.Where(p => p != null && !p.isPlayerDead && p.IsRealPlayer() && p != LethalMenu.localPlayer),
                 player => $"{(Settings.b_VCDisplay && player.voicePlayerState != null && player.voicePlayerState.IsSpeaking ? "[VC] " : "")}{(Settings.b_PlayerHPDisplay ? $"[HP: {player.health}] " : "")}{(player.playerUsername ?? "Unknown")}",
                 player => Settings.c_playerESP
             );

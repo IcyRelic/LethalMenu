@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace LethalMenu.Handler.EnemyControl
 {
@@ -17,7 +18,7 @@ namespace LethalMenu.Handler.EnemyControl
         {
             if (enemy == null || enemy.inEmergingState || EmergeCooldown) return;
             enemy.StartEmergeAnimation();
-            StartEmergeCooldown();
+            LethalMenu.Instance.StartCoroutine(StartEmergeCoolDown());
         }
 
         public string GetPrimarySkillName(SandWormAI _) => EmergeCooldown ? $"Emerge Cooldown ({Seconds} seconds)" : "Emerge";
@@ -28,19 +29,16 @@ namespace LethalMenu.Handler.EnemyControl
 
         public bool SyncAnimationSpeedEnabled(SandWormAI _) => false;
 
-
-        public static async void StartEmergeCooldown() => await EmergeCoolDown();
-
-        public static async Task EmergeCoolDown()
+        private IEnumerator StartEmergeCoolDown()
         {
             EmergeCooldown = true;
+            Seconds = 20;
             while (Seconds > 0)
             {
-                await Task.Delay(1000);
+                yield return new WaitForSeconds(1f);
                 Seconds--;
             }
             EmergeCooldown = false;
-            Seconds = 20;
         }
     }
 }

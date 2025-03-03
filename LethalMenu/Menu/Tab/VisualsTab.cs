@@ -1,4 +1,4 @@
-﻿using LethalMenu.Language;
+﻿using LethalMenu.Cheats;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using UnityEngine;
@@ -27,9 +27,11 @@ namespace LethalMenu.Menu.Tab
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             UI.Hack(Hack.ToggleAllESP, "VisualsTab.ToggleAll");
-            UI.Toggle("VisualsTab.UseScrapTiers", ref Settings.b_useScrapTiers, "General.Disable", "General.Enable");
-            UI.Toggle("VisualsTab.VCDisplay", ref Settings.b_VCDisplay, "General.Disable", "General.Enable");
-            UI.Toggle("VisualsTab.PlayerHPDisplay", ref Settings.b_PlayerHPDisplay, "General.Disable", "General.Enable");
+            UI.Hack(Hack.NameESP, "VisualsTab.NameESP");
+            UI.HackSlider(Hack.BoxESP, "VisualsTab.BoxESP", Settings.f_ESPThickness.ToString("0"), ref Settings.f_ESPThickness, 1f, 10f);
+            UI.Toggle("VisualsTab.UseScrapTiers", ref Settings.b_useScrapTiers, "General.Enable", "General.Disable");
+            UI.Toggle("VisualsTab.VCDisplay", ref Settings.b_VCDisplay, "General.Enable", "General.Disable");
+            UI.Toggle("VisualsTab.PlayerHPDisplay", ref Settings.b_PlayerHPDisplay, "General.Enable", "General.Disable");
             UI.Hack(Hack.ObjectESP, "VisualsTab.ObjectESP");
             UI.Hack(Hack.EnemyESP, "VisualsTab.EnemyESP");
             UI.Hack(Hack.PlayerESP, "VisualsTab.PlayerESP");
@@ -60,10 +62,10 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.Crosshair, "VisualsTab.Crosshair");
             UI.Hack(Hack.Breadcrumbs, "VisualsTab.Breadcrumbs");
             UI.Hack(Hack.HPDisplay, "VisualsTab.HPDisplay");
-            UI.Hack(Hack.NoFog, "VisualsTab.NoFog");
+            UI.ToggleAction("VisualsTab.NoFog", ref Settings.b_NoFog, "General.Enable", "General.Disable", NoFog.ToggleNoFog);
             UI.Hack(Hack.NoVisor, "VisualsTab.NoVisor");
             UI.Hack(Hack.NoFieldOfDepth, "VisualsTab.NoFieldOfDepth");
-            UI.HackSlider(Hack.FOV, "VisualsTab.FOV", Settings.f_fov.ToString("0.0"), ref Settings.f_fov, 10f, 180f);
+            UI.HackSlider(Hack.FOV, "VisualsTab.FOV", Settings.f_fov.ToString("0"), ref Settings.f_fov, 10f, 180f, 1f);
         }
     }
 }

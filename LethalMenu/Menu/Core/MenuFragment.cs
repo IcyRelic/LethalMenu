@@ -1,9 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.Networking;
-using LethalMenu.Menu.Popup;
-using System.Threading.Tasks;
 
 namespace LethalMenu.Menu.Core
 {

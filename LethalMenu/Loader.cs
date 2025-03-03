@@ -16,16 +16,15 @@ namespace LethalMenu
         public static void Init()
         {
             if (Load != null) return;      
-            LoadHarmony();
+            LoadAssembly("LethalMenu.Resources.0Harmony.dll");
             ChamHandler.ChamsSetEnabled(true);
-            Loader.Load = new GameObject();
+            Load = new GameObject();
             Load.AddComponent<LethalMenu>();
-            Object.DontDestroyOnLoad(Loader.Load);
+            Object.DontDestroyOnLoad(Load);
         }
 
-        public static void LoadHarmony()
+        public static void LoadAssembly(string name)
         {
-            String name = "LethalMenu.Resources.0Harmony.dll";
             Assembly assembly = Assembly.GetExecutingAssembly();
             Stream stream = assembly.GetManifestResourceStream(name);
             byte[] rawAssembly = new byte[stream.Length];
@@ -37,7 +36,7 @@ namespace LethalMenu
         {
             HackExtensions.ToggleFlags.Keys.ToList().ForEach(h => HackExtensions.ToggleFlags[h] = false);
             ChamHandler.ChamsSetEnabled(false);
-            if ((bool)!LethalMenu.localPlayer?.playerActions.Movement.enabled) LethalMenu.localPlayer.playerActions.Enable();
+            if ((bool)!LethalMenu.localPlayer?.playerActions.Movement.enabled) LethalMenu.localPlayer?.playerActions.Enable();
             if (Cursor.visible && !LethalMenu.quickMenuManager.isMenuOpen) Cursor.visible = false;
             LethalMenu.harmony.UnpatchAll("LethalMenu");
             Object.Destroy(Load);

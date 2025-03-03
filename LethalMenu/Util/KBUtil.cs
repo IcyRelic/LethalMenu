@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine.InputSystem.Controls;
-using UnityEngine.InputSystem;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 namespace LethalMenu.Util
 {
@@ -20,73 +17,47 @@ namespace LethalMenu.Util
                 this.hack = hack;
             }
 
-            public async void Invoke(ButtonControl btn)
+            public IEnumerator Invoke(ButtonControl btn)
             {
                 hack.SetKeyBind(btn);
-                await Task.Delay(100);
+                yield return new WaitForSeconds(0.1f);
                 hack.SetWaiting(false);
                 Settings.Config.SaveConfig();
             }
-            
         }
 
         public static void BeginChangeKeyBind(Hack hack, params Action[] callbacks)
         {
             hack.SetWaiting(true);
-            _ = TryGetPressedKeyTask(new KBCallback(hack).Invoke, callbacks);
+            LethalMenu.Instance.StartCoroutine(TryGetPressedKeyCoroutine(new KBCallback(hack).Invoke, callbacks));
         }
 
-        private static async Task TryGetPressedKeyTask(Action<ButtonControl> callback, params Action[] otherCallbacks)
+        private static IEnumerator TryGetPressedKeyCoroutine(Func<ButtonControl, IEnumerator> callback, params Action[] otherCallbacks)
         {
-            await Task.Run(async () =>
+            yield return new WaitForSeconds(0.25f);
+            float startTime = Time.time;
+            ButtonControl btn = null;
+
+            while (btn == null && Time.time - startTime <= 15f)
             {
-                //wait .5 seconds
-                
-                await Task.Delay(250);
-
-                float startTime = Time.time;
-                ButtonControl btn = null;
-                do
-                {
-                    ButtonControl pressed = GetPressedBtn();
-
-
-                    if (pressed != null)
-                    {
-                        //if (!HackExtensions.KeyBindInUse(pressed)) 
-                        btn = pressed;
-                        //else kbError = "SettingsTab.BindInUseError";
-                    }
-
-                    if (Time.time - startTime > 15f) break;
-                } while (btn == null);
-
-                if (btn == null) return;
-
-                callback?.Invoke(btn);
-                otherCallbacks.ToList().ForEach(cb => cb?.Invoke());
-            });
-
-
+                ButtonControl pressed = GetPressedBtn();
+                if (pressed != null && pressed != btn) btn = pressed;
+                yield return null;
+            }
+            if (btn == null) yield break;
+            LethalMenu.Instance.StartCoroutine(callback(btn));
+            foreach (var cb in otherCallbacks) cb?.Invoke();
         }
 
-        private static ButtonControl GetPressedBtn()
+        public static ButtonControl GetPressedBtn()
         {
-            foreach (KeyControl key in Keyboard.current.allKeys)
+            foreach (KeyControl key in Keyboard.current.allKeys) if (key.wasPressedThisFrame) return key;
+            ButtonControl[] mouseButtons =
             {
-                if (key.wasPressedThisFrame) return key;
-
-            }
-
-            ButtonControl[] mouseButtons = new ButtonControl[] { Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton };
-
-            foreach (ButtonControl btn in mouseButtons)
-            {
-                if (btn.wasPressedThisFrame) return btn;
-            }
-
+                Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton
+            };
+            foreach (ButtonControl btn in mouseButtons) if (btn.wasPressedThisFrame) return btn;
             return null;
         }
-
     }
 }

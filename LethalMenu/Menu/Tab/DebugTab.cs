@@ -2,12 +2,15 @@
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
-using System.Linq;
-using UnityEngine;
 using Steamworks;
 using Steamworks.Data;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using Unity.Netcode;
-using Object = UnityEngine.Object;
+using UnityEngine;
+using UnityEngine.Rendering;
+using Color = UnityEngine.Color;
 
 
 namespace LethalMenu.Menu.Tab
@@ -29,7 +32,7 @@ namespace LethalMenu.Menu.Tab
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
             if (GUILayout.Button("Clear Debug Message")) Settings.debugMessage = "";
-            GUILayout.TextArea(Settings.debugMessage, GUILayout.Height(50));
+            GUILayout.TextArea(Settings.debugMessage, GUILayout.Height(100));
 
             UI.Button("LookAt Closest Item", () =>
             {
@@ -95,14 +98,33 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            GUILayout.Label("Debug all layers");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                List<int> layers = new List<int>();
+                GameObject.FindObjectsOfType<GameObject>().Where(o => o != null).ToList().ForEach(o =>
+                {
+                    if (!layers.Contains(o.layer)) layers.Add(o.layer);
+                    o.GetComponents<Component>().Where(c => c != null).ToList().ForEach(c =>
+                    {
+                        if (!layers.Contains(c.gameObject.layer)) layers.Add(c.gameObject.layer);
+                    });
+                });
+                layers.ForEach(i => Debug.Log($"Layer: {LayerMask.LayerToName(i)} ID: {i}"));
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             GUILayout.Label("Raycast Colliders");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
+                Settings.debugMessage = ""; 
                 foreach (RaycastHit hit in CameraManager.ActiveCamera.transform.SphereCastForward())
                 {
                     Collider collider = hit.collider;
-                    Settings.debugMessage = ("Hit: " + collider.name + " =>" + collider.gameObject.name + "\n");
+                    Settings.debugMessage += $"Hit: {collider.name} => {collider.gameObject.name} => Layer {LayerMask.LayerToName(collider.gameObject.layer)} {collider.gameObject.layer}\n";
                 }
             }
             GUILayout.EndHorizontal();
@@ -117,32 +139,20 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Test");
+            GUILayout.Label("Debug all components of held item");
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-               RadMechAI enemy = Object.FindAnyObjectByType<RadMechAI>();
-
-                foreach (var item in enemy.GetComponentsInParent<Renderer>())
-                {
-                    Debug.LogWarning(item.name + "=>" + item.GetType());
-
-                }
-
-                foreach (var item in enemy.GetComponentsInChildren<Renderer>())
-                {
-                    Debug.LogError(item.name + "=>" + item.GetType());
-
-                }
+                LethalMenu.localPlayer?.currentlyHeldObjectServer?.GetComponents<Component>().Where(c => c != null).ToList().ForEach(c => Debug.Log($"{c.GetType().FullName}"));
             }
-    GUILayout.EndHorizontal();
-            GUILayout.EndScrollView(); 
+            GUILayout.EndHorizontal();
+
+            GUILayout.EndScrollView();
         }
 
         private async void Leaderboard()
         {
-            int weekNum = GameNetworkManager.Instance.GetWeekNumber();
-            Leaderboard? leaderboardAsync = await SteamUserStats.FindOrCreateLeaderboardAsync(string.Format("challenge{0}", weekNum), LeaderboardSort.Descending, LeaderboardDisplay.Numeric);
+            Leaderboard? leaderboardAsync = await SteamUserStats.FindOrCreateLeaderboardAsync(string.Format("challenge{0}", GameNetworkManager.Instance.GetWeekNumber()), LeaderboardSort.Descending, LeaderboardDisplay.Numeric);
 
             LeaderboardUpdate? nullable = await leaderboardAsync.Value.ReplaceScore(int.MaxValue);
 

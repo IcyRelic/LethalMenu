@@ -1,10 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using HarmonyLib;
+﻿using HarmonyLib;
 using System.Collections;
-using Unity.Netcode.Transports.UTP;
-using Unity.Netcode;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace LethalMenu.Cheats
 {
@@ -22,7 +20,7 @@ namespace LethalMenu.Cheats
         {
             yield return new WaitForEndOfFrame();
             if (!string.IsNullOrEmpty(slot.thisLobby.GetData("name")) && AntiKick.HostKickedPlayerList.Contains(slot.thisLobby.Owner.Id) && Settings.b_DisplayHostKickedLobbies) ApplyChanges(slot, "Host Kicked", Color.red);
-            if (!string.IsNullOrEmpty(slot.thisLobby.GetData("name")) && slot.LobbyName.text.Contains('\x200C') && Settings.b_DisplayLMUsers) ApplyChanges(slot, "Lethal Menu User", Color.magenta);
+            if (!string.IsNullOrEmpty(slot.thisLobby.GetData("name")) && slot.LobbyName.text.Contains('\x00AD') && Settings.b_DisplayLMUsers) ApplyChanges(slot, "Lethal Menu User", Color.magenta);
         }
 
         private static void ApplyChanges(LobbySlot slot, string text, Color color)
@@ -37,6 +35,7 @@ namespace LethalMenu.Cheats
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.color = slot.playerCount.color;
             tmp.enableWordWrapping = false;
+            tmp.raycastTarget = false;
             RectTransform rect = @object.GetComponent<RectTransform>();
             rect.sizeDelta = new Vector2(400, 50); 
             rect.anchorMin = new Vector2(0.5f, 0);

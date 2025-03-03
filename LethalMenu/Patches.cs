@@ -6,10 +6,10 @@ using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
 using Steamworks;
 using Steamworks.Data;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Emit;
-using System.Threading.Tasks;
 using Unity.Netcode;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -26,18 +26,20 @@ namespace LethalMenu
         [HarmonyPatch(typeof(PlayerControllerB), "SendNewPlayerValuesClientRpc"), HarmonyPostfix]
         public static void SendNewPlayerValuesClientRpc(PlayerControllerB __instance)
         {
-            if (__instance.IsLocalPlayer)
-            {
-                Task.Delay(2000);
-                MenuUtil.LMUser();
-                LethalMenu.items.Where(i => i != null && !i.isInShipRoom).ToList().ForEach(i => i.isInShipRoom = true);
-                RoundHandler.LootBeforeGameStarts();
-            }
+            if (__instance.IsLocalPlayer) LethalMenu.Instance.StartCoroutine(LocalPlayerJoin());
+        }
+
+        private static IEnumerator LocalPlayerJoin()
+        {
+            yield return new WaitForSeconds(2f);
+            MenuUtil.StartLMUser();
+            LethalMenu.items.Where(i => i != null && !i.isInShipRoom).ToList().ForEach(i => i.isInShipRoom = true);
         }
 
         [HarmonyPatch(typeof(GameNetworkManager), nameof(GameNetworkManager.Disconnect)), HarmonyPostfix]
         public static void Disconnect(GameNetworkManager __instance)
         {
+            ObjectManager.ClearObjects();
             SpectatePlayer.Reset();
             Freecam.Reset();
             LethalMenu.Instance.LMUsers.Clear();
@@ -46,9 +48,15 @@ namespace LethalMenu
         }
 
         [HarmonyPatch(typeof(StartOfRound), "OnClientConnect"), HarmonyPostfix]
-        public static void OnClientConnect(StartOfRound __instance)
+        public static void OnClientConnect(StartOfRound __instance, ulong clientId)
         {
-            MenuUtil.LMUser();
+            MenuUtil.StartLMUser();
+        }
+
+        [HarmonyPatch(typeof(StartOfRound), "OnPlayerDC"), HarmonyPostfix]
+        public static void OnPlayerDC(StartOfRound __instance, int playerObjectNumber, ulong clientId)
+        {
+            __instance.allPlayerScripts[clientId].playerSteamId = 0;
         }
 
         [HarmonyPatch(typeof(GameNetworkManager), "StartClient"), HarmonyPostfix]
@@ -60,7 +68,14 @@ namespace LethalMenu
         [HarmonyPatch(typeof(GameNetworkManager), "SteamMatchmaking_OnLobbyCreated"), HarmonyPrefix]
         public static void SteamMatchmaking_OnLobbyCreated(GameNetworkManager __instance, Result result, Lobby lobby)
         {
-            if (Settings.b_DisplayLMUsers) __instance.lobbyHostSettings.lobbyName += "\x200C";
+            if (Settings.b_DisplayLMUsers) __instance.lobbyHostSettings.lobbyName += "\x00AD";
+        }
+
+        [HarmonyPatch(typeof(QuickMenuManager), "CloseQuickMenu"), HarmonyPostfix]
+        public static void CloseQuickMenu(QuickMenuManager __instance)
+        {
+            if (Hack.OpenMenu.IsEnabled() && !Cursor.visible) MenuUtil.ShowCursor();
+            if (LethalMenu.quickMenuManager == null) ObjectManager.AddToObjectQueue(() => LethalMenu.quickMenuManager = __instance);
         }
 
         [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc)), HarmonyPrefix]
@@ -152,7 +167,7 @@ namespace LethalMenu
                 {
                     for (int i = 0; i < numberEnemyToSpawn && i <= 50; i++)
                     {
-                        if (enemyType.enemyName == "Bush Wolf") RoundHandler.SpawnBushWolf(enemyType, __instance);
+                        if (enemyType.enemyName == "Bush Wolf") RoundHandler.SpawnBushWolf(enemyType);
                         RoundManager.Instance.SpawnEnemyGameObject(spawnPosition, 0f, -1, enemyType);
                     }
                 }
@@ -223,6 +238,17 @@ namespace LethalMenu
             return true;
         }
 
+        [HarmonyPatch(typeof(StartOfRound), "IsClientFriendsWithHost"), HarmonyPrefix]
+        public static bool IsClientFriendsWithHost(ref bool __result)
+        {
+            if (Settings.DebugMode)
+            {
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+
         [HarmonyPatch(typeof(QuickMenuManager), "Debug_ToggleAllowDeath"), HarmonyPrefix]
         public static bool Debug_ToggleAllowDeath()
         {
@@ -236,12 +262,11 @@ namespace LethalMenu
 
         public static void Debug_SetAllItemsDropdownOptions()
         {
-            QuickMenuManager menu = Object.FindAnyObjectByType<QuickMenuManager>();
-            if (menu == null) return;
-            menu.allItemsDropdown.ClearOptions();
+            if (LethalMenu.quickMenuManager == null) return;
+            LethalMenu.quickMenuManager.allItemsDropdown.ClearOptions();
             List<string> list = new List<string>();
             for (int i = 0; i < StartOfRound.Instance.allItemsList.itemsList.Count; i++) list.Add(StartOfRound.Instance.allItemsList.itemsList[i].itemName);
-            menu.allItemsDropdown.AddOptions(list);
+            LethalMenu.quickMenuManager.allItemsDropdown.AddOptions(list);
         }
     }
 }

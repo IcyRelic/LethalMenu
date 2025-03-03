@@ -39,7 +39,12 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SpawnMaskedEnemy, "TrollTab.SpawnMasks");
             UI.Hack(Hack.EjectEveryone, ["TrollTab.EjectEveryone", "General.HostTag"]);
             UI.HackSlider(Hack.PJSpammer, "TrollTab.PJSpammer", Settings.f_pjSpamSpeed.ToString("0.00"), ref Settings.f_pjSpamSpeed, 0f, 1f);
-            UI.Hack(Hack.SpawnHoardingBugInfestation, "TrollTab.SpawnHoardingBugInfestation");
+            UI.Hack(Hack.SpawnHoardingBugInfestation, ["TrollTab.SpawnHoardingBugInfestation", "General.HostTag"]);
+            UI.Hack(Hack.ToggleMineshaftElevator, "TrollTab.ToggleMineshaftElevator");
+            UI.Hack(Hack.ToggleVehicleMagnet, "TrollTab.ToggleVehicleMagnet");
+            UI.Hack(Hack.SpamShootAllShotguns, "TrollTab.SpamShootAllShotguns");
+            UI.Hack(Hack.ShootAllShotguns, "TrollTab.ShootAllShotguns");
+            UI.Hack(Hack.ExplodeCruiser, "TrollTab.ExplodeCruiser");
 
             GUILayout.EndScrollView();
         }

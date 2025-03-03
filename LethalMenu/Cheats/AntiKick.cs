@@ -23,6 +23,7 @@ namespace LethalMenu.Cheats
         {
             if (Hack.AntiKick.IsEnabled() && HostKicked)
             {
+                __instance.sentPlayerValues = true;
                 ulong[] playerSteamIds = __instance.playersManager.allPlayerScripts.Select(p => p.playerSteamId).ToArray();
                 playerSteamIds[__instance.playerClientId] = SteamClient.SteamId;
                 __instance.Reflect().Invoke("SendNewPlayerValuesClientRpc", playerSteamIds);

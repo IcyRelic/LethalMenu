@@ -1,26 +1,10 @@
-﻿using HarmonyLib;
-using UnityEngine;
-
-namespace LethalMenu.Cheats
+﻿namespace LethalMenu.Cheats
 {
-    [HarmonyPatch(typeof(StunGrenadeItem))]
     internal class EggsAlwaysExplode : Cheat
     {
-        private static StunGrenadeItem EasterEgg;
-
         public override void Update()
         {
-            if (Hack.EggsAlwaysExplode.IsEnabled() && LethalMenu.localPlayer?.currentlyHeldObjectServer?.name == "EasterEgg(Clone)" && !Hack.EggsNeverExplode.IsEnabled())
-            {
-                EasterEgg.SetExplodeOnThrowClientRpc(true);
-            }
-        }
-
-        [HarmonyPostfix]
-        [HarmonyPatch("EquipItem")]
-        public static void EquipItem(StunGrenadeItem __instance)
-        {
-            EasterEgg = __instance;
+            if (Hack.EggsAlwaysExplode.IsEnabled() && !Hack.EggsNeverExplode.IsEnabled() && LethalMenu.localPlayer != null && LethalMenu.localPlayer?.currentlyHeldObjectServer is StunGrenadeItem egg && egg != null && egg.explodeSFX.name == "EasterEggPop") egg.SetExplodeOnThrowClientRpc(true);
         }
     }
 }

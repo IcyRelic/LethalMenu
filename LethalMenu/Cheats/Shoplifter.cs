@@ -15,10 +15,8 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            Terminal term = Object.FindAnyObjectByType<Terminal>();
-            TerminalKeyword buy = term.terminalNodes.allKeywords.ToList().Find(x => x.word == "buy");
-
-            
+            if (LethalMenu.terminal == null) return;
+            TerminalKeyword buy = LethalMenu.terminal.terminalNodes.allKeywords.ToList().Find(x => x.word == "buy");
 
             if(Hack.Shoplifter.IsEnabled())
             {
@@ -31,43 +29,40 @@ namespace LethalMenu.Cheats
 
                 if (itemCosts is null)
                 {
-                    itemCosts = new int[term.buyableItemsList.Length];
-                    for (int i = 0; i < term.buyableItemsList.Length; i++)
+                    itemCosts = new int[LethalMenu.terminal.buyableItemsList.Length];
+                    for (int i = 0; i < LethalMenu.terminal.buyableItemsList.Length; i++)
                     {
-                        itemCosts[i] = term.buyableItemsList[i].creditsWorth;
+                        itemCosts[i] = LethalMenu.terminal.buyableItemsList[i].creditsWorth;
                     }
                 }
 
                 if (vehicleCosts is null)
                 {
-                    vehicleCosts = new int[term.buyableVehicles.Length];
-                    for (int i = 0; i < term.buyableVehicles.Length; i++)
+                    vehicleCosts = new int[LethalMenu.terminal.buyableVehicles.Length];
+                    for (int i = 0; i < LethalMenu.terminal.buyableVehicles.Length; i++)
                     {
-                        vehicleCosts[i] = term.buyableVehicles[i].creditsWorth;
+                        vehicleCosts[i] = LethalMenu.terminal.buyableVehicles[i].creditsWorth;
                     }
                 }
 
-                term.buyableVehicles.ToList().ForEach(i => i.creditsWorth = 0);
-                term.buyableItemsList.ToList().ForEach(i => i.creditsWorth = 0);
+                LethalMenu.terminal.buyableVehicles.ToList().ForEach(i => i.creditsWorth = 0);
+                LethalMenu.terminal.buyableItemsList.ToList().ForEach(i => i.creditsWorth = 0);
             }
             else if(nodeCosts.Count > 0)
             {
                 buy.compatibleNouns.ToList().FindAll(n => nodeCosts.ContainsKey(n.noun.name)).ForEach(n => n.result.itemCost = nodeCosts[n.noun.name]);
 
-                for (int i = 0; i < term.buyableItemsList.Length; i++)
+                for (int i = 0; i < LethalMenu.terminal.buyableItemsList.Length; i++)
                 {
-                    term.buyableItemsList[i].creditsWorth = itemCosts[i];
+                    LethalMenu.terminal.buyableItemsList[i].creditsWorth = itemCosts[i];
                 }
 
-                for (int i = 0; i < term.buyableVehicles.Length; i++)
+                for (int i = 0; i < LethalMenu.terminal.buyableVehicles.Length; i++)
                 {
-                    term.buyableVehicles[i].creditsWorth = vehicleCosts[i];
+                    LethalMenu.terminal.buyableVehicles[i].creditsWorth = vehicleCosts[i];
                 }
-
                 Clear();
-            }
-
-            
+            }         
         }
 
         public static void Clear()

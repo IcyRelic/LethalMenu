@@ -1,9 +1,5 @@
 ﻿using GameNetcodeStuff;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LethalMenu.Types;
 using UnityEngine;
 
 namespace LethalMenu.Manager
@@ -16,13 +12,7 @@ namespace LethalMenu.Manager
             get
             {
                 if (!(bool)StartOfRound.Instance) _camera = null;
-
-                PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-                
                 if(_camera == null || UsingBaseCamera()) _camera = GetBaseCamera();
-
-                
-
                 return _camera;
             }
             set
@@ -33,20 +23,13 @@ namespace LethalMenu.Manager
         
         public static Camera GetBaseCamera()
         {
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-
-            if (player.gameplayCamera is null) return Camera.main;
-
-            return player.isPlayerDead ? StartOfRound.Instance.spectateCamera : player.gameplayCamera;
+            if (LethalMenu.localPlayer == null || LethalMenu.localPlayer.gameplayCamera == null) return Camera.main;
+            return LethalMenu.localPlayer.isPlayerDead ? StartOfRound.Instance.spectateCamera : LethalMenu.localPlayer.gameplayCamera ?? Camera.main;
         }
 
         public static bool UsingBaseCamera()
         {
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-
-            return _camera.GetInstanceID() == player.gameplayCamera.GetInstanceID() 
-                || _camera.GetInstanceID() == StartOfRound.Instance.spectateCamera.GetInstanceID();
-        }
-        
+            return _camera.GetInstanceID() == LethalMenu.localPlayer?.gameplayCamera.GetInstanceID() || _camera.GetInstanceID() == StartOfRound.Instance.spectateCamera.GetInstanceID();
+        }     
     }
 }

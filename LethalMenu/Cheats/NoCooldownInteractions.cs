@@ -30,15 +30,12 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            //LethalMenu.debugMessage = FindObjectOfType<StartMatchLever>().triggerScript.timeToHold + "";
-
-            if (Hack.NoCooldown.IsEnabled())
-                LethalMenu.teleporters.FindAll(t => t != null).ForEach(t =>
-                {
-                    t.Reflect().SetValue("cooldownTime", 0.0f);
-                    t.buttonTrigger.enabled = true;
-
-                });
+            if (!Hack.NoCooldown.IsEnabled()) return;
+            LethalMenu.teleporters.FindAll(t => t != null).ForEach(t =>
+            {
+                t.Reflect().SetValue("cooldownTime", 0.0f);
+                t.buttonTrigger.enabled = true;
+            });
         }
 
         

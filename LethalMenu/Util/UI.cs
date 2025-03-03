@@ -1,10 +1,10 @@
-﻿using LethalMenu.Cheats;
-using LethalMenu.Language;
+﻿using LethalMenu.Language;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace LethalMenu.Util
 {
@@ -96,7 +96,7 @@ namespace LethalMenu.Util
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
-            if (hack.Button()) hack.Execute(param); 
+            if (hack.Button()) hack.Execute(param);
             GUILayout.EndHorizontal();
         }
 
@@ -138,7 +138,7 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Toggle(string header, ref bool value, string enabled, string disabled, params Action<bool>[] action)
+        public static void Toggle(string header, ref bool value, string enabled = "General.Enable", string disabled = "General.Disable", params Action<bool>[] action)
         {
             GUIStyle style = new GUIStyle(GUI.skin.label);
             if (Settings.b_HackHighlight) style.normal.textColor = value ? Settings.c_hackhighlight.GetColor() : GUI.skin.button.normal.textColor;
@@ -146,10 +146,26 @@ namespace LethalMenu.Util
             GUILayout.Label(Localization.Localize(header), style);
             GUILayout.FlexibleSpace();
             bool newValue = !value;
-            if (GUILayout.Button(Localization.Localize(value ? enabled : disabled)))
+            if (GUILayout.Button(Localization.Localize(value ? disabled : enabled)))
             {
                 value = newValue;
                 action.ToList().ForEach(a => a.Invoke(newValue));
+            }
+            GUILayout.EndHorizontal();
+        }
+
+        public static void ToggleAction(string header, ref bool value, string enabled = "General.Enable", string disabled = "General.Disable", params Action[] action)
+        {
+            GUIStyle style = new GUIStyle(GUI.skin.label);
+            if (Settings.b_HackHighlight) style.normal.textColor = value ? Settings.c_hackhighlight.GetColor() : GUI.skin.button.normal.textColor;
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header), style);
+            GUILayout.FlexibleSpace();
+            bool newValue = !value;
+            if (GUILayout.Button(Localization.Localize(value ? disabled : enabled)))
+            {
+                value = newValue;
+                action.ToList().ForEach(a => a.Invoke());
             }
             GUILayout.EndHorizontal();
         }
@@ -243,6 +259,15 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
+        public static void Slider(string header, string displayValue, ref float value, float min, float max, float step = 1f)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header) + " ( " + displayValue + " )");
+            GUILayout.FlexibleSpace();
+            value = (float)Math.Round(GUILayout.HorizontalSlider(value, min, max, GUILayout.Width(Settings.i_sliderWidth)) / step) * step;
+            GUILayout.EndHorizontal();
+        }
+
         public static void NumSelect(string header, ref int value, int min, int max)
         {
             GUILayout.BeginHorizontal();
@@ -308,6 +333,23 @@ namespace LethalMenu.Util
             GUILayout.FlexibleSpace();
 
             value = GUILayout.TextField(value, length, GUILayout.Width(Settings.i_textboxWidth));
+            value = Regex.Replace(value, regex, "");
+
+            options[index].Draw();
+
+            if (GUILayout.Button("-")) index = index == 0 ? options.Length - 1 : Mathf.Clamp(index - 1, 0, options.Length - 1);
+            if (GUILayout.Button("+")) index = index == options.Length - 1 ? 0 : Mathf.Clamp(index + 1, 0, options.Length - 1);
+
+            GUILayout.EndHorizontal();
+        }
+
+        public static void Select(string header, ref int index, ref string value, string regex, int length, int size = 0, params UIOption[] options)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label(Localization.Localize(header));
+            GUILayout.FlexibleSpace();
+
+            value = GUILayout.TextField(value, length, GUILayout.Width(Settings.i_textboxWidth * size));
             value = Regex.Replace(value, regex, "");
 
             options[index].Draw();

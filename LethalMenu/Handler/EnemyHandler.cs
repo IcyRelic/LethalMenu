@@ -3,6 +3,7 @@ using LethalMenu.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -17,7 +18,7 @@ namespace LethalMenu.Handler
         Aggravated = 2,
         Unknown = 3
     }
-    
+
     public class EnemyHandler
     {
         private EnemyAI enemy;
@@ -84,7 +85,7 @@ namespace LethalMenu.Handler
             //centipede.ClingToPlayerServerRpc(target.playerClientId);
             bool clingingToCeiling = (bool)centipede.Reflect().GetValue("clingingToCeiling");
 
-            if(clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
+            if (clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
         }
 
         private void HandleLureFlowerman()
@@ -100,11 +101,11 @@ namespace LethalMenu.Handler
             spider.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
             //spider.meshContainer.position = target.transform.position;
             //spider.SyncMeshContainerPositionToClients();
-           
+
             int web = spider.SpawnWeb(target.transform.position);
 
-            spider.webTraps.ForEach(web => spider.PlayerTripWebServerRpc(web.trapID, (int) target.playerClientId));
-           
+            spider.webTraps.ForEach(web => spider.PlayerTripWebServerRpc(web.trapID, (int)target.playerClientId));
+
 
             //spider.Reflect().SetValue("onWall", false).SetValue("watchFromDistance", false);
         }
@@ -290,7 +291,7 @@ namespace LethalMenu.Handler
                     centipede.ClingToPlayerServerRpc(target.playerClientId);
                     break;
                 case BlobAI blob:
-                    blob.SlimeKillPlayerEffectServerRpc((int) target.playerClientId);
+                    blob.SlimeKillPlayerEffectServerRpc((int)target.playerClientId);
                     break;
                 case BushWolfEnemy bushwolf:
                     bushwolf.DoKillPlayerAnimationServerRpc((int)target.playerClientId);
@@ -347,41 +348,33 @@ namespace LethalMenu.Handler
            typeof(ButlerBeesEnemyAI),
            typeof(RadMechAI),
            typeof(ClaySurgeonAI),
-           typeof(CaveDwellerAI)
+           typeof(CaveDwellerAI),
+           typeof(LassoManAI)
         };
 
-        public void Kill(bool despawn = false, bool all = false, List<EnemyAI> enemies = null)
+        public void Kill(bool despawn = false, bool NoAlert = false)
         {
-            if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
-            if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie)
+            if (enemy == null || enemy.isEnemyDead || HUDManager.Instance == null || RoundManager.Instance == null) return;
+            if (LethalMenu.localPlayer.IsHost())
             {
-                HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be killed without host");
-                enemy.serverPosition = new Vector3(-9999, -9999, -9999);
-                return;
+                if (!enemy.enemyType.canDie) enemy.enemyType.canDie = true;
+                enemy.KillEnemyServerRpc(forceDespawnEnemies.Contains(enemy.GetType()) || despawn);
             }
-            bool forceDespawn = forceDespawnEnemies.Contains(enemy.GetType());
-            if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canDie) enemy.enemyType.canDie = true;
-            enemy.KillEnemyServerRpc(forceDespawn || despawn);
-            if (LethalMenu.EnemyCount == 0) LethalMenu.EnemyCount = enemies.Count;
-            LethalMenu.EnemyCount--;
-            if (all && LethalMenu.EnemyCount == 0) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed all enemies");
-            else if (!all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
+            else RoundManager.Instance.DespawnEnemyServerRpc(enemy.GetComponent<NetworkObject>());
+            if (!NoAlert) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
         }
 
-        public void Stun(bool all = false, List<EnemyAI> enemies = null)
+        public void Stun(bool NoAlert = false)
         {
             if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
-            if (!LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned)
+            if (!LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned)
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be stunned without host");
                 return;
             }
-            if (LethalMenu.localPlayer.IsHost && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
+            if (LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
             enemy.SetEnemyStunned(true, 5);
-            if (LethalMenu.EnemyCount == 0) LethalMenu.EnemyCount = enemies.Count;
-            LethalMenu.EnemyCount--;
-            if (all && LethalMenu.EnemyCount == 0) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunned all enemies");
-            else if (!all) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunning {enemy.enemyType.name} for 5 seconds");
+            if (!NoAlert) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
         }
 
         public void Teleport(PlayerControllerB player = null, Vector3 position = default)
@@ -445,6 +438,12 @@ namespace LethalMenu.Handler
                 return item;
             }
             return null;
+        }
+
+        public static bool IsOutside(this EnemyAI enemy)
+        {
+            if (RoundManager.Instance == null || RoundManager.Instance.outsideAINodes == null || RoundManager.Instance.insideAINodes == null || RoundManager.Instance.outsideAINodes.Length == 0 || RoundManager.Instance.insideAINodes.Length == 0) return false;
+            return RoundManager.Instance.outsideAINodes.Min(n => Vector3.Distance(enemy.serverPosition, n.transform.position)) < RoundManager.Instance.insideAINodes.Min(n => Vector3.Distance(enemy.serverPosition, n.transform.position));
         }
     }
 

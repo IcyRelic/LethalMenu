@@ -1,7 +1,54 @@
 v1.4.6
 - Added Host kicked warning to anti kick - Shows what lobbies hosts kicked you!
 - Added Lethal Menu User Warning to Display Lethal Menu Users - Shows if the host is using Lethal Menu User in the lobby
+- Added Enemy Vent ESP 
+- Added Enemy Vent Chams 
+- Added Vain Shroud ESP - I know these were removed but its incase they get added back
+- Added Vain Shroud Chams 
+- Added Cruiser ESP
+- Added Cruiser Chams 
+- Added Item Dropship ESP
+- Added Item Dropship Chams 
+- Added Audio to Free cam
+- Added Audio to Spectate player
+- Added Box ESP - Draws boxes around the object
+- Added Mineshaft colors - They were forgotten by icy >:C
+- Added Toggle Mineshaft Elevator - Brings elevator the opposite way
+- Added Toggle Vehicle Magnet - Toggles the vehicle magnet on and off
+- Added Toggle Vehicle Ignition - Toggles the vehicle engine on and off
+- Added Object Queue Delay - Delay it takes to add to the lists
+- Added Toggle All Chams 
+- Added Spam Shoot All Shotguns - Spam shoots all the shotguns regardless if its in an inventory or ground
+- Added Shot All Shotguns - Shoots all shotguns regardless if its in an inventory or ground
+- Added Minigun Shotgun - Lets you shoot the shotgun like a mini gun! (HOLD LMB)
+- Added Grab Nutcrackers Shotgun - Lets you grab the nutcrackers shotgun out of his hands!
+- Added Display Credits - Displays terminal credits
+- Added Message Spam - Will spam whatever message you have selected
+- Added Is Outside to enemy tab - Shows if the enemy is outside or not
+- Added Item Amount to Item Manager - Lets you spawn more then 1 item at once
+- Added Explode Cruiser - Explodes the cruiser
+- Fixed null ESP and Chams errors
+- Fixed Demi god / heal - I was calling a client rpc instead of a server rpc
+- Fixed Cursor bug - Cursor got disabled when exiting the escape menu with Lethal Menu open
+- Fixed First Setup Manager bug - It didn't update the text to the key you pressed
+- Fixed No Fog - It wasn't revert able 
+- Fixed Players List - It should now show late company players
 - Fixed FPS Problem - Thanks to Akira for pointing me to the issue :D
+- Fixed Kill All and Stun All notifications - It was calling the notification more than once
+- Fixed Self Tab Error - It would error if any entrances positions were null
+- Fixed Wrong config name - ITS SMALL BUT IT ANNOYED ME 
+- Fixed Loot Before Game Starts - It now can revert and uses no loops
+- Fixed Kill enemy - You can now kill unkillable enemies as client :D
+- Fixed Kill All Enemies and Stun All Enemies - It alerted you a ton instead of once
+- Fixed Self Tab Error - The menu would glitch out if entrancepoint transform was null
+- Fixed Loot Manager - The teleporting was buggy so I switched to use GetItemFloorPosition
+- Fixed Moon Manager - Instead of excluding broken moons it checks if its null so it will always work in future game updates
+- Changed Managers - You can now open them all when outside the game instead of closing them on leave
+- Changed Unlock Door - Added terminal objects to raycast and it now works for any camera like freecam
+- Changed Open All Doors - It sets the power to the door to true if its off
+- Changed Close All Doors - It sets the power to the door to true if its off
+- Changed Unlock Door to Unlock Objects - Its not just used for doors and works for turrets, big doors, locked doors, and mines it was just confusing
+- Removed line of sight - Too many issues 
  
 v1.4.5
 - Added Chams Disable w/ Line of Sight

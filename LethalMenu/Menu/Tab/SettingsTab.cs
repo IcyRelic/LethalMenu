@@ -1,18 +1,19 @@
 ﻿using LethalMenu.Cheats;
+using LethalMenu.Handler;
 using LethalMenu.Language;
 using LethalMenu.Menu.Core;
+using LethalMenu.Themes;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem.Controls;
-using LethalMenu.Themes;
-using LethalMenu.Manager;
-using UnityEngine.InputSystem.XR;
-using UnityEngine.InputSystem;
-using LethalMenu.Handler;
+using Debug = UnityEngine.Debug;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -45,6 +46,7 @@ namespace LethalMenu.Menu.Tab
         private string s_shipESPColor = Settings.c_shipESP.GetHexCode();
         private string s_breakerESPColor = Settings.c_breakerESP.GetHexCode();
         private string s_spikeRoofTrapESPColor = Settings.c_spikeRoofTrapESP.GetHexCode();
+        private string s_mineshaftElevatorESPColor = Settings.c_mineshaftElevatorESP.GetHexCode();
         private string s_enemyVentESPColor = Settings.c_enemyVentESP.GetHexCode();
         private string s_vainShroudESPColor = Settings.c_vainShroudESP.GetHexCode();
         private string s_itemDropShipESPColor = Settings.c_itemDropShipESP.GetHexCode();
@@ -64,6 +66,7 @@ namespace LethalMenu.Menu.Tab
         private string s_shipChamsColor = Settings.c_shipChams.GetHexCode();
         private string s_breakerChamsColor = Settings.c_breakerChams.GetHexCode();
         private string s_spikeRoofTrapChamsColor = Settings.c_spikeRoofTrapChams.GetHexCode();
+        private string s_mineshaftElevatorChamsColor = Settings.c_mineshaftElevatorChams.GetHexCode();
         private string s_enemyVentChamsColor = Settings.c_enemyVentChams.GetHexCode();
         private string s_vainShroudChamsColor = Settings.c_vainShroudChams.GetHexCode();
         private string s_itemDropShipChamsColor = Settings.c_itemDropShipChams.GetHexCode();
@@ -117,6 +120,10 @@ namespace LethalMenu.Menu.Tab
                 new UIButton("SettingsTab.ReloadSettings", () => Settings.Config.LoadConfig())
             );
 
+            UI.Actions(
+                new UIButton("SettingsTab.OpenSettings", () => Settings.Config.OpenConfig())
+            );
+
             UI.Header("SettingsTab.General");
 
             UI.Select("SettingsTab.Theme", ref i_themeIndex, Theme.GetThemes().Select(x => new UIOption(x, () => Theme.SetTheme(x))).ToArray());
@@ -125,14 +132,15 @@ namespace LethalMenu.Menu.Tab
             UI.NumSelect("SettingsTab.ScreenFontSize", ref Settings.i_screenFontSize, 5, 30);
             UI.NumSelect("SettingsTab.SliderSize", ref Settings.i_sliderWidth, 50, 120);
             UI.NumSelect("SettingsTab.TextboxSize", ref Settings.i_textboxWidth, 50, 120);
-            UI.Slider("SettingsTab.MenuAlpha", Settings.f_menuAlpha.ToString("0.00"), ref Settings.f_menuAlpha, 0.1f, 1f);  
+            UI.Slider("SettingsTab.MenuAlpha", Settings.f_menuAlpha.ToString("0.00"), ref Settings.f_menuAlpha, 0.1f, 1f, 0.1f);  
             UI.Button("SettingsTab.ResizeMenu", () => MenuUtil.BeginResizeMenu(), "SettingsTab.Resize");
             UI.Button("SettingsTab.ResetMenu", () => HackMenu.Instance.ResetMenuSize(), "General.Reset");
-            UI.Toggle("SettingsTab.FPSCounter", ref Settings.b_FPSCounter, "General.Disable", "General.Enable");
-            UI.Toggle("SettingsTab.HackHighlight", ref Settings.b_HackHighlight, "General.Disable", "General.Enable");
-            UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Disable", "General.Enable");
-            UI.Toggle("SettingsTab.DisplayHostKickedLobbies", ref Settings.b_DisplayHostKickedLobbies, "General.Disable", "General.Enable");
-            UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Disable", "General.Enable", HackMenu.Instance.ToggleDebugTab);
+            UI.Toggle("SettingsTab.FPSCounter", ref Settings.b_FPSCounter, "General.Enable", "General.Disable");
+            UI.Slider("SettingsTab.ObjectQueueDelay", Settings.f_ObjectQueueDelay.ToString("0.0"), ref Settings.f_ObjectQueueDelay, 0f, 1f, 0.1f);
+            UI.Toggle("SettingsTab.HackHighlight", ref Settings.b_HackHighlight, "General.Enable", "General.Disable");
+            UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Enable", "General.Disable");
+            UI.Toggle("SettingsTab.DisplayHostKickedLobbies", ref Settings.b_DisplayHostKickedLobbies, "General.Enable", "General.Disable");
+            UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Enable", "General.Disable", HackMenu.Instance.ToggleDebugTab);
         }
 
         private void ControlSettingsContent()
@@ -166,10 +174,10 @@ namespace LethalMenu.Menu.Tab
         {
             UI.Header("SettingsTab.ESP", true);
             UI.SubHeader("SettingsTab.Chams");
-            UI.Checkbox("SettingsTab.ChamsDisableWithLOS", ref Settings.b_chamsDisableWithLOS);
 
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical(GUILayout.Width((f_leftWidth * 0.465f)));
+            UI.Button("SettingsTab.ToggleAllChams", () => ToggleAllChams());
             UI.Checkbox("SettingsTab.Objects", ref Settings.b_chamsObject);
             UI.Checkbox("SettingsTab.Enemies", ref Settings.b_chamsEnemy);
             UI.Checkbox("SettingsTab.Players", ref Settings.b_chamsPlayer);
@@ -276,6 +284,9 @@ namespace LethalMenu.Menu.Tab
             );
             UI.TextboxAction("SettingsTab.SpikeRoofTrap", ref s_bigDoorESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("General.Set", () => SetColor(ref Settings.c_spikeRoofTrapESP, s_spikeRoofTrapESPColor))
+            ); 
+            UI.TextboxAction("SettingsTab.MineshaftElevator", ref s_mineshaftElevatorESPColor, @"[^0-9A-Za-z]", 8,
+                new UIButton("General.Set", () => SetColor(ref Settings.c_mineshaftElevatorESP, s_mineshaftElevatorESPColor))
             );
             UI.TextboxAction("SettingsTab.EnemyVent", ref s_enemyVentESPColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("General.Set", () => SetColor(ref Settings.c_enemyVentESP, s_enemyVentESPColor))
@@ -291,7 +302,7 @@ namespace LethalMenu.Menu.Tab
             );
 
             UI.Header("SettingsTab.ChamColors", true);
-            UI.Toggle("SettingsTab.UseSingleChamColor", ref Settings.b_UseSingleChamColor, "General.Disable", "General.Enable", (_) => SetColor(ref Settings.c_chams, s_chamsColor, true));
+            UI.Toggle("SettingsTab.UseSingleChamColor", ref Settings.b_UseSingleChamColor, "General.Enable", "General.Disable", (_) => SetColor(ref Settings.c_chams, s_chamsColor, true));
             UI.TextboxAction("SettingsTab.Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
                 new UIButton("General.Set", () => SetColor(ref Settings.c_chams, s_chamsColor, true))
             );
@@ -332,6 +343,9 @@ namespace LethalMenu.Menu.Tab
                 );
                 UI.TextboxAction("SettingsTab.EnemyVentChams", ref s_enemyVentChamsColor, @"[^0-9A-Za-z]", 8,
                     new UIButton("General.Set", () => SetColor(ref Settings.c_enemyVentChams, s_enemyVentChamsColor, true))
+                ); 
+                UI.TextboxAction("SettingsTab.MineshaftElevatorChams", ref s_mineshaftElevatorChamsColor, @"[^0-9A-Za-z]", 8,
+                   new UIButton("General.Set", () => SetColor(ref Settings.c_mineshaftElevatorChams, s_mineshaftElevatorChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.VainShroudChams", ref s_vainShroudChamsColor, @"[^0-9A-Za-z]", 8,
                    new UIButton("General.Set", () => SetColor(ref Settings.c_vainShroudChams, s_vainShroudChamsColor, true))
@@ -426,6 +440,27 @@ namespace LethalMenu.Menu.Tab
                 tiers[i] = color.AsString(threshold.ToString());
             }
             return string.Join(",", tiers);
+        }
+
+        public static void ToggleAllChams()
+        {
+            Settings.b_chamsObject = !Settings.b_chamsObject;
+            Settings.b_chamsEnemy = !Settings.b_chamsEnemy;
+            Settings.b_chamsPlayer = !Settings.b_chamsPlayer;
+            Settings.b_chamsLandmine = !Settings.b_chamsLandmine;
+            Settings.b_chamsTurret = !Settings.b_chamsTurret;
+            Settings.b_chamsBigDoor = !Settings.b_chamsBigDoor;
+            Settings.b_chamsDoorLock = !Settings.b_chamsDoorLock;
+            Settings.b_chamsSteamHazard = !Settings.b_chamsSteamHazard;
+            Settings.b_chamsBreaker = !Settings.b_chamsBreaker;
+            Settings.b_chamsShip = !Settings.b_chamsShip;
+            Settings.b_chamsSpikeRoofTrap = !Settings.b_chamsSpikeRoofTrap;
+            Settings.b_UseSingleChamColor = !Settings.b_UseSingleChamColor;
+            Settings.b_chamsMineshaftElevator = !Settings.b_chamsMineshaftElevator;
+            Settings.b_chamsEnemyVent = !Settings.b_chamsEnemyVent;
+            Settings.b_chamsItemDropship = !Settings.b_chamsItemDropship;
+            Settings.b_chamsCruiser = !Settings.b_chamsCruiser;
+            Settings.b_chamsVainShroud = !Settings.b_chamsVainShroud;
         }
     }
 }

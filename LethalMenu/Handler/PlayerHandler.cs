@@ -1,15 +1,18 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Cheats;
 using LethalMenu.Manager;
+using LethalMenu.Util;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
+using Vector3 = UnityEngine.Vector3;
 
 namespace LethalMenu.Handler
 {
     public class PlayerHandler
-    {
+    {  
         private PlayerControllerB player;
 
         public PlayerHandler(PlayerControllerB player)
@@ -49,7 +52,11 @@ namespace LethalMenu.Handler
 
         public void Kill() => player.DamagePlayerFromOtherClientServerRpc(player.health, new Vector3(0f, 0f, 0f), -1);
 
-        public void Heal() => player.DamagePlayerClientRpc(0, 100);
+        public void Heal()
+        {
+            if (LethalMenu.localPlayer.IsHost()) player.DamagePlayerServerRpc(0, 100);
+            else player.DamagePlayerFromOtherClientServerRpc(-100, new Vector3(0f, 0f, 0f), -1);
+        }
 
         public void Strike() => RoundManager.Instance?.LightningStrikeServerRpc(player.transform.position);
 
@@ -74,32 +81,26 @@ namespace LethalMenu.Handler
         public void SellQuota()
         {
             int quotaLeft = TimeOfDay.Instance.profitQuota - TimeOfDay.Instance.quotaFulfilled;
-            List<GrabbableObject> items = LethalMenu.items.Where(i => i != null && i.isInShipRoom && !i.isHeld && !i.isPocketed && i.itemProperties.isScrap && !InfoDisplay.DefaultShipItem(i)).ToList();
+            List<GrabbableObject> items = LethalMenu.items.Where(i => i != null && i.isInShipRoom && !i.isHeld && !i.isPocketed && i.itemProperties.isScrap && !i.IsDefaultShipItem()).ToList();
             items.ForEach(i =>        
             {
                 if (quotaLeft < 0) return;
                 Patches.SellQuota = true;
                 quotaLeft -= (int)(i.scrapValue * StartOfRound.Instance.companyBuyingRate);
-                PlaceOnDesk(i);
+                i.PlaceOnDesk();
             });
         }
 
         public void PlaceEverythingOnDesk()
         {
             player.DropAllHeldItems();
-            LethalMenu.items.FindAll(i => i.itemProperties.isScrap && !i.isHeld && !i.isPocketed && i.itemProperties.isScrap && !InfoDisplay.DefaultShipItem(i)).ForEach(PlaceOnDesk);
+            LethalMenu.items.Where(i => i.itemProperties.isScrap && !i.isHeld && !i.isPocketed && i.itemProperties.isScrap && !i.IsDefaultShipItem()).ToList().ForEach(i =>
+            {
+                i.PlaceOnDesk();
+            });
         }
 
-        public void PlaceOnDesk(GrabbableObject item)
-        {
-            DepositItemsDesk desk = Object.FindObjectOfType<DepositItemsDesk>();
-            if (desk == null) return;
-            player.currentlyHeldObjectServer = item;
-            desk.PlaceItemOnCounter(player);
-        }
-
-        public bool HasLineOfSightToPosition(Component o) => player != null && o != null && player.HasLineOfSightToPosition(o.transform.position);
-        public bool HasLineOfSight(Component o) => player != null && o != null && player.HasLineOfSight(o.transform.position);
+        public bool HasLineOfSight(Component o) => player != null && o != null && player.HasLineOfSightToPosition(o.transform.position);
         public PlayerHandler GetHandler(PlayerControllerB player) => new PlayerHandler(player);
     }
 
@@ -108,10 +109,17 @@ namespace LethalMenu.Handler
     public static class PlayerHandlerExtensions
     {
         public static PlayerHandler Handle(this PlayerControllerB player) => new PlayerHandler(player);
-        public static bool HasLineOfSight(this PlayerControllerB player, Vector3 pos, float width = 45f, int range = 60)
+
+        public static bool IsRealPlayer(this PlayerControllerB player)
         {
-            if (Vector3.Distance(player.transform.position, pos) < (float)range && Vector3.Angle(player.playerEye.transform.forward, pos - CameraManager.ActiveCamera.transform.position) < width && !Physics.Linecast(player.playerEye.transform.position, pos, out RaycastHit hit, StartOfRound.Instance.collidersRoomDefaultAndFoliage, QueryTriggerInteraction.Ignore)) return true;
-            return false;
+            PlayerControllerB host = LethalMenu.players.FirstOrDefault(p => p != null && p.IsHost());
+            if (Vector3.Distance(player.serverPlayerPosition, StartOfRound.Instance.notSpawnedPosition.position) <= 10f || host != null && host != player && player.playerSteamId == host.playerSteamId || player.playerSteamId == 0) return false;
+            return true;
+        }
+
+        public static bool IsHost(this PlayerControllerB player)
+        {
+            return player != null && player.IsHost || player.actualClientId == 0;
         }
     }
 }

@@ -3,9 +3,7 @@ using LethalMenu.Manager;
 using LethalMenu.Util;
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
 namespace LethalMenu.Cheats
 {
@@ -16,6 +14,7 @@ namespace LethalMenu.Cheats
         //Spectate
         public static int spectatingPlayer = -1;
         public static Camera camera = null;
+        public static AudioListener audioListener = null;
 
         //MiniCam
         public static int camPlayer = -1;
@@ -24,7 +23,7 @@ namespace LethalMenu.Cheats
         private static Vector2 defaultTooltipPos = Vector2.zero;
         private static RectTransform tooltips = null;
 
-        
+
 
         public override void Update()
         {
@@ -73,6 +72,7 @@ namespace LethalMenu.Cheats
             camera = null;
             minicam = null;
             minicamDisplay = null;
+            audioListener = null;
 
             Hack.SpectatePlayer.SetToggle(false);
             Hack.MiniCam.SetToggle(false);
@@ -95,6 +95,8 @@ namespace LethalMenu.Cheats
                 Destroy(camera.gameObject);
                 camera = null;
                 GameUtil.RenderPlayerModels();
+                audioListener = null;
+                if (LethalMenu.localPlayer != null && !LethalMenu.localPlayer.activeAudioListener.enabled) EnemyControl.ChangeAudioListener(null, true);
             }       
 
             if (!(bool)StartOfRound.Instance || (!Hack.MiniCam.IsEnabled() && minicam != null))
@@ -108,13 +110,13 @@ namespace LethalMenu.Cheats
                 minicamDisplay.transform.SetParent(null, false);
                 defaultTooltipPos = Vector2.zero;
                 Destroy(minicam.gameObject);
-                Destroy(minicamDisplay.gameObject);
+                if (minicamDisplay != null) Destroy(minicamDisplay.gameObject);
                 minicam = null;
                 minicamDisplay = null;
+                audioListener = null;
                 GameUtil.RenderPlayerModels();
-
+                if (LethalMenu.localPlayer != null && !LethalMenu.localPlayer.activeAudioListener.enabled) EnemyControl.ChangeAudioListener(null, true);
             }
-
         }
 
         private void Spectate()
@@ -129,8 +131,9 @@ namespace LethalMenu.Cheats
                 camera = GameObjectUtil.CreateCamera("SpectateCamera", CameraManager.GetBaseCamera().transform, true);
                 camera.enabled = true;
                 CameraManager.GetBaseCamera().enabled = false;
-
                 CameraManager.ActiveCamera = camera;
+                audioListener = camera.gameObject.AddComponent<AudioListener>();
+                EnemyControl.ChangeAudioListener(audioListener);
             }
             bool nv = Hack.NightVision.IsEnabled() || player.isInsideFactory;
             float intensity = Hack.NightVision.IsEnabled() ? Settings.f_nvIntensity : Settings.f_defaultNightVisionIntensity;

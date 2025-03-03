@@ -1,5 +1,3 @@
-using DunGen;
-using GameNetcodeStuff;
 using LethalMenu.Language;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
@@ -58,7 +56,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.Reach, "SelfTab.Reach");
             UI.Hack(Hack.Weight, "SelfTab.Weight");
             UI.Hack(Hack.AntiGhostGirl, "SelfTab.AntiGhostGirl");
-            UI.Hack(Hack.UnlockDoors, "SelfTab.UnlockDoors");
+            UI.Hack(Hack.UnlockObjects, "SelfTab.UnlockObjects");
             UI.Hack(Hack.BuildAnywhere, "SelfTab.BuildAnywhere");
             UI.Hack(Hack.FreeCam, "SelfTab.FreeCam");
             UI.Hack(Hack.NoCooldown, "SelfTab.NoCooldown");
@@ -96,6 +94,8 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.TeleportAllItems, "SelfTab.TeleportAllItems");
             UI.Hack(Hack.TeleportOneItem, "SelfTab.TeleportOneItem");
             UI.Hack(Hack.FullRenderResolution, "SelfTab.FullRenderResolution");
+            UI.Hack(Hack.GrabNutcrackerShotgun, "SelfTab.GrabNutcrackerShotgun");
+            UI.Hack(Hack.MinigunShotgun, "SelfTab.MinigunShotgun");
 
             GUILayout.EndScrollView();
         }
@@ -128,8 +128,8 @@ namespace LethalMenu.Menu.Tab
 
             UI.Hack(Hack.TeleportShip, "SelfTab.TeleportShip", "SelfTab.Teleport");
 
-            DoorTeleportLocations(LethalMenu.doors.FindAll(door => door.isEntranceToBuilding));
-            DoorTeleportLocations(LethalMenu.doors.FindAll(door => !door.isEntranceToBuilding));
+            DoorTeleportLocations(LethalMenu.doors.FindAll(d => d.isEntranceToBuilding));
+            DoorTeleportLocations(LethalMenu.doors.FindAll(d => !d.isEntranceToBuilding));
 
             UI.Hack(Hack.TeleportSavedPosition, "SelfTab.TeleportSaved", "SelfTab.Teleport");
             UI.Hack(Hack.SaveTeleportPosition, "SelfTab.SavePosition", "General.Save");
@@ -143,7 +143,7 @@ namespace LethalMenu.Menu.Tab
             doors.ForEach(d =>
             {
                 string type = d.isEntranceToBuilding ? "SelfTab.TeleportEntrance" : "SelfTab.TeleportExit";
-                UI.Hack(Hack.Teleport, $"{Localization.Localize(type)} {c++}", d.entrancePoint.position, false, true, d.isEntranceToBuilding);
+                if (d != null && d.entrancePoint != null) UI.Hack(Hack.Teleport, $"{Localization.Localize(type)} {c++}", d.entrancePoint.position, false, true, d.isEntranceToBuilding);
             });
         }
     }
