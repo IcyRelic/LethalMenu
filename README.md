@@ -243,7 +243,7 @@ Thank you for contributing to the development of this mod by sharing your feedba
 | Unlock Objects Action  | <kbd>F1</kbd> | Unlock the object you're looking at including doors, big doors, turrets, and landmines |
 | NoClip Controls  | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Space</kbd><kbd>LCTRL</kbd> | Movement Controls while using NoClip |
 
-## Latest Changelog | v1.4.5
+## Latest Changelog | v1.4.6
 ```
 - Added Host kicked warning to anti kick
 - Added Lethal Menu User Warning to Display Lethal Menu Users
