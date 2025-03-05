@@ -27,6 +27,7 @@ v1.4.6
 - Added Is Outside to enemy tab - Shows if the enemy is outside or not
 - Added Item Amount to Item Manager - Lets you spawn more then 1 item at once
 - Added Explode Cruiser - Explodes the cruiser
+- Added Open Settings - Opens the Lethal Menu config
 - Fixed null ESP and Chams errors
 - Fixed Demi god / heal - I was calling a client rpc instead of a server rpc
 - Fixed Cursor bug - Cursor got disabled when exiting the escape menu with Lethal Menu open
