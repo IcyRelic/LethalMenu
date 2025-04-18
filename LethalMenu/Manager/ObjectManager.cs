@@ -54,6 +54,8 @@ namespace LethalMenu.Manager
         private static void DoorLockAwake(DoorLock __instance) => AddToObjectQueue(() => LethalMenu.doorLocks.Add(__instance));
         [HarmonyPatch(typeof(EnemyAI), "Start"), HarmonyPostfix]
         private static void EnemyAIStart(EnemyAI __instance) => AddToObjectQueue(() => LethalMenu.enemies.Add(__instance));
+        [HarmonyPatch(typeof(MaskedPlayerEnemy), "Start"), HarmonyPostfix]
+        private static void MaskedPlayerEnemyStart(MaskedPlayerEnemy __instance) => AddToObjectQueue(() => LethalMenu.enemies.Add(__instance));
         [HarmonyPatch(typeof(SteamValveHazard), "Start"), HarmonyPostfix]
         private static void SteamValveHazardStart(SteamValveHazard __instance) => AddToObjectQueue(() => LethalMenu.steamValves.Add(__instance));
         [HarmonyPatch(typeof(ShipTeleporter), "Awake"), HarmonyPostfix]

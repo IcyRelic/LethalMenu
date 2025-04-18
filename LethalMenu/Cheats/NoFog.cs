@@ -21,7 +21,7 @@ namespace LethalMenu.Cheats
         public static void ToggleNoFog()
         {
             LethalMenu.fogs.Where(f => f != null).ToList().ForEach(f => ToggleFog(f));
-            LethalMenu.volumes.Where(v => v != null && v.gameObject != null && v.gameObject.name == "VolumeMain" || v.gameObject.name == "StormVolume").ToList().ForEach(v => ToggleFog(null, v));   
+            LethalMenu.volumes.Where(v => v != null && v.gameObject != null && (v.gameObject.name == "VolumeMain" || v.gameObject.name == "StormVolume")).ToList().ForEach(v => ToggleFog(null, v));
         }
 
         private static void ToggleFog(LocalVolumetricFog fog = null, Volume volume = null)

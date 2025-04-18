@@ -1,2 +1,1 @@
 Respawn after death
-Spectate/MiniCam audio

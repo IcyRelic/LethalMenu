@@ -172,13 +172,5 @@ namespace LethalMenu.Handler
         {
             return ChamHandler.GetHandler(obj);
         }
-
-        public static Vector3 GetPosition(this Object obj)
-        {
-            if (obj is Transform transform) return transform.position;
-            else if (obj is GameObject gameObject) return gameObject.transform.position;
-            else if (obj is Component component) return component.transform.position;
-            return Vector3.zero;
-        }
     }
 }

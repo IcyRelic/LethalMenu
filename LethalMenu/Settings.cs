@@ -21,7 +21,7 @@ namespace LethalMenu
 {
     internal class Settings
     {
-        public static string version = "v1.4.6";
+        public static string version = "v1.4.7";
         public static bool DebugMode = false;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen
@@ -379,13 +379,6 @@ namespace LethalMenu
 
             public static void LoadConfig()
             {
-                if (File.Exists("lethelmenu.config.json"))
-                {
-                    File.Move("lethelmenu.config.json", config);
-                    LoadConfig();
-                    return;
-                }
-
                 CreateConfigIfNotExists();
 
                 JObject json = JObject.Parse(File.ReadAllText(config));

@@ -153,6 +153,9 @@ namespace LethalMenu
         SpamShootAllShotguns,
         ShootAllShotguns,
         ExplodeCruiser,
+        SlideTaunt,
+        ExplodeJetpacksOnGrab,
+        ExplodeAllJetpacks,
 
         /** Visuals Tab **/
         ToggleAllESP,
@@ -202,6 +205,7 @@ namespace LethalMenu
         LureAllEnemies,
         ExplodeClosestMine,
         EnemyControl,
+        ExplodeJetpack,
     }
 
     public static class HackExtensions
@@ -228,6 +232,7 @@ namespace LethalMenu
             Hack.LureAllEnemies,
             Hack.ExplodeClosestMine,
             Hack.SpawnMapObjects,
+            Hack.ExplodeJetpack,
         };
 
         private static List<Hack> Waiting = new List<Hack>();
@@ -341,6 +346,8 @@ namespace LethalMenu
             {Hack.GrabNutcrackerShotgun, false},
             {Hack.MinigunShotgun, false},
             {Hack.SpamShootAllShotguns, false},
+            {Hack.SlideTaunt, false},
+            {Hack.ExplodeJetpacksOnGrab, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -424,6 +431,9 @@ namespace LethalMenu
             {Hack.SpamShootAllShotguns, (Action) HackExecutor.SpamShootAllShotguns},
             {Hack.ShootAllShotguns, (Action) HackExecutor.ShootAllShotguns},
             {Hack.ExplodeCruiser, (Action) HackExecutor.ExplodeCruiser},
+            {Hack.ExplodeJetpack, (Action<JetpackItem>) HackExecutor.ExplodeJetpack},
+            {Hack.ExplodeJetpacksOnGrab, (Action) HackExecutor.ExplodeJetpacksOnGrab},
+            {Hack.ExplodeAllJetpacks, (Action) HackExecutor.ExplodeAllJetpacks},
         };
 
         public static readonly Dictionary<Hack, ButtonControl> KeyBinds = new Dictionary<Hack, ButtonControl>()
@@ -642,6 +652,7 @@ namespace LethalMenu
         public static void Teleport(Vector3 pos, bool elevator = false, bool ship = false, bool factory = false) => LethalMenu.localPlayer.Handle().Teleport(pos, elevator, ship, factory);
         public static void KillPlayer(PlayerControllerB player) => player.Handle().Kill();
         public static void HealPlayer(PlayerControllerB player) => player.Handle().Heal();
+        public static void ExplodeJetpack(JetpackItem jetpack) => RoundHandler.ExplodeJetpack(jetpack);
         public static void DemiGod(PlayerControllerB player) => DemiGodCheat.ToggleDemiGod(player);
         public static void LightningStrikePlayer(PlayerControllerB player) => player.Handle().Strike();
         public static void SpawnHoardingBugInfestation() => RoundHandler.SpawnHoardingBugInfestation();
@@ -674,5 +685,7 @@ namespace LethalMenu
         public static void SpamShootAllShotguns() => LethalMenu.Instance.StartCoroutine(RoundHandler.SpamShootAllShotguns());
         public static void ShootAllShotguns() => RoundHandler.ShootAllShotguns();
         public static void ExplodeCruiser() => RoundHandler.ExplodeCruiser();
+        public static void ExplodeJetpacksOnGrab() => LethalMenu.Instance.StartCoroutine(RoundHandler.ExplodeJetpacksOnGrab());
+        public static void ExplodeAllJetpacks() => RoundHandler.ExplodeAllJetpacks();
     }
 }

@@ -45,6 +45,9 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SpamShootAllShotguns, "TrollTab.SpamShootAllShotguns");
             UI.Hack(Hack.ShootAllShotguns, "TrollTab.ShootAllShotguns");
             UI.Hack(Hack.ExplodeCruiser, "TrollTab.ExplodeCruiser");
+            UI.Hack(Hack.SlideTaunt, "TrollTab.SlideTaunt");
+            UI.Hack(Hack.ExplodeAllJetpacks, "TrollTab.ExplodeAllJetpacks");
+            UI.Hack(Hack.ExplodeJetpacksOnGrab, "TrollTab.ExplodeJetpacksOnGrab");
 
             GUILayout.EndScrollView();
         }

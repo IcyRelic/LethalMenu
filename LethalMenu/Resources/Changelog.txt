@@ -1,3 +1,10 @@
+v1.4.7
+- Added Slide Taunt - Lets you slide while emoting
+- Added Explode Jetpack - Explodes the jetpack held by the player
+- Added Explode All Jetpacks - Explodes all jetpacks on the ground
+- Added Explode Jetpacks On Grab - When picked up it explodes
+- Fixed Masked Player not getting collected - Only enemy that didn't call the base start method
+
 v1.4.6
 - Added Host kicked warning to anti kick - Shows what lobbies hosts kicked you!
 - Added Lethal Menu User Warning to Display Lethal Menu Users - Shows if the host is using Lethal Menu User in the lobby

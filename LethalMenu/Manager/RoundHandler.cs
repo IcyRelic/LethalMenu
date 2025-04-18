@@ -285,6 +285,15 @@ namespace LethalMenu.Manager
             LethalMenu.vehicles.Where(v => v != null).ToList().ForEach(v => v.DestroyCarServerRpc(-1));
         }
 
+        public static void ExplodeJetpack(JetpackItem jetpack)
+        {
+            if (jetpack == null) return;
+            PlayerControllerB player = jetpack.playerHeldBy;
+            if (player != null) player.DropAllHeldItems();
+            jetpack.ExplodeJetpackServerRpc();
+            if (player != null) jetpack.DestroyObjectInHand(player);
+        }
+
         public static void SpawnEnemy(EnemyType type, int num, bool outside)
         {
             if (StartOfRound.Instance.inShipPhase) return;
@@ -343,6 +352,20 @@ namespace LethalMenu.Manager
                 if (LethalMenu.terminal != null) LethalMenu.terminal.PlayTerminalAudioServerRpc(1);
                 yield return new WaitForSeconds(0.1f);
             }
+        }
+
+        public static IEnumerator ExplodeJetpacksOnGrab()
+        {
+            while (Hack.ExplodeJetpacksOnGrab.IsEnabled())
+            {
+                LethalMenu.items.FindAll(i => i != null && i.GetType() == typeof(JetpackItem)).Cast<JetpackItem>().Where(j => j != null && j.isHeld).ToList().ForEach(j => ExplodeJetpack(j));
+                yield return new WaitForSeconds(0.1f);
+            }
+        }
+
+        public static void ExplodeAllJetpacks()
+        {
+            LethalMenu.items.FindAll(i => i != null && i.GetType() == typeof(JetpackItem)).Cast<JetpackItem>().Where(j => j != null && !j.isHeld).ToList().ForEach(j => ExplodeJetpack(j));
         }
 
         public static void BreakAllWebs()

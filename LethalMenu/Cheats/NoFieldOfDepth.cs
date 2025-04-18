@@ -6,9 +6,8 @@ namespace LethalMenu.Cheats
     [HarmonyPatch]
     internal class NoFieldOfDepth : Cheat
     {
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(DepthOfField), "IsActive")]
-        public static bool Prefix(DepthOfField __instance)
+        [HarmonyPatch(typeof(DepthOfField), "IsActive"), HarmonyPrefix]
+        public static bool IsActive(DepthOfField __instance)
         {
             if (Hack.NoFieldOfDepth.IsEnabled())
             {
