@@ -99,7 +99,7 @@ namespace LethalMenu.Manager
         private static void OnDestroy(NetworkBehaviour __instance)
         {
             if (__instance is GrabbableObject GrabbableObject) AddToObjectQueue(() => LethalMenu.items.Remove(GrabbableObject));
-            if (__instance is SteamValveHazard SteamValveHazard) AddToObjectQueue(() => LethalMenu.steamValves.Remove(SteamValveHazard));
+            if (__instance is SteamValveFixInteraction SteamValveFixInteraction) AddToObjectQueue(() => LethalMenu.steamValves.Remove(SteamValveFixInteraction.steamValveMain));
             if (__instance is VehicleController VehicleController) AddToObjectQueue(() => LethalMenu.vehicles.Remove(VehicleController));
             if (__instance is Landmine Landmine) AddToObjectQueue(() => LethalMenu.landmines.Remove(Landmine));
             if (__instance is EntranceTeleport EntranceTeleport) AddToObjectQueue(() => LethalMenu.doors.Remove(EntranceTeleport));

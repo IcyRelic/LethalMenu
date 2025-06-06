@@ -4,6 +4,8 @@ v1.4.7
 - Added Explode All Jetpacks - Explodes all jetpacks on the ground
 - Added Explode Jetpacks On Grab - When picked up it explodes
 - Fixed Masked Player not getting collected - Only enemy that didn't call the base start method
+- Fixed Unlimited Presents - The method we patched was changed causing a harmony error
+- Fixed Fix All Valves - He moved the fix method to a new class named SteamValveFixInteraction
 
 v1.4.6
 - Added Host kicked warning to anti kick - Shows what lobbies hosts kicked you!

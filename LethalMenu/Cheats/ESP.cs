@@ -207,7 +207,7 @@ namespace LethalMenu.Cheats
         private void DisplaySteamHazards()
         {
             DisplayObjects(
-                LethalMenu.steamValves?.Where(v => v != null && v.triggerScript.interactable),
+                LethalMenu.steamValves?.Where(v => v != null && !v.Reflect().GetValue<bool>("valveHasBeenRepaired")),
                 valve => Format("Cheats.ESP.SteamValve"),
                 valve => Settings.c_steamHazardESP
             );

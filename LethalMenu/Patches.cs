@@ -45,6 +45,7 @@ namespace LethalMenu
             LethalMenu.Instance.LMUsers.Clear();
             Shoplifter.Clear();
             ServerTab.UpdatePlayerOptions(true);
+            UnlimitedPresents.stuckpresent = false;
         }
 
         [HarmonyPatch(typeof(StartOfRound), "OnClientConnect"), HarmonyPostfix]

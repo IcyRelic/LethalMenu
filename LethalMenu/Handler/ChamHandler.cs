@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Manager;
 using LethalMenu.Types;
+using LethalMenu.Util;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,7 +80,7 @@ namespace LethalMenu.Handler
             if (@object is Landmine) e = Settings.b_chamsLandmine;
             if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
             if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
-            if (@object is SteamValveHazard steamValve && !steamValve.triggerScript.interactable) e = Settings.b_chamsSteamHazard;
+            if (@object is SteamValveHazard steamValve && !steamValve.Reflect().GetValue<bool>("valveHasBeenRepaired")) e = Settings.b_chamsSteamHazard;
             if (@object is TerminalAccessibleObject && ((TerminalAccessibleObject)@object).isBigDoor) e = Settings.b_chamsBigDoor;
             if (@object is DoorLock doorLock && doorLock.isLocked) e = Settings.b_chamsDoorLock;
             if (@object is HangarShipDoor) e = Settings.b_chamsShip;

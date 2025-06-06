@@ -485,7 +485,7 @@ namespace LethalMenu.Manager
             }
         }
 
-        public static void FixAllValves() => LethalMenu.steamValves.Where(s => s != null).ToList().ForEach(v => v.FixValveServerRpc());
+        public static void FixAllValves() => LethalMenu.steamValves.Where(s => s != null && s.fixInteract != null && !s.Reflect().GetValue<bool>("valveHasBeenRepaired")).ToList().ForEach(v => v.fixInteract.FixValveServerRpc());
         public static void ToggleAllLandmines() => LethalMenu.landmines.Where(l => l != null).ToList().ForEach(m => m.ToggleMine(!Hack.ToggleAllLandmines.IsEnabled()));
         public static void ToggleAllTurrets() => LethalMenu.turrets.Where(t => t != null).ToList().ForEach(t => t.turretActive = !Hack.ToggleAllTurrets.IsEnabled());
         public static void BerserkAllTurrets() => LethalMenu.turrets.Where(t => t != null).ToList().ForEach(t => t.turretMode = Hack.BerserkAllTurrets.IsEnabled() ? TurretMode.Berserk : TurretMode.Detection);

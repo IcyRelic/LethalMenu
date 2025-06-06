@@ -6,11 +6,8 @@ using Steamworks;
 using Steamworks.Data;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Rendering;
-using Color = UnityEngine.Color;
 
 
 namespace LethalMenu.Menu.Tab
