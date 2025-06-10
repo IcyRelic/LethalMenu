@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 
@@ -93,7 +92,20 @@ namespace LethalMenu
         {
             harmony = new Harmony("LethalMenu");
             Harmony.DEBUG = false;
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            {
+                if (type.IsDefined(typeof(HarmonyPatch), false))
+                {
+                    try
+                    {
+                        new PatchClassProcessor(harmony, type).Patch();
+                    }
+                    catch
+                    {
+                        Debug.LogWarning($"Skipping patch in {type.FullName}");
+                    }
+                }
+            }
         }
 
         private void LoadCheats()
