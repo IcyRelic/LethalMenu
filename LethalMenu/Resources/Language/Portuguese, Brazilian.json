@@ -1,9 +1,9 @@
 {
 	"LANGUAGE": "Português (Brasil)",
 	"TRANSLATOR": "IcyRelic, Dustin",
-	"General.HostRequired": "Este recurso requer um(a) anfitriã(o)!",
-	"General.HostTag": "(Apenas anfitrião)",
-	"General.HostStormyTag": "(Anfitrião/Tempestuoso)",
+	"General.HostRequired": "Este recurso requer um hóspede!",
+	"General.HostTag": "(Somente hóspede)",
+	"General.HostStormyTag": "(Hóspede/Tempestuoso)",
 	"General.Vow/Adamance": "(Vow/Adamance)",
 	"General.Experimentation": "(Experimentation)",
 	"General.RejoinRequired": "(Requer re-entrar)",
