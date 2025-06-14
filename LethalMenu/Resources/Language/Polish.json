@@ -1,5 +1,6 @@
 {
 	"LANGUAGE": "Polski",
+	"TRANSLATOR": "IcyRelic, Dustin",
 	"General.HostRequired": "Ta funkcja wymaga hosta!",
 	"General.HostTag": "(Tylko host)",
 	"General.HostStormyTag": "(Host/Burza)",
