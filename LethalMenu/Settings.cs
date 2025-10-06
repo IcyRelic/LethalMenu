@@ -21,13 +21,13 @@ namespace LethalMenu
 {
     internal class Settings
     {
-        public static string version = "v1.4.7";
+        public static string version = "v1.4.8";
         public static bool DebugMode = false;
         public static bool isFirstLaunch = true;
         public static bool isMenuOpen
         {
-            get { return Hack.OpenMenu.IsEnabled(); }
-            set { Hack.OpenMenu.SetToggle(value);  }
+            get => Hack.OpenMenu.IsEnabled();
+            set => Hack.OpenMenu.SetToggle(value);
         }
 
         /* * * * * * * * *

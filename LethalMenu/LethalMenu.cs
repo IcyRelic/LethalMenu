@@ -92,20 +92,17 @@ namespace LethalMenu
         {
             harmony = new Harmony("LethalMenu");
             Harmony.DEBUG = false;
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            Assembly.GetExecutingAssembly().GetTypes().Where(t => t.IsDefined(typeof(HarmonyPatch), false)).ToList().ForEach(t =>
             {
-                if (type.IsDefined(typeof(HarmonyPatch), false))
+                try
                 {
-                    try
-                    {
-                        new PatchClassProcessor(harmony, type).Patch();
-                    }
-                    catch
-                    {
-                        Debug.LogWarning($"Skipping patch in {type.FullName}");
-                    }
+                    new PatchClassProcessor(harmony, t).Patch();
                 }
-            }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"Skipping patch in {t.FullName} {ex.Message}");
+                }
+            });
         }
 
         private void LoadCheats()

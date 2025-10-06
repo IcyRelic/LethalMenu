@@ -40,7 +40,7 @@ namespace LethalMenu.Util
 
             while (btn == null && Time.time - startTime <= 15f)
             {
-                ButtonControl pressed = GetPressedBtn();
+                ButtonControl pressed = GetPressedBtn(); 
                 if (pressed != null && pressed != btn) btn = pressed;
                 yield return null;
             }
@@ -51,12 +51,28 @@ namespace LethalMenu.Util
 
         public static ButtonControl GetPressedBtn()
         {
-            foreach (KeyControl key in Keyboard.current.allKeys) if (key.wasPressedThisFrame) return key;
-            ButtonControl[] mouseButtons =
+            if (Keyboard.current != null)
             {
-                Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton
-            };
-            foreach (ButtonControl btn in mouseButtons) if (btn.wasPressedThisFrame) return btn;
+                foreach (KeyControl key in Keyboard.current.allKeys)
+                {
+                    if (key != null && key.wasPressedThisFrame) return key;
+                }
+            }
+            if (Mouse.current != null)
+            {
+                ButtonControl[] mouseButtons =
+                {
+                    Mouse.current.leftButton,
+                    Mouse.current.rightButton,
+                    Mouse.current.middleButton,
+                    Mouse.current.forwardButton,
+                    Mouse.current.backButton
+                };
+                foreach (ButtonControl btn in mouseButtons)
+                {
+                    if (btn != null && btn.wasPressedThisFrame) return btn;
+                }
+            }
             return null;
         }
     }
