@@ -91,7 +91,7 @@ namespace LethalMenu.Menu.Tab
 
             if(i_selectedCrosshairIndex == -1) i_selectedCrosshairIndex = (int) Settings.ct_crosshairType;
             if(i_languageIndex == -1) i_languageIndex = Array.IndexOf(Localization.GetLanguages(), Localization.Language.Name);
-            if (i_themeIndex == -1) i_themeIndex = Array.IndexOf(Theme.GetThemes(), Theme.name);
+            if (i_themeIndex == -1) i_themeIndex = Array.IndexOf(Theme.GetThemes(), Theme.Name);
 
             GUILayout.BeginVertical(GUILayout.Width(f_leftWidth));
 
@@ -138,8 +138,6 @@ namespace LethalMenu.Menu.Tab
             UI.Toggle("SettingsTab.FPSCounter", ref Settings.b_FPSCounter, "General.Enable", "General.Disable");
             UI.Slider("SettingsTab.ObjectQueueDelay", Settings.f_ObjectQueueDelay.ToString("0.0"), ref Settings.f_ObjectQueueDelay, 0f, 1f, 0.1f);
             UI.Toggle("SettingsTab.HackHighlight", ref Settings.b_HackHighlight, "General.Enable", "General.Disable");
-            UI.Toggle("SettingsTab.DisplayLMUsers", ref Settings.b_DisplayLMUsers, "General.Enable", "General.Disable");
-            UI.Toggle("SettingsTab.DisplayHostKickedLobbies", ref Settings.b_DisplayHostKickedLobbies, "General.Enable", "General.Disable");
             UI.Toggle("SettingsTab.DebugMode", ref Settings.DebugMode, "General.Enable", "General.Disable", HackMenu.Instance.ToggleDebugTab);
         }
 

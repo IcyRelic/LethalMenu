@@ -1,7 +1,4 @@
 using LethalMenu.Menu.Core;
-using System.Collections;
-using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,9 +14,6 @@ namespace LethalMenu.Util
         public static float maxWidth = Screen.width - (Screen.width * 0.1f);
         public static float maxHeight = Screen.height - (Screen.height * 0.1f);
         private static int oldWidth, oldHeight;
-
-        private static Coroutine LMUserCoroutine;
-        private static bool SendLMUserMessage = true;
 
         public static void BeginResizeMenu()
         {
@@ -86,34 +80,6 @@ namespace LethalMenu.Util
             LethalMenu.localPlayer?.playerActions.Enable();
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-        }
-
-        public static void StartLMUser()
-        {
-            if (LMUserCoroutine == null) LMUserCoroutine = LethalMenu.Instance.StartCoroutine(LMUser());
-            else SendLMUserMessage = true;
-        }
-
-        private static IEnumerator LMUser()
-        {
-            while (!Settings.b_DisplayLMUsers || HUDManager.Instance == null || LethalMenu.localPlayer == null) yield return new WaitForSeconds(10f);
-            HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}, {Settings.version}</size>");
-            Regex s = new(@"\b\d{17,19}\b");
-            Regex v = new(@",\s*(v\d+\.\d+\.\d+)");
-            while (Settings.b_DisplayLMUsers)
-            {
-                if (SendLMUserMessage)
-                {
-                    SendLMUserMessage = false;
-                    HUDManager.Instance.Reflect().Invoke("AddTextMessageServerRpc", $"<size=0>{LethalMenu.localPlayer.playerSteamId}, {Settings.version}</size>");
-                }
-                HUDManager.Instance.ChatMessageHistory.ToList().ForEach(m =>
-                {
-                    if (s.Match(m).Success && v.Match(m).Success) LethalMenu.Instance.LMUsers[s.Match(m).Value] = v.Match(m).Groups[1].Value;
-                });
-                yield return new WaitForSeconds(15f);
-            }
-            LMUserCoroutine = null;
         }
     }
 }

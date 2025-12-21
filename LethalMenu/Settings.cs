@@ -140,8 +140,6 @@ namespace LethalMenu
         public static bool b_DropItems = false;
         public static bool b_HackHighlight = false;
         public static bool b_FPSCounter = false; 
-        public static bool b_DisplayLMUsers = false;
-        public static bool b_DisplayHostKickedLobbies = false;
         public static bool b_NoFog = false;
 
         public static CrosshairType ct_crosshairType = CrosshairType.Plus;
@@ -283,7 +281,6 @@ namespace LethalMenu
                 hackSettings["PlayerHPDisplay"] = b_PlayerHPDisplay.ToString();
                 hackSettings["ShowShipItems"] = b_ShowShipItems.ToString();
                 hackSettings["FPSCounter"] = b_FPSCounter.ToString();
-                hackSettings["DisplayLMUsers"] = b_DisplayLMUsers.ToString();
                 hackSettings["HackHighlight"] = b_HackHighlight.ToString();
                 hackSettings["FOV"] = f_fov.ToString();
                 hackSettings["EnemyFilter"] = JObject.FromObject(enemyFilter);
@@ -291,7 +288,6 @@ namespace LethalMenu
                 hackSettings["ESPThickness"] = f_ESPThickness.ToString();
                 hackSettings["ObjectQueueDelay"] = f_ObjectQueueDelay.ToString();
                 hackSettings["NoFog"] = b_NoFog.ToString();
-                hackSettings["DisplayHostKickedLobbies"] = b_DisplayHostKickedLobbies.ToString();
 
                 chams["Distance"] = f_chamDistance.ToString();
                 chams["Object"] = b_chamsObject.ToString();
@@ -366,7 +362,7 @@ namespace LethalMenu
                 settings["DebugMode"] = DebugMode.ToString();
 
 
-                json["Theme"] = Theme.name;
+                json["Theme"] = Theme.Name;
                 json["Language"] = Localization.Language.Name;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
@@ -457,8 +453,6 @@ namespace LethalMenu
                         b_FPSCounter = bool.Parse(FPSCounterToken.ToString());
                     if (hackSettings.TryGetValue("HackHighlight", out JToken HackHighlightToken))
                         b_HackHighlight = bool.Parse(HackHighlightToken.ToString());
-                    if (hackSettings.TryGetValue("DisplayLMUsers", out JToken DisplayLMUsersToken))
-                        b_DisplayLMUsers = bool.Parse(DisplayLMUsersToken.ToString());
                     if (hackSettings.TryGetValue("UseSingleChamColor", out JToken singleChamColorToken))
                         b_UseSingleChamColor = bool.Parse(singleChamColorToken.ToString());
                     if (hackSettings.TryGetValue("FOV", out JToken fovToken))
@@ -471,8 +465,6 @@ namespace LethalMenu
                         f_ObjectQueueDelay = float.Parse(objectQueueDelayToken.ToString());
                     if (hackSettings.TryGetValue("NoFog", out JToken noFogToken))
                         b_NoFog = bool.Parse(noFogToken.ToString());
-                    if (hackSettings.TryGetValue("DisplayHostKickedLobbies", out JToken displayHostKickedLobbiesToken))
-                        b_DisplayHostKickedLobbies = bool.Parse(displayHostKickedLobbiesToken.ToString());
 
                     if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
                     {

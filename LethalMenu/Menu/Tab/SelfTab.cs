@@ -87,7 +87,6 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.OpenDropShipLand, "SelfTab.OpenDropShipLand");
             UI.Hack(Hack.LootAnyItemBeltBag, "SelfTab.LootAnyItemBeltBag");
             UI.Hack(Hack.LootThroughWallsBeltBag, "SelfTab.LootThroughWallsBeltBag");
-            UI.Hack(Hack.AntiKick, "SelfTab.AntiKick");
             UI.Hack(Hack.FixAllValves, "SelfTab.FixValves");
             UI.Hack(Hack.SellEverything, "SelfTab.SellEverything");
             UI.Hack(Hack.SellQuota, "SelfTab.SellQuota");

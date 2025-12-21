@@ -1,8 +1,4 @@
-﻿using System;
-using Unity.Netcode;
-using UnityEngine;
-
-namespace LethalMenu.Types
+﻿namespace LethalMenu.Types
 {
     public enum Unlockable : int
     {
@@ -39,6 +35,13 @@ namespace LethalMenu.Types
         BeeSuit = 25,
         BunnySuit = 26,
         DiscoBall = 27,
+        Microwave = 28,
+        SofaChair = 29,
+        Fridge = 30,
+        ClassicPainting = 31,
+        ElectricChair = 32,
+        DogHouse = 33,
+
     }
 
     public static class UnlockableExtensions

@@ -1,6 +1,7 @@
 ﻿using GameNetcodeStuff;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
+using LethalMenu.Types;
 using LethalMenu.Util;
 using Steamworks;
 using Steamworks.Data;
@@ -141,6 +142,20 @@ namespace LethalMenu.Menu.Tab
             if (GUILayout.Button("Execute"))
             {
                 LethalMenu.localPlayer?.currentlyHeldObjectServer?.GetComponents<Component>().Where(c => c != null).ToList().ForEach(c => Debug.Log($"{c.GetType().FullName}"));
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Debug all unlockables");
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Execute"))
+            {
+                List<UnlockableItem> unlockables = StartOfRound.Instance.unlockablesList.unlockables;
+                for (int i = 0; i < unlockables.Count; i++)
+                {
+                    UnlockableItem unlockableItem = unlockables[i];
+                    Debug.Log($"Unlockable : Name {unlockableItem.unlockableName} : ID {i}");
+                }
             }
             GUILayout.EndHorizontal();
 

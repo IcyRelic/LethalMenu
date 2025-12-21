@@ -337,30 +337,22 @@ namespace LethalMenu.Handler
            typeof(SandWormAI),
            typeof(BlobAI),
            typeof(DressGirlAI),
-           typeof(PufferAI),
            typeof(SpringManAI),
            typeof(DocileLocustBeesAI),
            typeof(DoublewingAI),
            typeof(RedLocustBees),
-           typeof(LassoManAI),
            typeof(JesterAI),
-           typeof(RedPillAnomaly),
            typeof(ButlerBeesEnemyAI),
            typeof(RadMechAI),
            typeof(ClaySurgeonAI),
            typeof(CaveDwellerAI),
-           typeof(LassoManAI)
         };
 
         public void Kill(bool despawn = false, bool NoAlert = false)
         {
             if (enemy == null || enemy.isEnemyDead || HUDManager.Instance == null || RoundManager.Instance == null) return;
-            if (LethalMenu.localPlayer.IsHost())
-            {
-                if (!enemy.enemyType.canDie) enemy.enemyType.canDie = true;
-                enemy.KillEnemyServerRpc(forceDespawnEnemies.Contains(enemy.GetType()) || despawn);
-            }
-            else RoundManager.Instance.DespawnEnemyServerRpc(enemy.GetComponent<NetworkObject>());
+            if (forceDespawnEnemies.Contains(enemy.GetType()) || despawn) RoundManager.Instance.DespawnEnemyServerRpc(enemy.GetComponent<NetworkObject>());
+            else enemy.KillEnemyServerRpc(false);
             if (!NoAlert) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
         }
 
@@ -374,7 +366,7 @@ namespace LethalMenu.Handler
             }
             if (LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
             enemy.SetEnemyStunned(true, 5);
-            if (!NoAlert) HUDManager.Instance.DisplayTip("Lethal Menu", $"Killed {enemy.enemyType.name}");
+            if (!NoAlert) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunned {enemy.enemyType.name}");
         }
 
         public void Teleport(PlayerControllerB player = null, Vector3 position = default)

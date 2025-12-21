@@ -48,9 +48,10 @@ namespace LethalMenu.Handler
             Teleport(Settings.v_savedLocation, false, false, false);
         }
 
-        public void TeleportTo() => LethalMenu.localPlayer.Handle().Teleport(player.transform.position, player.isInElevator, player.isInHangarShipRoom, player.isInsideFactory);
-
-        public void Kill() => player.DamagePlayerFromOtherClientServerRpc(player.health, new Vector3(0f, 0f, 0f), -1);
+        public void Kill()
+        {
+            player.DamagePlayerFromOtherClientServerRpc(player.health, new Vector3(0f, 0f, 0f), -1);
+        }
 
         public void Heal()
         {

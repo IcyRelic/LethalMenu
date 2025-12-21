@@ -1,3 +1,11 @@
+v1.4.8
+- Added New Unlockables - Unlockable Manager now has the new unlockables
+- Fixed Kill Enemy - Desynced killing sometimes happened where they appeared dead but were alive
+- Changed Theme Loading - Optimized it so no more double loading themes on startup
+- Removed Anti Kick - Too many problems
+- Removed Display Host Kicked Lobbies - Went along with Anti Kick
+- Removed Display Lethal Menu Users - Not necessary 
+
 v1.4.7
 - Added Slide Taunt - Lets you slide while emoting
 - Added Explode Jetpack - Explodes the jetpack held by the player

@@ -49,7 +49,6 @@ namespace LethalMenu
         public static Terminal terminal;
         public static int selectedPlayer = -1;
         public int fps;
-        public Dictionary<string, string> LMUsers = [];
 
         public static Harmony harmony;
         private HackMenu menu;
@@ -80,10 +79,8 @@ namespace LethalMenu
         private void Initialize()
         {
             Localization.Initialize();
-            Theme.Initialize();
             HarmonyPatching();
             LoadCheats();
-            MenuUtil.StartLMUser();
             ObjectManager.CollectObjects();
             this.StartCoroutine(this.FPSCounter());
         }
