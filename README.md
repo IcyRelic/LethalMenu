@@ -243,58 +243,14 @@ Thank you for contributing to the development of this mod by sharing your feedba
 | Unlock Objects Action  | <kbd>F1</kbd> | Unlock the object you're looking at including doors, big doors, turrets, and landmines |
 | NoClip Controls  | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><kbd>Space</kbd><kbd>LCTRL</kbd> | Movement Controls while using NoClip |
 
-## Latest Changelog | v1.4.6
+## Latest Changelog | v1.4.8
 ```
-- Added Host kicked warning to anti kick
-- Added Lethal Menu User Warning to Display Lethal Menu Users
-- Added Enemy Vent ESP
-- Added Enemy Vent Chams
-- Added Vain Shroud ESP
-- Added Vain Shroud Chams
-- Added Cruiser ESP
-- Added Cruiser Chams
-- Added Item Dropship ESP
-- Added Item Dropship Chams
-- Added Audio to Free cam
-- Added Audio to Spectate player
-- Added Box ESP
-- Added Mineshaft colors
-- Added Toggle Mineshaft Elevator
-- Added Toggle Vehicle Magnet
-- Added Toggle Vehicle Ignition
-- Added Object Queue Delay
-- Added Toggle All Chams
-- Added Spam Shoot All Shotguns
-- Added Shot All Shotguns
-- Added Minigun Shotgun
-- Added Grab Nutcrackers Shotgun
-- Added Display Credits
-- Added Message Spam
-- Added Is Outside to enemy tab
-- Added Item Amount to Item Manager
-- Added Explode Cruiser
-- Fixed null ESP and Chams errors
-- Fixed Demi god / heal
-- Fixed Cursor bug
-- Fixed First Setup Manager bug
-- Fixed No Fog
-- Fixed Players List
-- Fixed FPS Problem
-- Fixed Kill All and Stun All notifications
-- Fixed Self Tab Error
-- Fixed Wrong config name
-- Fixed Loot Before Game Starts
-- Fixed Kill enemy
-- Fixed Kill All Enemies and Stun All Enemies
-- Fixed Self Tab Error
-- Fixed Loot Manager
-- Fixed Moon Manager
-- Changed Managers
-- Changed Unlock Door
-- Changed Open All Doors
-- Changed Close All Doors
-- Changed Unlock Door to Unlock Objects
-- Removed line of sight
+- Added New Unlockables 
+- Fixed Kill Enemy 
+- Changed Theme Loading 
+- Removed Anti Kick
+- Removed Display Host Kicked Lobbies 
+- Removed Display Lethal Menu Users 
 ```
 
 ## Credit
