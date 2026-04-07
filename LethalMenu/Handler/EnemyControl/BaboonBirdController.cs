@@ -1,3 +1,4 @@
+using GameNetcodeStuff;
 using LethalMenu.Util;
 using Unity.Netcode;
 using UnityEngine;
@@ -74,7 +75,11 @@ namespace LethalMenu.Handler.EnemyControl
             NetworkObject netobject = enemy.heldScrap.NetworkObject;
             Vector3 itemFloorPosition = enemy.heldScrap.GetItemFloorPosition();
             DropScrap(enemy, netobject, itemFloorPosition);
-            enemy.DropScrapServerRpc(netobject, itemFloorPosition, (int)LethalMenu.localPlayer.playerClientId);
+            //enemy.DropScrapServerRpc(netobject, itemFloorPosition, (int)LethalMenu.localPlayer.playerClientId);
+            Vector3 hitPoint;
+            NetworkObject regionOfDroppedObject = enemy.heldScrap.GetPhysicsRegionOfDroppedObject((PlayerControllerB) null, out hitPoint);
+
+            enemy.DropScrapRpc(netobject, itemFloorPosition, false, true, false, false, regionOfDroppedObject);
         }
 
         public static void DropScrap(BaboonBirdAI enemy, NetworkObject item, Vector3 targetFloorPosition)

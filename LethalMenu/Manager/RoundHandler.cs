@@ -224,7 +224,7 @@ namespace LethalMenu.Manager
         public static void DropAllItems()
         {
             Settings.b_DropItems = true;
-            if (Settings.b_DropItems) LethalMenu.localPlayer.DropAllHeldItemsAndSync();
+            if (Settings.b_DropItems) LethalMenu.localPlayer.DropAllHeldItemsAndSyncNonexact();
             Settings.b_DropItems = false;
         }
 
