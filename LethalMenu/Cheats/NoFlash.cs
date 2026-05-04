@@ -2,11 +2,11 @@ using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch(typeof(StunGrenadeItem), "Update")]
+    [HarmonyPatch]
     internal class NoFlash : Cheat
     {
-        [HarmonyPrefix]
-        public static void Prefix()
+        [HarmonyPatch(typeof(StunGrenadeItem), "Update"), HarmonyPrefix]
+        public static void StunGrenadeItemUpdate()
         {
             if (Hack.NoFlash.IsEnabled())
             {

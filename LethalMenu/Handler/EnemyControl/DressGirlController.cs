@@ -56,8 +56,7 @@ namespace LethalMenu.Handler.EnemyControl
     [HarmonyPatch]
     public class DressGirlAIPatches
     {
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(DressGirlAI), "Update")]
+        [HarmonyPatch(typeof(DressGirlAI), "Update"), HarmonyPrefix]
         public static bool Update(DressGirlAI __instance)
         {
             if (!Cheats.EnemyControl.IsAIControlled)
@@ -67,8 +66,7 @@ namespace LethalMenu.Handler.EnemyControl
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(DressGirlAI), "OnCollideWithPlayer")]
+        [HarmonyPatch(typeof(DressGirlAI), "OnCollideWithPlayer"), HarmonyPrefix]
         public static bool OnCollideWithPlayer(DressGirlAI __instance, Collider other)
         {
             if (!Cheats.EnemyControl.IsAIControlled)

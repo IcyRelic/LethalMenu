@@ -8,8 +8,8 @@ namespace LethalMenu.Themes
     public class Theme
     {
         public static string Name = "Default";
-        public static GUISkin Skin;
-        public static AssetBundle AssetBundle;
+        public static GUISkin? Skin;
+        public static AssetBundle? AssetBundle;
 
         public static string[] GetThemes()
         {
@@ -35,7 +35,7 @@ namespace LethalMenu.Themes
             AssetBundle = AssetBundle.LoadFromStream(stream);
             if (AssetBundle == null) return;
             Skin = AssetBundle.LoadAsset<GUISkin>("assets/lethalmenu.guiskin");
-            if (Skin == null) return;
+            Name = themeName;
             Debug.Log($"Loaded Theme {themeName}");
         }
     }

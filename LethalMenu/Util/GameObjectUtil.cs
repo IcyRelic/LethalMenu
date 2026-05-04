@@ -36,11 +36,11 @@ namespace LethalMenu.Util
             return display;
         }
 
-        public static Light CreateLight()
+        public static Light? CreateLight()
         {
-            //create and return a copy of LethalMenu.localPlayer.nightVision
-            Light light = Object.Instantiate(LethalMenu.localPlayer.nightVision);
+            Light? light = Object.Instantiate(LethalMenu.localPlayer?.nightVision);
 
+            if (light == null) return null;
             light.enabled = true;
             light.intensity = Settings.f_nvIntensity;
             light.range = Settings.f_nvRange;

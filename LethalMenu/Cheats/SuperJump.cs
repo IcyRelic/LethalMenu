@@ -1,13 +1,11 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
-using UnityEngine;
-
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch(typeof(PlayerControllerB), "PlayerJump")]
+    [HarmonyPatch]
     internal class SuperJump : Cheat
     {
-        [HarmonyPostfix]
+        [HarmonyPatch(typeof(PlayerControllerB), "PlayerJump"), HarmonyPostfix]
         public static void PlayerJump(PlayerControllerB __instance)
         {
             if (LethalMenu.localPlayer == null || __instance == null || LethalMenu.localPlayer != __instance) return;

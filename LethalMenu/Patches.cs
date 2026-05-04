@@ -4,18 +4,13 @@ using LethalMenu.Cheats;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Tab;
 using LethalMenu.Util;
-using Mono.Cecil.Cil;
 using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
-using Unity.Netcode;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
-using Vector3 = UnityEngine.Vector3;
 
 namespace LethalMenu
 {
@@ -44,7 +39,6 @@ namespace LethalMenu
             Freecam.Reset();
             Shoplifter.Clear();
             ServerTab.UpdatePlayerOptions(true);
-            UnlimitedPresents.stuckpresent = false;
         }
 
         [HarmonyPatch(typeof(StartOfRound), "OnPlayerDC"), HarmonyPostfix]
@@ -64,6 +58,24 @@ namespace LethalMenu
         {
             if (Hack.OpenMenu.IsEnabled() && !Cursor.visible) MenuUtil.ShowCursor();
             if (LethalMenu.quickMenuManager == null) ObjectManager.AddToObjectQueue(() => LethalMenu.quickMenuManager = __instance);
+        }
+
+        [HarmonyPatch(typeof(PlayerControllerB), "ScrollMouse_performed"), HarmonyPrefix]
+        public static bool ScrollMouse_performed()
+        {
+            return !Hack.OpenMenu.IsEnabled();
+        }
+
+        [HarmonyPatch(typeof(PlayerControllerB), "UseUtilitySlot_performed"), HarmonyPrefix]
+        public static bool UseUtilitySlot_performed()
+        {
+            return !Hack.OpenMenu.IsEnabled();
+        }
+
+        [HarmonyPatch(typeof(PlayerControllerB), "ActivateItem_performed"), HarmonyPrefix]
+        public static bool ActivateItem_performed()
+        {
+            return !Hack.OpenMenu.IsEnabled();
         }
 
         [HarmonyPatch(typeof(DepositItemsDesk), nameof(DepositItemsDesk.AttackPlayersServerRpc)), HarmonyPrefix]
@@ -103,33 +115,8 @@ namespace LethalMenu
             }
         }
 
-        [HarmonyPatch(typeof(QuickMenuManager), "Debug_ToggleTestRoom"), HarmonyPrefix]
-        public static bool Debug_ToggleTestRoom()
-        {
-            if (Settings.DebugMode)
-            {
-                bool enable = StartOfRound.Instance.testRoom == null;
-                if (enable)
-                {
-                    StartOfRound.Instance.testRoom = Object.Instantiate(StartOfRound.Instance.testRoomPrefab, StartOfRound.Instance.testRoomSpawnPosition.position, StartOfRound.Instance.testRoomSpawnPosition.rotation, StartOfRound.Instance.testRoomSpawnPosition);
-                    NetworkObject networkObject = StartOfRound.Instance.testRoom.GetComponent<NetworkObject>();
-                    networkObject.Spawn();
-                    StartOfRound.Instance.Debug_EnableTestRoomClientRpc(true, networkObject);
-                }
-                else
-                {
-                    NetworkObject networkObject = StartOfRound.Instance.testRoom.GetComponent<NetworkObject>();
-                    if (!networkObject.IsSpawned) Object.Destroy(StartOfRound.Instance.testRoom);
-                    else networkObject.Despawn();
-                    StartOfRound.Instance.Debug_EnableTestRoomClientRpc(false);
-                }
-                return false;
-            }
-            return true;
-        }
-
-        [HarmonyPatch(typeof(Application), "get_isEditor"), HarmonyPrefix]
-        public static bool get_isEditor(ref bool __result)
+        [HarmonyPatch(typeof(StartOfRound), "IsClientFriendsWithHost"), HarmonyPrefix]
+        public static bool IsClientFriendsWithHost(ref bool __result)
         {
             if (Settings.DebugMode)
             {
@@ -139,9 +126,8 @@ namespace LethalMenu
             return true;
         }
 
-
-        [HarmonyPatch(typeof(StartOfRound), "IsClientFriendsWithHost"), HarmonyPrefix]
-        public static bool IsClientFriendsWithHost(ref bool __result)
+        [HarmonyPatch(typeof(QuickMenuManager), "CanEnableDebugMenu"), HarmonyPrefix]
+        public static bool CanEnableDebugMenu(ref bool __result)
         {
             if (Settings.DebugMode)
             {

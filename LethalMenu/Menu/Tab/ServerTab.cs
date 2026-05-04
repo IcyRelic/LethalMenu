@@ -121,6 +121,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.SpawnMoreScrap, ["ServerTab.SpawnScrap", "General.HostTag"]);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandomMines", "General.HostTag"], MapObject.Landmine);
             UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandomTurrets", "General.HostTag"], MapObject.TurretContainer);
+            UI.Hack(Hack.SpawnMapObjects, ["ServerTab.SpawnRandomSpikeRoofTraps", "General.HostTag"], MapObject.SpikeRoofTrapHazard);
             UI.Hack(Hack.SpawnLandmine, ["ServerTab.SpawnLandmine", "General.HostTag"]);
             UI.Hack(Hack.SpawnTurret, ["ServerTab.SpawnTurret", "General.HostTag"]);
             UI.Hack(Hack.SpawnSpikeRoofTrap, ["ServerTab.SpawnSpikeRoofTrap", "General.HostTag"]);

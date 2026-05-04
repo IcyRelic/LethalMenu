@@ -19,7 +19,13 @@ namespace LethalMenu
 
         protected static bool WorldToScreen(Vector3 world, out Vector3 screen)
         {           
-            screen = CameraManager.ActiveCamera.WorldToViewportPoint(world);
+            Camera? activeCamera = CameraManager.ActiveCamera;
+            if (activeCamera == null)
+            {
+                screen = Vector3.zero;
+                return false;
+            }
+            screen = activeCamera.WorldToViewportPoint(world);
             screen.x *= (float)Screen.width;
             screen.y *= (float)Screen.height;
             screen.y = (float)Screen.height - screen.y;
@@ -35,5 +41,4 @@ namespace LethalMenu
         public virtual void Update() { }
         public virtual void FixedUpdate() { }
     }
-
 }

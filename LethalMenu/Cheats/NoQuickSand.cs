@@ -3,20 +3,13 @@ using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class NoQuickSand : Cheat
     {
-        [HarmonyPatch(typeof(PlayerControllerB), "CheckConditionsForSinkingInQuicksand")]
-        public static class CheckConditionsForSinkingInQuicksandPatch
+        [HarmonyPatch(typeof(PlayerControllerB), "CheckConditionsForSinkingInQuicksand"), HarmonyPrefix]
+        public static bool CheckConditionsForSinkingInQuicksand(PlayerControllerB __instance)
         {
-            [HarmonyPrefix]
-            public static bool Prefix(PlayerControllerB __instance)
-            {
-                if (Hack.NoQuicksand.IsEnabled())
-                {
-                    return false;
-                }
-                return true;
-            }
+            return !Hack.NoQuicksand.IsEnabled();
         }
     }
 }

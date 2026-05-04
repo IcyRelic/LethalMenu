@@ -19,35 +19,33 @@ namespace LethalMenu.Handler
         Unknown = 3
     }
 
-    public class EnemyHandler
+    public class EnemyHandler(EnemyAI enemy)
     {
-        private EnemyAI enemy;
-        private PlayerControllerB target;
-
-        public EnemyHandler(EnemyAI enemy)
-        {
-            this.enemy = enemy;
-        }
+        private EnemyAI enemy = enemy;
+        private PlayerControllerB? target;
 
         private void HandleLureCrawler()
         {
-            CrawlerAI crawler = enemy as CrawlerAI;
-
+            if (target == null) return;
+            CrawlerAI? crawler = enemy as CrawlerAI;
+            if (crawler == null) return;
             crawler.BeginChasingPlayerServerRpc((int)target.playerClientId);
         }
 
         private void HandleLureMouthDog()
         {
-            MouthDogAI dog = enemy as MouthDogAI;
-
+            if (target == null) return;
+            MouthDogAI? dog = enemy as MouthDogAI;
+            if (dog == null) return;
             dog.ReactToOtherDogHowl(target.transform.position);
         }
 
         private void HandleLureBaboonBird()
         {
-            BaboonBirdAI baboon = enemy as BaboonBirdAI;
-
-            Threat threat = new()
+            if (target == null) return;
+            BaboonBirdAI? baboon = enemy as BaboonBirdAI;
+            if (baboon == null) return;
+            Threat threat = new Threat()
             {
                 threatScript = target,
                 lastSeenPosition = target.transform.position,
@@ -60,114 +58,116 @@ namespace LethalMenu.Handler
                 interestLevel = int.MaxValue,
                 hasAttacked = true
             };
-
             baboon.SetAggressiveModeServerRpc(1);
             baboon.Reflect().Invoke("ReactToThreat", threat);
         }
 
         private void HandleLureForestGiant()
         {
-            ForestGiantAI giant = enemy as ForestGiantAI;
-
+            if (target == null) return;
+            ForestGiantAI? giant = enemy as ForestGiantAI;
+            if (giant == null) return;
             giant.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
             giant.StopSearch(giant.roamPlanet, false);
             giant.chasingPlayer = target;
             giant.investigating = true;
-
             giant.SetDestinationToPosition(target.transform.position);
             giant.Reflect().SetValue("lostPlayerInChase", false);
         }
 
         private void HandleLureCentipede()
         {
-            CentipedeAI centipede = enemy as CentipedeAI;
+            if (target == null) return;
+            CentipedeAI? centipede = enemy as CentipedeAI;
+            if (centipede == null) return;
             centipede.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-            //centipede.ClingToPlayerServerRpc(target.playerClientId);
-            bool clingingToCeiling = (bool)centipede.Reflect().GetValue("clingingToCeiling");
-
-            if (clingingToCeiling) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
+            if (centipede.Reflect().GetValue<bool>("clingingToCeiling")) centipede.TriggerCentipedeFallServerRpc(target.playerClientId);
         }
 
         private void HandleLureFlowerman()
         {
-            FlowermanAI flowerman = enemy as FlowermanAI;
+            FlowermanAI? flowerman = enemy as FlowermanAI;
+            if (flowerman == null) return;
             flowerman.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
             flowerman.EnterAngerModeServerRpc(20);
         }
 
         private void HandleLureSandSpider()
         {
-            SandSpiderAI spider = enemy as SandSpiderAI;
+            if (target == null) return;
+            SandSpiderAI? spider = enemy as SandSpiderAI;
+            if (spider == null) return;
             spider.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
-            //spider.meshContainer.position = target.transform.position;
-            //spider.SyncMeshContainerPositionToClients();
-
-            int web = spider.SpawnWeb(target.transform.position);
-
             spider.webTraps.ForEach(web => spider.PlayerTripWebServerRpc(web.trapID, (int)target.playerClientId));
-
-
-            //spider.Reflect().SetValue("onWall", false).SetValue("watchFromDistance", false);
         }
 
         private void HandleLureRedLocustBees()
         {
-            RedLocustBees bees = enemy as RedLocustBees;
+            RedLocustBees? bees = enemy as RedLocustBees;
+            if (bees == null) return;
             bees.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
             bees.hive.isHeld = true;
         }
 
         private void HandleLureHoarderBug()
         {
-            HoarderBugAI bug = enemy as HoarderBugAI;
+            if (target == null) return;
+            HoarderBugAI? bug = enemy as HoarderBugAI;
+            if (bug == null) return;
             bug.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
             bug.angryAtPlayer = target;
             bug.angryTimer = float.MaxValue;
-
-            bug.Reflect().SetValue("lostPlayerInChase", false).Invoke("SyncNestPositionServerRpc", target.transform.position);
+            bug.Reflect().SetValue("lostPlayerInChase", false)?.Invoke("SyncNestPositionServerRpc", target.transform.position);
         }
 
         private void HandleLureNutcrackerEnemy()
         {
-            NutcrackerEnemyAI nutcracker = enemy as NutcrackerEnemyAI;
+            if (target == null) return;
+            NutcrackerEnemyAI? nutcracker = enemy as NutcrackerEnemyAI;
+            if (nutcracker == null) return;
             nutcracker.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
-
-            nutcracker.Reflect().SetValue("lastSeenPlayerPos", target.transform.position).Invoke("timeSinceSeeingTarget", 0);
+            nutcracker.Reflect().SetValue("lastSeenPlayerPos", target.transform.position)?.Invoke("timeSinceSeeingTarget", 0);
         }
 
         private void HandleLureMaskedPlayerEnemy()
         {
-            MaskedPlayerEnemy masked = enemy as MaskedPlayerEnemy;
+            MaskedPlayerEnemy? masked = enemy as MaskedPlayerEnemy;
+            if (masked == null) return;
             masked.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
 
         private void HandleLureSpringMan()
         {
-            SpringManAI spring = enemy as SpringManAI;
+            SpringManAI? spring = enemy as SpringManAI;
+            if (spring == null) return;
             spring.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
 
         private void HandleLurePuffer()
         {
-            PufferAI puffer = enemy as PufferAI;
+            PufferAI? puffer = enemy as PufferAI;
+            if (puffer == null) return;
             puffer.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
         }
 
         private void HandleLureJester()
         {
-            JesterAI jester = enemy as JesterAI;
+            JesterAI? jester = enemy as JesterAI;
+            if (jester == null) return;
             jester.SwitchToBehaviourServerRpc((int)Behaviour.Aggravated);
         }
 
         private void HandleLureSandWorm()
         {
-            SandWormAI worm = enemy as SandWormAI;
+            SandWormAI? worm = enemy as SandWormAI;
+            if (worm == null) return;   
             worm.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
 
         private void HandleLureBushWolf()
         {
-            BushWolfEnemy bushwolf = enemy as BushWolfEnemy;
+            BushWolfEnemy? bushwolf = enemy as BushWolfEnemy;
+            if (bushwolf == null) return;
             bushwolf.Reflect().SetValue("isHiding", false);
             bushwolf.Reflect().SetValue("staringAtPlayer", true);
             bushwolf.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
@@ -175,14 +175,16 @@ namespace LethalMenu.Handler
 
         private void HandleLureRadMech()
         {
-            RadMechAI radmech = enemy as RadMechAI;
+            RadMechAI? radmech = enemy as RadMechAI;
+            if (radmech == null) return;
             radmech.SetChargingForwardClientRpc(true);
             radmech.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
 
         private void HandleLureCaveDweller()
         {
-            CaveDwellerAI cavedweller = enemy as CaveDwellerAI;
+            CaveDwellerAI? cavedweller = enemy as CaveDwellerAI;
+            if (cavedweller == null) return;
             cavedweller.SwitchToBehaviourServerRpc((int)Behaviour.Chase);
         }
 
@@ -252,14 +254,15 @@ namespace LethalMenu.Handler
 
         private void HandleSandWormKillPlayer()
         {
-            SandWormAI worm = enemy as SandWormAI;
+            SandWormAI? worm = enemy as SandWormAI;
+            if (worm == null) return;
             Teleport(target);
             worm.StartEmergeAnimation();
         }
 
         private void HandleKillPlayerByType()
         {
-
+            if (target == null) return;
             switch (enemy)
             {
                 case MouthDogAI dog:
@@ -359,17 +362,18 @@ namespace LethalMenu.Handler
         public void Stun(bool NoAlert = false)
         {
             if (enemy == null || HUDManager.Instance == null || enemy.isEnemyDead) return;
-            if (!LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned)
+            if (LethalMenu.localPlayer != null && !LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned)
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "This enemy can't be stunned without host");
                 return;
             }
-            if (LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
+            if (LethalMenu.localPlayer != null && LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = true;
             enemy.SetEnemyStunned(true, 5);
             if (!NoAlert) HUDManager.Instance.DisplayTip("Lethal Menu", $"Stunned {enemy.enemyType.name}");
+            if (LethalMenu.localPlayer != null && LethalMenu.localPlayer.IsHost() && !enemy.enemyType.canBeStunned) enemy.enemyType.canBeStunned = false;
         }
 
-        public void Teleport(PlayerControllerB player = null, Vector3 position = default)
+        public void Teleport(PlayerControllerB? player = null, Vector3 position = default)
         {
             if (LethalMenu.localPlayer == null || enemy == null || HUDManager.Instance == null) return;
             enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
@@ -395,7 +399,7 @@ namespace LethalMenu.Handler
             HandleKillPlayerByType();
         }
 
-        public void SyncEnemyPosition(PlayerControllerB player = null, Vector3 position = default)
+        public void SyncEnemyPosition(PlayerControllerB? player = null, Vector3 position = default)
         {
             if (enemy == null) return;
             Vector3 pos = player?.transform.position ?? position;
@@ -443,7 +447,7 @@ namespace LethalMenu.Handler
     {
         public static void StealAllItems(this HoarderBugAI bug)
         {
-            bug.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            bug.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer?.actualClientId ?? 0);
             LethalMenu.Instance.StartCoroutine(StealItems(bug));
         }
 
@@ -463,7 +467,7 @@ namespace LethalMenu.Handler
     {
         public static int SpawnWeb(this SandSpiderAI spider, Vector3 position)
         {
-            spider.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            spider.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer?.actualClientId ?? 0);
             Ray ray = new Ray(position, Vector3.Scale(Random.onUnitSphere, new Vector3(1f, Random.Range(0.6f, 1f), 1f)));
             if (Physics.Raycast(ray, out RaycastHit rayHit, 7f, StartOfRound.Instance.collidersAndRoomMask) && rayHit.distance >= 1.5f)
             {

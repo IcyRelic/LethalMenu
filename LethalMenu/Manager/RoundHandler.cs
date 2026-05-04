@@ -42,7 +42,7 @@ namespace LethalMenu.Manager
 
         public static void SetDeadline(int amount)
         {
-            if (TimeOfDay.Instance == null || HUDManager.Instance == null || !LethalMenu.localPlayer.IsHost()) return;
+            if (TimeOfDay.Instance == null || HUDManager.Instance == null || LethalMenu.localPlayer != null && !LethalMenu.localPlayer.IsHost()) return;
             if (!StartOfRound.Instance.inShipPhase)
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "You must be in orbit!");
@@ -146,21 +146,21 @@ namespace LethalMenu.Manager
 
         public static void ForceBridgeFall()
         {
-            BridgeTrigger trigger = Object.FindObjectOfType(typeof(BridgeTrigger)) as BridgeTrigger;
+            BridgeTrigger? trigger = Object.FindObjectOfType(typeof(BridgeTrigger)) as BridgeTrigger;
             if (trigger == null) return;
             trigger.BridgeFallServerRpc();
         }
 
         public static void ForceSmallBridgeFall()
         {
-            BridgeTriggerType2 trigger = Object.FindObjectOfType(typeof(BridgeTriggerType2)) as BridgeTriggerType2;
+            BridgeTriggerType2? trigger = Object.FindObjectOfType(typeof(BridgeTriggerType2)) as BridgeTriggerType2;
             if (trigger == null) return;
             for (int i = 0; i < 4; i++) trigger.AddToBridgeInstabilityServerRpc();
         }
 
         public static void SpawnHoardingBugInfestation()
         {
-            if (RoundManager.Instance == null || !LethalMenu.localPlayer.IsHost()) return;
+            if (RoundManager.Instance == null || LethalMenu.localPlayer != null && !LethalMenu.localPlayer.IsHost()) return;
             for (int i = 0; i < RoundManager.Instance.currentLevel.Enemies.Count; i++)
             {
                 if (RoundManager.Instance.currentLevel.Enemies.Any(e => e.enemyType.enemyName == "Hoarding bug")) SpawnEnemy(GameUtil.GetEnemyTypes().ToList().FirstOrDefault(e => e.enemyName == "Hoarding bug"), 1, false);
@@ -199,9 +199,11 @@ namespace LethalMenu.Manager
 
         public static void TeleportAllItems()
         {
+            PlayerControllerB? localPlayer = LethalMenu.localPlayer;
+            if (localPlayer == null) return;
             LethalMenu.items.FindAll(i => i != null && !i.isHeld && !i.isPocketed && !i.isInShipRoom && !i.heldByPlayerOnServer).ForEach(i =>
             {
-                Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
+                Vector3 point = new Ray(localPlayer.gameplayCamera.transform.position, localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
                 i.gameObject.transform.position = point;
                 i.startFallingPosition = point;
                 i.targetFloorPosition = point;
@@ -210,8 +212,10 @@ namespace LethalMenu.Manager
 
         public static void TeleportOneItem()
         {
+            PlayerControllerB? localPlayer = LethalMenu.localPlayer;
+            if (localPlayer == null) return;
             GrabbableObject i = LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && !i.isInShipRoom && !i.heldByPlayerOnServer).OrderBy(i => Random.value).FirstOrDefault();
-            Vector3 point = new Ray(LethalMenu.localPlayer.gameplayCamera.transform.position, LethalMenu.localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
+            Vector3 point = new Ray(localPlayer.gameplayCamera.transform.position, localPlayer.gameplayCamera.transform.forward).GetPoint(1f);
             i.gameObject.transform.position = point;
             i.startFallingPosition = point;
             i.targetFloorPosition = point;
@@ -224,11 +228,11 @@ namespace LethalMenu.Manager
         public static void DropAllItems()
         {
             Settings.b_DropItems = true;
-            if (Settings.b_DropItems) LethalMenu.localPlayer.DropAllHeldItemsAndSyncNonexact();
+            if (Settings.b_DropItems) LethalMenu.localPlayer?.DropAllHeldItemsAndSyncNonexact();
             Settings.b_DropItems = false;
         }
 
-        public static void DeleteHeldItem() => LethalMenu.localPlayer.DespawnHeldObject();
+        public static void DeleteHeldItem() => LethalMenu.localPlayer?.DespawnHeldObject();
 
         public static void ToggleShipHorn()
         {
@@ -253,7 +257,7 @@ namespace LethalMenu.Manager
             PlayerControllerB alivePlayer = StartOfRound.Instance.allPlayerScripts.ToList().Find(p => !p.isPlayerDead);
             LethalMenu.items.FindAll(i => i.GetType() == typeof(HauntedMaskItem)).Cast<HauntedMaskItem>().ToList().ForEach(m =>
             {
-                m.ChangeOwnershipOfProp(LethalMenu.localPlayer.actualClientId);
+                m.ChangeOwnershipOfProp(LethalMenu.localPlayer?.actualClientId ?? 0);
                 m.Reflect().SetValue("previousPlayerHeldBy", alivePlayer);
                 m.CreateMimicServerRpc(m.isInFactory, m.transform.position);
             });
@@ -272,7 +276,7 @@ namespace LethalMenu.Manager
         {
             LethalMenu.items.FindAll(i => i != null && i.NetworkObject != null && i.NetworkObject.IsSpawned && i.GetType() == typeof(ShotgunItem)).Cast<ShotgunItem>().ToList().ForEach(m =>
             {
-                PlayerControllerB player = m.Reflect().GetValue<PlayerControllerB>("previousPlayerHeldBy");
+                PlayerControllerB? player = m.Reflect().GetValue<PlayerControllerB>("previousPlayerHeldBy");
                 Vector3 pos = player != null ? player.gameplayCamera.transform.position - player.gameplayCamera.transform.up * 0.45f : m.transform.up * 0.45f;
                 Vector3 forward = player != null ? player.gameplayCamera.transform.forward : m.transform.forward;
                 m.ShootGunServerRpc(pos, forward);
@@ -424,20 +428,20 @@ namespace LethalMenu.Manager
 
         public static void ForceMeteorShower()
         {
-            if (!LethalMenu.localPlayer.IsHost() || TimeOfDay.Instance == null) return;
+            if (LethalMenu.localPlayer == null || !LethalMenu.localPlayer.IsHost() || TimeOfDay.Instance == null) return;
             TimeOfDay.Instance.MeteorWeather.BeginDay(TimeOfDay.Instance.normalizedTimeOfDay);
         }
 
         public static void ClearMeteorShower()
         {
-            if (TimeOfDay.Instance.MeteorWeather.meteors.Count == 0 || !LethalMenu.localPlayer.IsHost() || TimeOfDay.Instance == null) return;
+            if (TimeOfDay.Instance.MeteorWeather.meteors.Count == 0 || LethalMenu.localPlayer == null || !LethalMenu.localPlayer.IsHost() || TimeOfDay.Instance == null) return;
             HUDManager.Instance.DisplayTip("Lethal Menu", $"Cleared {TimeOfDay.Instance.MeteorWeather.meteors.Count} Meteors");
             TimeOfDay.Instance.MeteorWeather.ResetMeteorWeather();
         }
 
         public static void ChangeMoon(int levelID)
         {
-            if(!(bool) StartOfRound.Instance) return;
+            if (StartOfRound.Instance == null || LethalMenu.terminal == null) return;
             StartOfRound.Instance.ChangeLevelServerRpc(levelID, LethalMenu.terminal.groupCredits);
         }
 

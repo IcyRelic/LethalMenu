@@ -1,4 +1,5 @@
-﻿using UnityEngine.InputSystem;
+﻿using GameNetcodeStuff;
+using UnityEngine.InputSystem;
 
 namespace LethalMenu.Cheats
 {
@@ -6,10 +7,11 @@ namespace LethalMenu.Cheats
     {
         public override void Update()
         {
-            if (!Hack.MinigunShotgun.IsEnabled() || LethalMenu.localPlayer == null) return;
-            ShotgunItem shotgun = LethalMenu.localPlayer.currentlyHeldObjectServer as ShotgunItem;
+            PlayerControllerB? localPlayer = LethalMenu.localPlayer;
+            if (!Hack.MinigunShotgun.IsEnabled() || localPlayer == null) return;
+            ShotgunItem? shotgun = localPlayer.currentlyHeldObjectServer as ShotgunItem;
             if (shotgun == null || !Mouse.current.leftButton.isPressed) return;
-            shotgun.ShootGunServerRpc(LethalMenu.localPlayer.transform.position - LethalMenu.localPlayer.gameplayCamera.transform.up * 0.45f, LethalMenu.localPlayer.gameplayCamera.transform.forward);
+            shotgun.ShootGunServerRpc(localPlayer.transform.position - localPlayer.gameplayCamera.transform.up * 0.45f, localPlayer.gameplayCamera.transform.forward);
         }
     }
 }

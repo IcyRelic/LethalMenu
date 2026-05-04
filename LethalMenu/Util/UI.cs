@@ -13,14 +13,14 @@ namespace LethalMenu.Util
     {
         public string label;
         public Action action;
-        private GUIStyle style = null;
+        private GUIStyle? style = null;
      
-    public UIButton(string label, Action action, GUIStyle style = null)
+    public UIButton(string label, Action action, GUIStyle? style = null)
         {
             this.label = Localization.Localize(label);
             this.action = action;
 
-            this.style = style ;
+            this.style = style;
         }
 
         public void Draw()
@@ -33,12 +33,12 @@ namespace LethalMenu.Util
     public class UIOption
     {
         public string label;
-        public object value;
-        public Action action;
+        public object? value;
+        public Action? action;
 
         public UIOption(string label, object value)
         {
-            this.label = label;
+            this.label = Localization.Localize(label);
             this.value = value;
         }
 
@@ -48,7 +48,7 @@ namespace LethalMenu.Util
             this.action = action;
         }
 
-        public void Draw(ref object refValue)
+        public void Draw(ref object? refValue)
         {
             if (GUILayout.Button(label)) refValue = value;
         }
@@ -73,7 +73,7 @@ namespace LethalMenu.Util
             GUILayout.Label(Localization.Localize(header), new GUIStyle(GUI.skin.label) { fontStyle = FontStyle.Bold });
         }
 
-        public static void Label(string header, string label, RGBAColor color = null)
+        public static void Label(string header, string label, RGBAColor? color = null)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(Localization.Localize(header));
@@ -82,7 +82,7 @@ namespace LethalMenu.Util
             GUILayout.EndHorizontal();
         }
 
-        public static void Label(string label, RGBAColor color = null)
+        public static void Label(string label, RGBAColor? color = null)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Label(color is null ? Localization.Localize(label) : color.AsString(label));

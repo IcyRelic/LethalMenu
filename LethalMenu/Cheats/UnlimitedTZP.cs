@@ -6,7 +6,11 @@ namespace LethalMenu.Cheats
     {
         public override void Update()
         {
-            if (Hack.UnlimitedTZP.IsEnabled() && LethalMenu.localPlayer != null && LethalMenu.localPlayer?.currentlyHeldObjectServer is TetraChemicalItem TZP && TZP != null) TZP?.Reflect().SetValue("fuel", 1f);
+            if (Hack.UnlimitedTZP.IsEnabled() && LethalMenu.localPlayer != null && LethalMenu.localPlayer?.currentlyHeldObjectServer is TetraChemicalItem TZP && TZP != null)
+            {
+                TZP.Reflect().SetValue("fuel", 1f);
+                TZP.Reflect().SetValue("triedUsingWithoutFuel", false);
+            }
         }
     }
 }

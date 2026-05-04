@@ -56,7 +56,7 @@ namespace LethalMenu.Menu.Popup
             GUILayout.BeginVertical(GUILayout.Width(300f), GUILayout.Height(100f));
             scrollPos = GUILayout.BeginScrollView(scrollPos, GUILayout.Width(300f), GUILayout.Height(100f));
 
-            if (selectedLanguage == -1) selectedLanguage = Array.FindIndex(languages, x => x == Localization.Language.Name);
+            if (selectedLanguage == -1) selectedLanguage = Array.FindIndex(languages, x => x == Localization.Language?.Name);
 
             for (int i = 0; i < languages.Length; i++)
             {
@@ -84,10 +84,10 @@ namespace LethalMenu.Menu.Popup
             GUI.DragWindow();
         }
 
-        public static string GetMenuKeybindName()
+        public static string? GetMenuKeybindName()
         {
-            ButtonControl bind = Hack.OpenMenu.GetKeyBind();
-            return Hack.OpenMenu.HasKeyBind() ? bind.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind.displayName : "None";
+            ButtonControl? bind = Hack.OpenMenu.GetKeyBind();
+            return Hack.OpenMenu.HasKeyBind() ? bind?.GetType() == typeof(KeyControl) ? ((KeyControl)bind).keyCode.ToString() : bind?.displayName : "None";
         }
     }
 }

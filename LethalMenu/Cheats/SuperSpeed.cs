@@ -7,21 +7,21 @@ using System.Reflection.Emit;
 namespace LethalMenu.Cheats
 {
     [HarmonyPatch]
-    internal class FastClimb : Cheat
+    internal class SuperSpeed : Cheat
     {
         [HarmonyPatch(typeof(PlayerControllerB), "Update"), HarmonyTranspiler]
         public static IEnumerable<CodeInstruction> Update(IEnumerable<CodeInstruction> instructions)
         {
             foreach (CodeInstruction instruction in instructions)
             {
-                if (instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo fieldInfo && fieldInfo.Name == "climbSpeed") yield return CodeInstruction.Call(typeof(FastClimb), nameof(newClimbSpeed));
+                if (instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo fieldInfo && fieldInfo.Name == "movementSpeed") yield return CodeInstruction.Call(typeof(SuperSpeed), nameof(newMovementSpeed));
                 else yield return instruction;
             }
         }
 
-        private static float newClimbSpeed(PlayerControllerB playerControllerB)
+        private static float newMovementSpeed(PlayerControllerB playerControllerB)
         {
-            return Hack.FastClimb.IsEnabled() ? Settings.f_climbSpeed : playerControllerB.climbSpeed;
+            return Hack.SuperSpeed.IsEnabled() ? Settings.f_movementSpeed : playerControllerB.movementSpeed;
         }
     }
 }

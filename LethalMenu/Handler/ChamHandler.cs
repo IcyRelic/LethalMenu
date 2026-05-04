@@ -1,5 +1,4 @@
 ﻿using GameNetcodeStuff;
-using LethalMenu.Manager;
 using LethalMenu.Types;
 using LethalMenu.Util;
 using System.Collections;
@@ -14,9 +13,8 @@ namespace LethalMenu.Handler
     public class ChamHandler
     {
         private static Dictionary<int, Material[]> materials = new Dictionary<int, Material[]>();
-        private static Material m_chamMaterial;
+        private static Material? m_chamMaterial;
         private static int _color;
-        public static bool chamsenabled = false;
 
         private Object @object;
 
@@ -43,25 +41,65 @@ namespace LethalMenu.Handler
             LethalMenu.Instance.StartCoroutine(CleanUpMaterials());
         }
 
-        private List<Renderer> GetRenderers()
+        private List<Renderer>? GetRenderers()
         {
-            List<Renderer> renderers = new List<Renderer>();
+            if (@object == null) return null;
+            if (@object is GameObject gameObject) return gameObject.GetComponentsInChildren<Renderer>().ToList();
+            if (@object is Component component) return component.GetComponentsInChildren<Renderer>().ToList();
+            if (@object is DoorLock doorLock) return doorLock.GetComponentsInParent<Renderer>().ToList();
+            if (@object is RadMechAI radMechAI) return radMechAI.GetComponentsInChildren<Renderer>().ToList();
 
-            if (@object == null) return renderers;
+            return null;
+        }
 
+        public void ProcessCham(float distance)
+        {
+            if (@object == null) return;
+            bool e = false;
 
-            if (@object is GameObject) renderers.AddRange(((GameObject)@object).GetComponentsInChildren<Renderer>());
-            if (@object is Component) renderers.AddRange(((Component)@object).GetComponentsInChildren<Renderer>());
-            if (@object is DoorLock) renderers.AddRange(((DoorLock)@object).GetComponentsInParent<Renderer>());
-            if (@object is RadMechAI) renderers.AddRange(((RadMechAI)@object).GetComponentsInChildren<Renderer>());
+            if (@object is GrabbableObject) e = Settings.b_chamsObject;
+            if (@object is Landmine) e = Settings.b_chamsLandmine;
+            if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
+            if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
+            if (@object is SteamValveHazard steamValve && !steamValve.Reflect().GetValue<bool>("valveHasBeenRepaired")) e = Settings.b_chamsSteamHazard;
+            if (@object is TerminalAccessibleObject terminalAccessibleObject && terminalAccessibleObject.isBigDoor) e = Settings.b_chamsBigDoor;
+            if (@object is DoorLock) e = Settings.b_chamsDoorLock;
+            if (@object is HangarShipDoor) e = Settings.b_chamsShip;
+            if (@object is BreakerBox) e = Settings.b_chamsBreaker;
+            if (@object is EnemyVent) e = Settings.b_chamsEnemyVent;
+            if (@object is ItemDropship dropship) e = Settings.b_chamsItemDropship;
+            if (@object is VehicleController) e = Settings.b_chamsCruiser;
+            if (@object is GameObject && @object.name.StartsWith("MoldSpore")) e = Settings.b_chamsVainShroud;
+            if (@object is MineshaftElevatorController) e = Settings.b_chamsMineshaftElevator;
+            if (@object is EntranceTeleport) e = Settings.b_chamsEntrance;
+            if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap;     
+            if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
+    
+            if (e && distance >= Settings.f_chamDistance) ApplyCham();
+            else RemoveCham();
+        }
 
+        public void ApplyCham()
+        {
+            if (@object == null) return;
 
-            return renderers;
+            GetRenderers()?.ForEach(r =>
+            {
+                if (r == null) return;
+
+                if (!materials.ContainsKey(r.GetInstanceID()))
+                {
+                    if (r.materials == null) return;
+                    materials.Add(r.GetInstanceID(), r.materials);
+                    r.SetMaterials(Enumerable.Repeat(m_chamMaterial, r.materials.Length).ToList());
+                    UpdateChamColor(r);
+                }
+            });
         }
 
         public void RemoveCham()
         {
-            GetRenderers().ForEach(r =>
+            GetRenderers()?.ForEach(r =>
             {
                 if (materials.ContainsKey(r.GetInstanceID()))
                 {
@@ -71,54 +109,9 @@ namespace LethalMenu.Handler
             });
         }
 
-        public void ProcessCham(float distance)
+        private void UpdateChamColor(Renderer renderer)
         {
-            if (@object == null) return;
-            bool e = false;
-
-            if (@object is GrabbableObject item && !item.isHeld) e = Settings.b_chamsObject;
-            if (@object is Landmine) e = Settings.b_chamsLandmine;
-            if (@object is PlayerControllerB) e = Settings.b_chamsPlayer;
-            if (@object is EnemyAI enemy) e = enemy.GetEnemyAIType().IsESPEnabled() ? Settings.b_chamsEnemy : false;
-            if (@object is SteamValveHazard steamValve && !steamValve.Reflect().GetValue<bool>("valveHasBeenRepaired")) e = Settings.b_chamsSteamHazard;
-            if (@object is TerminalAccessibleObject && ((TerminalAccessibleObject)@object).isBigDoor) e = Settings.b_chamsBigDoor;
-            if (@object is DoorLock doorLock && doorLock.isLocked) e = Settings.b_chamsDoorLock;
-            if (@object is HangarShipDoor) e = Settings.b_chamsShip;
-            if (@object is BreakerBox) e = Settings.b_chamsBreaker;
-            if (@object is EnemyVent) e = Settings.b_chamsEnemyVent;
-            if (@object is ItemDropship dropship && dropship.deliveringOrder) e = Settings.b_chamsItemDropship;
-            if (@object is VehicleController) e = Settings.b_chamsCruiser;
-            if (@object is GameObject && @object.name.StartsWith("MoldSpore")) e = Settings.b_chamsVainShroud;
-            if (@object is MineshaftElevatorController) e = Settings.b_chamsMineshaftElevator;
-            if (@object is GameObject && @object.name.StartsWith("AnimContainer")) e = Settings.b_chamsSpikeRoofTrap;     
-            if (@object is GameObject && @object.name.StartsWith("TurretContainer")) e = Settings.b_chamsTurret;
-         
-            if (chamsenabled && e && distance >= Settings.f_chamDistance) ApplyCham();
-            else RemoveCham();
-        }
-
-        public void ApplyCham()
-        {
-            if (@object == null) return;
-
-            GetRenderers().ForEach(r =>
-            {
-                if (r == null) return;
-
-                if (!materials.ContainsKey(r.GetInstanceID()))
-                {
-                    if (r.materials == null) return;
-
-                    materials.Add(r.GetInstanceID(), r.materials);
-                    r.SetMaterials(Enumerable.Repeat(m_chamMaterial, r.materials.Length).ToList());
-                    UpdateChamColor(r);
-                }
-            });
-        }
-
-        private void UpdateChamColor(Renderer r)
-        {
-            if (r == null || r.materials == null || @object == null) return;
+            if (renderer == null || renderer.materials == null || @object == null) return;
             Color color = Settings.c_chams.GetColor();
             if (@object is GrabbableObject) color = Settings.c_objectChams.GetColor();
             if (@object is Landmine) color = Settings.c_landmineChams.GetColor();
@@ -136,12 +129,7 @@ namespace LethalMenu.Handler
             if (@object is GameObject && @object.name.StartsWith("TurretContainer")) color = Settings.c_turretChams.GetColor();
             if (@object is MineshaftElevatorController) color = Settings.c_mineshaftElevatorChams.GetColor();
             if (Settings.b_UseSingleChamColor) color = Settings.c_chams.GetColor();
-            r.materials.ToList().ForEach(m => m.SetColor(_color, color));
-        }
-
-        public static void RefreshChams()
-        {
-
+            renderer.materials.ToList().ForEach(m => m.SetColor(_color, color));
         }
 
         public static ChamHandler GetHandler(Object obj)
@@ -159,11 +147,6 @@ namespace LethalMenu.Handler
                 Object.FindObjectsOfType<Renderer>().ToList().ForEach(r => keep.Add(r.GetInstanceID()));
                 materials.Keys.ToList().FindAll(k => !keep.Contains(k)).ForEach(k => { materials.Remove(k); cnt++; });
             }
-        }
-
-        public static void ChamsSetEnabled(bool enabled)
-        {
-            chamsenabled = enabled;
         }
     }
 

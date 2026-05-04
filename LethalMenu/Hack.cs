@@ -92,6 +92,7 @@ namespace LethalMenu
         FullRenderResolution,
         GrabNutcrackerShotgun,
         MinigunShotgun,
+        BHop,
 
         /** Server Tab **/
         ToggleAllDisplays,
@@ -346,6 +347,7 @@ namespace LethalMenu
             {Hack.SpamShootAllShotguns, false},
             {Hack.SlideTaunt, false},
             {Hack.ExplodeJetpacksOnGrab, false},
+            {Hack.BHop, false},
         };
 
         private static readonly Dictionary<Hack, Delegate> Executors = new Dictionary<Hack, Delegate>()
@@ -447,7 +449,7 @@ namespace LethalMenu
         public static void Execute(this Hack hack, params object[] param)
         {
             if (hack.CanBeToggled()) hack.Toggle();
-            if (Executors.TryGetValue(hack, out var method))
+            if (Executors.TryGetValue(hack, out Delegate method))
             {
                 if (method is Action action) action.Invoke();
                 else method.DynamicInvoke(param);
@@ -456,7 +458,7 @@ namespace LethalMenu
 
         public static void Invoke(this Hack hack, params object[] param)
         {
-            if (Executors.TryGetValue(hack, out var method))
+            if (Executors.TryGetValue(hack, out Delegate method))
             {
                 if (method is Action action) action.Invoke();
                 else method.DynamicInvoke(param);
@@ -510,7 +512,7 @@ namespace LethalMenu
             return hack.CanBeToggled() ? ToggleFlags[hack] ? "General.Disable" : "General.Enable" : "General.Execute";
         }
 
-        public static ButtonControl GetKeyBind(this Hack hack)
+        public static ButtonControl? GetKeyBind(this Hack hack)
         {
             return KeyBinds.ContainsKey(hack) ? KeyBinds[hack] : null;
         }
@@ -637,17 +639,17 @@ namespace LethalMenu
         public static void SpawnTurret() => RoundHandler.SpawnMapObject(MapObject.TurretContainer);
         public static void SpawnSpikeRoofTrap() => RoundHandler.SpawnMapObject(MapObject.SpikeRoofTrapHazard);
         public static void SpawnMapObjects(MapObject type) => RoundHandler.SpawnMapObjects(type);
-        public static void SellQuota() => LethalMenu.localPlayer.Handle().SellQuota();
-        public static void SellEverything() => LethalMenu.localPlayer.Handle().PlaceEverythingOnDesk();
+        public static void SellQuota() => LethalMenu.localPlayer?.Handle().SellQuota();
+        public static void SellEverything() => LethalMenu.localPlayer?.Handle().PlaceEverythingOnDesk();
         public static void ExplodeClosestMine(PlayerControllerB player) => player.Handle().ExplodeClosestLandmine();
         public static void LureAllEnemies(PlayerControllerB player) => player.Handle().LureAllEnemies();
         public static void SpiderWebPlayer(PlayerControllerB player) => player.Handle().SpawnSpiderWebs(6);
         public static void SpectatePlayer(PlayerControllerB player) => player.Handle().Spectate();
         public static void MiniCam(PlayerControllerB player) => player.Handle().MiniCam();
-        public static void SaveTeleportPosition() => LethalMenu.localPlayer.Handle().SavePosition();
-        public static void TeleportShip() => LethalMenu.localPlayer.Handle().TeleportShip();
-        public static void TeleportSavedPosition() => LethalMenu.localPlayer.Handle().TeleportSaved();
-        public static void Teleport(Vector3 pos, bool elevator = false, bool ship = false, bool factory = false) => LethalMenu.localPlayer.Handle().Teleport(pos, elevator, ship, factory);
+        public static void SaveTeleportPosition() => LethalMenu.localPlayer?.Handle().SavePosition();
+        public static void TeleportShip() => LethalMenu.localPlayer?.Handle().TeleportShip();
+        public static void TeleportSavedPosition() => LethalMenu.localPlayer?.Handle().TeleportSaved();
+        public static void Teleport(Vector3 pos, bool elevator = false, bool ship = false, bool factory = false) => LethalMenu.localPlayer?.Handle().Teleport(pos, elevator, ship, factory);
         public static void KillPlayer(PlayerControllerB player) => player.Handle().Kill();
         public static void HealPlayer(PlayerControllerB player) => player.Handle().Heal();
         public static void ExplodeJetpack(JetpackItem jetpack) => RoundHandler.ExplodeJetpack(jetpack);

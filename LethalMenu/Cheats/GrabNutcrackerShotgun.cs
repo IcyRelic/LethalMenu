@@ -11,15 +11,17 @@ namespace LethalMenu.Cheats
         public static void BeginGrabObject(PlayerControllerB __instance)
         {
             if (!Hack.GrabNutcrackerShotgun.IsEnabled()) return;
-            GrabbableObject grabbableObject = __instance.Reflect().GetValue<GrabbableObject>("currentlyGrabbingObject");
+            GrabbableObject? grabbableObject = __instance.Reflect().GetValue<GrabbableObject>("currentlyGrabbingObject");
             if (grabbableObject == null) return;
-            ShotgunItem shotgun = grabbableObject as ShotgunItem;
+            ShotgunItem? shotgun = grabbableObject as ShotgunItem;
             if (shotgun == null) return;
-            EnemyAI enemy = shotgun.Reflect().GetValue<EnemyAI>("heldByEnemy");
+            EnemyAI? enemy = shotgun.Reflect().GetValue<EnemyAI>("heldByEnemy");
             if (enemy == null) return;
-            NutcrackerEnemyAI nutcracker = enemy as NutcrackerEnemyAI;
+            NutcrackerEnemyAI? nutcracker = enemy as NutcrackerEnemyAI;
             if (nutcracker == null) return;
-            nutcracker.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            PlayerControllerB? localPlayer = LethalMenu.localPlayer;
+            if (localPlayer == null) return;
+            nutcracker.ChangeEnemyOwnerServerRpc(localPlayer.actualClientId);
             nutcracker.DropGunServerRpc(nutcracker.gunPoint.position);
         }
     }

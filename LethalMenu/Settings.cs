@@ -16,6 +16,7 @@ using System.Reflection;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using Debug = UnityEngine.Debug;
 
 namespace LethalMenu
 {
@@ -61,16 +62,15 @@ namespace LethalMenu
         public static RGBAColor c_landmineESP = new RGBAColor(255, 0, 0, 1f);
         public static RGBAColor c_turretESP = new RGBAColor(255, 0, 0, 1f);
         public static RGBAColor c_bigDoorESP = new RGBAColor(0, 255, 255, 1f);
-        public static RGBAColor c_doorLockESP = new RGBAColor(128, 128, 128, 255);
+        public static RGBAColor c_doorLockESP = new RGBAColor(128, 128, 128, 1f);
         public static RGBAColor c_entranceExitESP = new RGBAColor(0, 0, 255, 1f);
         public static RGBAColor c_steamHazardESP = new RGBAColor(255, 0, 255, 1f);
         public static RGBAColor c_breakerESP = new RGBAColor(255, 0, 116, 1f);
         public static RGBAColor c_spikeRoofTrapESP = new RGBAColor(139, 69, 19, 1f);
         public static RGBAColor c_vainShroudESP = new RGBAColor(102, 51, 153, 0.1f);
         public static RGBAColor c_enemyVentESP = new RGBAColor(211, 211, 211, 0.1f);
-        public static RGBAColor c_itemDropShipESP = new RGBAColor(199, 21, 133, 0.1f);
-        public static RGBAColor c_CruiserESP = new RGBAColor(255, 215, 0, 0.1f);
-
+        public static RGBAColor c_itemDropShipESP = new RGBAColor(199, 21, 133, 1f);
+        public static RGBAColor c_CruiserESP = new RGBAColor(255, 215, 0, 1f);
         public static RGBAColor c_mineshaftElevatorESP = new RGBAColor(0, 0, 255, 1f);
 
         /* * * * * * * * *
@@ -91,7 +91,8 @@ namespace LethalMenu
         public static RGBAColor c_spikeRoofTrapChams = new RGBAColor(139, 69, 19, 0.1f);
         public static RGBAColor c_itemDropShipChams = new RGBAColor(199, 21, 133, 0.1f); 
         public static RGBAColor c_CruiserChams = new RGBAColor(255, 215, 0, 0.1f);
-        public static RGBAColor c_mineshaftElevatorChams = new RGBAColor(0, 0, 255, 0.1f);
+        public static RGBAColor c_mineshaftElevatorChams = new RGBAColor(0, 191, 255, 0.1f);
+        public static RGBAColor c_entranceChams = new RGBAColor(0, 255, 127, 0.1f);
         public static RGBAColor c_chams = new RGBAColor(238, 111, 255, 0.1f);
 
         /* * * * * * * * *
@@ -111,7 +112,7 @@ namespace LethalMenu
          * * * * * * * * */
         public static float f_nvIntensity = 3000f;
         public static float f_nvRange = 10000f;
-        public static float f_climbSpeed = 4f;
+        public static float f_climbSpeed = 3f;
         public static float f_jumpForce = 5f;
         public static float f_grabDistance = 10000f;
         public static float f_movementSpeed = 0.5f;
@@ -150,6 +151,7 @@ namespace LethalMenu
         public static bool b_chamsLandmine = false;
         public static bool b_chamsTurret = false;
         public static bool b_chamsBigDoor = false;
+        public static bool b_chamsEntrance = false;
         public static bool b_chamsDoorLock = false;
         public static bool b_chamsSteamHazard = false;
         public static bool b_chamsBreaker = false;
@@ -162,10 +164,7 @@ namespace LethalMenu
         public static bool b_chamsCruiser = false;
         public static bool b_chamsVainShroud = false;
 
-        public static float f_defaultGrabDistance = -1f;
-        public static float f_defaultClimbSpeed = 3f;
         public static float f_defaultJumpForce = 13f;
-        public static float f_defaultMovementSpeed = 4.6f;
         public static float f_defaultNightVisionIntensity = 360f;
         public static float f_defaultNightVisionRange = 12f;
         public static float f_defaultFOV = 66f;
@@ -183,14 +182,29 @@ namespace LethalMenu
             new RGBAColor(255, 165, 0, 1f),
         };
 
-        public static string debugMessage = "";
+        private static string debugMessage = "";
+
+        public static string DebugMessage
+        {
+            get => debugMessage;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    debugMessage = value;
+                    return;
+                }
+                if (value.Contains("Exception")) Debug.LogError(value);
+                else Debug.Log(value);
+                debugMessage = value;
+            }
+        }
 
         internal class Changelog
         {
-            public static List<string> changes;
+            public static List<string> changes = new List<string>();
             public static void ReadChanges()
             {
-                changes = new List<string>();
                 using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("LethalMenu.Resources.Changelog.txt"))
                 using (StreamReader reader = new StreamReader(stream))
                 {
@@ -296,6 +310,7 @@ namespace LethalMenu
                 chams["Landmine"] = b_chamsLandmine.ToString();
                 chams["Turret"] = b_chamsTurret.ToString();
                 chams["BigDoor"] = b_chamsBigDoor.ToString();
+                chams["Entrance"] = b_chamsEntrance.ToString();
                 chams["DoorLock"] = b_chamsDoorLock.ToString();
                 chams["SteamHazard"] = b_chamsSteamHazard.ToString();
                 chams["Breaker"] = b_chamsBreaker.ToString();
@@ -331,6 +346,7 @@ namespace LethalMenu
                 colors["VainShroudChams"] = JsonConvert.SerializeObject(c_vainShroudChams);
                 colors["CruiserChams"] = JsonConvert.SerializeObject(c_CruiserChams);
                 colors["ItemDropShipChams"] = JsonConvert.SerializeObject(c_itemDropShipChams);
+                colors["EntranceChams"] = JsonConvert.SerializeObject(c_entranceChams);
                 colors["ObjectESP"] = JsonConvert.SerializeObject(c_objectESP);
                 colors["PlayerESP"] = JsonConvert.SerializeObject(c_playerESP);
                 colors["EnemyESP"] = JsonConvert.SerializeObject(c_enemyESP);
@@ -350,7 +366,6 @@ namespace LethalMenu
                 colors["ItemDropShipESP"] = JsonConvert.SerializeObject(c_itemDropShipESP);
                 colors["CauseOfDeath"] = JsonConvert.SerializeObject(c_causeOfDeath);
 
-
                 settings["FirstLaunch"] = isFirstLaunch.ToString();
                 settings["MenuFontSize"] = i_menuFontSize.ToString();
                 settings["ScreenFontSize"] = i_screenFontSize.ToString();
@@ -363,7 +378,7 @@ namespace LethalMenu
 
 
                 json["Theme"] = Theme.Name;
-                json["Language"] = Localization.Language.Name;
+                json["Language"] = Localization.Language?.Name;
                 json["Colors"] = colors;
                 json["HackSettings"] = hackSettings;
                 json["MenuSettings"] = settings;
@@ -379,96 +394,101 @@ namespace LethalMenu
 
                 JObject json = JObject.Parse(File.ReadAllText(config));
 
-                if (json.TryGetValue("Language", out JToken languageToken))
+                if (json.TryGetValue("Language", out JToken? languageToken))
                     Localization.SetLanguage(languageToken.ToString());
-                if (json.TryGetValue("Theme", out JToken themeToken))
+                if (json.TryGetValue("Theme", out JToken? themeToken))
                     Theme.SetTheme(themeToken.ToString());
 
-                if (json.TryGetValue("MenuSettings", out JToken settingsToken))
+                if (json.TryGetValue("MenuSettings", out JToken? settingsToken))
                 {
-                    JObject settings = settingsToken.ToObject<JObject>();
-
-                    if (settings.TryGetValue("FirstLaunch", out JToken firstLaunchToken))
+                    if (settingsToken == null) return;
+                    JObject? settings = settingsToken.ToObject<JObject>();
+                    if (settings == null) return;
+                    if (settings.TryGetValue("FirstLaunch", out JToken? firstLaunchToken))
                         isFirstLaunch = bool.Parse(firstLaunchToken.ToString());
-                    if (settings.TryGetValue("MenuFontSize", out JToken menuFontSizeToken))
+                    if (settings.TryGetValue("MenuFontSize", out JToken? menuFontSizeToken))
                         i_menuFontSize = int.Parse(menuFontSizeToken.ToString());
-                    if (settings.TryGetValue("MenuWidth", out JToken menuWidthToken))
+                    if (settings.TryGetValue("MenuWidth", out JToken? menuWidthToken))
                         i_menuWidth = int.Parse(menuWidthToken.ToString());
-                    if (settings.TryGetValue("MenuHeight", out JToken menuHeightToken))
+                    if (settings.TryGetValue("MenuHeight", out JToken? menuHeightToken))
                         i_menuHeight = int.Parse(menuHeightToken.ToString());
-                    if (settings.TryGetValue("SliderWidth", out JToken sliderWidthToken))
+                    if (settings.TryGetValue("SliderWidth", out JToken? sliderWidthToken))
                         i_sliderWidth = int.Parse(sliderWidthToken.ToString());
-                    if (settings.TryGetValue("TextboxWidth", out JToken textboxWidthToken))
+                    if (settings.TryGetValue("TextboxWidth", out JToken? textboxWidthToken))
                         i_textboxWidth = int.Parse(textboxWidthToken.ToString());
-                    if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
+                    if (settings.TryGetValue("MenuAlpha", out JToken? menuAlphaToken))
                         f_menuAlpha = float.Parse(menuAlphaToken.ToString());
-                    if (settings.TryGetValue("ScreenFontSize", out JToken screenFontSizeToken))
+                    if (settings.TryGetValue("ScreenFontSize", out JToken? screenFontSizeToken))
                         i_screenFontSize = int.Parse(screenFontSizeToken.ToString());
-                    if (settings.TryGetValue("DebugMode", out JToken debugModeToken))
+                    if (settings.TryGetValue("DebugMode", out JToken? debugModeToken))
                     {
                         DebugMode = bool.Parse(debugModeToken.ToString());
                         HackMenu.Instance.ToggleDebugTab(DebugMode);
                     }
                 }
 
-                if (json.TryGetValue("HackSettings", out JToken hackSettingsToken))
+                if (json.TryGetValue("HackSettings", out JToken? hackSettingsToken))
                 {
-                    JObject hackSettings = hackSettingsToken.ToObject<JObject>();
-
-                    if(hackSettings.TryGetValue("NightVisionIntensity", out JToken nightVisionIntensityToken))
+                    if (hackSettingsToken == null) return;
+                    JObject? hackSettings = hackSettingsToken.ToObject<JObject>();
+                    if (hackSettings == null) return;
+                    if(hackSettings.TryGetValue("NightVisionIntensity", out JToken? nightVisionIntensityToken))
                         f_nvIntensity = float.Parse(nightVisionIntensityToken.ToString());
-                    if (hackSettings.TryGetValue("NightVisionRange", out JToken nightVisionRangeToken))
+                    if (hackSettings.TryGetValue("NightVisionRange", out JToken? nightVisionRangeToken))
                         f_nvRange = float.Parse(nightVisionRangeToken.ToString());
-                    if (hackSettings.TryGetValue("ClimbSpeed", out JToken climbSpeedToken))
+                    if (hackSettings.TryGetValue("ClimbSpeed", out JToken? climbSpeedToken))
                         f_climbSpeed = float.Parse(climbSpeedToken.ToString());
-                    if (hackSettings.TryGetValue("JumpForce", out JToken jumpForceToken))
+                    if (hackSettings.TryGetValue("JumpForce", out JToken? jumpForceToken))
                         f_jumpForce = float.Parse(jumpForceToken.ToString());
-                    if (hackSettings.TryGetValue("GrabDistance", out JToken grabDistanceToken))
+                    if (hackSettings.TryGetValue("GrabDistance", out JToken? grabDistanceToken))
                         f_grabDistance = float.Parse(grabDistanceToken.ToString());
-                    if (hackSettings.TryGetValue("MovementSpeed", out JToken movementSpeedToken))
+                    if (hackSettings.TryGetValue("MovementSpeed", out JToken? movementSpeedToken))
                         f_movementSpeed = float.Parse(movementSpeedToken.ToString());
-                    if (hackSettings.TryGetValue("NoClipSpeed", out JToken noClipSpeedToken))
+                    if (hackSettings.TryGetValue("NoClipSpeed", out JToken? noClipSpeedToken))
                         f_noclipSpeed = float.Parse(noClipSpeedToken.ToString());
-                    if (hackSettings.TryGetValue("BreadcrumbInterval", out JToken breadcrumbIntervalToken))
+                    if (hackSettings.TryGetValue("BreadcrumbInterval", out JToken? breadcrumbIntervalToken))
                         f_breadcrumbInterval = int.Parse(breadcrumbIntervalToken.ToString());
-                    if (hackSettings.TryGetValue("CrosshairThickness", out JToken crosshairThicknessToken))
+                    if (hackSettings.TryGetValue("CrosshairThickness", out JToken? crosshairThicknessToken))
                         f_crosshairThickness = float.Parse(crosshairThicknessToken.ToString());
-                    if (hackSettings.TryGetValue("CrosshairType", out JToken crosshairTypeToken))
+                    if (hackSettings.TryGetValue("CrosshairType", out JToken? crosshairTypeToken))
                         ct_crosshairType = (CrosshairType) Enum.Parse(typeof(CrosshairType), crosshairTypeToken.ToString());
-                    if (hackSettings.TryGetValue("CrosshairScale", out JToken crosshairScaleToken))
+                    if (hackSettings.TryGetValue("CrosshairScale", out JToken? crosshairScaleToken))
                         f_crosshairScale = float.Parse(crosshairScaleToken.ToString());
-                    if (hackSettings.TryGetValue("ESPDistance", out JToken espDistanceToken))
+                    if (hackSettings.TryGetValue("ESPDistance", out JToken? espDistanceToken))
                         f_espDistance = float.Parse(espDistanceToken.ToString());
-                    if (hackSettings.TryGetValue("DisableSpectatorModels", out JToken disableSpectatorModelsToken))
+                    if (hackSettings.TryGetValue("DisableSpectatorModels", out JToken? disableSpectatorModelsToken))
                         b_disableSpectatorModels = bool.Parse(disableSpectatorModelsToken.ToString());
-                    if (hackSettings.TryGetValue("VCDisplay", out JToken VCDisplayToken))
+                    if (hackSettings.TryGetValue("VCDisplay", out JToken? VCDisplayToken))
                         b_VCDisplay = bool.Parse(VCDisplayToken.ToString());
-                    if (hackSettings.TryGetValue("UseScrapTiers", out JToken UseScrapTiersToken))
+                    if (hackSettings.TryGetValue("UseScrapTiers", out JToken? UseScrapTiersToken))
                         b_useScrapTiers = bool.Parse(UseScrapTiersToken.ToString());
-                    if (hackSettings.TryGetValue("PlayerHPDisplay", out JToken PlayerHPDisplayToken))
+                    if (hackSettings.TryGetValue("PlayerHPDisplay", out JToken? PlayerHPDisplayToken))
                         b_PlayerHPDisplay = bool.Parse(PlayerHPDisplayToken.ToString());
-                    if (hackSettings.TryGetValue("ShowShipItems", out JToken ShowShipItemsToken))
+                    if (hackSettings.TryGetValue("ShowShipItems", out JToken? ShowShipItemsToken))
                         b_ShowShipItems = bool.Parse(ShowShipItemsToken.ToString());
-                    if (hackSettings.TryGetValue("FPSCounter", out JToken FPSCounterToken))
+                    if (hackSettings.TryGetValue("FPSCounter", out JToken? FPSCounterToken))
                         b_FPSCounter = bool.Parse(FPSCounterToken.ToString());
-                    if (hackSettings.TryGetValue("HackHighlight", out JToken HackHighlightToken))
+                    if (hackSettings.TryGetValue("HackHighlight", out JToken? HackHighlightToken))
                         b_HackHighlight = bool.Parse(HackHighlightToken.ToString());
-                    if (hackSettings.TryGetValue("UseSingleChamColor", out JToken singleChamColorToken))
+                    if (hackSettings.TryGetValue("UseSingleChamColor", out JToken? singleChamColorToken))
                         b_UseSingleChamColor = bool.Parse(singleChamColorToken.ToString());
-                    if (hackSettings.TryGetValue("FOV", out JToken fovToken))
+                    if (hackSettings.TryGetValue("FOV", out JToken? fovToken))
                         f_fov = float.Parse(fovToken.ToString());
-                    if (hackSettings.TryGetValue("PJSpamSpeed", out JToken pjSpamSpeedToken))
+                    if (hackSettings.TryGetValue("PJSpamSpeed", out JToken? pjSpamSpeedToken))
                         f_pjSpamSpeed = float.Parse(pjSpamSpeedToken.ToString());
-                    if (hackSettings.TryGetValue("ESPThickness", out JToken espThicknessToken))
+                    if (hackSettings.TryGetValue("ESPThickness", out JToken? espThicknessToken))
                         f_ESPThickness = float.Parse(espThicknessToken.ToString());
-                    if (hackSettings.TryGetValue("ObjectQueueDelay", out JToken objectQueueDelayToken))
+                    if (hackSettings.TryGetValue("ObjectQueueDelay", out JToken? objectQueueDelayToken))
                         f_ObjectQueueDelay = float.Parse(objectQueueDelayToken.ToString());
-                    if (hackSettings.TryGetValue("NoFog", out JToken noFogToken))
+                    if (hackSettings.TryGetValue("NoFog", out JToken? noFogToken))
                         b_NoFog = bool.Parse(noFogToken.ToString());
 
-                    if (hackSettings.TryGetValue("EnemyFilter", out JToken enemyFilterToken))
+                    if (hackSettings.TryGetValue("EnemyFilter", out JToken? enemyFilterToken))
                     {
-                        foreach (var item in enemyFilterToken.ToObject<Dictionary<string, string>>())
+                        if (enemyFilterToken == null) return;
+                        Dictionary<string, string>? dictionary = enemyFilterToken.ToObject<Dictionary<string, string>>();
+                        if (dictionary == null) return;
+                        foreach (var item in dictionary)
                         {
                             string s_type = item.Key;
                             string s_value = item.Value;
@@ -481,115 +501,122 @@ namespace LethalMenu
                         }
                     }
 
-                    if(hackSettings.TryGetValue("Chams", out JToken chamsToken))
+                    if(hackSettings.TryGetValue("Chams", out JToken? chamsToken))
                     {
-                        JObject chams = chamsToken.ToObject<JObject>();
-                        if (chams.TryGetValue("Distance", out JToken distanceToken))
+                        JObject? chams = chamsToken.ToObject<JObject>();
+                        if (chams == null) return;
+                        if (chams.TryGetValue("Distance", out JToken? distanceToken))
                             f_chamDistance = float.Parse(distanceToken.ToString());
-                        if (chams.TryGetValue("Object", out JToken objectToken))
+                        if (chams.TryGetValue("Object", out JToken? objectToken))
                             b_chamsObject = bool.Parse(objectToken.ToString());
-                        if (chams.TryGetValue("Enemy", out JToken enemyToken))
+                        if (chams.TryGetValue("Enemy", out JToken? enemyToken))
                             b_chamsEnemy = bool.Parse(enemyToken.ToString());
-                        if (chams.TryGetValue("Player", out JToken playerToken))
+                        if (chams.TryGetValue("Player", out JToken? playerToken))
                             b_chamsPlayer = bool.Parse(playerToken.ToString());
-                        if (chams.TryGetValue("Landmine", out JToken landmineToken))
+                        if (chams.TryGetValue("Landmine", out JToken? landmineToken))
                             b_chamsLandmine = bool.Parse(landmineToken.ToString());
-                        if (chams.TryGetValue("Turret", out JToken turretToken))
+                        if (chams.TryGetValue("Turret", out JToken? turretToken))
                             b_chamsTurret = bool.Parse(turretToken.ToString());
-                        if (chams.TryGetValue("BigDoor", out JToken bigDoorToken))
+                        if (chams.TryGetValue("BigDoor", out JToken? bigDoorToken))
                             b_chamsBigDoor = bool.Parse(bigDoorToken.ToString());
-                        if (chams.TryGetValue("DoorLock", out JToken doorLockToken))
+                        if (chams.TryGetValue("DoorLock", out JToken? doorLockToken))
                             b_chamsDoorLock = bool.Parse(doorLockToken.ToString());
-                        if (chams.TryGetValue("SteamHazard", out JToken steamHazardToken))
+                        if (chams.TryGetValue("SteamHazard", out JToken? steamHazardToken))
                             b_chamsSteamHazard = bool.Parse(steamHazardToken.ToString());
-                        if (chams.TryGetValue("Breaker", out JToken breakerToken))
+                        if (chams.TryGetValue("Breaker", out JToken? breakerToken))
                             b_chamsBreaker = bool.Parse(breakerToken.ToString());
-                        if (chams.TryGetValue("Ship", out JToken shipToken))
+                        if (chams.TryGetValue("Ship", out JToken? shipToken))
                             b_chamsShip = bool.Parse(shipToken.ToString());
-                        if (chams.TryGetValue("SpikeRoofTrap", out JToken spikeRoofTrapToken))
+                        if (chams.TryGetValue("SpikeRoofTrap", out JToken? spikeRoofTrapToken))
                             b_chamsSpikeRoofTrap = bool.Parse(spikeRoofTrapToken.ToString());
-                        if (chams.TryGetValue("MineshaftElevator", out JToken elevator))
+                        if (chams.TryGetValue("MineshaftElevator", out JToken? elevator))
                             b_chamsMineshaftElevator = bool.Parse(elevator.ToString());
-                        if (chams.TryGetValue("EnemyVent", out JToken enemyvent))
+                        if (chams.TryGetValue("EnemyVent", out JToken? enemyvent))
                             b_chamsEnemyVent = bool.Parse(enemyvent.ToString());
-                        if (chams.TryGetValue("VainShroud", out JToken vain))
+                        if (chams.TryGetValue("VainShroud", out JToken? vain))
                             b_chamsVainShroud = bool.Parse(vain.ToString());
-                        if (chams.TryGetValue("Cruiser", out JToken vehicle))
+                        if (chams.TryGetValue("Cruiser", out JToken? vehicle))
                             b_chamsCruiser = bool.Parse(vehicle.ToString());
-                        if (chams.TryGetValue("ItemDropShip", out JToken dropship))
+                        if (chams.TryGetValue("ItemDropShip", out JToken? dropship))
                             b_chamsItemDropship = bool.Parse(dropship.ToString());
+                        if (chams.TryGetValue("Entrance", out JToken? entrance))
+                            b_chamsEntrance = bool.Parse(entrance.ToString());
                     }
                 }
 
-                if (json.TryGetValue("Colors", out JToken colorsToken))
+                if (json.TryGetValue("Colors", out JToken? colorsToken))
                 {
-                    JObject colors = colorsToken.ToObject<JObject>();
-
-                    if(colors.TryGetValue("Background", out JToken backgroundToken))
-                        c_background = JsonConvert.DeserializeObject<RGBAColor>(backgroundToken.ToString());
-                    if (colors.TryGetValue("Primary", out JToken primaryToken))
-                        c_primary = JsonConvert.DeserializeObject<RGBAColor>(primaryToken.ToString());
-                    if (colors.TryGetValue("MenuText", out JToken menuTextToken))
-                        c_menuText = JsonConvert.DeserializeObject<RGBAColor>(menuTextToken.ToString());
-                    if (colors.TryGetValue("Crosshair", out JToken crosshairToken))
-                        c_crosshair = JsonConvert.DeserializeObject<RGBAColor>(crosshairToken.ToString());
-                    if (colors.TryGetValue("HackHighlightColor", out JToken hackhighlightToken))
-                        c_hackhighlight = JsonConvert.DeserializeObject<RGBAColor>(hackhighlightToken.ToString());
-                    if (colors.TryGetValue("Chams", out JToken chams))
-                        c_chams = JsonConvert.DeserializeObject<RGBAColor>(chams.ToString());
-                    if (colors.TryGetValue("ObjectESP", out JToken objectESP))
-                        c_objectESP = JsonConvert.DeserializeObject<RGBAColor>(objectESP.ToString());
-                    if (colors.TryGetValue("PlayerESP", out JToken playerESP))
-                        c_playerESP = JsonConvert.DeserializeObject<RGBAColor>(playerESP.ToString());
-                    if (colors.TryGetValue("EnemyESP", out JToken enemyESP))
-                        c_enemyESP = JsonConvert.DeserializeObject<RGBAColor>(enemyESP.ToString());
-                    if (colors.TryGetValue("ShipESP", out JToken shipESP))
-                        c_shipESP = JsonConvert.DeserializeObject<RGBAColor>(shipESP.ToString());
-                    if (colors.TryGetValue("BreakerESP", out JToken breakerESP))
-                        c_breakerESP = JsonConvert.DeserializeObject<RGBAColor>(breakerESP.ToString());
-                    if (colors.TryGetValue("LandmineESP", out JToken landmineESP))
-                        c_landmineESP = JsonConvert.DeserializeObject<RGBAColor>(landmineESP.ToString());
-                    if (colors.TryGetValue("TurretESP", out JToken turretESP))
-                        c_turretESP = JsonConvert.DeserializeObject<RGBAColor>(turretESP.ToString());
-                    if (colors.TryGetValue("BigDoorESP", out JToken bigDoorESP))
-                        c_bigDoorESP = JsonConvert.DeserializeObject<RGBAColor>(bigDoorESP.ToString());
-                    if (colors.TryGetValue("DoorLockESP", out JToken doorLockESP))
-                        c_doorLockESP = JsonConvert.DeserializeObject<RGBAColor>(doorLockESP.ToString());
-                    if (colors.TryGetValue("EntranceExitESP", out JToken entranceExitESP))
-                        c_entranceExitESP = JsonConvert.DeserializeObject<RGBAColor>(entranceExitESP.ToString());
-                    if(colors.TryGetValue("SteamHazardESP", out JToken steamHazardESP))
-                        c_steamHazardESP = JsonConvert.DeserializeObject<RGBAColor>(steamHazardESP.ToString());
-                    if (colors.TryGetValue("SpikeRoofTrapESP", out JToken roofSpikeTrapESP))
-                        c_spikeRoofTrapESP = JsonConvert.DeserializeObject<RGBAColor>(roofSpikeTrapESP.ToString());
-                    if (colors.TryGetValue("EnemyVentESP", out JToken enemyVentESP))
-                        c_enemyVentESP = JsonConvert.DeserializeObject<RGBAColor>(enemyVentESP.ToString());
-                    if (colors.TryGetValue("VainShroudESP", out JToken vainShroudESP))
-                        c_vainShroudESP = JsonConvert.DeserializeObject<RGBAColor>(vainShroudESP.ToString());
-                    if (colors.TryGetValue("CruiserESP", out JToken cruiserESP))
-                        c_CruiserESP = JsonConvert.DeserializeObject<RGBAColor>(cruiserESP.ToString());
-                    if (colors.TryGetValue("ItemDropShipESP", out JToken itemDropShipESP))
-                        c_itemDropShipESP = JsonConvert.DeserializeObject<RGBAColor>(itemDropShipESP.ToString());
-                    if (colors.TryGetValue("CauseOfDeath", out JToken causeOfDeath))
-                        c_causeOfDeath = JsonConvert.DeserializeObject<RGBAColor>(causeOfDeath.ToString());
-                    if (colors.TryGetValue("MineshaftElevatorESP", out JToken elevatorEsp))
-                        c_mineshaftElevatorESP = JsonConvert.DeserializeObject<RGBAColor>(elevatorEsp.ToString());
-                    if (colors.TryGetValue("MineshaftElevatorChams", out JToken elevatorChams))
-                        c_mineshaftElevatorChams = JsonConvert.DeserializeObject<RGBAColor>(elevatorChams.ToString());
-                    if (colors.TryGetValue("VainShroudChams", out JToken vainShroudChams))
-                        c_vainShroudChams = JsonConvert.DeserializeObject<RGBAColor>(vainShroudChams.ToString());
-                    if (colors.TryGetValue("CruiserChams", out JToken cruiserChams))
-                        c_CruiserChams = JsonConvert.DeserializeObject<RGBAColor>(cruiserChams.ToString());
-                    if (colors.TryGetValue("ItemDropShipChams", out JToken itemDropShipChams))
-                        c_itemDropShipChams = JsonConvert.DeserializeObject<RGBAColor>(itemDropShipChams.ToString());
-                    if (colors.TryGetValue("EnemyVentChams", out JToken enemyVentChams))
-                        c_enemyVentChams = JsonConvert.DeserializeObject<RGBAColor>(enemyVentChams.ToString());
+                    JObject? colors = colorsToken.ToObject<JObject>();
+                    if (colors == null) return;
+                    if(colors.TryGetValue("Background", out JToken? backgroundToken))
+                        c_background = JsonConvert.DeserializeObject<RGBAColor>(backgroundToken.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("Primary", out JToken? primaryToken))
+                        c_primary = JsonConvert.DeserializeObject<RGBAColor>(primaryToken.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("MenuText", out JToken? menuTextToken))
+                        c_menuText = JsonConvert.DeserializeObject<RGBAColor>(menuTextToken.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("Crosshair", out JToken? crosshairToken))
+                        c_crosshair = JsonConvert.DeserializeObject<RGBAColor>(crosshairToken.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("HackHighlightColor", out JToken? hackhighlightToken))
+                        c_hackhighlight = JsonConvert.DeserializeObject<RGBAColor>(hackhighlightToken.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("Chams", out JToken? chams))
+                        c_chams = JsonConvert.DeserializeObject<RGBAColor>(chams.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("ObjectESP", out JToken? objectESP))
+                        c_objectESP = JsonConvert.DeserializeObject<RGBAColor>(objectESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("PlayerESP", out JToken? playerESP))
+                        c_playerESP = JsonConvert.DeserializeObject<RGBAColor>(playerESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("EnemyESP", out JToken? enemyESP))
+                        c_enemyESP = JsonConvert.DeserializeObject<RGBAColor>(enemyESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("ShipESP", out JToken? shipESP))
+                        c_shipESP = JsonConvert.DeserializeObject<RGBAColor>(shipESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("BreakerESP", out JToken? breakerESP))
+                        c_breakerESP = JsonConvert.DeserializeObject<RGBAColor>(breakerESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("LandmineESP", out JToken? landmineESP))
+                        c_landmineESP = JsonConvert.DeserializeObject<RGBAColor>(landmineESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("TurretESP", out JToken? turretESP))
+                        c_turretESP = JsonConvert.DeserializeObject<RGBAColor>(turretESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("BigDoorESP", out JToken? bigDoorESP))
+                        c_bigDoorESP = JsonConvert.DeserializeObject<RGBAColor>(bigDoorESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("DoorLockESP", out JToken? doorLockESP))
+                        c_doorLockESP = JsonConvert.DeserializeObject<RGBAColor>(doorLockESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("EntranceExitESP", out JToken? entranceExitESP))
+                        c_entranceExitESP = JsonConvert.DeserializeObject<RGBAColor>(entranceExitESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("SteamHazardESP", out JToken? steamHazardESP))
+                        c_steamHazardESP = JsonConvert.DeserializeObject<RGBAColor>(steamHazardESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("SpikeRoofTrapESP", out JToken? roofSpikeTrapESP))
+                        c_spikeRoofTrapESP = JsonConvert.DeserializeObject<RGBAColor>(roofSpikeTrapESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("EnemyVentESP", out JToken? enemyVentESP))
+                        c_enemyVentESP = JsonConvert.DeserializeObject<RGBAColor>(enemyVentESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("VainShroudESP", out JToken? vainShroudESP))
+                        c_vainShroudESP = JsonConvert.DeserializeObject<RGBAColor>(vainShroudESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("CruiserESP", out JToken? cruiserESP))
+                        c_CruiserESP = JsonConvert.DeserializeObject<RGBAColor>(cruiserESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("ItemDropShipESP", out JToken? itemDropShipESP))
+                        c_itemDropShipESP = JsonConvert.DeserializeObject<RGBAColor>(itemDropShipESP.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("CauseOfDeath", out JToken? causeOfDeath))
+                        c_causeOfDeath = JsonConvert.DeserializeObject<RGBAColor>(causeOfDeath.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("MineshaftElevatorESP", out JToken? elevatorEsp))
+                        c_mineshaftElevatorESP = JsonConvert.DeserializeObject<RGBAColor>(elevatorEsp.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("MineshaftElevatorChams", out JToken? elevatorChams))
+                        c_mineshaftElevatorChams = JsonConvert.DeserializeObject<RGBAColor>(elevatorChams.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("VainShroudChams", out JToken? vainShroudChams))
+                        c_vainShroudChams = JsonConvert.DeserializeObject<RGBAColor>(vainShroudChams.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("CruiserChams", out JToken? cruiserChams))
+                        c_CruiserChams = JsonConvert.DeserializeObject<RGBAColor>(cruiserChams.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("ItemDropShipChams", out JToken? itemDropShipChams))
+                        c_itemDropShipChams = JsonConvert.DeserializeObject<RGBAColor>(itemDropShipChams.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("EnemyVentChams", out JToken? enemyVentChams))
+                        c_enemyVentChams = JsonConvert.DeserializeObject<RGBAColor>(enemyVentChams.ToString()) ?? RGBAColor.Default;
+                    if (colors.TryGetValue("EntranceChams", out JToken? entranceChams))
+                        c_entranceChams = JsonConvert.DeserializeObject<RGBAColor>(entranceChams.ToString()) ?? RGBAColor.Default;
                 }
 
-                if (json.TryGetValue("KeyBinds", out JToken keybindsToken))
+                if (json.TryGetValue("KeyBinds", out JToken? keybindsToken) && keybindsToken != null)
                 {
                     HackExtensions.KeyBinds.Clear();
-                    ButtonControl[] mouseButtons = new ButtonControl[] { Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton };
-                    foreach (var item in keybindsToken.ToObject<Dictionary<string, string>>())
+                    ButtonControl[] mouseButtons = [Mouse.current.leftButton, Mouse.current.rightButton, Mouse.current.middleButton, Mouse.current.forwardButton, Mouse.current.backButton];
+                    Dictionary<string, string>? dictionary = keybindsToken.ToObject<Dictionary<string, string>>();
+                    if (dictionary == null) return;
+                    foreach (KeyValuePair<string, string> item in dictionary)
                     {
                         string s_hack = item.Key;
                         string s_key = item.Value;
@@ -604,9 +631,11 @@ namespace LethalMenu
                 }
                 
 
-                if(json.TryGetValue("Toggles", out JToken togglesToken))
+                if (json.TryGetValue("Toggles", out JToken? togglesToken) && togglesToken != null)
                 {
-                    foreach (var item in togglesToken.ToObject<Dictionary<string, string>>())
+                    Dictionary<string, string>? dictionary = togglesToken.ToObject<Dictionary<string, string>>();
+                    if (dictionary == null) return;
+                    foreach (KeyValuePair<string, string> item in dictionary)
                     {
                         string s_hack = item.Key;
                         string s_key = item.Value;

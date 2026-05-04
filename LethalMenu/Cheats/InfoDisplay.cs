@@ -92,7 +92,7 @@ namespace LethalMenu.Cheats
 
         private int GetCredits()
         {
-            if (!(bool)LethalMenu.terminal) return 0;
+            if (LethalMenu.terminal == null) return 0;
             return LethalMenu.terminal.groupCredits;
         }
 

@@ -1,18 +1,26 @@
 ﻿using GameNetcodeStuff;
+using HarmonyLib;
 using LethalMenu.Handler;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LethalMenu.Cheats
-{ 
+{
+    [HarmonyPatch]
     internal class DemiGodCheat : Cheat
     {
         public static readonly List<PlayerControllerB> DemiGodPlayers = new List<PlayerControllerB>();
 
-        public override void Update()
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DamagePlayer))]
+        [HarmonyPatch(typeof(PlayerControllerB), "DamageOnOtherClients")]
+        [HarmonyPrefix]
+        public static bool DamagePrefix(PlayerControllerB __instance)
         {
-            if (!Hack.DemiGod.IsEnabled()) return;
-            DemiGodPlayers.Where(player => player != null && !player.isPlayerDead && player.health != 100).ToList().ForEach(p => p.Handle().Heal());
+            if (DemiGodPlayers.Contains(__instance))
+            {
+                __instance.Handle().Heal();
+                return false;
+            }
+            return true;
         }
 
         public static void ToggleDemiGod(PlayerControllerB player)

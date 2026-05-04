@@ -1,17 +1,26 @@
 using HarmonyLib;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class SuperKnife : Cheat
     {
-        [HarmonyPatch(typeof(KnifeItem), ("HitKnife"))]
-        public static class KnifeItemHitKnifePatch
+        [HarmonyPatch(typeof(KnifeItem), "HitKnife"), HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> HitKnife(IEnumerable<CodeInstruction> instructions)
         {
-            [HarmonyPrefix]
-            public static void Prefix(KnifeItem __instance)
+            foreach (CodeInstruction instruction in instructions)
             {
-                __instance.knifeHitForce = Hack.SuperKnife.IsEnabled() ? 1000 : 1;
+                if (instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo fieldInfo && fieldInfo.Name == "knifeHitForce") yield return CodeInstruction.Call(typeof(SuperKnife), nameof(newKnifeHitForce));
+                else yield return instruction;
             }
+        }
+
+        private static int newKnifeHitForce(KnifeItem knifeItem)
+        {
+            return Hack.SuperKnife.IsEnabled() ? int.MaxValue : knifeItem.knifeHitForce;
         }
     }
 }

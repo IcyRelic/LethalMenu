@@ -1,24 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class NoCameraShake : Cheat
     {
-        [HarmonyPatch(typeof(HUDManager), ("ShakeCamera"))]
-        public static class HUDManagerShakeCameraPatch
+        [HarmonyPatch(typeof(HUDManager), ("ShakeCamera")), HarmonyPrefix]
+        public static bool ShakeCamera(ScreenShakeType shakeType)
         {
-            [HarmonyPrefix]
-            public static bool Prefix(ScreenShakeType shakeType)
-            {
-                if (Hack.NoCameraShake.IsEnabled())
-                {
-                    return false;
-                }
-                return true;
-            }
+            return !Hack.NoCameraShake.IsEnabled();
         }
     }
 }

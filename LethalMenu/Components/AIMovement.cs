@@ -7,26 +7,23 @@ namespace LethalMenu.Components
 {
     internal class AIMovement : MonoBehaviour
     {
-        // Movement constants
-        private const float WalkingSpeed = 0.5f; // Walking speed when left control is held
-        private const float SprintDuration = 0.0f; // Duration sprint key must be held for sprinting (adjust as needed)
+        private const float WalkingSpeed = 0.5f; 
+        private const float SprintDuration = 0.0f; 
         private const float JumpForce = 9.2f;
         private const float Gravity = 18.0f;
 
         internal float CharacterSpeed = 5.0f;
         internal float CharacterSprintSpeed = 2.8f;
 
-        // used to sync with the enemy to make sure it plays the correct animation when it is moving
         internal bool IsMoving { get; private set; } = false;
         internal bool IsSprinting { get; private set; } = false;
 
-        // Components and state variables
         private float VelocityY = 0.0f;
         private bool IsSprintHeld = false;
         private float SprintTimer = 0.0f;
         private Keyboard Keyboard = Keyboard.current;
-        private KBInput NoClipInput = null;
-        private CharacterController CharacterController;
+        private KBInput? NoClipInput;
+        private CharacterController? CharacterController;
 
         internal void SetNoClipMode(bool enabled)
         {
@@ -67,15 +64,14 @@ namespace LethalMenu.Components
         }
 
 
-        void Awake()
+        public void Awake()
         {
             Keyboard = Keyboard.current;
             NoClipInput = gameObject.AddComponent<KBInput>();
             CharacterController = gameObject.AddComponent<CharacterController>();
         }
 
-        // Update is called once per frame
-        void Update()
+        public void Update()
         {
             if (NoClipInput is { enabled: true }) return;
             if (CharacterController is { enabled: false }) return;
@@ -91,28 +87,22 @@ namespace LethalMenu.Components
                 ? WalkingSpeed
                 : 1.0f;
 
-            // Calculate movement direction relative to character's forward direction
             Vector3 forward = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
             Vector3 right = Vector3.ProjectOnPlane(transform.right, Vector3.up);
             Vector3 moveDirection = forward * moveInput.y + right * moveInput.x;
 
-            // Apply speed and sprint modifiers
             moveDirection *= speedModifier * (
                 IsSprinting
                     ? CharacterSpeed * CharacterSprintSpeed
                     : CharacterSpeed
                 );
 
-            // Apply gravity
             ApplyGravity();
 
-            // Attempt to move
             _ = CharacterController?.Move(moveDirection * Time.deltaTime);
 
-            // Jump if jump key is pressed
             if (Keyboard.spaceKey.wasPressedThisFrame) Jump();
 
-            // Sprinting mechanic: Hold to sprint
             if (Keyboard.leftShiftKey.isPressed)
             {
                 if (!IsSprintHeld)
@@ -133,8 +123,7 @@ namespace LethalMenu.Components
             }
         }
 
-        // Apply gravity to the character controller
-        void ApplyGravity()
+        public void ApplyGravity()
         {
             VelocityY = CharacterController is { isGrounded: false }
                 ? VelocityY - Gravity * Time.deltaTime
@@ -144,7 +133,6 @@ namespace LethalMenu.Components
             _ = CharacterController?.Move(motion * Time.deltaTime);
         }
 
-        // Jumping action
-        void Jump() => VelocityY = JumpForce;
+        public void Jump() => VelocityY = JumpForce;
     }
 }

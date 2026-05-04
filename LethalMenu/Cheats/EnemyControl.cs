@@ -12,11 +12,11 @@ namespace LethalMenu.Cheats
 {
     internal class EnemyControl : Cheat
     {
-        private static EnemyAI enemy = null;
-        private static GameObject ControllerInstance = null;
-        private static MouseInput mouse = null;
-        private static AIMovement movement = null;
-        private static AudioListener audioListener = null;
+        private static EnemyAI? enemy = null;
+        private static GameObject? ControllerInstance = null;
+        private static MouseInput? mouse = null;
+        private static AIMovement? movement = null;
+        private static AudioListener? audioListener = null;
         public static bool IsAIControlled = false;
         public static bool Controlling = false;
         private static bool NoClipEnabled = false;
@@ -25,7 +25,8 @@ namespace LethalMenu.Cheats
         private float DoorCooldownRemaining = 0.0f;
         private float TeleportCooldownRemaining = 0.0f;
 
-        private static Dictionary<Type, IController> EnemyControllers { get; } = new() {
+        public static Dictionary<Type, IController> EnemyControllers { get; } = new() 
+        {
             { typeof(CentipedeAI), new CentipedeController() },
             { typeof(FlowermanAI), new FlowermanController() },
             { typeof(ForestGiantAI), new ForestGiantController() },
@@ -70,7 +71,7 @@ namespace LethalMenu.Cheats
 
             controller.OnTakeControl(enemy);
 
-            if (enemy.IsSpawned) enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            if (enemy.IsSpawned) enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer?.actualClientId ?? 0);
 
             ControllerInstance = new GameObject("EnemyController");
             ControllerInstance.transform.position = enemy.transform.position;
@@ -97,7 +98,7 @@ namespace LethalMenu.Cheats
             Controlling = false;
             Hack.FreeCam.SetToggle(false);
             Hack.EnemyControl.SetToggle(false);
-            if (Settings.isMenuOpen && (bool)!LethalMenu.localPlayer?.playerActions.Movement.enabled) LethalMenu.localPlayer?.playerActions.Enable();
+            if (Settings.isMenuOpen && LethalMenu.localPlayer != null && (bool)!LethalMenu.localPlayer.playerActions.Movement.enabled) LethalMenu.localPlayer.playerActions.Enable();
 
             if (enemy?.agent != null && enemy.agent.isOnNavMesh)
             {
@@ -108,14 +109,18 @@ namespace LethalMenu.Cheats
                 enemy.agent.Warp(enemy.transform.position);
             }
 
-            if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller) || controller == null) return;
-
-            controller.OnReleaseControl(enemy);
+            if (enemy != null)
+            {
+                if (!EnemyControllers.TryGetValue(enemy.GetType(), out IController controller) || controller == null) return;
+                controller.OnReleaseControl(enemy);
+            }
 
             ChangeAudioListener(null, true);
-
-            if (LethalMenu.localPlayer.isPlayerDead) HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(true);
-            LethalMenu.localPlayer.cursorTip.text = "";
+            if (LethalMenu.localPlayer != null)
+            {
+                if (LethalMenu.localPlayer.isPlayerDead) HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(true);
+                LethalMenu.localPlayer.cursorTip.text = "";
+            }
             IsAIControlled = false;
             Destroy(ControllerInstance);
             enemy = null;
@@ -152,35 +157,38 @@ namespace LethalMenu.Cheats
                 return;
             }
 
-            if (LethalMenu.localPlayer.isPlayerDead) HUDManager.Instance.Reflect().SetValue("holdButtonToEndGameEarlyHoldTime", 0f);
-            if (LethalMenu.localPlayer.isPlayerDead) HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(false);
+            if (LethalMenu.localPlayer != null && LethalMenu.localPlayer.isPlayerDead)
+            {
+                HUDManager.Instance.Reflect().SetValue("holdButtonToEndGameEarlyHoldTime", 0f);
+                HUDManager.Instance.holdButtonToEndGameEarlyMeter.gameObject.SetActive(false);
+            }
 
             if (enemy.agent == null || !enemy.agent) return;
 
             UpdateCooldowns();
 
-            if (enemy.IsSpawned) enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer.actualClientId);
+            if (enemy.IsSpawned) enemy.ChangeEnemyOwnerServerRpc(LethalMenu.localPlayer?.actualClientId ?? 0);
             MoveCamera();
 
             Controlling = true;
 
             controller.Update(enemy, false);
             InteractWithAmbient(enemy, EnemyControllers[enemy.GetType()]);
-            LethalMenu.localPlayer.cursorTip.text = controller.GetPrimarySkillName(enemy);
+            LethalMenu.localPlayer?.cursorTip.text = controller.GetPrimarySkillName(enemy);
 
             HandleInput();
 
             if (IsAIControlled || !controller.IsAbleToMove(enemy)) return;
 
-            if (controller.SyncAnimationSpeedEnabled(enemy)) movement.CharacterSpeed = enemy.agent.speed;
+            if (controller.SyncAnimationSpeedEnabled(enemy)) movement?.CharacterSpeed = enemy.agent.speed;
 
             if (controller.IsAbleToRotate(enemy)) UpdateEnemyRotation();
 
             UpdateEnemyPosition();
-            controller.OnMovement(enemy, movement.IsMoving, movement.IsSprinting);
+            controller.OnMovement(enemy, movement?.IsMoving ?? true, movement?.IsSprinting ?? false);
         }
 
-        public static void ChangeAudioListener(AudioListener audioListener = null, bool reset = false)
+        public static void ChangeAudioListener(AudioListener? audioListener = null, bool reset = false)
         {
             if (reset && StartOfRound.Instance != null && LethalMenu.localPlayer != null)
             {
@@ -189,12 +197,12 @@ namespace LethalMenu.Cheats
             }
             else if (audioListener != null)
             {
-                LethalMenu.localPlayer.activeAudioListener.enabled = false;
-                StartOfRound.Instance.audioListener = audioListener;
+                LethalMenu.localPlayer?.activeAudioListener.enabled = false;
+                StartOfRound.Instance?.audioListener = audioListener;
             }
         }
 
-        private static IController GetControllerForEnemy(EnemyAI e) => e != null && EnemyControllers.TryGetValue(enemy.GetType(), out var controller) ? controller : null;
+        private static IController? GetControllerForEnemy() => enemy != null ? EnemyControllers.TryGetValue(enemy.GetType(), out IController? controller) ? controller : null : null;
 
         private void UpdateCooldowns()
         {
@@ -213,7 +221,8 @@ namespace LethalMenu.Cheats
 
         private void MoveCamera()
         {
-            Freecam.camera.transform.SetPositionAndRotation(
+            if (enemy == null) return;
+            Freecam.camera?.transform.SetPositionAndRotation(
                 enemy.transform.position + (3.0f * (Vector3.up - enemy.transform.forward)),
                 Quaternion.LookRotation(enemy.transform.forward)
             );
@@ -230,7 +239,7 @@ namespace LethalMenu.Cheats
 
         private static void UpdateEnemyRotation()
         {
-            if (movement == null) return;
+            if (movement == null || mouse == null) return;
             movement.transform.rotation = mouse.transform.rotation;
         }
 
@@ -247,13 +256,21 @@ namespace LethalMenu.Cheats
             if (Keyboard.current.f12Key.wasPressedThisFrame)
             {
                 StopControl();
-                enemy.Handle().Kill();
+                enemy?.Handle().Kill();
             }
         }
 
-        public static float InteractRange() => GetControllerForEnemy(enemy).InteractRange(enemy);
+        public static float InteractRange()
+        {
+            IController? controller = GetControllerForEnemy();
+            return enemy != null && controller != null ? controller.InteractRange(enemy) : 5f;
+        }
 
-        public static float SprintMultiplier() => GetControllerForEnemy(enemy).SprintMultiplier(enemy);
+        public static float SprintMultiplier()
+        {
+            IController? controller = GetControllerForEnemy();
+            return enemy != null && controller != null ? controller.SprintMultiplier(enemy) : 5f;
+        }
 
         public void ToggleAIControl()
         {
@@ -261,7 +278,6 @@ namespace LethalMenu.Cheats
 
             IsAIControlled = !IsAIControlled;
             SetAIControl(IsAIControlled);
-            //this.SendPossessionNotifcation($"AI Control: {(this.IsAIControlled ? "Enabled" : "Disabled")}");
         }
 
         private static void SetAIControl(bool enableAI)
@@ -339,39 +355,43 @@ namespace LethalMenu.Cheats
         public void ToggleNoClip()
         {
             NoClipEnabled = !NoClipEnabled;
-            movement.SetNoClipMode(NoClipEnabled);
+            movement?.SetNoClipMode(NoClipEnabled);
         }
 
         public void UsePrimarySkill()
         {
             if (enemy == null) return;
             if (IsAIControlled) return;
-
-            GetControllerForEnemy(enemy).UsePrimarySkill(enemy);
+            IController? controller = GetControllerForEnemy();
+            if (controller == null) return;
+            controller.UsePrimarySkill(enemy);
         }
 
         public void UseSecondarySkill()
         {
             if (enemy == null) return;
             if (IsAIControlled) return;
-
-            GetControllerForEnemy(enemy).UseSecondarySkill(enemy);
+            IController? controller = GetControllerForEnemy();
+            if (controller == null) return;
+            controller.UseSecondarySkill(enemy);
         }
 
         public void OnSecondarySkillHold()
         {
             if (enemy == null) return;
             if (IsAIControlled) return;
-
-            GetControllerForEnemy(enemy).OnSecondarySkillHold(enemy);
+            IController? controller = GetControllerForEnemy();
+            if (controller == null) return;
+            controller.OnSecondarySkillHold(enemy);
         }
 
         public void ReleaseSecondarySkill()
         {
             if (enemy == null) return;
             if (IsAIControlled) return;
-
-            GetControllerForEnemy(enemy).ReleaseSecondarySkill(enemy);
+            IController? controller = GetControllerForEnemy();
+            if (controller == null) return;
+            controller.ReleaseSecondarySkill(enemy);
         }
     }
 

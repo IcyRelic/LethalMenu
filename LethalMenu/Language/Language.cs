@@ -25,14 +25,18 @@ namespace LethalMenu.Language
             _language = language;
         }
 
-        public string Localize(string key) => _language.ContainsKey(key) ? _language[key] : key;
-        public bool Has(string key) => _language.ContainsKey(key);
+        public string Localize(string key)
+        {
+            if (string.IsNullOrEmpty(key)) return key;
+            return _language.ContainsKey(key) ? _language[key] : key;
+        }
+        public bool Has(string key) => !string.IsNullOrEmpty(key) && _language.ContainsKey(key);
         public int Count() => _language.Count;
     }
 
     public class Localization
     {
-        public static Language Language { get; private set; }
+        public static Language? Language { get; private set; }
         private static Dictionary<string, Language> _languages = new Dictionary<string, Language>();
         private static bool _initialized = false;
 
@@ -48,7 +52,7 @@ namespace LethalMenu.Language
         {
             Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(x => x.StartsWith("LethalMenu.Resources.Language.") && x.EndsWith(".json")).ToList().ForEach(x =>
             {
-                string jsonStr = null;
+                string? jsonStr = null;
                 try
                 {
                     using (StreamReader reader = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream(x)))
@@ -66,8 +70,9 @@ namespace LethalMenu.Language
                         return;
                     }
 
-                    string language = json["LANGUAGE"].ToString();
-                    string translator = json["TRANSLATOR"].ToString();
+                    string? language = json["LANGUAGE"]?.ToString();
+                    string? translator = json["TRANSLATOR"]?.ToString();
+                    if (string.IsNullOrEmpty(language) || string.IsNullOrEmpty(translator)) return;
 
                     json.Properties().ToList().ForEach(p =>
                     {
@@ -131,9 +136,8 @@ namespace LethalMenu.Language
 
         public static void SetLanguage(string name) => Language = LanguageExists(name) ? _languages[name] : _languages["English"];
         public static bool LanguageExists(string name) => _languages.ContainsKey(name);
-        public static string Localize(string key) => Language.Has(key) ? Language.Localize(key) : LocalizeEnglish(key);
+        public static string Localize(string key) => Language != null && Language.Has(key) ? Language.Localize(key) : _languages["English"].Localize(key);
         public static string[] LocalizeArray(string[] keys) => keys.Select(key => Localize(key)).ToArray();
         public static string Localize(string[] keys, bool newLine = false) => keys.Aggregate("", (current, key) => current + (newLine ? "\n" : " ") + Localize(key)).Substring(1);
-        private static string LocalizeEnglish(string key) => _languages["English"].Localize(key);
     }
 }

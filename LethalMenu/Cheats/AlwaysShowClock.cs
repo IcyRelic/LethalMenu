@@ -19,6 +19,7 @@ namespace LethalMenu.Cheats
             }
         }
 
+        // HudManager.Instance.GetClockTimeFormatted()
         private string GetTime()
         {
             int num1 = (int)((double)TimeOfDay.Instance.normalizedTimeOfDay * (60.0 * (double)TimeOfDay.Instance.numberOfHours)) + 360;

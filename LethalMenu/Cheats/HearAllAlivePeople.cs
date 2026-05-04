@@ -5,40 +5,24 @@ using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class HearAllAlivePeople : Cheat
     {
-        [HarmonyPatch(typeof(StartOfRound), "UpdatePlayerVoiceEffects")]
-        public static class StartOfRoundUpdatePlayerVoiceEffectsPatch
+        [HarmonyPatch(typeof(StartOfRound), "UpdatePlayerVoiceEffects"), HarmonyPostfix]
+        public static void UpdatePlayerVoiceEffects(StartOfRound __instance)
         {
-            [HarmonyPostfix]
-            public static void Postfix(StartOfRound __instance)
+            if (Hack.HearAllAlivePeople.IsEnabled() && !StartOfRound.Instance.shipIsLeaving)
             {
-                if (Hack.HearAllAlivePeople.IsEnabled() && !StartOfRound.Instance.shipIsLeaving)
+                foreach (PlayerControllerB player in LethalMenu.players)
                 {
-                    for (int i = 0; i < __instance.allPlayerScripts.Length; i++)
-                    {
-                        PlayerControllerB player = __instance.allPlayerScripts[i];
-                        if (player != null && player.currentVoiceChatAudioSource != null && !player.isPlayerDead)
-                        {
-                            AudioSource currentVoiceChatAudioSource = player.currentVoiceChatAudioSource;
-                            AudioLowPassFilter lowPassFilter = currentVoiceChatAudioSource.GetComponent<AudioLowPassFilter>();
-                            AudioHighPassFilter highPassFilter = currentVoiceChatAudioSource.GetComponent<AudioHighPassFilter>();
-                            if (lowPassFilter != null)
-                            {
-                                lowPassFilter.enabled = false;
-                            }
-                            if (highPassFilter != null)
-                            {
-                                highPassFilter.enabled = false;
-                            }
-                            currentVoiceChatAudioSource.panStereo = 0f;
-                            SoundManager.Instance.playerVoicePitchTargets[(int)((IntPtr)player.playerClientId)] = 1f;
-                            SoundManager.Instance.SetPlayerPitch(1f, unchecked((int)player.playerClientId));
-                            currentVoiceChatAudioSource.spatialBlend = 0f;
-                            player.currentVoiceChatIngameSettings.set2D = true;
-                            player.voicePlayerState.Volume = 1f;
-                        }
-                    }
+                    if (player == null || player.isPlayerDead) continue;
+                    AudioSource currentVoiceChatAudioSource = player.currentVoiceChatAudioSource;
+                    currentVoiceChatAudioSource.GetComponent<AudioLowPassFilter>().enabled = false;
+                    currentVoiceChatAudioSource.GetComponent<AudioHighPassFilter>().enabled = false;
+                    currentVoiceChatAudioSource.panStereo = 0f;
+                    currentVoiceChatAudioSource.spatialBlend = 0f;
+                    player.currentVoiceChatIngameSettings.set2D = true;
+                    player.voicePlayerState.Volume = 1f;
                 }
             }
         }

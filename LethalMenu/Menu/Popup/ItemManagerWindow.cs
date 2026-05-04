@@ -1,4 +1,5 @@
-﻿using LethalMenu.Handler;
+﻿using GameNetcodeStuff;
+using LethalMenu.Handler;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
 using System.Linq;
@@ -52,15 +53,24 @@ namespace LethalMenu.Menu.Popup
 
         private void SpawnItem(Item item)
         {
-            if (HUDManager.Instance == null) return;
+            PlayerControllerB? localPlayer = LethalMenu.localPlayer;
+            if (HUDManager.Instance == null || localPlayer == null) return;
             int value = int.TryParse(s_scrapValue, out value) ? value : Random.Range(15, 100);
             int amount = int.TryParse(s_amount, out amount) ? amount : 1;
             for (int i = 0; i < amount; i++)
             {
-                GameObject gameObject = Object.Instantiate(item.spawnPrefab, LethalMenu.localPlayer.playerEye.transform.position, Quaternion.identity, StartOfRound.Instance.propsContainer);
-                gameObject.GetComponent<GrabbableObject>().SetScrapValue(value);
-                gameObject.GetComponent<GrabbableObject>().fallTime = 0.0f;
+                Vector3 playerEyePosition = localPlayer.playerEye.transform.position;
+                GameObject gameObject = Object.Instantiate(item.spawnPrefab, playerEyePosition, Quaternion.identity, StartOfRound.Instance.propsContainer);
+                GrabbableObject grabbableObject = gameObject.GetComponent<GrabbableObject>();
+                grabbableObject.SetScrapValue(value);
                 gameObject.GetComponent<NetworkObject>().Spawn();
+                if (localPlayer.isInElevator) grabbableObject.transform.SetParent(StartOfRound.Instance.elevatorTransform, true);
+                else grabbableObject.transform.SetParent(StartOfRound.Instance.propsContainer, true);
+                localPlayer.SetItemInElevator(localPlayer.isInHangarShipRoom, localPlayer.isInElevator, grabbableObject);
+                Vector3 localGrabbableObjectPosition = grabbableObject.transform.parent.InverseTransformPoint(playerEyePosition);
+                grabbableObject.startFallingPosition = localGrabbableObjectPosition;
+                grabbableObject.targetFloorPosition = localGrabbableObjectPosition;
+                grabbableObject.EnablePhysics(true);
             }
             HUDManager.Instance.DisplayTip("Lethal Menu", $"Spawned {amount} {item.itemName}{(amount == 1 ? "" : "s")} ({value})!");
         }

@@ -14,7 +14,7 @@ namespace LethalMenu.Handler.EnemyControl
     internal class PufferController : IEnemyController<PufferAI>
     {
         private static bool playerIsInLOS = false;
-        private static PlayerControllerB player;
+        private static PlayerControllerB? player;
 
         public void UsePrimarySkill(PufferAI enemy)
         {

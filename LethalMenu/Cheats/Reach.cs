@@ -1,31 +1,44 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
-using UnityEngine;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace LethalMenu.Cheats
 {
     [HarmonyPatch]
     internal class Reach : Cheat
     {
-        public override void Update()
+        [HarmonyPatch(typeof(BeltBagItem), "ItemInteractLeftRight"), HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ItemInteractLeftRight(IEnumerable<CodeInstruction> instructions)
         {
-            
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-            if (player == null) return;
-            if (Settings.f_defaultGrabDistance == -1f) Settings.f_defaultGrabDistance = player.grabDistance;
-
-            if(!Hack.LootThroughWalls.IsEnabled() && !Hack.InteractThroughWalls.IsEnabled()) 
-                player.grabDistance = Hack.Reach.IsEnabled() ? Settings.f_grabDistance : Settings.f_defaultGrabDistance;
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.opcode == OpCodes.Ldc_R4 && instruction.operand is float value && value == 4f) yield return CodeInstruction.Call(typeof(Reach), nameof(newBeltBagMaxDistance));
+                else yield return instruction;
+            }
         }
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControllerB), "LateUpdate")]
-        public static void PlayerLateUpdate(PlayerControllerB __instance)
+        private static float newBeltBagMaxDistance()
         {
-            if (LethalMenu.localPlayer == null || LethalMenu.localPlayer.playerClientId != __instance.playerClientId || !Hack.Reach.IsEnabled()) return;
+            return Hack.Reach.IsEnabled() ? float.MaxValue : 4f;
+        }
 
-            if (!Hack.LootThroughWalls.IsEnabled() && !Hack.InteractThroughWalls.IsEnabled())
-                __instance.grabDistance = Hack.Reach.IsEnabled() ? Settings.f_grabDistance : Settings.f_defaultGrabDistance;
+        [HarmonyPatch(typeof(PlayerControllerB), "BeginGrabObject")]
+        [HarmonyPatch(typeof(PlayerControllerB), "SetHoverTipAndCurrentInteractTrigger")]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> BeginGrabObject(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo fieldInfo && fieldInfo.Name == "grabDistance") yield return CodeInstruction.Call(typeof(Reach), nameof(newGrabDistance));
+                else yield return instruction;
+            }
+        }
+
+        private static float newGrabDistance(PlayerControllerB playerControllerB)
+        {
+            return Hack.Reach.IsEnabled() ? float.MaxValue : playerControllerB.grabDistance;
         }
     }
 }

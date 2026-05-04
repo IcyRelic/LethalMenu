@@ -1,22 +1,14 @@
-using System.Linq;
-using GameNetcodeStuff;
-using HarmonyLib; 
+using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class BerserkTurrets : Cheat
     {
-        [HarmonyPatch(typeof(Turret), ("Update"))]
-        public static class TurretUpdatePatch
+        [HarmonyPatch(typeof(Turret), ("Update")), HarmonyPostfix]
+        public static void Update(Turret __instance)
         {
-            [HarmonyPostfix]
-            public static void Postfix(ref int ___turretMode)
-            {
-                if (Hack.BerserkAllTurrets.IsEnabled())
-                {
-                    ___turretMode = 3;
-                }
-            }
+            if (Hack.BerserkAllTurrets.IsEnabled()) __instance.turretMode = TurretMode.Berserk;
         }
     }
 }

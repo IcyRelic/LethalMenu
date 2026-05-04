@@ -5,15 +5,12 @@ namespace LethalMenu.Menu.Core
 
     internal class MenuTab : MenuFragment
     {
-        public string name;
-        private string localization;
+        public string? name;
         public MenuTab(string name)
         {
-            this.localization = name;
-            LocalizeName();
+            this.name = Localization.Localize(name);
         }
 
-        public void LocalizeName() => name = Localization.Localize(localization);
         public virtual void Draw() { }
 
     }

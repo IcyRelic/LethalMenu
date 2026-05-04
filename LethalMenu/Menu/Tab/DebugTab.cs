@@ -1,15 +1,18 @@
 ﻿using GameNetcodeStuff;
+using HarmonyLib;
+using LethalMenu.Cheats;
+using LethalMenu.Handler;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
-using LethalMenu.Types;
 using LethalMenu.Util;
 using Steamworks;
 using Steamworks.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-
+using UnityEngine.Assertions.Must;
 
 namespace LethalMenu.Menu.Tab
 {
@@ -29,30 +32,8 @@ namespace LethalMenu.Menu.Tab
         {
             scrollPos = GUILayout.BeginScrollView(scrollPos);
 
-            if (GUILayout.Button("Clear Debug Message")) Settings.debugMessage = "";
-            GUILayout.TextArea(Settings.debugMessage, GUILayout.Height(100));
-
-            UI.Button("LookAt Closest Item", () =>
-            {
-                GrabbableObject item = LethalMenu.items.Where(i => !i.isInShipRoom).OrderBy(
-                    i => Vector3.Distance(i.transform.position, LethalMenu.localPlayer.transform.position)
-                ).FirstOrDefault();
-
-                if (item == null) return;
-
-                LethalMenu.localPlayer.transform.LookAt(item.transform.position);
-            });
-
-            UI.Button("LookAt Closest Player", () =>
-            {
-                PlayerControllerB player = LethalMenu.players.Where(p => p != LethalMenu.localPlayer).OrderBy(
-                        p => Vector3.Distance(p.transform.position, LethalMenu.localPlayer.transform.position)
-                ).FirstOrDefault();
-
-                if (player == null) return;
-
-                LethalMenu.localPlayer.transform.LookAt(player.transform.position);
-            });
+            if (GUILayout.Button("Clear Debug Message")) Settings.DebugMessage = "";
+            GUILayout.TextArea(Settings.DebugMessage, GUILayout.Height(100));
 
             GUILayout.Label("Debug Menu");
 
@@ -91,7 +72,7 @@ namespace LethalMenu.Menu.Tab
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                LethalMenu.localPlayer.TeleportPlayer(StartOfRound.Instance.notSpawnedPosition.position);
+                LethalMenu.localPlayer?.TeleportPlayer(StartOfRound.Instance.notSpawnedPosition.position);
             }
             GUILayout.EndHorizontal();
 
@@ -118,11 +99,11 @@ namespace LethalMenu.Menu.Tab
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Execute"))
             {
-                Settings.debugMessage = ""; 
-                foreach (RaycastHit hit in CameraManager.ActiveCamera.transform.SphereCastForward())
+                Settings.DebugMessage = ""; 
+                foreach (RaycastHit hit in CameraManager.ActiveCamera?.transform.SphereCastForward() ?? Array.Empty<RaycastHit>())
                 {
                     Collider collider = hit.collider;
-                    Settings.debugMessage += $"Hit: {collider.name} => {collider.gameObject.name} => Layer {LayerMask.LayerToName(collider.gameObject.layer)} {collider.gameObject.layer}\n";
+                    Settings.DebugMessage += $"Hit: {collider.name} => {collider.gameObject.name} => Layer {LayerMask.LayerToName(collider.gameObject.layer)} {collider.gameObject.layer}\n";
                 }
             }
             GUILayout.EndHorizontal();
@@ -168,7 +149,7 @@ namespace LethalMenu.Menu.Tab
 
             LeaderboardUpdate? nullable = await leaderboardAsync.Value.ReplaceScore(int.MaxValue);
 
-            Settings.debugMessage = (nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank);
+            Settings.DebugMessage = (nullable.Value.OldGlobalRank + " => " + nullable.Value.NewGlobalRank);
         }
     }
 }

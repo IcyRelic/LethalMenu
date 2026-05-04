@@ -19,7 +19,7 @@ namespace LethalMenu
 {
     public class LethalMenu : MonoBehaviour
     {
-        private List<Cheat> cheats;
+        private List<Cheat>? cheats;
         public static List<GrabbableObject> items = new List<GrabbableObject>();
         public static List<Landmine> landmines = new List<Landmine>();
         public static List<Turret> turrets = new List<Turret>();
@@ -39,26 +39,25 @@ namespace LethalMenu
         public static List<VehicleController> vehicles = new List<VehicleController>();
         public static List<LocalVolumetricFog> fogs = new List<LocalVolumetricFog>();
         public static List<Volume> volumes = new List<Volume>();
-        public static ItemDropship itemDropship;
-        public static HangarShipDoor shipDoor;
-        public static DepositItemsDesk depositItemsDesk;
-        public static BreakerBox breaker;
-        public static MineshaftElevatorController mineshaftElevator;
-        public static PlayerControllerB localPlayer;
-        public static QuickMenuManager quickMenuManager;
-        public static Terminal terminal;
+        public static ItemDropship? itemDropship;
+        public static HangarShipDoor? shipDoor;
+        public static DepositItemsDesk? depositItemsDesk;
+        public static BreakerBox? breaker;
+        public static MineshaftElevatorController? mineshaftElevator;
+        public static PlayerControllerB? localPlayer;
+        public static QuickMenuManager? quickMenuManager;
+        public static Terminal? terminal;
         public static int selectedPlayer = -1;
         public int fps;
 
-        public static Harmony harmony;
-        private HackMenu menu;
-        private static LethalMenu instance;
+        private HackMenu? menu;
+        public static Harmony? harmony;
+        private static LethalMenu? instance;
         public static LethalMenu Instance
         {
             get
             {
-                if (instance == null)
-                    instance = new LethalMenu();
+                if (instance == null) instance = new LethalMenu();
                 return instance;
             }
         }
@@ -72,7 +71,7 @@ namespace LethalMenu
             }
             catch (Exception e)
             {
-                Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
+                Settings.DebugMessage = ("Start Exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
@@ -95,9 +94,9 @@ namespace LethalMenu
                 {
                     new PatchClassProcessor(harmony, t).Patch();
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    Debug.LogWarning($"Skipping patch in {t.FullName} {ex.Message}");
+                    Settings.DebugMessage = ($"Skipping patch in {t.FullName} because exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
                 }
             });
         }
@@ -115,7 +114,7 @@ namespace LethalMenu
             }
             catch (Exception e)
             {
-                Settings.debugMessage = (e.Message);
+                Settings.DebugMessage = ("Load Cheats: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
@@ -123,11 +122,11 @@ namespace LethalMenu
         {
             try
             {
-                if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.FixedUpdate());
+                if ((bool)StartOfRound.Instance) cheats?.ForEach(cheat => cheat.FixedUpdate());
             }
             catch (Exception e)
             {
-                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
+                Settings.DebugMessage = ("Fixed Update Exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
@@ -139,14 +138,14 @@ namespace LethalMenu
                 foreach (Hack hack in Enum.GetValues(typeof(Hack)))
                 {
                     if ((bool)StartOfRound.Instance && localPlayer != null && (localPlayer.isTypingChat || localPlayer.quickMenuManager.isMenuOpen || localPlayer.inTerminalMenu)) continue;
-                    if (hack.HasKeyBind() && hack.GetKeyBind().wasPressedThisFrame && !hack.IsAnyHackWaiting()) hack.Execute();
+                    if (hack.HasKeyBind() && (hack.GetKeyBind()?.wasPressedThisFrame ?? false) && !hack.IsAnyHackWaiting()) hack.Execute();
                     if (!(bool)StartOfRound.Instance) return;
                 }
-                cheats.ForEach(cheat => cheat.Update());
+                cheats?.ForEach(cheat => cheat.Update());
             }
             catch (Exception e)
             {
-                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
+                Settings.DebugMessage = ("Update Exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
         
@@ -170,21 +169,21 @@ namespace LethalMenu
                     VisualUtil.DrawString(new Vector2(5f, 2f), LethalMenuTitle, Settings.c_primary, centered: false, bold: true, fontSize: 14);
                     if (MenuUtil.resizing)
                     {
-                        VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f), Localization.Localize(["SettingsTab.ResizeTitle", "SettingsTab.ResizeConfirm", $"{HackMenu.Instance.windowRect.width}x{HackMenu.Instance.windowRect.height}"], true), Settings.c_playerESP, true, true, true, true, 22);
+                        VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f), $"{Localization.Localize(["SettingsTab.ResizeTitle", "SettingsTab.ResizeConfirm"], true)} {HackMenu.Instance.windowRect.width}x{HackMenu.Instance.windowRect.height}", Settings.c_playerESP, true, true, true, true, 22);
                         MenuUtil.ResizeMenu();
                     }
                     if (Settings.DebugMode)
                     {
                         VisualUtil.DrawString(new Vector2(5f, 20f), "[DEBUG MODE]", new RGBAColor(50, 205, 50, 1f), false, false, false, true, 10);
-                        VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(Settings.debugMessage), false, false, false, false, 22);
+                        VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(Settings.DebugMessage), false, false, false, false, 22);
                     }
-                    if ((bool)StartOfRound.Instance) cheats.ForEach(cheat => cheat.OnGui());
+                    if ((bool)StartOfRound.Instance) cheats?.ForEach(cheat => cheat.OnGui());
                 }
-                menu.Draw();
+                menu?.Draw();
             }
             catch (Exception e)
             {
-                Settings.debugMessage = ("Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
+                Settings.DebugMessage = ("OnGUI Exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 

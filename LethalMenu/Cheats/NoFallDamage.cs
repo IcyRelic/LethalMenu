@@ -3,16 +3,13 @@ using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch(typeof(PlayerControllerB), "PlayerHitGroundEffects")]
+    [HarmonyPatch]
     internal class NoFallDamage : Cheat
     {
-        public static bool Prefix(PlayerControllerB __instance)
+        [HarmonyPatch(typeof(PlayerControllerB), "PlayerHitGroundEffects"), HarmonyPrefix]
+        public static bool PlayerHitGroundEffects(PlayerControllerB __instance)
         {
-            if (Hack.NoFallDamage.IsEnabled())
-            {
-                __instance.takingFallDamage = false;
-            }
-
+            if (Hack.NoFallDamage.IsEnabled()) __instance.takingFallDamage = false;
             return true;
         }
     }

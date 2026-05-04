@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
-    [HarmonyPatch(typeof(ItemDropship), "ShipLandedAnimationEvent")]
+    [HarmonyPatch]
     internal class OpenDropShipLand : Cheat
     {
-        [HarmonyPostfix]
+        [HarmonyPatch(typeof(ItemDropship), "ShipLandedAnimationEvent"), HarmonyPostfix]
         public static void ShipLandedAnimationEvent(ItemDropship __instance)
         {
             if (!Hack.OpenDropShipLand.IsEnabled() || __instance == null || __instance.shipDoorsOpened) return;

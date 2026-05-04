@@ -71,6 +71,7 @@ namespace LethalMenu.Menu.Tab
         private string s_vainShroudChamsColor = Settings.c_vainShroudChams.GetHexCode();
         private string s_itemDropShipChamsColor = Settings.c_itemDropShipChams.GetHexCode();
         private string s_cruiserChamsColor = Settings.c_CruiserChams.GetHexCode();
+        private string s_entranceChamsColor = Settings.c_entranceChams.GetHexCode();
 
         private string s_causeOfDeath = Settings.c_causeOfDeath.GetHexCode();
 
@@ -90,7 +91,7 @@ namespace LethalMenu.Menu.Tab
             f_leftWidth = HackMenu.Instance.contentWidth * 0.55f - HackMenu.Instance.spaceFromLeft;
 
             if(i_selectedCrosshairIndex == -1) i_selectedCrosshairIndex = (int) Settings.ct_crosshairType;
-            if(i_languageIndex == -1) i_languageIndex = Array.IndexOf(Localization.GetLanguages(), Localization.Language.Name);
+            if(i_languageIndex == -1) i_languageIndex = Array.IndexOf(Localization.GetLanguages(), Localization.Language?.Name);
             if (i_themeIndex == -1) i_themeIndex = Array.IndexOf(Theme.GetThemes(), Theme.Name);
 
             GUILayout.BeginVertical(GUILayout.Width(f_leftWidth));
@@ -119,10 +120,7 @@ namespace LethalMenu.Menu.Tab
                 new UIButton("SettingsTab.SaveSettings", () => Settings.Config.SaveConfig()),
                 new UIButton("SettingsTab.ReloadSettings", () => Settings.Config.LoadConfig())
             );
-
-            UI.Actions(
-                new UIButton("SettingsTab.OpenSettings", () => Settings.Config.OpenConfig())
-            );
+            UI.Actions(new UIButton("SettingsTab.OpenSettings", () => Settings.Config.OpenConfig()));
 
             UI.Header("SettingsTab.General");
 
@@ -195,6 +193,7 @@ namespace LethalMenu.Menu.Tab
             UI.Checkbox("SettingsTab.SpikeRoofTrap", ref Settings.b_chamsSpikeRoofTrap);
             UI.Checkbox("SettingsTab.ItemDropShip", ref Settings.b_chamsItemDropship);
             UI.Checkbox("SettingsTab.Cruiser", ref Settings.b_chamsCruiser);
+            UI.Checkbox("SettingsTab.Entrance", ref Settings.b_chamsEntrance);
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
@@ -300,59 +299,62 @@ namespace LethalMenu.Menu.Tab
             );
 
             UI.Header("SettingsTab.ChamColors", true);
-            UI.Toggle("SettingsTab.UseSingleChamColor", ref Settings.b_UseSingleChamColor, "General.Enable", "General.Disable", (_) => SetColor(ref Settings.c_chams, s_chamsColor, true));
+            UI.Toggle("SettingsTab.UseSingleChamColor", ref Settings.b_UseSingleChamColor, "General.Enable", "General.Disable");
             UI.TextboxAction("SettingsTab.Chams", ref s_chamsColor, @"[^0-9A-Za-z]", 8,
-                new UIButton("General.Set", () => SetColor(ref Settings.c_chams, s_chamsColor, true))
+                new UIButton("General.Set", () => SetColor(ref Settings.c_chams, s_chamsColor))
             );
             if (!Settings.b_UseSingleChamColor)
             {
                 UI.TextboxAction("SettingsTab.ObjectsChams", ref s_objectChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_objectChams, s_objectChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_objectChams, s_objectChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.EnemiesChams", ref s_enemyChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_enemyChams, s_enemyChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_enemyChams, s_enemyChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.PlayersChams", ref s_playerChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_playerChams, s_playerChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_playerChams, s_playerChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.LandminesChams", ref s_landmineChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_landmineChams, s_landmineChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_landmineChams, s_landmineChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.TurretsChams", ref s_turretChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_turretChams, s_turretChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_turretChams, s_turretChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.ShipChams", ref s_shipChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_shipChams, s_shipChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_shipChams, s_shipChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.SteamValvesChams", ref s_valveChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_steamHazardChams, s_valveChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_steamHazardChams, s_valveChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.BigDoorsChams", ref s_bigDoorChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_bigDoorChams, s_bigDoorChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_bigDoorChams, s_bigDoorChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.LockedDoorsChams", ref s_doorLockChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_doorLockChams, s_doorLockChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_doorLockChams, s_doorLockChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.BreakerChams", ref s_doorLockChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_breakerChams, s_breakerChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_breakerChams, s_breakerChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.SpikeRoofTrapChams", ref s_bigDoorChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_spikeRoofTrapChams, s_spikeRoofTrapChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_spikeRoofTrapChams, s_spikeRoofTrapChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.EnemyVentChams", ref s_enemyVentChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_enemyVentChams, s_enemyVentChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_enemyVentChams, s_enemyVentChamsColor))
                 ); 
                 UI.TextboxAction("SettingsTab.MineshaftElevatorChams", ref s_mineshaftElevatorChamsColor, @"[^0-9A-Za-z]", 8,
                    new UIButton("General.Set", () => SetColor(ref Settings.c_mineshaftElevatorChams, s_mineshaftElevatorChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.VainShroudChams", ref s_vainShroudChamsColor, @"[^0-9A-Za-z]", 8,
-                   new UIButton("General.Set", () => SetColor(ref Settings.c_vainShroudChams, s_vainShroudChamsColor, true))
+                   new UIButton("General.Set", () => SetColor(ref Settings.c_vainShroudChams, s_vainShroudChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.CruiserChams", ref s_cruiserChamsColor, @"[^0-9A-Za-z]", 8,
-                   new UIButton("General.Set", () => SetColor(ref Settings.c_CruiserChams, s_cruiserChamsColor, true))
+                   new UIButton("General.Set", () => SetColor(ref Settings.c_CruiserChams, s_cruiserChamsColor))
                 );
                 UI.TextboxAction("SettingsTab.ItemDropShipChams", ref s_itemDropShipChamsColor, @"[^0-9A-Za-z]", 8,
-                    new UIButton("General.Set", () => SetColor(ref Settings.c_itemDropShipChams, s_itemDropShipChamsColor, true))
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_itemDropShipChams, s_itemDropShipChamsColor))
+                );
+                UI.TextboxAction("SettingsTab.EntranceChams", ref s_entranceChamsColor, @"[^0-9A-Za-z]", 8,
+                    new UIButton("General.Set", () => SetColor(ref Settings.c_entranceChams, s_entranceChamsColor))
                 );
             }
 
@@ -388,15 +390,15 @@ namespace LethalMenu.Menu.Tab
 
                 GUILayout.BeginHorizontal();
 
-                ButtonControl bind = hack.GetKeyBind();
-                string kb = hack.HasKeyBind() ? (bind is KeyControl keyBind ? keyBind.keyCode.ToString() : bind.displayName) : "None";
+                ButtonControl? bind = hack.GetKeyBind();
+                string? kb = hack.HasKeyBind() ? (bind is KeyControl keyBind ? keyBind.keyCode.ToString() : bind?.displayName) : "None";
 
                 GUILayout.Label(hack.ToString());
                 GUILayout.FlexibleSpace();
 
                 if (hack.HasKeyBind() && hack != Hack.OpenMenu && GUILayout.Button("-")) hack.RemoveKeyBind();
 
-                string btnText = hack.IsWaiting() ? "Waiting" : kb;
+                string? btnText = hack.IsWaiting() ? "Waiting" : kb;
                 if (GUILayout.Button(btnText, GUILayout.Width(85))) KBUtil.BeginChangeKeyBind(hack);
 
                 GUILayout.EndHorizontal();
@@ -405,12 +407,10 @@ namespace LethalMenu.Menu.Tab
             GUILayout.EndVertical();
         }
 
-        private void SetColor(ref RGBAColor color, string hexCode, bool chams = false)
+        private void SetColor(ref RGBAColor color, string hexCode)
         {
             while (hexCode.Length < 6) hexCode += "0";
             color = new RGBAColor(hexCode);
-            if (chams) ChamHandler.RefreshChams();
-            Settings.Config.SaveConfig();
         }
 
         private void EditTierColors()
@@ -459,6 +459,7 @@ namespace LethalMenu.Menu.Tab
             Settings.b_chamsItemDropship = !Settings.b_chamsItemDropship;
             Settings.b_chamsCruiser = !Settings.b_chamsCruiser;
             Settings.b_chamsVainShroud = !Settings.b_chamsVainShroud;
+            Settings.b_chamsEntrance = !Settings.b_chamsEntrance;
         }
     }
 }

@@ -45,8 +45,9 @@ namespace LethalMenu.Handler.EnemyControl
                 enemy.angryAtPlayer = null;
                 enemy.SetBehaviourState(BugState.IDLE);
             }
-            GrabbableObject item = enemy.FindNearbyItem(5);
-            if (item != null && item.TryGetComponent(out NetworkObject netitem)) GrabItemAndCallGrabRPC(enemy, netitem);
+            GrabbableObject? grabbableObject = enemy.FindNearbyItem(InteractRange(enemy));
+            if (grabbableObject is LungProp lung && lung.isLungDocked) lung.EquipItem();
+            if (grabbableObject != null && grabbableObject.TryGetComponent(out NetworkObject networkObject)) GrabItemAndCallGrabRPC(enemy, networkObject);
             else UseHeldItem(enemy);
         }
 
@@ -68,7 +69,7 @@ namespace LethalMenu.Handler.EnemyControl
 
         public string GetSecondarySkillName(HoarderBugAI enemy) => enemy.heldItem.itemGrabbableObject != null ? "" : "Drop Item";
 
-        public float InteractRange(HoarderBugAI _) => 1.5f;
+        public float InteractRange(HoarderBugAI _) => 5f;
 
         public bool CanUseEntranceDoors(HoarderBugAI _) => false;
 

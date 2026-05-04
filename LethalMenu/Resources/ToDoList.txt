@@ -1,0 +1,21 @@
+Planned
+Respawn after death
+
+Needs fixed
+Cham color doesn't update after changing it
+Chams don't get removed on unload
+Tabs are double after reinjecting
+Double entrances on unload
+Redo unloading and try to fully unload the menu
+look at player models rendering weird 
+Full rework of all controllers and controller system
+Full rework for spectate and mini cam
+Fix playeracions enabled on first join and no cursor
+
+Add
+> controllers
+BushWolf
+Stingray
+GiantKiwi
+Puma
+CadaverGrowths

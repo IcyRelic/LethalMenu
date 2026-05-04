@@ -13,15 +13,15 @@ namespace LethalMenu.Cheats
 
         //Spectate
         public static int spectatingPlayer = -1;
-        public static Camera camera = null;
-        public static AudioListener audioListener = null;
+        public static Camera? camera = null;
+        public static AudioListener? audioListener = null;
 
         //MiniCam
         public static int camPlayer = -1;
-        private static Camera minicam = null;
-        private static RawImage minicamDisplay = null;
+        private static Camera? minicam = null;
+        private static RawImage? minicamDisplay = null;
         private static Vector2 defaultTooltipPos = Vector2.zero;
-        private static RectTransform tooltips = null;
+        private static RectTransform? tooltips = null;
 
 
 
@@ -35,7 +35,7 @@ namespace LethalMenu.Cheats
             }
             catch (Exception e)
             {
-                Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
+                Settings.DebugMessage = ("Spectate Player Exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
@@ -43,7 +43,7 @@ namespace LethalMenu.Cheats
         {
             if(Hack.SpectatePlayer.IsEnabled())
             {
-                PlayerControllerB player = GetSpectatedPlayer();
+                PlayerControllerB? player = GetSpectatedPlayer();
                 if (player == null) return;
 
                 VisualUtil.DrawString(new Vector2(Screen.width / 2, 160f), "(Spectating: "+ player.playerUsername + ")", Settings.c_playerESP, true, true, false, true, 32);
@@ -51,10 +51,10 @@ namespace LethalMenu.Cheats
 
             if(Hack.MiniCam.IsEnabled())
             {
-                PlayerControllerB player = GetCamPlayer();
+                PlayerControllerB? player = GetCamPlayer();
                 if (player == null) return;
 
-                float x = minicamDisplay.rectTransform.localPosition.x + (minicamDisplay.rectTransform.sizeDelta.x/2);
+                float x = minicamDisplay?.rectTransform.localPosition.x + (minicamDisplay?.rectTransform.sizeDelta.x/2) ?? 0f;
                 VisualUtil.DrawString(new Vector2(Screen.width - (x / 2), 15f), player.playerUsername, Settings.c_playerESP, true, true, false, true, 16);
             }
         }
@@ -82,34 +82,32 @@ namespace LethalMenu.Cheats
 
         public static void StopSpectating()
         {
-            //Stop Spectating Player
-            if (!(bool)StartOfRound.Instance || (!Hack.SpectatePlayer.IsEnabled() && camera != null))
+            if (!Hack.SpectatePlayer.IsEnabled() && camera != null)
             {
                 PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
                 PlayerControllerB player = localPlayer.playersManager.allPlayerScripts[spectatingPlayer];
 
-                camera.enabled = false;
+                camera?.enabled = false;
                 CameraManager.GetBaseCamera().enabled = true;
                 CameraManager.ActiveCamera = !Hack.FreeCam.IsEnabled() ? CameraManager.GetBaseCamera() : Freecam.camera;
                 spectatingPlayer = -1;
-                Destroy(camera.gameObject);
+                Destroy(camera?.gameObject);
                 camera = null;
                 GameUtil.RenderPlayerModels();
                 audioListener = null;
                 if (LethalMenu.localPlayer != null && !LethalMenu.localPlayer.activeAudioListener.enabled) EnemyControl.ChangeAudioListener(null, true);
             }       
 
-            if (!(bool)StartOfRound.Instance || (!Hack.MiniCam.IsEnabled() && minicam != null))
+            if (!Hack.MiniCam.IsEnabled() && minicam != null)
             {
                 PlayerControllerB localPlayer = GameNetworkManager.Instance.localPlayerController;
                 PlayerControllerB player = localPlayer.playersManager.allPlayerScripts[camPlayer];
-
-                tooltips.anchoredPosition = defaultTooltipPos;
+                tooltips?.anchoredPosition = defaultTooltipPos;
                 tooltips = null;
                 camPlayer = -1;
-                minicamDisplay.transform.SetParent(null, false);
+                minicamDisplay?.transform.SetParent(null, false);
                 defaultTooltipPos = Vector2.zero;
-                Destroy(minicam.gameObject);
+                Destroy(minicam?.gameObject);
                 if (minicamDisplay != null) Destroy(minicamDisplay.gameObject);
                 minicam = null;
                 minicamDisplay = null;
@@ -192,7 +190,7 @@ namespace LethalMenu.Cheats
             return spectatingPlayer == (int) player.playerClientId && name == player.playerUsername;
         }
 
-        public static PlayerControllerB GetSpectatedPlayer()
+        public static PlayerControllerB? GetSpectatedPlayer()
         {
             if (spectatingPlayer == -1) return null;
 
@@ -208,13 +206,10 @@ namespace LethalMenu.Cheats
             return camPlayer == (int)player.playerClientId && name == player.playerUsername;
         }   
 
-        public static PlayerControllerB GetCamPlayer()
+        public static PlayerControllerB? GetCamPlayer()
         {
             if (camPlayer == -1) return null;
-
             return StartOfRound.Instance.allPlayerScripts[camPlayer];
         }
-
-
     }
 }

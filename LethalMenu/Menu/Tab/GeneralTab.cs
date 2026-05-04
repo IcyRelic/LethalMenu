@@ -5,8 +5,8 @@ namespace LethalMenu.Menu.Tab
 {
     internal class GeneralTab : MenuTab
     {
-        Vector2 scrollPos;
-        Texture2D avatar;
+        private Vector2 scrollPos;
+        private Texture2D? avatar;
 
         public GeneralTab() : base("GeneralTab.Title")
         {

@@ -12,11 +12,9 @@ namespace LethalMenu.Cheats
     {
         public static Dictionary<string, bool> Triggered = new Dictionary<string, bool>();
 
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.Interact))]
-        public static void Interact(InteractTrigger __instance, Transform playerTransform)
+        [HarmonyPatch(typeof(InteractTrigger), nameof(InteractTrigger.Interact)), HarmonyPostfix]
+        public static void Interact(InteractTrigger __instance)
         {
-            if (__instance == null || playerTransform == null) return;
             if (__instance.transform == null) return;
             Triggered[__instance.transform.name] = true;
             LethalMenu.Instance.StartCoroutine(WaitForTriggerFinish(__instance, __instance.animationWaitTime));
@@ -28,12 +26,12 @@ namespace LethalMenu.Cheats
             Triggered[__instance.transform.name] = false;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(StartOfRound), "SetShipDoorsOverheatClientRpc")]
+        [HarmonyPatch(typeof(StartOfRound), "SetShipDoorsOverheatClientRpc"), HarmonyPrefix]
         public static bool SetShipDoorsOverheatClientRpc(StartOfRound __instance)
         {
-            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost()) return false;
-            else if (Hack.NoShipDoorClose.IsEnabled() && !LethalMenu.localPlayer.IsHost())
+            bool host = LethalMenu.localPlayer != null && LethalMenu.localPlayer.IsHost();
+            if (Hack.NoShipDoorClose.IsEnabled() && host) return false;
+            else if (Hack.NoShipDoorClose.IsEnabled() && !host)
             {
                 HUDManager.Instance.DisplayTip("Lethal Menu", "This is host only :C");
                 return true;
@@ -41,14 +39,13 @@ namespace LethalMenu.Cheats
             return true;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(HangarShipDoor), "PlayDoorAnimation")]
+        [HarmonyPatch(typeof(HangarShipDoor), "PlayDoorAnimation"), HarmonyPrefix]
         public static bool PlayDoorAnimation(bool closed)
         {
             InteractTrigger trigger = LethalMenu.interactTriggers.FirstOrDefault(i => i != null && i.transform.parent != null && i.transform.parent.name == "StartButton");
             if (trigger == null || LethalMenu.shipDoor == null) return false;
             if (LethalMenu.localPlayer && Triggered.TryGetValue(trigger.transform.name, out bool isTriggered) && isTriggered) return true;
-            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer.IsHost()) return false;
+            if (Hack.NoShipDoorClose.IsEnabled() && LethalMenu.localPlayer != null && LethalMenu.localPlayer.IsHost()) return false;
             return true;
         }
     }

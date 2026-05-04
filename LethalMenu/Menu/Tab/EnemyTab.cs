@@ -150,11 +150,17 @@ namespace LethalMenu.Menu.Tab
 
             UI.Button("EnemyTab.KillEnemy", () => enemy.Handle().Kill());
             UI.Button("EnemyTab.StunEnemy", () => enemy.Handle().Stun());
-            UI.Button("EnemyTab.TargetSelectedPlayer", () => enemy.Handle().TargetPlayer(selectedPlayer));
+            UI.Button("EnemyTab.TargetSelectedPlayer", () => 
+            {
+                if (selectedPlayer != null) enemy.Handle().TargetPlayer(selectedPlayer);
+            });
             
-            if(enemy.Handle().HasInstaKill()) UI.Button("EnemyTab.KillSelectedPlayer", () => enemy.Handle().KillPlayer(selectedPlayer));
+            if (enemy.Handle().HasInstaKill()) UI.Button("EnemyTab.KillSelectedPlayer", () =>
+            {
+                if (selectedPlayer != null) enemy.Handle().KillPlayer(selectedPlayer);
+            });
 
-            UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayer", selectedPlayer, enemy);
+            UI.Hack(Hack.TeleportEnemy, "EnemyTab.TeleportSelectedPlayer", selectedPlayer!, enemy);
             UI.Hack(Hack.EnemyControl, "EnemyTab.ControlEnemy", enemy);
         }
 

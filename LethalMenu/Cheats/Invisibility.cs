@@ -1,4 +1,5 @@
-﻿using LethalMenu.Util;
+﻿using GameNetcodeStuff;
+using LethalMenu.Util;
 using UnityEngine;
 
 namespace LethalMenu.Cheats
@@ -8,12 +9,10 @@ namespace LethalMenu.Cheats
 
         public override void Update()
         {
-            if (LethalMenu.localPlayer == null || !Hack.Invisibility.IsEnabled()) return;
-
-            Vector3 pos = StartOfRound.Instance.shipHasLanded ? StartOfRound.Instance.notSpawnedPosition.position : Vector3.zero;
-
-            LethalMenu.localPlayer.Reflect().Invoke("UpdatePlayerPositionServerRpc", pos, true, false, false, true);
+            PlayerControllerB? localPlayer = LethalMenu.localPlayer;
+            if (!Hack.Invisibility.IsEnabled() || localPlayer == null) return;
+            Vector3 position = StartOfRound.Instance.shipHasLanded ? StartOfRound.Instance.notSpawnedPosition.position : Vector3.zero;
+            LethalMenu.localPlayer.Reflect().Invoke("UpdatePlayerPositionRpc", position, localPlayer.isInElevator, localPlayer.isInHangarShipRoom, localPlayer.isExhausted, localPlayer.thisController.isGrounded);
         }
-
     }
 }

@@ -9,21 +9,18 @@ namespace LethalMenu.Cheats
     internal class Freecam : Cheat
     {
         //FreeCam
-        public static Camera camera = null;
-        private static Light light = null;
-        public static MouseInput mouse = null;
-        public static KBInput movement = null;
-        public static AudioListener audioListener = null;
-        public static bool isStatic = false;
+        public static Camera? camera = null;
+        private static Light? light = null;
+        public static MouseInput? mouse = null;
+        public static KBInput? movement = null;
+        public static AudioListener? audioListener = null;
 
         public override void Update()
         {
             try
             {
                 Stop();
-
                 if (!Hack.FreeCam.IsEnabled()) return;
-                isStatic = Hack.EnemyControl.IsEnabled();
                 if (LethalMenu.localPlayer != null)
                 {
                     LethalMenu.localPlayer.enabled = false;
@@ -36,14 +33,11 @@ namespace LethalMenu.Cheats
                     light.range = Settings.f_nvRange;
                 }
                 GameUtil.RenderPlayerModels();
-                if (!isStatic && camera != null && movement != null && mouse != null)
-                {
-                    camera.transform.SetPositionAndRotation(movement.transform.position, mouse.transform.rotation);
-                }
+                if (!Hack.EnemyControl.IsEnabled() && camera != null && movement != null && mouse != null) camera.transform.SetPositionAndRotation(movement.transform.position, mouse.transform.rotation);
             }
             catch (Exception e)
             {
-                Settings.debugMessage = (e.Message + "\n" + e.StackTrace);
+                Settings.DebugMessage = ("FreeCam Exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
@@ -57,7 +51,7 @@ namespace LethalMenu.Cheats
                 movement = camera.gameObject.AddComponent<KBInput>();
                 audioListener = camera.gameObject.AddComponent<AudioListener>();
                 light = GameObjectUtil.CreateLight();
-                light.transform.SetParent(camera.transform, false);
+                light?.transform.SetParent(camera.transform, false);
                 CameraManager.GetBaseCamera().enabled = false;
                 CameraManager.ActiveCamera = camera;
                 EnemyControl.ChangeAudioListener(audioListener);
@@ -80,7 +74,7 @@ namespace LethalMenu.Cheats
                 if (baseCamera != null)
                 {
                     CameraManager.ActiveCamera = SpectatePlayer.spectatingPlayer == -1 ? baseCamera : SpectatePlayer.camera;
-                    CameraManager.ActiveCamera.enabled = true;
+                    CameraManager.ActiveCamera?.enabled = true;
                 }
 
                 if (LethalMenu.localPlayer != null)

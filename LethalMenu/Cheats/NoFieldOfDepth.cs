@@ -9,11 +9,7 @@ namespace LethalMenu.Cheats
         [HarmonyPatch(typeof(DepthOfField), "IsActive"), HarmonyPrefix]
         public static bool IsActive(DepthOfField __instance)
         {
-            if (Hack.NoFieldOfDepth.IsEnabled())
-            {
-                return false;
-            }
-            return true;
+            return !Hack.NoFieldOfDepth.IsEnabled();
         }
     }
 }

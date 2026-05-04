@@ -1,62 +1,58 @@
 using HarmonyLib;
+using LethalMenu.Util;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class BuildAnywhere : Cheat
     {
-        [HarmonyPatch(typeof(ShipBuildModeManager), "PlayerMeetsConditionsToBuild")]
-        public static class PlayerMeetsConditionsToBuildPatch
+        [HarmonyPatch(typeof(ShipBuildModeManager), "PlayerMeetsConditionsToBuild"), HarmonyPrefix]
+        public static bool PlayerMeetsConditionsToBuild(ref bool __result)
         {
-            [HarmonyPrefix]
-            public static bool Prefix(ShipBuildModeManager __instance, ref bool __result)
+            if (Hack.BuildAnywhere.IsEnabled())
             {
-                if (Hack.BuildAnywhere.IsEnabled())
-                {
-                    __result = true;
-                    return false;
-                }
-                return true;
+                __result = true;
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(ShipBuildModeManager), "EnterBuildMode")]
+        [HarmonyPatch(typeof(ShipBuildModeManager), "ConfirmBuildMode_performed")]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> EnterBuildModeConfirmBuildMode_performed(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo fieldInfo && fieldInfo.Name == "CanConfirmPosition") yield return CodeInstruction.Call(typeof(BuildAnywhere), nameof(newCanConfirmPosition));
+                else yield return instruction;
             }
         }
 
-        [HarmonyPatch(typeof(ShipBuildModeManager), ("Update"))]
-        public static class ShipBuildModeManagerPatch
+        private static bool newCanConfirmPosition(ShipBuildModeManager shipBuildModeManager)
         {
-            [HarmonyPostfix]
-            public static void Postfix(ref bool ___CanConfirmPosition, ref PlaceableShipObject ___placingObject, ref bool ___InBuildMode)
+            return Hack.BuildAnywhere.IsEnabled() ? true : shipBuildModeManager.Reflect().GetValue<bool>("CanConfirmPosition");
+        }
+
+        [HarmonyPatch(typeof(ShipBuildModeManager), "Update"), HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> Update(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (CodeInstruction instruction in instructions)
             {
-                if (Hack.BuildAnywhere.IsEnabled() && ___InBuildMode)
-                {
-                    ___CanConfirmPosition = true;
-                    ___placingObject.AllowPlacementOnWalls = true;
-                    ___placingObject.AllowPlacementOnCounters = true;
-                }
+                if (instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo fieldInfo && fieldInfo.Name == "AllowPlacementOnWalls") yield return CodeInstruction.Call(typeof(BuildAnywhere), nameof(newAllowPlacementOnWalls));
+                else yield return instruction;
             }
         }
 
-        [HarmonyPatch(typeof(ShipBuildModeManager), "PlaceShipObject")]
-        public static class PlaceShipObjectPatch
+        private static bool newAllowPlacementOnWalls(PlaceableShipObject placeableShipObject)
         {
-            [HarmonyPostfix]
-            public static void Postfix(ref Vector3 placementPosition, ref Vector3 placementRotation, ref PlaceableShipObject placeableObject)
-            {
-                if (Hack.BuildAnywhere.IsEnabled())
-                {
-                    placeableObject.transform.position = placementPosition;
-                    placeableObject.transform.rotation = Quaternion.Euler(placementRotation);
-                    StartOfRound.Instance.suckingFurnitureOutOfShip = false;
-                    StartOfRound.Instance.unlockablesList.unlockables[placeableObject.unlockableID].placedPosition = placementPosition;
-                    StartOfRound.Instance.unlockablesList.unlockables[placeableObject.unlockableID].placedRotation = placementRotation;
-                    StartOfRound.Instance.unlockablesList.unlockables[placeableObject.unlockableID].hasBeenMoved = true;
-                    if (placeableObject.parentObjectSecondary != null)
-                    {
-                        Quaternion quaternion = Quaternion.Euler(placementRotation) * Quaternion.Inverse(placeableObject.mainMesh.transform.rotation);
-                        placeableObject.parentObjectSecondary.transform.rotation = quaternion * placeableObject.parentObjectSecondary.transform.rotation;
-                        placeableObject.parentObjectSecondary.position = placementPosition + (placeableObject.parentObjectSecondary.transform.position - placeableObject.mainMesh.transform.position) + (placeableObject.mainMesh.transform.position - placeableObject.placeObjectCollider.transform.position);
-                    }
-                }
-            }
+            return Hack.BuildAnywhere.IsEnabled() ? true : placeableShipObject.AllowPlacementOnWalls;
         }
+
+        // fix red
     }
 }

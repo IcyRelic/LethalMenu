@@ -7,8 +7,7 @@ namespace LethalMenu.Cheats
     [HarmonyPatch]
     internal class FullRenderResolution : Cheat
     {
-        [HarmonyPostfix]
-        [HarmonyPatch(typeof(PlayerControllerB), "Start")]
+        [HarmonyPatch(typeof(PlayerControllerB), "Start"), HarmonyPostfix]
         public static void Start(PlayerControllerB __instance)
         {
             __instance.gameplayCamera.targetTexture.width = Hack.FullRenderResolution.IsEnabled() ? Screen.width : 860;

@@ -5,8 +5,8 @@ namespace LethalMenu.Cheats
 {
     internal class HPDisplay : Cheat
     {
-        private static TextMeshProUGUI HPText = null;
-        private static GameObject text = null; 
+        private TextMeshProUGUI? HPText = null;
+        private GameObject? text = null; 
 
         public override void Update()
         {

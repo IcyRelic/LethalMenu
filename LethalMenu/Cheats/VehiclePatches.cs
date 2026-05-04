@@ -2,34 +2,19 @@ using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class VehiclePatches
     {
-        [HarmonyPatch(typeof(VehicleController), "DealPermanentDamage")]
-        public static class DealPermanentDamagePatch
+        [HarmonyPatch(typeof(VehicleController), "DealPermanentDamage"), HarmonyPrefix]
+        public static bool DealPermanentDamage()
         {
-            [HarmonyPrefix]
-            public static bool Prefix()
-            {
-                if (Hack.VehicleGodMode.IsEnabled())
-                {
-                    return false;
-                }
-                return true;
-            }
+            return !Hack.VehicleGodMode.IsEnabled();
         }
 
-        [HarmonyPatch(typeof(VehicleController), "ReactToDamage")]
-        public static class ReactToDamagePatch
+        [HarmonyPatch(typeof(VehicleController), "ReactToDamage"), HarmonyPrefix]
+        public static bool ReactToDamage()
         {
-            [HarmonyPrefix]
-            public static bool Prefix()
-            {
-                if (Hack.VehicleGodMode.IsEnabled())
-                {
-                    return false;
-                }
-                return true;
-            }
+            return !Hack.VehicleGodMode.IsEnabled();
         }
     }
 }

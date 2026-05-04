@@ -36,8 +36,9 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.GodMode, "SelfTab.GodMode");
             UI.Hack(Hack.GhostMode, "SelfTab.GhostMode");
             UI.HackSlider(Hack.SuperJump, "SelfTab.SuperJump", Settings.f_jumpForce.ToString("0.0"), ref Settings.f_jumpForce, Settings.f_defaultJumpForce, Settings.f_defaultJumpForce + 200);
-            UI.HackSlider(Hack.FastClimb, "SelfTab.FastClimb", Settings.f_climbSpeed.ToString("0.0"), ref Settings.f_climbSpeed, Settings.f_defaultClimbSpeed, Settings.f_defaultClimbSpeed + 20);
-            UI.HackSlider(Hack.SuperSpeed, "SelfTab.SuperSpeed", Settings.f_movementSpeed.ToString("0.0"), ref Settings.f_movementSpeed, Settings.f_defaultMovementSpeed, Settings.f_defaultMovementSpeed + 20);
+            UI.HackSlider(Hack.SuperJump, "SelfTab.SuperJump", Settings.f_jumpForce.ToString("0.0"), ref Settings.f_jumpForce, 0f, 100f);
+            UI.HackSlider(Hack.FastClimb, "SelfTab.FastClimb", Settings.f_climbSpeed.ToString("0.0"), ref Settings.f_climbSpeed, 0f, 100f);
+            UI.HackSlider(Hack.SuperSpeed, "SelfTab.SuperSpeed", Settings.f_movementSpeed.ToString("0.0"), ref Settings.f_movementSpeed, 0f, 100f);
             UI.HackSlider(Hack.NoClip, "SelfTab.NoClip", Settings.f_noclipSpeed.ToString("0.0"), ref Settings.f_noclipSpeed, 10f, 30f);
             UI.HackSlider(Hack.ItemSlots, ["SelfTab.ItemSlots", "General.RejoinRequired"], Settings.f_slots.ToString("0.0"), ref Settings.f_slots, 1f, 20f);
             UI.Hack(Hack.ClickTeleport, "SelfTab.ClickTeleport");
@@ -95,6 +96,7 @@ namespace LethalMenu.Menu.Tab
             UI.Hack(Hack.FullRenderResolution, "SelfTab.FullRenderResolution");
             UI.Hack(Hack.GrabNutcrackerShotgun, "SelfTab.GrabNutcrackerShotgun");
             UI.Hack(Hack.MinigunShotgun, "SelfTab.MinigunShotgun");
+            UI.Hack(Hack.BHop, "SelfTab.BHop");
 
             GUILayout.EndScrollView();
         }

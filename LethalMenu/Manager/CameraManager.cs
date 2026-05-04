@@ -6,8 +6,8 @@ namespace LethalMenu.Manager
 {
     public class CameraManager
     {
-        private static Camera _camera = null;
-        public static Camera ActiveCamera
+        private static Camera? _camera = null;
+        public static Camera? ActiveCamera
         {
             get
             {
@@ -29,7 +29,7 @@ namespace LethalMenu.Manager
 
         public static bool UsingBaseCamera()
         {
-            return _camera.GetInstanceID() == LethalMenu.localPlayer?.gameplayCamera.GetInstanceID() || _camera.GetInstanceID() == StartOfRound.Instance.spectateCamera.GetInstanceID();
+            return _camera?.GetInstanceID() == LethalMenu.localPlayer?.gameplayCamera.GetInstanceID() || _camera?.GetInstanceID() == StartOfRound.Instance.spectateCamera.GetInstanceID();
         }     
     }
 }

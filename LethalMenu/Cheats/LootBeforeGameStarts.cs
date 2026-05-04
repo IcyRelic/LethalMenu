@@ -1,33 +1,29 @@
 ﻿using GameNetcodeStuff;
 using HarmonyLib;
-using LethalMenu.Util;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace LethalMenu.Cheats
 {
     [HarmonyPatch]
-    public class LootBeforeGameStarts
+    public class LootBeforeGameStarts : Cheat
     {
-        private static Dictionary<GrabbableObject, bool> ModifiedItems = new Dictionary<GrabbableObject, bool>();
-
-        [HarmonyPatch(typeof(PlayerControllerB), "BeginGrabObject"), HarmonyPrefix]
-        public static void BeginGrabObject(PlayerControllerB __instance)
+        [HarmonyPatch(typeof(PlayerControllerB), "SetHoverTipAndCurrentInteractTrigger")]
+        [HarmonyPatch(typeof(PlayerControllerB), "BeginGrabObject")]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SetHoverTipAndCurrentInteractTriggerBeginGrabObject(IEnumerable<CodeInstruction> instructions)
         {
-            if (!Hack.LootBeforeGameStarts.IsEnabled()) return;
-            GrabbableObject grabbableObject = __instance.Reflect().GetValue<GrabbableObject>("currentlyGrabbingObject");
-            if (grabbableObject == null || grabbableObject.itemProperties == null || grabbableObject.itemProperties.canBeGrabbedBeforeGameStart || GameNetworkManager.Instance.gameHasStarted) return;
-            ModifiedItems.Add(grabbableObject, grabbableObject.itemProperties.canBeGrabbedBeforeGameStart);
-            grabbableObject.itemProperties.canBeGrabbedBeforeGameStart = true;
+            foreach (CodeInstruction instruction in instructions)
+            {
+                if (instruction.opcode == OpCodes.Ldfld && instruction.operand is FieldInfo fieldInfo && fieldInfo.Name == "canBeGrabbedBeforeGameStart") yield return CodeInstruction.Call(typeof(LootBeforeGameStarts), nameof(newCanBeGrabbedBeforeGameStart));
+                else yield return instruction;
+            }
         }
 
-        [HarmonyPatch(typeof(PlayerControllerB), "DiscardHeldObject"), HarmonyPrefix]
-        public static void DiscardHeldObject(PlayerControllerB __instance)
+        private static bool newCanBeGrabbedBeforeGameStart(Item item)
         {
-            if (ModifiedItems.ContainsKey(__instance.currentlyHeldObjectServer))
-            {
-                if (ModifiedItems.TryGetValue(__instance.currentlyHeldObjectServer, out var value)) __instance.currentlyHeldObjectServer.itemProperties.canBeGrabbedBeforeGameStart = value;
-                ModifiedItems.Remove(__instance.currentlyHeldObjectServer);  
-            }
+            return Hack.LootBeforeGameStarts.IsEnabled() ? true : item.canBeGrabbedBeforeGameStart;
         }
     }
 }

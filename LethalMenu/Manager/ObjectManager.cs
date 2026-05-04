@@ -5,7 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Rendering;
@@ -94,7 +93,7 @@ namespace LethalMenu.Manager
         [HarmonyPatch(typeof(TerminalAccessibleObject), nameof(TerminalAccessibleObject.OnDestroy)), HarmonyPostfix]
         private static void OnDestroy(TerminalAccessibleObject __instance) => AddToObjectQueue(() => LethalMenu.allTerminalObjects.Remove(__instance));
         [HarmonyPatch(typeof(MoldSpreadManager), nameof(MoldSpreadManager.RemoveAllMold)), HarmonyPostfix]
-        private static void RemoveAllMold(MoldSpreadManager __instance) => AddToObjectQueue(() => LethalMenu.vainShrouds = default);
+        private static void RemoveAllMold(MoldSpreadManager __instance) => AddToObjectQueue(() => LethalMenu.vainShrouds = null!);
         [HarmonyPatch(typeof(NetworkBehaviour), nameof(NetworkBehaviour.OnDestroy)), HarmonyPostfix]
         private static void OnDestroy(NetworkBehaviour __instance)
         {
@@ -110,11 +109,11 @@ namespace LethalMenu.Manager
             if (__instance is EnemyVent EnemyVent) AddToObjectQueue(() => LethalMenu.enemyVents.Remove(EnemyVent));
             if (__instance is ShipTeleporter ShipTeleporter) AddToObjectQueue(() => LethalMenu.teleporters.Remove(ShipTeleporter));
             if (__instance is DoorLock DoorLock) AddToObjectQueue(() => LethalMenu.doorLocks.Remove(DoorLock));
-            if (__instance is BreakerBox BreakerBox) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.breaker = default));
-            if (__instance is Terminal Terminal) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.terminal = default));
-            if (__instance is ItemDropship ItemDropship) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.itemDropship = default));
-            if (__instance is MineshaftElevatorController MineshaftElevatorController) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.mineshaftElevator = default));
-            if (__instance is DepositItemsDesk DepositItemsDesk) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.depositItemsDesk = default));
+            if (__instance is BreakerBox BreakerBox) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.breaker = null!));
+            if (__instance is Terminal Terminal) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.terminal = null!));
+            if (__instance is ItemDropship ItemDropship) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.itemDropship = null!));
+            if (__instance is MineshaftElevatorController MineshaftElevatorController) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.mineshaftElevator = null!));
+            if (__instance is DepositItemsDesk DepositItemsDesk) AddToObjectQueue(() => AddToObjectQueue(() => LethalMenu.depositItemsDesk = null!));
         }
 
         public static void CollectObjects()
@@ -129,7 +128,7 @@ namespace LethalMenu.Manager
             CollectObjects(LethalMenu.allTerminalObjects);
             CollectObjects(LethalMenu.teleporters);
             CollectObjects(LethalMenu.interactTriggers);
-            CollectObjects(LethalMenu.bigDoors, obj => obj.isBigDoor);
+            CollectObjects(LethalMenu.bigDoors, o => o.isBigDoor);
             CollectObjects(LethalMenu.doorLocks);
             CollectObjects(LethalMenu.spikeRoofTraps);
             CollectObjects(LethalMenu.animatedTriggers);
@@ -137,18 +136,18 @@ namespace LethalMenu.Manager
             CollectObjects(LethalMenu.enemyVents);
             CollectObjects(LethalMenu.fogs);
             CollectObjects(LethalMenu.volumes);
-            LethalMenu.localPlayer = GameNetworkManager.Instance?.localPlayerController;
+            LethalMenu.localPlayer = GameNetworkManager.Instance?.localPlayerController!;
             LethalMenu.itemDropship = Object.FindAnyObjectByType<ItemDropship>();
             LethalMenu.breaker = Object.FindAnyObjectByType<BreakerBox>();
             LethalMenu.shipDoor = Object.FindAnyObjectByType<HangarShipDoor>();
             LethalMenu.mineshaftElevator = Object.FindAnyObjectByType<MineshaftElevatorController>();
-            LethalMenu.vainShrouds = Object.FindAnyObjectByType<MoldSpreadManager>()?.generatedMold;
+            LethalMenu.vainShrouds = Object.FindAnyObjectByType<MoldSpreadManager>()?.generatedMold!;
             LethalMenu.quickMenuManager = Object.FindAnyObjectByType<QuickMenuManager>();
             LethalMenu.terminal = Object.FindAnyObjectByType<Terminal>();
             LethalMenu.depositItemsDesk = Object.FindAnyObjectByType<DepositItemsDesk>();
         }
 
-        private static void CollectObjects<T>(List<T> list, Func<T, bool> filter = null) where T : MonoBehaviour
+        private static void CollectObjects<T>(List<T> list, Func<T, bool>? filter = null) where T : MonoBehaviour
         {
             list.AddRange(filter == null ? Object.FindObjectsOfType<T>() : Object.FindObjectsOfType<T>().Where(filter));
         }
@@ -173,14 +172,14 @@ namespace LethalMenu.Manager
             LethalMenu.vainShrouds?.Clear();
             LethalMenu.vehicles?.Clear();
             LethalMenu.fogs?.Clear();
-            LethalMenu.shipDoor = null;
-            LethalMenu.breaker = null;
-            LethalMenu.mineshaftElevator = null;
-            LethalMenu.itemDropship = null;
-            LethalMenu.localPlayer = null;
-            LethalMenu.quickMenuManager = null;
-            LethalMenu.terminal = null;
-            LethalMenu.depositItemsDesk = null;
+            LethalMenu.shipDoor = null!;
+            LethalMenu.breaker = null!;
+            LethalMenu.mineshaftElevator = null!;
+            LethalMenu.itemDropship = null!;
+            LethalMenu.localPlayer = null!;
+            LethalMenu.quickMenuManager = null!;
+            LethalMenu.terminal = null!;
+            LethalMenu.depositItemsDesk = null!;
         }
 
         public static void AddToImportantObjectQueue(Action action)

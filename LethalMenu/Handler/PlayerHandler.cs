@@ -55,7 +55,7 @@ namespace LethalMenu.Handler
 
         public void Heal()
         {
-            if (LethalMenu.localPlayer.IsHost()) player.DamagePlayerServerRpc(0, 100);
+            if (LethalMenu.localPlayer != null && LethalMenu.localPlayer.IsHost()) player.DamagePlayerServerRpc(0, 100);
             else player.DamagePlayerFromOtherClientServerRpc(-100, new Vector3(0f, 0f, 0f), -1);
         }
 
@@ -66,7 +66,7 @@ namespace LethalMenu.Handler
 
         public void SpawnSpiderWebs(int count = 1)
         {
-            SandSpiderAI spider = Object.FindObjectOfType(typeof(SandSpiderAI)) as SandSpiderAI;
+            SandSpiderAI? spider = Object.FindObjectOfType(typeof(SandSpiderAI)) as SandSpiderAI;
             if (spider == null) return;
             for (int i = 0; i < count; i++) spider.SpawnWeb(player.transform.position);
         }
@@ -120,7 +120,7 @@ namespace LethalMenu.Handler
 
         public static bool IsHost(this PlayerControllerB player)
         {
-            return player != null && player.IsHost || player.actualClientId == 0;
+            return player != null && (player.IsHost || player.actualClientId == 0);
         }
     }
 }

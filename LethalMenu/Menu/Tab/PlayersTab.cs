@@ -87,8 +87,7 @@ namespace LethalMenu.Menu.Tab
             if (player.isPlayerDead && player.deadBody != null)
                 name = $"{Settings.c_deadPlayer.AsString("PlayerTab.DeadPrefix")} {name} ({Settings.c_causeOfDeath.AsString(player.deadBody.causeOfDeath.ToString())})";
 
-            JetpackItem jetpackItem = null;
-            if (player.currentlyHeldObjectServer is JetpackItem heldJetpack) jetpackItem = heldJetpack;
+            JetpackItem? jetpackItem = player.currentlyHeldObjectServer as JetpackItem;
 
             UI.Header(name);
             UI.Header("PlayerTab.PlayerInfo");
@@ -119,7 +118,7 @@ namespace LethalMenu.Menu.Tab
             }
             UI.Hack(Hack.KillPlayer, "PlayerTab.Kill", player);
             UI.Hack(Hack.HealPlayer, "PlayerTab.Heal", player);
-            UI.Hack(Hack.ExplodeJetpack, "PlayerTab.ExplodeJetpack", jetpackItem);
+            UI.Hack(Hack.ExplodeJetpack, "PlayerTab.ExplodeJetpack", jetpackItem!);
             UI.Hack(Hack.LightningStrikePlayer, ["PlayerTab.Strike", "General.HostStormyTag"], player);
             UI.Hack(Hack.SpiderWebPlayer, "PlayerTab.SpiderWeb", player);
             UI.Hack(Hack.TeleportAllEnemies, "PlayerTab.TeleportAllEnemies", player, LethalMenu.enemies.ToArray());

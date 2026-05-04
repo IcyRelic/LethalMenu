@@ -1,4 +1,7 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace LethalMenu.Cheats
@@ -6,26 +9,19 @@ namespace LethalMenu.Cheats
     [HarmonyPatch]
     internal class LootThroughWallsBeltBag
     {
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(BeltBagItem), "ItemInteractLeftRight")]
-        public static bool ItemInteractLeftRight(BeltBagItem __instance, bool right)
+        [HarmonyPatch(typeof(BeltBagItem), "ItemInteractLeftRight"), HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ItemInteractLeftRight(IEnumerable<CodeInstruction> instructions)
         {
-            if (__instance.playerHeldBy == null || __instance.tryingAddToBag || __instance.objectsInBag.Count >= 15 || right) return true;
-            float grabDistance = Hack.LootThroughWallsBeltBag.IsEnabled() ? float.MaxValue : 4f;
-            LayerMask mask = Hack.LootThroughWallsBeltBag.IsEnabled() ? LayerMask.GetMask("Props") : (LayerMask)1073742144;
-            if (Physics.Raycast(__instance.playerHeldBy.gameplayCamera.transform.position, __instance.playerHeldBy.gameplayCamera.transform.forward, out var hit, grabDistance, mask.value, QueryTriggerInteraction.Ignore))
+            foreach (CodeInstruction instruction in instructions)
             {
-                GrabbableObject item = hit.collider.gameObject.GetComponent<GrabbableObject>();
-                if (item != null && !item.isHeld && !item.isHeldByEnemy)
-                {
-                    if (Hack.LootAnyItemBeltBag.IsEnabled() || (!item.itemProperties.isScrap && item.itemProperties.itemId != 123984 && item.itemProperties.itemId != 819501))
-                    {
-                        if (Hack.LootAnyItemBeltBag.IsEnabled() && item is LungProp lung && lung.isLungDocked) lung.EquipItem();
-                        __instance.TryAddObjectToBag(item);
-                    }
-                }
+                if (instruction.opcode == OpCodes.Ldc_I4 && instruction.operand is int value && value == 1073742144) yield return CodeInstruction.Call(typeof(LootThroughWallsBeltBag), nameof(newLayerMask));
+                else yield return instruction;
             }
-            return false;
+        }
+
+        private static int newLayerMask()
+        {
+            return Hack.LootThroughWallsBeltBag.IsEnabled() ? LayerMask.GetMask("Props") : 1073742144;
         }
     }
 }

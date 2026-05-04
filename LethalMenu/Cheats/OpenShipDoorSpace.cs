@@ -1,41 +1,20 @@
 using HarmonyLib;
-using LethalMenu;
-using UnityEngine;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class OpenShipDoorSpace : Cheat
     {
-        [HarmonyPatch(typeof(HangarShipDoor), "Update")]
-        public class HangarShipDoorUpdatePatch
+        [HarmonyPatch(typeof(HangarShipDoor), "SetDoorButtonsEnabled"), HarmonyPrefix]
+        public static void SetDoorButtonsEnabled(HangarShipDoor __instance, ref bool doorButtonsEnabled)
         {
-            [HarmonyPrefix]
-            public static bool Prefix(HangarShipDoor __instance)
-            {
-                if (Hack.OpenShipDoorSpace.IsEnabled() && !__instance.buttonsEnabled && StartOfRound.Instance.inShipPhase)
-                {
-                    __instance.SetDoorButtonsEnabled(true);
-                }
-                else if (!Hack.OpenShipDoorSpace.IsEnabled() && __instance.buttonsEnabled && StartOfRound.Instance.inShipPhase)
-                {
-                    __instance.SetDoorButtonsEnabled(false);
-                }
-                return true;
-            }
+            if (StartOfRound.Instance.inShipPhase) doorButtonsEnabled = Hack.OpenShipDoorSpace.IsEnabled();
         }
 
-        [HarmonyPatch(typeof(StartOfRound), "TeleportPlayerInShipIfOutOfRoomBounds")]
-        public class StartOfRoundTeleportPlayerInShipIfOutOfRoomBoundsPatch
+        [HarmonyPatch(typeof(StartOfRound), "TeleportPlayerInShipIfOutOfRoomBounds"), HarmonyPrefix]
+        public static bool TeleportPlayerInShipIfOutOfRoomBounds(StartOfRound __instance)
         {
-            [HarmonyPrefix]
-            public static bool Prefix(StartOfRound __instance)
-            {
-                if (Hack.OpenShipDoorSpace.IsEnabled())
-                {
-                    return false;
-                }
-                return true;
-            }
+            return !Hack.OpenShipDoorSpace.IsEnabled();
         }
     }
 }

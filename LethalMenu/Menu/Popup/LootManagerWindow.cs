@@ -1,6 +1,8 @@
+using GameNetcodeStuff;
 using LethalMenu.Manager;
 using LethalMenu.Menu.Core;
 using LethalMenu.Util;
+using Steamworks.Ugc;
 using System.Linq;
 using UnityEngine;
 
@@ -23,7 +25,7 @@ namespace LethalMenu.Menu.Popup
             GUILayout.EndHorizontal();
             GUILayout.Space(20);
 
-            UI.ButtonGrid(LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed).GroupBy(i => i.itemProperties.itemName).Select(g => g.First()).ToList(), (i) => $"{i.itemProperties.itemName} {LethalMenu.items.Count(ii => ii.itemProperties.itemName == i.itemProperties.itemName)}x", s_search, TeleportItem, 3);
+            UI.ButtonGrid(LethalMenu.items.Where(i => i != null && !i.isHeld && !i.isPocketed && (Settings.b_ShowShipItems || !i.isInShipRoom)).GroupBy(i => i.itemProperties.itemName).Select(g => g.First()).ToList(), (i) => $"{i.itemProperties.itemName} {LethalMenu.items.Count(ii => ii.itemProperties.itemName == i.itemProperties.itemName)}x", s_search, TeleportItem, 3);
 
             GUILayout.EndScrollView();
             GUI.DragWindow();
@@ -31,9 +33,17 @@ namespace LethalMenu.Menu.Popup
 
         private void TeleportItem(GrabbableObject grabbableObject)
         {
-            if (CameraManager.ActiveCamera == null || HUDManager.Instance == null || StartOfRound.Instance == null) return;
-            Vector3 position = grabbableObject.GetItemFloorPosition(CameraManager.ActiveCamera.transform.position);
-            grabbableObject.targetFloorPosition = !StartOfRound.Instance.shipBounds.bounds.Contains(position) ? StartOfRound.Instance.propsContainer.InverseTransformPoint(position) : StartOfRound.Instance.elevatorTransform.InverseTransformPoint(position);
+            PlayerControllerB? localPlayer = LethalMenu.localPlayer;
+            if (HUDManager.Instance == null || localPlayer == null) return;
+            if (grabbableObject is LungProp lung && lung.isLungDocked) lung.EquipItem();
+            if (localPlayer.isInElevator) grabbableObject.transform.SetParent(StartOfRound.Instance.elevatorTransform, true);
+            else grabbableObject.transform.SetParent(StartOfRound.Instance.propsContainer, true);
+            localPlayer.SetItemInElevator(localPlayer.isInHangarShipRoom, localPlayer.isInElevator, grabbableObject);
+            Vector3 localGrabbableObjectPosition = grabbableObject.transform.parent.InverseTransformPoint(localPlayer.playerEye.transform.position);
+            grabbableObject.startFallingPosition = localGrabbableObjectPosition;
+            grabbableObject.targetFloorPosition = localGrabbableObjectPosition;
+            grabbableObject.EnablePhysics(true);
+            grabbableObject.FallToGround();
             HUDManager.Instance.DisplayTip("Lethal Menu", $"Teleported {grabbableObject.itemProperties.itemName} ( {grabbableObject.scrapValue} )!");
         }
     }

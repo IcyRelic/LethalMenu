@@ -9,6 +9,8 @@ namespace LethalMenu.Util
     {
         public float r, g, b, a;
 
+        public static RGBAColor Default = new RGBAColor(1f, 1f, 1f, 1f);
+
 
         [JsonConstructor]
         public RGBAColor(float r, float g, float b, float a)
@@ -153,7 +155,7 @@ namespace LethalMenu.Util
             GUI.Label(pos, content, style);
         }
 
-        public static Texture2D lineTex;
+        public static Texture2D? lineTex;
         public static void DrawLine(Vector2 pointA, Vector2 pointB, Color color, float width)
         {
             Matrix4x4 matrix = GUI.matrix;

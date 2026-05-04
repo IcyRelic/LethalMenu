@@ -1,23 +1,14 @@
 ﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class UnlimitedOxygen
     {
-        [HarmonyPatch(typeof(StartOfRound), ("Update"))]
-        public class StartOfRoundUpdatePatch
+        [HarmonyPatch(typeof(StartOfRound), "SetFaceUnderwaterFilters"), HarmonyPrefix]
+        public static void SetFaceUnderwaterFilters(StartOfRound __instance)
         {
-            [HarmonyPostfix]
-            public static void Prefix(StartOfRound __instance)
-            {
-                if (Hack.UnlimitedOxygen.IsEnabled() && LethalMenu.localPlayer)
-                {
-                    __instance.drowningTimer = 1f;
-                }
-            }
+            if (Hack.UnlimitedOxygen.IsEnabled()) __instance.drowningTimer = 1f;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace LethalMenu.Handler.EnemyControl
         public void OnDeath(BaboonBirdAI enemy)
         {
             if (enemy == null || enemy.heldScrap == null) return;
-            DropHeldItemAndSync(enemy);
+            enemy.Reflect().Invoke("DropHeldItemAndSync");
         }
         public void OnTakeControl(BaboonBirdAI enemy)
         {
@@ -41,7 +41,7 @@ namespace LethalMenu.Handler.EnemyControl
         public void UseSecondarySkill(BaboonBirdAI enemy)
         {
             if (enemy == null || enemy.heldScrap == null) return;
-            DropHeldItemAndSync(enemy);
+            enemy.Reflect().Invoke("DropHeldItemAndSync");
         }
 
         public string GetPrimarySkillName(BaboonBirdAI enemy) => enemy.heldScrap is ShotgunItem ? "Use item" : (enemy.heldScrap != null ? "Drop item (Right Click)" : "Grab Item");
@@ -56,52 +56,18 @@ namespace LethalMenu.Handler.EnemyControl
         {
             if (netitem == null) return;
             GrabScrap(enemy, netitem);
-            enemy.GrabScrapServerRpc(netitem, (int)LethalMenu.localPlayer.playerClientId);
+            enemy.GrabScrapServerRpc(netitem, (int)(LethalMenu.localPlayer?.playerClientId ?? 0));
         }
 
         public static void GrabScrap(BaboonBirdAI enemy, NetworkObject netitem)
         {
-            if (enemy.heldScrap != null) DropScrap(enemy, enemy.heldScrap.GetComponent<NetworkObject>(), enemy.heldScrap.GetItemFloorPosition());
+            if (enemy.heldScrap != null) enemy.Reflect().Invoke("DropHeldItemAndSync");
             GrabbableObject item = (enemy.heldScrap = netitem.gameObject.GetComponent<GrabbableObject>());
             item.parentObject = enemy.grabTarget;
             item.hasHitGround = false;
             item.GrabItemFromEnemy(enemy);
             item.isHeldByEnemy = true;
             item.EnablePhysics(false);
-        }
-
-        public static void DropHeldItemAndSync(BaboonBirdAI enemy)
-        {
-            NetworkObject netobject = enemy.heldScrap.NetworkObject;
-            Vector3 itemFloorPosition = enemy.heldScrap.GetItemFloorPosition();
-            DropScrap(enemy, netobject, itemFloorPosition);
-            //enemy.DropScrapServerRpc(netobject, itemFloorPosition, (int)LethalMenu.localPlayer.playerClientId);
-            Vector3 hitPoint;
-            NetworkObject regionOfDroppedObject = enemy.heldScrap.GetPhysicsRegionOfDroppedObject((PlayerControllerB) null, out hitPoint);
-
-            enemy.DropScrapRpc(netobject, itemFloorPosition, false, true, false, false, regionOfDroppedObject);
-        }
-
-        public static void DropScrap(BaboonBirdAI enemy, NetworkObject item, Vector3 targetFloorPosition)
-        {
-            if (enemy.heldScrap == null) return;
-            if (enemy.heldScrap.isHeld)
-            {
-                enemy.heldScrap.DiscardItemFromEnemy();
-                enemy.heldScrap.isHeldByEnemy = false;
-                enemy.heldScrap = null;
-                return;
-            }
-            enemy.heldScrap.parentObject = null;
-            enemy.heldScrap.transform.SetParent(StartOfRound.Instance.propsContainer, true);
-            enemy.heldScrap.EnablePhysics(true);
-            enemy.heldScrap.fallTime = 0f;
-            enemy.heldScrap.startFallingPosition = enemy.heldScrap.transform.parent.InverseTransformPoint(enemy.heldScrap.transform.position);
-            enemy.heldScrap.targetFloorPosition = enemy.heldScrap.transform.parent.InverseTransformPoint(targetFloorPosition);
-            enemy.heldScrap.floorYRot = -1;
-            enemy.heldScrap.DiscardItemFromEnemy();
-            enemy.heldScrap.isHeldByEnemy = false;
-            enemy.heldScrap = null;
         }
     }
 }

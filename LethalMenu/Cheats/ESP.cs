@@ -15,14 +15,10 @@ namespace LethalMenu.Cheats
     internal class ESP : Cheat
     {
         public ESP() => ChamHandler.SetupChamMaterial();
+
         public override void OnGui()
         {
-            if (!(bool)StartOfRound.Instance) return;
-
-            PlayerControllerB player = GameNetworkManager.Instance.localPlayerController;
-
-            if (player == null) return;
-
+            if (StartOfRound.Instance == null) return;
             try
             {
                 if (Hack.ObjectESP.IsEnabled()) this.DisplayScrap();
@@ -46,18 +42,41 @@ namespace LethalMenu.Cheats
             }
             catch (Exception e)
             {
-                Settings.debugMessage = $"SRC: {e.Message}\nStackTrace: {e.StackTrace}";
+                Settings.DebugMessage = ("ESP Exception: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace);
             }
         }
 
-        public override void Update() => this.DisplayChams();
+        public override void Update()
+        {
+            DisplayChams(LethalMenu.items?.Where(i => i != null && !i.isHeld));
+            DisplayChams(LethalMenu.landmines?.Where(m => m != null && m.IsSpawned && !m.hasExploded));
+            DisplayChams(LethalMenu.turrets?.Where(t => t != null && t.IsSpawned && t.gameObject != null && t.gameObject.transform?.parent?.gameObject != null).Select(t => t.gameObject.transform.parent.gameObject));
+            DisplayChams(LethalMenu.spikeRoofTraps?.Where(s => s != null && s.IsSpawned && s.gameObject && s.gameObject.transform?.parent?.gameObject != null).Select(s => s.gameObject.transform.parent.gameObject));
+            DisplayChams(LethalMenu.players?.Where(p => p != null && !p.isPlayerDead && p.IsRealPlayer() && p != LethalMenu.localPlayer));
+            DisplayChams(LethalMenu.enemies?.Where(e => e != null && !e.isEnemyDead));
+            DisplayChams(LethalMenu.steamValves?.Where(s => s != null));
+            DisplayChams(LethalMenu.bigDoors?.Where(b => b != null));
+            DisplayChams(LethalMenu.doors?.Where(d => d != null));
+            DisplayChams(LethalMenu.doorLocks?.Where(d => d != null && d.isLocked));
+            DisplayChams(LethalMenu.enemyVents?.Where(e => e != null));
+            DisplayChams(LethalMenu.vainShrouds?.Where(v => v != null)?.Where(v => v != null));
+            DisplayChams(LethalMenu.vehicles?.Where(v => v != null));
+            ItemDropship? itemDropship = LethalMenu.itemDropship;
+            if (itemDropship != null && itemDropship.deliveringOrder) DisplayChams([itemDropship]);
+            HangarShipDoor? shipDoor = LethalMenu.shipDoor;
+            if (shipDoor != null) DisplayChams([shipDoor]);
+            BreakerBox? breakerBox = LethalMenu.breaker;
+            if (breakerBox != null) DisplayChams([breakerBox]);
+            MineshaftElevatorController? mineshaftElevator = LethalMenu.mineshaftElevator;
+            if (mineshaftElevator != null) DisplayChams([mineshaftElevator]);
+        }
 
-        private void DisplayChams<T>(IEnumerable<T> objects, Func<T, RGBAColor> colorSelector) where T : Object
+        private void DisplayChams<T>(IEnumerable<T>? objects) where T : Object
         {
             if (objects == null) return;
-            foreach (var obj in objects?.Where(o => o != null))
+            foreach (var obj in objects.Where(o => o != null))
             {
-                Transform transform = obj switch
+                Transform? transform = obj switch
                 {
                     Transform _transform => _transform,
                     Component component => component.transform,
@@ -71,30 +90,10 @@ namespace LethalMenu.Cheats
             }
         }
 
-        public void DisplayChams()
-        {
-            DisplayChams(LethalMenu.items?.Where(i => i != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.landmines, _ => Settings.c_chams);
-            DisplayChams(LethalMenu.turrets?.Where(t => t != null && t.gameObject != null && t.gameObject.transform?.parent?.gameObject != null).Select(t => t.gameObject.transform.parent.gameObject), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.spikeRoofTraps?.Where(s => s != null && s.gameObject && s.gameObject.transform?.parent?.gameObject != null).Select(s => s?.gameObject.transform?.parent?.gameObject), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.players?.Where(p => p != null && p.actualClientId != LethalMenu.localPlayer?.actualClientId), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.enemies?.Where(e => e != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.steamValves?.Where(s => s != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.bigDoors?.Where(b => b != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.doorLocks?.Where(d => d != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.enemyVents?.Where(e => e != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.vainShrouds?.Where(v => v != null)?.Where(v => v != null), _ => Settings.c_chams);
-            DisplayChams(LethalMenu.vehicles?.Where(v => v != null), _ => Settings.c_chams);
-            DisplayChams(new[] { LethalMenu.itemDropship }, _ => Settings.c_chams);
-            DisplayChams(new[] { LethalMenu.shipDoor }, _ => Settings.c_chams);
-            DisplayChams(new[] { LethalMenu.breaker }, _ => Settings.c_chams);
-            DisplayChams(new[] { LethalMenu.mineshaftElevator }, _ => Settings.c_chams);
-        }
-
-        private void DisplayObjects<T>(IEnumerable<T> objects, Func<T, string> labelSelector, Func<T, RGBAColor> colorSelector) where T : Component
+        private void DisplayObjects<T>(IEnumerable<T>? objects, Func<T, string> labelSelector, Func<T, RGBAColor> colorSelector) where T : Component
         {
             if (objects == null) return;
-            foreach (var obj in objects?.Where(o => o != null && o.gameObject.activeSelf))
+            foreach (T obj in objects.Where(o => o != null && o.gameObject.activeSelf))
             {
                 float distance = GetDistanceToPlayer(obj.transform.position);
                 if (distance == 0f || distance > Settings.f_espDistance || !WorldToScreen(obj.transform.position, out var screen)) continue;
@@ -103,7 +102,7 @@ namespace LethalMenu.Cheats
             }
         }
 
-        private string Format(string label, params object[] args) => String.Format(Localization.Localize(label), args);
+        private string Format(string label, params object[] args) => string.Format(Localization.Localize(label), args);
 
         private void DisplayTurrets()
         {
@@ -116,8 +115,10 @@ namespace LethalMenu.Cheats
 
         private void DisplayShip()
         {
+            HangarShipDoor? shipDoor = LethalMenu.shipDoor;
+            if (shipDoor == null) return;
             DisplayObjects(
-                new[] { LethalMenu.shipDoor },
+                [shipDoor],
                 ship => Format("Cheats.ESP.Ship"),
                 ship => Settings.c_shipESP
             );
@@ -125,8 +126,10 @@ namespace LethalMenu.Cheats
 
         private void DisplayElevator()
         {
+            MineshaftElevatorController? mineshaftElevator = LethalMenu.mineshaftElevator;
+            if (mineshaftElevator == null) return;
             DisplayObjects(
-                new[] { LethalMenu.mineshaftElevator },
+                [mineshaftElevator],
                 elevator => Format("Cheats.ESP.MineshaftElevator"),
                 elevator => Settings.c_mineshaftElevatorESP
             );
@@ -134,8 +137,10 @@ namespace LethalMenu.Cheats
 
         private void DisplayBreaker()
         {
+            BreakerBox? breakerBox = LethalMenu.breaker;
+            if (breakerBox == null) return;
             DisplayObjects(
-                new[] { LethalMenu.breaker },
+                [breakerBox],
                 breaker => Format("Cheats.ESP.BreakerBox"),
                 breaker => Settings.c_breakerESP
             );
@@ -198,8 +203,8 @@ namespace LethalMenu.Cheats
         private void DisplayBodies()
         {
             DisplayObjects(
-                LethalMenu.items?.Where(i => i != null && !i.heldByPlayerOnServer && !i.isHeld && !i.isPocketed && i.IsSpawned && i is RagdollGrabbableObject),
-                ragdoll => ragdoll is RagdollGrabbableObject body ? $"{StartOfRound.Instance.allPlayerScripts[body.ragdoll.playerObjectId].playerUsername} - {Settings.c_causeOfDeath.AsString(body.ragdoll.causeOfDeath.ToString())}" : null,
+                LethalMenu.items?.OfType<RagdollGrabbableObject>().Where(i => i != null && !i.heldByPlayerOnServer && !i.isHeld && !i.isPocketed && i.IsSpawned),
+                ragdoll => $"{StartOfRound.Instance.allPlayerScripts[ragdoll.ragdoll.playerObjectId].playerUsername} - {Settings.c_causeOfDeath.AsString(ragdoll.ragdoll.causeOfDeath.ToString())}",
                 ragdoll => Settings.c_deadPlayer
             );
         }
@@ -251,7 +256,7 @@ namespace LethalMenu.Cheats
         private void DisplayVainShrouds()
         {
             DisplayObjects(
-                LethalMenu.vainShrouds?.Where(v => v != null && v.transform != null).Select(v => v.transform) ?? Enumerable.Empty<Transform>(),
+                LethalMenu.vainShrouds?.Where(v => v != null && v.transform != null).Select(v => v.transform),
                 vain => Format("Cheats.ESP.VainShroud"),
                 vain => Settings.c_vainShroudESP
             );
@@ -259,8 +264,10 @@ namespace LethalMenu.Cheats
 
         private void DisplayItemDropShip()
         {
+            ItemDropship? itemDropship = LethalMenu.itemDropship;
+            if (itemDropship == null || !itemDropship.deliveringOrder) return;
             DisplayObjects(
-                new[] { LethalMenu.itemDropship }.Where(d => d != null && d.deliveringOrder).ToList(),  
+                new[] { itemDropship }.Where(d => d != null && d.deliveringOrder).ToList(),  
                 dropship => Format("Cheats.ESP.ItemDropShip"),
                 dropship => Settings.c_itemDropShipESP
             );

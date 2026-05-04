@@ -1,24 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using HarmonyLib;
 
 namespace LethalMenu.Cheats
 {
+    [HarmonyPatch]
     internal class ShowOffensiveLobbyName : Cheat
     {
-        [HarmonyPatch(typeof(SteamLobbyManager), "loadLobbyListAndFilter")] 
-        public static class SteamLobbyManagerloadLobbyListAndFilterPatch
+        [HarmonyPatch(typeof(SteamLobbyManager), "loadLobbyListAndFilter"), HarmonyPrefix]
+        public static void loadLobbyListAndFilter(SteamLobbyManager __instance)
         {
-            [HarmonyPrefix]
-            public static bool Prefix(SteamLobbyManager __instance)
-            {
-                if (Hack.ShowOffensiveLobbyNames.IsEnabled())
-                {
-                    __instance.censorOffensiveLobbyNames = false;
-                }
-                return true;
-            }
+            if (Hack.ShowOffensiveLobbyNames.IsEnabled()) __instance.censorOffensiveLobbyNames = false;
         }
     }
 }

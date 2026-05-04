@@ -11,13 +11,12 @@ namespace LethalMenu
 {
     public class Loader : MonoBehaviour
     {
-        private static GameObject Load;
+        private static GameObject? Load;
 
         public static void Init()
         {
             if (Load != null) return;      
             LoadAssembly("LethalMenu.Resources.0Harmony.dll");
-            ChamHandler.ChamsSetEnabled(true);
             Load = new GameObject();
             Load.AddComponent<LethalMenu>();
             Object.DontDestroyOnLoad(Load);
@@ -35,10 +34,9 @@ namespace LethalMenu
         public static void Unload()
         {
             HackExtensions.ToggleFlags.Keys.ToList().ForEach(h => HackExtensions.ToggleFlags[h] = false);
-            ChamHandler.ChamsSetEnabled(false);
-            if ((bool)!LethalMenu.localPlayer?.playerActions.Movement.enabled) LethalMenu.localPlayer?.playerActions.Enable();
-            if (Cursor.visible && !LethalMenu.quickMenuManager.isMenuOpen) Cursor.visible = false;
-            LethalMenu.harmony.UnpatchAll("LethalMenu");
+            if (LethalMenu.localPlayer != null && !LethalMenu.localPlayer.playerActions.Movement.enabled) LethalMenu.localPlayer?.playerActions.Enable();
+            if (Cursor.visible && LethalMenu.quickMenuManager != null && !LethalMenu.quickMenuManager.isMenuOpen) Cursor.visible = false;
+            LethalMenu.harmony?.UnpatchAll("LethalMenu");
             Object.Destroy(Load);
         }
     }

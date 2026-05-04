@@ -10,35 +10,30 @@ namespace LethalMenu.Cheats
         Dot = 2,
         CircleCross = 3
     }
+
     internal class Crosshair : Cheat
     {
-
-
         public override void OnGui()
         {
             if (!Hack.Crosshair.IsEnabled()) return;
-
-            Vector2[] pointsX = new Vector2[4]
-            {
-                    new Vector2((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f - Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f + Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f - Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f + Settings.f_crosshairScale)
-            };
-
-            Vector2[] pointsPlus = new Vector2[4]
-            {
-                    new Vector2((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f),
-                    new Vector2((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f),
-                    new Vector2((float)Screen.width / 2f, (float)Screen.height / 2f - Settings.f_crosshairScale),
-                    new Vector2((float)Screen.width / 2f, (float)Screen.height / 2f + Settings.f_crosshairScale)
-            };
-
-            Vector2[] pointsDot = new Vector2[1]
-            {
-                new Vector2((float)Screen.width / 2f, (float)Screen.height / 2f)
-            };
-
+            Vector2[] pointsX =
+            [
+                new((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f - Settings.f_crosshairScale),
+                new((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f + Settings.f_crosshairScale),
+                new((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f - Settings.f_crosshairScale),
+                new((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f + Settings.f_crosshairScale)
+            ];
+            Vector2[] pointsPlus =
+            [
+                new((float)Screen.width / 2f - Settings.f_crosshairScale, (float)Screen.height / 2f),
+                new((float)Screen.width / 2f + Settings.f_crosshairScale, (float)Screen.height / 2f),
+                new((float)Screen.width / 2f, (float)Screen.height / 2f - Settings.f_crosshairScale),
+                new((float)Screen.width / 2f, (float)Screen.height / 2f + Settings.f_crosshairScale)
+            ];
+            Vector2[] pointsDot =
+            [
+                new((float)Screen.width / 2f, (float)Screen.height / 2f)
+            ];
             switch (Settings.ct_crosshairType)
             {
                 case CrosshairType.X:

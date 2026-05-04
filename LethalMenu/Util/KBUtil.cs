@@ -36,11 +36,11 @@ namespace LethalMenu.Util
         {
             yield return new WaitForSeconds(0.25f);
             float startTime = Time.time;
-            ButtonControl btn = null;
+            ButtonControl? btn = null;
 
             while (btn == null && Time.time - startTime <= 15f)
             {
-                ButtonControl pressed = GetPressedBtn(); 
+                ButtonControl? pressed = GetPressedBtn(); 
                 if (pressed != null && pressed != btn) btn = pressed;
                 yield return null;
             }
@@ -49,7 +49,7 @@ namespace LethalMenu.Util
             foreach (var cb in otherCallbacks) cb?.Invoke();
         }
 
-        public static ButtonControl GetPressedBtn()
+        public static ButtonControl? GetPressedBtn()
         {
             if (Keyboard.current != null)
             {

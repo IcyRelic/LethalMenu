@@ -28,14 +28,13 @@ namespace LethalMenu.Menu.Core
         public int spaceFromTop = 60;
         public int spaceFromLeft = 10;
 
-        private static HackMenu instance;
+        private static HackMenu? instance;
 
         public static HackMenu Instance
         {
             get
             {
-                if (instance == null)
-                    instance = new HackMenu();
+                if (instance == null) instance = new HackMenu();
                 return instance;
             }
         }
@@ -89,6 +88,7 @@ namespace LethalMenu.Menu.Core
             GUI.skin = Theme.Skin;
             GUI.color = Color.white;
 
+            if (GUI.skin == null) return;
             GUI.skin.label.fontSize = Settings.i_menuFontSize;
             GUI.skin.button.fontSize = Settings.i_menuFontSize;
             GUI.skin.toggle.fontSize = Settings.i_menuFontSize;
@@ -138,7 +138,6 @@ namespace LethalMenu.Menu.Core
             GUILayout.BeginArea(new Rect(0, 25, windowRect.width, 25), style: "Toolbar");
 
             GUILayout.BeginHorizontal();
-            menuTabs.ForEach(x => x.LocalizeName());
             selectedTab = GUILayout.Toolbar(selectedTab, menuTabs.Select(x => x.name).ToArray(), style: "TabBtn");
             GUILayout.EndHorizontal();
             GUILayout.EndArea();

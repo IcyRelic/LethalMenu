@@ -9,123 +9,88 @@ namespace LethalMenu.Cheats
     {
         public override void Update()
         {
-            if(!Hack.GodMode.IsEnabled() || LethalMenu.localPlayer == null) return;
+            if (!Hack.GodMode.IsEnabled() || LethalMenu.localPlayer == null) return;
             LethalMenu.localPlayer.health = 100;
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DamagePlayer))]
-        public static bool PrefixDamagePlayer(int damageNumber, bool hasDamageSFX = true, bool callRPC = true, CauseOfDeath causeOfDeath = CauseOfDeath.Unknown, int deathAnimation = 0, bool fallDamage = false, Vector3 force = default(Vector3))
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.DamagePlayer)), HarmonyPrefix]
+        public static bool DamagePlayer()
         {    
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayer))]
-        public static bool PrefixKillPlayer(Vector3 bodyVelocity, bool spawnBody = true, CauseOfDeath causeOfDeath = CauseOfDeath.Unknown, int deathAnimation = 0)
+        [HarmonyPatch(typeof(PlayerControllerB), nameof(PlayerControllerB.KillPlayer)), HarmonyPrefix]
+        public static bool KillPlayer()
         {
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(FlowermanAI), nameof(FlowermanAI.KillPlayerAnimationServerRpc))]
-        public static bool PrefixFlowerman(int playerObjectId)
+        [HarmonyPatch(typeof(FlowermanAI), nameof(FlowermanAI.KillPlayerAnimationServerRpc)), HarmonyPrefix]
+        public static bool FlowermanAIKillPlayerAnimationServerRpc(int playerObjectId)
         {
-            if (LethalMenu.localPlayer == null || playerObjectId != (int) LethalMenu.localPlayer.playerClientId) return true;
-
+            if (LethalMenu.localPlayer == null || playerObjectId != (int)LethalMenu.localPlayer.playerClientId) return true;
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(ForestGiantAI), nameof(ForestGiantAI.GrabPlayerServerRpc))]
-        public static bool PrefixGiant(int playerId)
+        [HarmonyPatch(typeof(ForestGiantAI), nameof(ForestGiantAI.GrabPlayerServerRpc)), HarmonyPrefix]
+        public static bool ForestGiantAIGrabPlayerServerRpc(int playerId)
         {
             if (LethalMenu.localPlayer == null || playerId != (int)LethalMenu.localPlayer.playerClientId) return true;
-
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(JesterAI), nameof(JesterAI.KillPlayerServerRpc))]
-        public static bool PrefixJester(int playerId)
+        [HarmonyPatch(typeof(JesterAI), nameof(JesterAI.KillPlayerServerRpc)), HarmonyPrefix]
+        public static bool JesterAIKillPlayerServerRpc(int playerId)
         {
             if (LethalMenu.localPlayer == null || playerId != (int)LethalMenu.localPlayer.playerClientId) return true;
-
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(MaskedPlayerEnemy), nameof(MaskedPlayerEnemy.KillPlayerAnimationServerRpc))]
-        public static bool PrefixMaskedPlayer(int playerObjectId)
+        [HarmonyPatch(typeof(MaskedPlayerEnemy), nameof(MaskedPlayerEnemy.KillPlayerAnimationServerRpc)), HarmonyPrefix]
+        public static bool MaskedPlayerEnemyKillPlayerAnimationServerRpc(int playerObjectId)
         {
             if (LethalMenu.localPlayer == null || playerObjectId != (int)LethalMenu.localPlayer.playerClientId) return true;
 
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(MouthDogAI), nameof(MouthDogAI.OnCollideWithPlayer))]
-        public static bool PrefixDog(MouthDogAI __instance, Collider other)
+        [HarmonyPatch(typeof(MouthDogAI), nameof(MouthDogAI.OnCollideWithPlayer)), HarmonyPrefix]
+        public static bool MouthDogAIOnCollideWithPlayer(MouthDogAI __instance, Collider other)
         {
-            if (__instance == null || other == null) return true;
-
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
-
             if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
-
             return !Hack.GodMode.IsEnabled();
         }
 
-        
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(CentipedeAI), nameof(CentipedeAI.OnCollideWithPlayer))]
-        public static bool PrefixCentipede(CentipedeAI __instance, Collider other)
+        [HarmonyPatch(typeof(CentipedeAI), nameof(CentipedeAI.OnCollideWithPlayer)), HarmonyPrefix]
+        public static bool CentipedeAIOnCollideWithPlayer(CentipedeAI __instance, Collider other)
         {
-            if (__instance == null || other == null) return true;
-
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
-
             if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
-
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(RadMechAI), nameof(RadMechAI.OnCollideWithPlayer))]
-        public static bool PrefixRadMechKill(RadMechAI __instance, Collider other)
+        [HarmonyPatch(typeof(RadMechAI), nameof(RadMechAI.OnCollideWithPlayer)), HarmonyPrefix]
+        public static bool RadMechAIOnCollideWithPlayer(RadMechAI __instance, Collider other)
         {
-            if (__instance == null || other == null) return true;
-
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
-
             if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
-
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(BushWolfEnemy), nameof(BushWolfEnemy.OnCollideWithPlayer))]
-        public static bool PrefixBushWolfEnemy(BushWolfEnemy __instance, Collider other)
+        [HarmonyPatch(typeof(BushWolfEnemy), nameof(BushWolfEnemy.OnCollideWithPlayer)), HarmonyPrefix]
+        public static bool BushWolfEnemyOnCollideWithPlayer(BushWolfEnemy __instance, Collider other)
         {
-            if (__instance == null || other == null) return true;
-
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
-
             if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
-
             return !Hack.GodMode.IsEnabled();
         }
 
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(CaveDwellerAI), nameof(CaveDwellerAI.OnCollideWithPlayer))]
-        public static bool PrefixCaveDwellerAI(CaveDwellerAI __instance, Collider other)
+        [HarmonyPatch(typeof(CaveDwellerAI), nameof(CaveDwellerAI.OnCollideWithPlayer)), HarmonyPrefix]
+        public static bool CaveDwellerAIOnCollideWithPlayer(CaveDwellerAI __instance, Collider other)
         {
-            if (__instance == null || other == null) return true;
-
             PlayerControllerB player = __instance.MeetsStandardPlayerCollisionConditions(other);
-
             if (player == null || LethalMenu.localPlayer == null || player.playerClientId != LethalMenu.localPlayer.playerClientId) return true;
-
             return !Hack.GodMode.IsEnabled();
         }
     }

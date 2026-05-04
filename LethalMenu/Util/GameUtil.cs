@@ -58,7 +58,8 @@ namespace LethalMenu.Util
 
         public static float GetDistanceToPlayer(Vector3 position)
         {
-            return (float)Mathf.Round(Vector3.Distance(CameraManager.ActiveCamera.transform.position, position));
+
+            return (float)Mathf.Round(Vector3.Distance(CameraManager.ActiveCamera?.transform.position ?? Vector2.zero, position));
         }
 
         public static float GetDistance(Vector3 from, Vector3 to)
@@ -85,7 +86,7 @@ namespace LethalMenu.Util
             }
         }
 
-        public static RaycastHit[] SphereCastForward(this Transform transform, float sphereRadius = 1.0f)
+        public static RaycastHit[]? SphereCastForward(this Transform transform, float sphereRadius = 1.0f)
         {
             try
             {
